@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Material;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class MaterialUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,27 +22,28 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'r_name' => [
+            'Name_RawMaterial' => [
                 'required',
             ],
-            'r_email' => [
-                'required'
-            ],
-            'r_password' => [
+            'Unit' => [
                 'required',
-                'same:confirm_password',
             ],
-            'confirm_password'
-            => [
+            'count' => [
+                'required',
+                'numeric',
+            ],
+            'FK_Id_RawMaterialType' => [
                 'required',
             ],
         ];
     }
-    public function messages()
+    public function messages(): array
     {
         return [
-            'email.required' => 'Vui lòng nhập email',
-            'password.required' => 'Vui lòng nhập password'
+            'Name_RawMaterial.required' => 'Vui lòng nhập tên nguyên liệu thô',
+            'Unit.required' => 'Vui lòng nhập đơn vị',
+            'count.required' => 'Vui lòng nhập số lượng',
+            'FK_Id_RawMaterialType.required' => 'Vui lòng chọn loại nguyên liệu',
         ];
     }
 }

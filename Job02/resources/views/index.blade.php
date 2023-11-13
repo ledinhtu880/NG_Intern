@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Homepage')
+@section('title', 'Trang chủ')
 
 @section('content')
 <div class="container-fluid g-0">
@@ -29,8 +29,10 @@
           <div class="row">
             <div class="col-md-6">
               <div class="d-flex flex-column">
-                <button class="btn btn-lg btn-primary-color my-1 w-50">Quản lý đơn hàng</button>
-                <button class="btn btn-lg btn-primary-color my-1 w-50">Quản lý khách hàng</button>
+                <button class="btn btn-primary-color my-1 w-50">Quản lý đơn hàng</button>
+                <button class="btn btn-primary-color my-1 w-50">Quản lý khách hàng</button>
+                <a href="{{ route('rawMaterials.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý nguyên
+                  liệu</a>
               </div>
             </div>
             <div class="col-md-6 text-center">
@@ -70,10 +72,6 @@
 @push('javascript')
 <script type="text/javascript">
   $(document).ready(function () {
-    const toastLiveExample = $('#liveToast');
-    const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
-    toastBootstrap.show();
-
     const tabs = $(".tab-item");
     const panes = $(".tab-pane");
     const tabActive = $(".tab-item.active");
@@ -100,6 +98,10 @@
         pane.addClass("active");
       });
     });
+
+    const toastLiveExample = $('#liveToast');
+    const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
+    toastBootstrap.show();
   })
 </script>
 @endpush

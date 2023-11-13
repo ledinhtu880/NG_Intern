@@ -12,21 +12,6 @@ use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request)
-    {
-        $validator = $request->validated();
-        $user = new User();
-        $user->name = $validator['r_name'];
-        $user->email = $validator['r_email'];
-        $user->password = bcrypt($validator['r_password']);
-        $user->save();
-
-        if ($user) {
-            return redirect()->route('index')->with('type', 'success')->with('message', 'Đăng ký thành công');
-        } else {
-            return redirect()->route('index')->with('type', 'warning')->with('message', 'Đăng ký thất bại');
-        }
-    }
     public function login(LoginRequest $request): RedirectResponse
     {
         $credentials = [
