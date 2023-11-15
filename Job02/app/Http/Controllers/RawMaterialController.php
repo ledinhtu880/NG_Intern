@@ -96,7 +96,7 @@ class RawMaterialController extends Controller
         // $book->update(); $book->save();
         /* Nó sẽ có câu truy vấn mặc định là where ID = '...' */
 
-        return redirect()->route('borrowings.index')->with([
+        return redirect()->route('rawMaterials.index')->with([
             'message' => 'Xóa nguyên liệu thô thành công',
             'type' => 'danger',
         ]);

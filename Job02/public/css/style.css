@@ -3,6 +3,10 @@
 	color: #fff !important;
 	transition: 0.3s all linear;
 }
+.bg-primary-color{
+	background-color: #2b4c72 !important;
+	color: #fff !important;
+}
 .btn-primary-color:hover{
 	opacity: 0.9;
 }
