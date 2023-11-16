@@ -64,4 +64,3 @@ INSERT INTO Station (Name_Station, Ip_Address, FK_Id_StationType) VALUES
 select * from [NG_Job02].dbo.[order]
 select * from [NG_Job02].dbo.[ContentSimple]
 select * from [NG_Job02].dbo.[ContainerType]
-select FK_ID_ContainerType from [ContentSimple]

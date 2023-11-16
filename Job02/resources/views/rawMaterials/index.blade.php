@@ -63,43 +63,39 @@
 @endsection
 
 @push('javascript')
-<script type="text/javascript">
-  $(document).ready(function () {
-    const toastLiveExample = $('#liveToast');
-    const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
-    toastBootstrap.show();
+<script>
+  const toastLiveExample = $('#liveToast');
+  const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
+  toastBootstrap.show();
+  let selectElement = $("select[name='FK_Id_RawMaterialType']");
 
-    let selectElement = $("select[name='FK_Id_RawMaterialType']");
+  $(selectElement).on('change', function () {
+    let id = $(this).val();
+    let token = $('meta[name="csrf-token"]').attr('content');
 
-    $(selectElement).on('change', function () {
-      let id = $(this).val();
-      let token = $('meta[name="csrf-token"]').attr('content');
-      let rowElement = $(this).closest(".js-row");
+    $.ajax({
+      url: "{{ route('showMaterials') }}",
+      method: 'POST',
+      dataType: 'json',
+      data: {
+        id: id,
+        _token: token
+      },
+      success: function (response) {
+        let data = response.data;
+        $("#table-data").empty(); // Làm rỗng phần tử HTML có id "table-data"
+        $.each(data, function (key, value) {
+          let id = value.Id_RawMaterial;
+          let materialName = value.Name_RawMaterial;
+          let unit = value.Unit;
+          let count = value.count;
+          let showUrl = "{{ route('rawMaterials.show', ':id') }}".replace(':id', id);
+          let editUrl = "{{ route('rawMaterials.edit', ':id') }}".replace(':id', id);
+          let deleteModalId = "deleteModal-" + id;
+          let deleteUrl = "{{ route('rawMaterials.destroy', ':id') }}".replace(':id', id);
 
-      $.ajax({
-        url: "{{ route('showMaterials') }}",
-        method: 'POST',
-        dataType: 'json',
-        data: {
-          id: id,
-          _token: token
-        },
-        success: function (response) {
-          let data = response.data;
-          $("#table-data").empty(); // Làm rỗng phần tử HTML có id "table-data"
-          $.each(data, function (key, value) {
-            let id = value.Id_RawMaterial;
-            let materialName = value.Name_RawMaterial;
-            let unit = value.Unit;
-            let count = value.count;
-            let typeName = value.Name_RawMaterialType;
-            let showUrl = "{{ route('rawMaterials.show', ':id') }}".replace(':id', id);
-            let editUrl = "{{ route('rawMaterials.edit', ':id') }}".replace(':id', id);
-            let deleteModalId = "deleteModal-" + id;
-            let deleteUrl = "{{ route('rawMaterials.destroy', ':id') }}".replace(':id', id);
-
-            let htmls =
-              `<tr>
+          let htmls =
+            `<tr>
                 <th class="text-center" scope="row">${id}</th>
                 <td>${materialName}</td>
                 <td class="text-center">${unit}</td>
@@ -137,21 +133,18 @@
                   </div>
                 </td>
               </tr>`;
-            $("#table-data").append(htmls);
-          });
-        }
-      });
+          $("#table-data").append(htmls);
+        });
+      }
     });
+  });
 
-    var firstOptionValue = $(selectElement).val();
+  var firstOptionValue = $(selectElement).val();
 
-    // Gán giá trị cho phần tử select
-    $(selectElement).val(firstOptionValue);
+  // Gán giá trị cho phần tử select
+  $(selectElement).val(firstOptionValue);
 
-    // Gọi sự kiện change để hiển thị dữ liệu
-    $(selectElement).change();
-
-    // Thêm thuộc tính "selected" vào mục đầu tiên
-  })
+  // Gọi sự kiện change để hiển thị dữ liệu
+  $(selectElement).change();
 </script>
 @endpush

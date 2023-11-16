@@ -1,18 +1,28 @@
 $(document).ready(function () {
-  $('.js-open').click(function (e) {
-    e.preventDefault();
-    $('.js-file').click();
+  const tabs = $(".tab-item");
+  const panes = $(".tab-pane");
+  const tabActive = $(".tab-item.active");
+  const line = $(".tabs-line");
+  line.css({
+    left: tabActive.position().left + "px",
+    width: tabActive.outerWidth() + "px"
   });
 
-  $('.js-file').change(function () {
-    const file = this.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      $('.js-image').attr('src', imageUrl);
-    }
+  tabs.each(function (index) {
+    let tab = $(this);
+    let pane = panes.eq(index);
+
+    tab.on("click", function () {
+      $(".tab-item.active").removeClass("active");
+      $(".tab-pane.active").removeClass("active");
+
+      line.css({
+        left: tab.position().left + "px",
+        width: tab.outerWidth() + "px"
+      });
+
+      tab.addClass("active");
+      pane.addClass("active");
+    });
   });
-  
-  const toastLiveExample = $('#liveToast');
-  const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
-  toastBootstrap.show();
 })

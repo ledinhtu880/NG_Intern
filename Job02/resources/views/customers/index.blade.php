@@ -106,11 +106,5 @@
 @endsection
 
 @push('javascript')
-<script type="text/javascript">
-  $(document).ready(function () {
-    const toastLiveExample = $('#liveToast');
-    const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
-    toastBootstrap.show();
-  })
-</script>
+<script src="{{ asset('js/app.js') }}"></script>
 @endpush
