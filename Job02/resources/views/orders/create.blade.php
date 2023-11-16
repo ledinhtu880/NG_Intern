@@ -20,7 +20,7 @@
                     <div class="col-md-12 mb-3">
                       <div class="input-group">
                         <label class="input-group-text bg-secondary-subtle" for="FK_Id_Customer"
-                          style="width: 95px;">Customer</label>
+                          style="width: 130px;">Khách hàng</label>
                         <select class="form-select selectValidate" id="FK_Id_Customer" name="FK_Id_Customer">
                           @foreach($customers as $each)
                           <option value="{{ $each->Id_Customer }}">{{ $each->Name_Customer }}</option>
@@ -31,8 +31,8 @@
                     </div>
                     <div class="col-md-12">
                       <div class="input-group">
-                        <label class="input-group-text bg-secondary-subtle" for="FK_Id_OrderType" style="width: 95px;">
-                          Order
+                        <label class="input-group-text bg-secondary-subtle" for="FK_Id_OrderType" style="width: 130px;">
+                          Loại đơn hàng
                         </label>
                         <select class="form-select selectValidate" name="FK_Id_OrderType" id="FK_Id_OrderType">
                           @foreach($types as $each)
@@ -48,7 +48,7 @@
                   <div class="row">
                     <div class="col-md-12 mb-3">
                       <div class="input-group">
-                        <label class="input-group-text bg-secondary-subtle" style="width: 135px;">Order Date</label>
+                        <label class="input-group-text bg-secondary-subtle" style="width: 135px;">Ngày đặt hàng</label>
                         <input type="date" class="form-control" id="Date_Order" name="Date_Order">
                       </div>
                       <span class="form-message text-danger"></span>
@@ -56,7 +56,7 @@
                     <div class="col-md-12 mb-3">
                       <div class="input-group">
                         <label class="input-group-text bg-secondary-subtle" style="width: 135px;">
-                          Delivery Date
+                          Ngày giao hàng
                         </label>
                         <input type="date" class="form-control" id="Date_Delivery" name="Date_Delivery">
                       </div>
@@ -65,7 +65,7 @@
                     <div class="col-md-12 mb-3">
                       <div class="input-group">
                         <label class="input-group-text bg-secondary-subtle" style="width: 135px;">
-                          Reception Date
+                          Ngày nhận hàng
                         </label>
                         <input type="date" class="form-control" id="Date_Reception" name="Date_Reception">
                       </div>
@@ -75,7 +75,7 @@
                 </div>
                 <div class="col-md-4">
                   <div class="input-group">
-                    <span class="input-group-text bg-secondary-subtle">Note</span>
+                    <span class="input-group-text bg-secondary-subtle">Ghi chú</span>
                     <textarea class="form-control" style="height: 146px;" aria-label="Notes" name="Note"
                       rows="5"></textarea>
                   </div>
@@ -94,11 +94,10 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="input-group mb-3">
-                    <label class="input-group-text bg-secondary-subtle" for="FK_Id_RawMaterial" style="width: 95px;">
-                      Material
+                    <label class="input-group-text bg-secondary-subtle" for="FK_Id_RawMaterial" style="width: 130px;">
+                      Nguyên vật liệu
                     </label>
                     <select name="FK_Id_RawMaterial" id="FK_Id_RawMaterial" class="form-select">
-                      <option value="" selected>Choose a materials</option>
                       @foreach($materials as $each)
                       <option value="{{ $each->Id_RawMaterial }}" data-name="{{ $each->Name_RawMaterial }}">
                         {{ $each->Name_RawMaterial }}
@@ -109,19 +108,18 @@
                 </div>
                 <div class="col-md-6">
                   <div class="input-group mb-3">
-                    <label class="input-group-text bg-secondary-subtle" for="Count_RawMaterial" style="width: 155px;">
-                      Material Number
+                    <label class="input-group-text bg-secondary-subtle" for="Count_RawMaterial" style="width: 200px;">
+                      Số lượng nguyên vật liệu
                     </label>
                     <input type="number" name="Count_RawMaterial" id="Count_RawMaterial" class="form-control" min="0">
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="input-group mb-3">
-                    <label class="input-group-text bg-secondary-subtle" for="FK_ID_ContainerType" style="width: 95px;">
-                      Container
+                    <label class="input-group-text bg-secondary-subtle" for="FK_ID_ContainerType" style="width: 130px;">
+                      Thùng chứa
                     </label>
                     <select class="form-select selectValidate" name="FK_ID_ContainerType" id="FK_ID_ContainerType">
-                      <option value="" selected>Choose a container</option>
                       @foreach($containers as $each)
                       <option value="{{ $each->Id_ContainerType }}" data-name="{{ $each->Name_ContainerType }}">
                         {{ $each->Name_ContainerType }}
@@ -133,7 +131,7 @@
                 <div class="col-md-4">
                   <div class="input-group mb-3">
                     <label class="input-group-text bg-secondary-subtle" for="Count_Container">
-                      Container Number
+                      Số lượng thùng chứa
                     </label>
                     <input type="number" name="Count_Container" id="Count_Container" class="form-control" min="0">
                   </div>
@@ -141,7 +139,7 @@
                 <div class="col-md-4">
                   <div class="input-group mb-3">
                     <label class="input-group-text bg-secondary-subtle" for="Price_Container">
-                      Price
+                      Giá
                     </label>
                     <input type="number" name="Price_Container" id="Price_Container" class="form-control" min="0">
                   </div>
@@ -152,7 +150,7 @@
                       <input class="form-check-input border-secondary" type="checkbox" name="ContainerProvided"
                         id="ContainerProvided">
                       <label class="form-check-label" for="ContainerProvided">
-                        Container Provided
+                        Đã cấp thùng chứa?
                       </label>
                     </div>
                   </div>
@@ -161,7 +159,7 @@
                       <input class="form-check-input border-secondary" type="checkbox" name="PedestalProvided"
                         id="PedestalProvided">
                       <label class="form-check-label" for="PedestalProvided">
-                        Pedestal Provided
+                        Đã cấp đế?
                       </label>
                     </div>
                   </div>
@@ -170,7 +168,7 @@
                       <input class="form-check-input border-secondary" type="checkbox" name="RFIDProvided"
                         id="RFIDProvided">
                       <label class="form-check-label" for="RFIDProvided">
-                        RFID Provided
+                        Đã cấp mã RFID?
                       </label>
                     </div>
                   </div>
@@ -179,7 +177,7 @@
                       <input class="form-check-input border-secondary" type="checkbox" name="RawMaterialProvided"
                         id="RawMaterialProvided">
                       <label class="form-check-label" for="RawMaterialProvided">
-                        Raw Material Provided
+                        Đã cấp nguyên liệu?
                       </label>
                     </div>
                   </div>
