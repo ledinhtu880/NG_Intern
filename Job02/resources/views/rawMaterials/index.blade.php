@@ -73,7 +73,7 @@
 
     $(selectElement).on('change', function () {
       let id = $(this).val();
-      let token = $("input[name='_token']").val();
+      let token = $('meta[name="csrf-token"]').attr('content');
       let rowElement = $(this).closest(".js-row");
 
       $.ajax({

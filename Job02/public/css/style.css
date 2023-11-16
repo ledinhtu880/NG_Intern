@@ -1,3 +1,6 @@
+textarea {
+  resize: none;
+}
 .btn-primary-color{
 	background-color: #2b4c72 !important;
 	color: #fff !important;

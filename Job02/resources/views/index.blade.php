@@ -29,8 +29,8 @@
           <div class="row">
             <div class="col-md-6">
               <div class="d-flex flex-column">
-                <button class="btn btn-primary-color my-1 w-50">Quản lý đơn hàng</button>
-                <button class="btn btn-primary-color my-1 w-50">Quản lý khách hàng</button>
+                <a href="{{ route('orders.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý đơn hàng</a>
+                <a href="{{ route('customers.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý khách hàng</a>
                 <a href="{{ route('rawMaterials.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý nguyên
                   liệu</a>
               </div>
@@ -52,7 +52,7 @@
 <div class="toast-container rounded position-fixed bottom-0 end-0 p-3">
   <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-body bg-{{ session('type') }} d-flex align-items-center justify-content-between">
-      <div class=" d-flex justify-content-center align-items-center gap-2">
+      <div class="d-flex justify-content-center align-items-center gap-2">
         @if(session('type') == 'success')
         <i class="fas fa-check-circle text-light fs-5"></i>
         @elseif(session('type') == 'danger' || session('type') == 'warning')
