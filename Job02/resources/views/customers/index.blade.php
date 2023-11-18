@@ -8,14 +8,13 @@
   <div class="row">
     <div class="col-md-12">
       <div class="card mt-3">
-        <div class="card-header px-0 pt-0 overflow-hidden">
-          <h3 class="card-title bg-secondary-subtle p-3 text-primary-color">Quản lý khách hàng</h3>
-          <a href="{{ route('customers.create') }}" class="btn btn-primary-color text-white p-2 my-3 ms-3">
+        <div class="card-header p-0 overflow-hidden">
+          <h4 class="card-title m-0 bg-primary-color p-3">Quản lý khách hàng</h4>
+          <a href="{{ route('customers.create')}}" class="btn btn-primary-color text-white p-2 my-3 ms-3">
             Thêm khách hàng
           </a>
         </div>
         <div class="card-body px-0">
-
           <table class="table table-striped w-100">
             <thead>
               <tr>
@@ -75,10 +74,13 @@
               @endforeach
             </tbody>
           </table>
-          {{-- paginate --}}
-          <nav class="d-flex justify-content-end me-2">
-            {{ $data->links('pagination::bootstrap-5') }}
-          </nav>
+          @if ($data->lastPage() > 1)
+          <div class="card-footer">
+            <div class="paginate">
+              {{ $data->links('pagination::bootstrap-5')}}
+            </div>
+          </div>
+          @endif
         </div>
       </div>
     </div>

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\OrderType;
 use App\Models\Customer;
 use App\Models\RawMaterial;
 use App\Models\ContainerType;
@@ -25,77 +24,66 @@ class OrderController extends Controller
     $data = Order::paginate(5);
     return view('orders.index', compact('data'));
   }
-
-  /**
-   * Show the form for creating a new resource.
-   */
+  public function show(Order $order)
+  {
+    $data = DB::table('ContentSimple')
+      ->select('RawMaterial.Name_RawMaterial', 'ContentSimple.Count_RawMaterial', 'RawMaterial.unit', 'ContainerType.Name_ContainerType', 'ContentSimple.Count_Container', 'ContentSimple.Price_Container')
+      ->join('RawMaterial', 'ContentSimple.FK_Id_RawMaterial', '=', 'RawMaterial.Id_RawMaterial')
+      ->join('ContainerType', 'ContentSimple.FK_Id_ContainerType', '=', 'ContainerType.Id_ContainerType')
+      ->join('Order', 'ContentSimple.FK_Id_Order', '=', 'Order.Id_Order')
+      ->where('FK_Id_Order', $order->Id_Order)
+      ->get();
+    return view('orders.show', compact('order', 'data'));
+  }
   public function create()
   {
     $customers = Customer::get();
-    $types = OrderType::get();
     $containers = ContainerType::get();
     $materials = RawMaterial::get();
     return view('orders.create', [
       'customers' => $customers,
-      'types' => $types,
       'containers' => $containers,
       'materials' => $materials,
     ]);
   }
-
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(Request $request)
-  {
-  }
-
-  /**
-   * Display the specified resource.
-   */
-  public function show(Order $order)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
   public function edit(Order $order)
   {
-    //
+    $customers = Customer::get();
+    $containers = ContainerType::get();
+    $materials = RawMaterial::get();
+    $data = DB::table('ContentSimple')
+      ->select(
+        'ContentSimple.Id_SimpleContent',
+        'RawMaterial.Name_RawMaterial',
+        'ContentSimple.FK_Id_RawMaterial',
+        'ContentSimple.Count_RawMaterial',
+        'RawMaterial.unit',
+        'ContentSimple.FK_Id_ContainerType',
+        'ContainerType.Name_ContainerType',
+        'ContentSimple.Count_Container',
+        'ContentSimple.Price_Container'
+      )
+      ->join('RawMaterial', 'ContentSimple.FK_Id_RawMaterial', '=', 'RawMaterial.Id_RawMaterial')
+      ->join('ContainerType', 'ContentSimple.FK_Id_ContainerType', '=', 'ContainerType.Id_ContainerType')
+      ->join('Order', 'ContentSimple.FK_Id_Order', '=', 'Order.Id_Order')
+      ->where('FK_Id_Order', $order->Id_Order)
+      ->get();
+    return view('orders.edit', [
+      'order' => $order,
+      'customers' => $customers,
+      'containers' => $containers,
+      'materials' => $materials,
+      'data' => $data,
+    ]);
   }
-
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, Order $order)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
   public function destroy(Order $order)
   {
-    //
-  }
-  public function addProduct(Request $request)
-  {
-    if ($request->ajax()) {
-      $formData = $request->input('formData');
-      $data = [];
-
-      parse_str($formData, $formDataArray);
-
-      $data[] = $formDataArray;
-
-      return response()->json([
-        'status' => 'success',
-        'data' => $data,
-      ]);
-    }
+    DB::table('ContentSimple')->where('FK_Id_Order', $order->Id_Order)->delete();
+    $order->delete();
+    return redirect()->back()->with([
+      'message' => 'Xóa đơn hàng thành công',
+      'type' => 'danger',
+    ]);
   }
   public function storeOrder(Request $request)
   {
@@ -119,11 +107,11 @@ class OrderController extends Controller
       DB::table('order')->insert([
         'Id_Order' => $id,
         'FK_Id_Customer' => $formDataArray['FK_Id_Customer'],
-        'FK_Id_OrderType' => $formDataArray['FK_Id_OrderType'],
         'Date_Order' => $formDataArray['Date_Order'],
-        'Date_Delivery' => $formDataArray['Date_Delivery'],
+        'Date_Dilivery' => $formDataArray['Date_Dilivery'],
         'Date_Reception' => $formDataArray['Date_Reception'],
         'Note' => $formDataArray['Note'],
+        'IsSimple' => 1,
       ]);
 
       return response()->json([
@@ -132,36 +120,27 @@ class OrderController extends Controller
       ]);
     }
   }
-  public function storeProduct(Request $request)
+  public function updateOrder(Request $request)
   {
     if ($request->ajax()) {
-      $rowData = $request->input('rowData');
-      foreach ($rowData as $row) {
-        $lastOrderId = DB::table('ContentSimple')->max('Id_SimpleContent');
+      $formData = $request->input('formData');
+      $id = $request->input('id');
+      $data = [];
 
-        if ($lastOrderId === null) {
-          $id = 1; // Gán giá trị mặc định cho biến $id nếu kết quả là NULL
-        } else {
-          $id = $lastOrderId + 1;
-        }
+      parse_str($formData, $formDataArray);
 
-        DB::table('ContentSimple')->insert([
-          'Id_SimpleContent' => $id,
-          'FK_Id_RawMaterial' => $row['FK_Id_RawMaterial'],
-          'Count_RawMaterial' => $row['Count_RawMaterial'],
-          'FK_Id_ContainerType' => $row['FK_Id_ContainerType'],
-          'Count_Container' => $row['Count_Container'],
-          'Price_Container' => $row['Price_Container'],
-          'FK_Id_Order' => $row['FK_Id_Order'],
-          'ContainerProvided' => $row['ContainerProvided'],
-          'PedestalProvided' => $row['PedestalProvided'],
-          'RFIDProvided' => $row['RFIDProvided'],
-          'RawMaterialProvided' => $row['RawMaterialProvided'],
-        ]);
-      }
+      $data[] = $formDataArray;
+      DB::table('Order')->where('Id_Order', $id)->update([
+        'FK_Id_Customer' => $formDataArray['FK_Id_Customer'],
+        'Date_Order' => $formDataArray['Date_Order'],
+        'Date_Dilivery' => $formDataArray['Date_Dilivery'],
+        'Date_Reception' => $formDataArray['Date_Reception'],
+        'Note' => $formDataArray['Note'],
+      ]);
 
       return response()->json([
         'status' => 'success',
+        'id' => $id,
       ]);
     }
   }

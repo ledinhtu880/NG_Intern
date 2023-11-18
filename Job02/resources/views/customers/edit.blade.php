@@ -9,7 +9,7 @@
       <div class="w-50 ">
         <div class="card">
           <div class="card-header p-0 overflow-hidden">
-            <h3 class="card-title m-0 bg-secondary-subtle p-3 text-primary-color">Sửa khách hàng</h3>
+            <h4 class="card-title m-0 bg-primary-color p-3">Sửa khách hàng</h4>
           </div>
           <div class="card-body">
             <form method="POST" action="{{ route('customers.update', $customer) }}">
@@ -99,7 +99,7 @@
               </div>
               <div class="d-flex justify-content-end my-4 gap-3">
                 <a href="{{ route('customers.index') }}" class="btn btn-warning">Quay lại</a>
-                <button type="submit" class="btn btn-success">Sửa</button>
+                <button type="submit" class="btn btn-primary-color">Sửa</button>
               </div>
             </form>
           </div>

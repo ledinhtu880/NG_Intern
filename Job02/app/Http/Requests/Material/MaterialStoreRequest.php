@@ -28,7 +28,7 @@ class MaterialStoreRequest extends FormRequest
             'Unit' => [
                 'required',
             ],
-            'count' => [
+            'Count' => [
                 'required',
                 'numeric',
             ],
@@ -47,7 +47,7 @@ class MaterialStoreRequest extends FormRequest
         return [
             'Name_RawMaterial.required' => 'Vui lòng nhập tên nguyên liệu thô',
             'Unit.required' => 'Vui lòng nhập đơn vị',
-            'count.required' => 'Vui lòng nhập số lượng',
+            'Count.required' => 'Vui lòng nhập số lượng',
             'FK_Id_RawMaterialType.required' => 'Vui lòng chọn loại nguyên liệu',
         ];
     }

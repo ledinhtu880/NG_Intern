@@ -8,8 +8,8 @@
   <div class="row">
     <div class="col-md-12">
       <div class="card mt-3">
-        <div class="card-header px-0 pt-0 overflow-hidden">
-          <h3 class="card-title bg-secondary-subtle p-3 text-primary-color">Quản lý nguyên liệu thô</h3>
+        <div class="card-header p-0 overflow-hidden">
+          <h4 class="card-title m-0 bg-primary-color p-3">Quản lý nguyên liệu thô</h4>
           <a href="{{ route('rawMaterials.create')}}" class="btn btn-primary-color text-white p-2 my-3 ms-3">
             Thêm đơn nguyên liệu thô
           </a>
@@ -74,7 +74,7 @@
     let token = $('meta[name="csrf-token"]').attr('content');
 
     $.ajax({
-      url: "{{ route('showMaterials') }}",
+      url: "{{ route('rawMaterial.showMaterials') }}",
       method: 'POST',
       dataType: 'json',
       data: {
@@ -121,7 +121,7 @@
                           Bạn có chắc chắn về việc xóa nguyên liệu thô này?
                         </div>
                         <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                          <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Hủy</button>
                           <form action="${deleteUrl}" method="POST">
                             @csrf
                             @method('DELETE')

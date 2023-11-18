@@ -9,7 +9,7 @@
       <div class="w-50 mt-3">
         <div class="card">
           <div class="card-header p-0 overflow-hidden">
-            <h3 class="card-title m-0 bg-secondary-subtle p-3 text-primary-color">Sửa nguyên liệu thô</h3>
+            <h4 class="card-title m-0 bg-primary-color p-3">Sửa nguyên liệu thô</h4>
           </div>
           <div class="card-body">
             <form method="POST" action="{{ route('rawMaterials.update', $material->Id_RawMaterial ) }}">
@@ -67,7 +67,7 @@
               </div>
               <div class="d-flex justify-content-end my-4 gap-3">
                 <a href="{{ route('rawMaterials.index') }}" class="btn btn-warning">Quay lại</a>
-                <button type="submit" class="btn btn-success">Cập nhật</button>
+                <button type="submit" class="btn btn-primary-color">Cập nhật</button>
               </div>
             </form>
           </div>

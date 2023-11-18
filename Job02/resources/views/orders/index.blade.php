@@ -8,8 +8,8 @@
   <div class="row">
     <div class="col-md-12">
       <div class="card mt-3">
-        <div class="card-header px-0 pt-0 overflow-hidden">
-          <h3 class="card-title bg-secondary-subtle p-3 text-primary-color">Quản lý đơn hàng</h3>
+        <div class="card-header p-0 overflow-hidden">
+          <h4 class="card-title m-0 bg-primary-color p-3">Quản lý đơn hàng</h4>
           <a href="{{ route('orders.create')}}" class="btn btn-primary-color text-white p-2 my-3 ms-3">
             Thêm đơn hàng
           </a>
@@ -20,8 +20,8 @@
               <tr>
                 <th class="text-center" scope="col">Mã đơn hàng</th>
                 <th scope="col">Tên khách hàng</th>
-                <th class="text-center" scope="col">Kiểu đơn hàng</th>
                 <th class="text-center" scope="col">Ngày đặt hàng</th>
+                <th class="text-center" scope="col">Ngày giao hàng</th>
               </tr>
             </thead>
             <tbody id="table-data" class="table-group-divider">
@@ -29,20 +29,23 @@
               <tr>
                 <td class="text-center">{{ $each->Id_Order }}</td>
                 <td>{{ $each->customer->Name_Customer}}</td>
-                <td class="text-center">{{ $each->type->Name_OrderType }}</td>
                 <td class="text-center">{{ $each->order_date}}</td>
+                <td class="text-center">{{ $each->delivery_date}}</td>
                 <td>
-                  <a href="" class="btn btn-sm btn-outline-light text-primary-color border-secondary">
+                  <a href="{{ route('orders.show', $each) }}"
+                    class="btn btn-sm btn-outline-light text-primary-color border-secondary">
                     <i class="fa-solid fa-eye"></i>
                   </a>
-                  <a href="" class="btn btn-sm btn-outline-light text-primary-color border-secondary">
+                  <a href="{{ route('orders.edit', $each) }}"
+                    class="btn btn-sm btn-outline-light text-primary-color border-secondary">
                     <i class="fa-solid fa-pen-to-square"></i>
                   </a>
                   <button type="button" class="btn btn-sm btn-outline-light text-primary-color border-secondary"
-                    data-bs-toggle="modal" data-bs-target="#">
+                    data-bs-toggle="modal" data-bs-target="#deleteOrder-{{$each->Id_Order}}">
                     <i class="fa-solid fa-trash"></i>
                   </button>
-                  <div class="modal fade" id="" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal fade" id="deleteOrder-{{$each->Id_Order}}" tabindex="-1"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                       <div class="modal-content">
                         <div class="modal-header">
@@ -54,7 +57,7 @@
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                          <form method="POST">
+                          <form method="POST" action="{{ route('orders.destroy', $each) }}">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Xóa</button>
@@ -69,6 +72,13 @@
             </tbody>
           </table>
         </div>
+        @if ($data->lastPage() > 1)
+        <div class="card-footer">
+          <div class="paginate">
+            {{ $data->links('pagination::bootstrap-5')}}
+          </div>
+        </div>
+        @endif
       </div>
     </div>
   </div>
@@ -77,7 +87,7 @@
 <div class="toast-container rounded position-fixed bottom-0 end-0 p-3">
   <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-body bg-{{ session('type') }} d-flex align-items-center justify-content-between">
-      <div class=" d-flex justify-content-center align-items-center gap-2">
+      <div class="d-flex justify-content-center align-items-center gap-2">
         @if(session('type') == 'success')
         <i class="fas fa-check-circle text-light fs-5"></i>
         @elseif(session('type') == 'danger' || session('type') == 'warning')

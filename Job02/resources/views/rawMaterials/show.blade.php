@@ -13,7 +13,7 @@
               <h4 class="h4 card-title border-bottom mb-3">Thông tin nguyên liệu thô</h4>
               <div class="col-md-6 mb-4">
                 <h5 class="h5 fw-medium mb-1">Tên nguyên liệu</h5>
-                <h6 class="h6 text-muted fw-normal m-0">{{ $material->name }}</h6>
+                <h6 class="h6 text-muted fw-normal m-0">{{ $material->Name_RawMaterial }}</h6>
               </div>
               <div class="col-md-6 mb-4">
                 <h5 class="h5 fw-medium mb-1">Đơn vị</h5>
@@ -25,7 +25,7 @@
               </div>
               <div class="col-md-6 mb-4">
                 <h5 class="h5 fw-medium mb-1">Số lượng</h5>
-                <h6 class="h6 text-muted fw-normal m-0">{{ $material->count }}</h6>
+                <h6 class="h6 text-muted fw-normal m-0">{{ $material->Count }}</h6>
               </div>
             </div>
             <div class="row">

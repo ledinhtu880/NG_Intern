@@ -7,7 +7,7 @@
   <div class="row pb-5">
     <div class="col-md-12 d-flex justify-content-center">
       <div class="w-75">
-        <div class="card">
+        <div class="card mb-2">
           <div class="card-header p-0 overflow-hidden">
             <h4 class="card-title m-0 bg-primary-color p-3">Thông tin chung</h4>
           </div>
@@ -31,14 +31,8 @@
                     </div>
                     <div class="col-md-12">
                       <div class="input-group">
-                        <label class="input-group-text bg-secondary-subtle" for="FK_Id_OrderType" style="width: 130px;">
-                          Loại đơn hàng
-                        </label>
-                        <select class="form-select selectValidate" name="FK_Id_OrderType" id="FK_Id_OrderType">
-                          @foreach($types as $each)
-                          <option value="{{ $each->Id_OrderType }}">{{ $each->Name_OrderType }}</option>
-                          @endforeach
-                        </select>
+                        <label class="input-group-text bg-secondary-subtle" style="width: 130px;">Ngày đặt hàng</label>
+                        <input type="date" class="form-control" id="Date_Order" name="Date_Order">
                       </div>
                       <span class="form-message text-danger"></span>
                     </div>
@@ -48,17 +42,10 @@
                   <div class="row">
                     <div class="col-md-12 mb-3">
                       <div class="input-group">
-                        <label class="input-group-text bg-secondary-subtle" style="width: 135px;">Ngày đặt hàng</label>
-                        <input type="date" class="form-control" id="Date_Order" name="Date_Order">
-                      </div>
-                      <span class="form-message text-danger"></span>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                      <div class="input-group">
                         <label class="input-group-text bg-secondary-subtle" style="width: 135px;">
                           Ngày giao hàng
                         </label>
-                        <input type="date" class="form-control" id="Date_Delivery" name="Date_Delivery">
+                        <input type="date" class="form-control" id="Date_Dilivery" name="Date_Dilivery">
                       </div>
                       <span class="form-message text-danger"></span>
                     </div>
@@ -76,7 +63,7 @@
                 <div class="col-md-4">
                   <div class="input-group">
                     <span class="input-group-text bg-secondary-subtle">Ghi chú</span>
-                    <textarea class="form-control" style="height: 146px;" aria-label="Notes" name="Note"
+                    <textarea class="form-control" style="height: 91px;" aria-label="Notes" name="Note"
                       rows="5"></textarea>
                   </div>
                 </div>
@@ -107,11 +94,12 @@
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <div class="input-group mb-3">
-                    <label class="input-group-text bg-secondary-subtle" for="Count_RawMaterial" style="width: 200px;">
+                  <div class="input-group mb-3 align-items-center ">
+                    <label class="input-group-text bg-secondary-subtle" for="Count_RawMaterial">
                       Số lượng nguyên vật liệu
                     </label>
                     <input type="number" name="Count_RawMaterial" id="Count_RawMaterial" class="form-control" min="0">
+                    <p data-name="unit" class="m-0 ps-3"></p>
                   </div>
                 </div>
                 <div class="col-md-4">
@@ -139,51 +127,13 @@
                 <div class="col-md-4">
                   <div class="input-group mb-3">
                     <label class="input-group-text bg-secondary-subtle" for="Price_Container">
-                      Giá
+                      Đơn giá
                     </label>
                     <input type="number" name="Price_Container" id="Price_Container" class="form-control" min="0">
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-md-3">
-                    <div class="form-check">
-                      <input class="form-check-input border-secondary" type="checkbox" name="ContainerProvided"
-                        id="ContainerProvided">
-                      <label class="form-check-label" for="ContainerProvided">
-                        Đã cấp thùng chứa?
-                      </label>
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <div class="form-check">
-                      <input class="form-check-input border-secondary" type="checkbox" name="PedestalProvided"
-                        id="PedestalProvided">
-                      <label class="form-check-label" for="PedestalProvided">
-                        Đã cấp đế?
-                      </label>
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <div class="form-check">
-                      <input class="form-check-input border-secondary" type="checkbox" name="RFIDProvided"
-                        id="RFIDProvided">
-                      <label class="form-check-label" for="RFIDProvided">
-                        Đã cấp mã RFID?
-                      </label>
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <div class="form-check">
-                      <input class="form-check-input border-secondary" type="checkbox" name="RawMaterialProvided"
-                        id="RawMaterialProvided">
-                      <label class="form-check-label" for="RawMaterialProvided">
-                        Đã cấp nguyên liệu?
-                      </label>
-                    </div>
-                  </div>
-                </div>
               </div>
-              <button type="submit" class="btn btn-secondary mt-3 px-5">
+              <button type="submit" class="btn btn-primary-color mt-3 px-5">
                 <i class="fa-solid fa-plus text-white"></i>
                 Thêm sản phẩm
               </button>
@@ -195,9 +145,10 @@
                 <tr>
                   <th style="width: 150px;" scope="col">Nguyên liệu</th>
                   <th class="text-center" scope="col">Số lượng nguyên liệu</th>
+                  <th class="text-center" scope="col">Đơn vị</th>
                   <th class="text-center" scope="col">Thùng chứa</th>
                   <th class="text-center" scope="col">Số lượng thùng chứa</th>
-                  <th class="text-center" scope="col">Giá thùng chứa</th>
+                  <th class="text-center" scope="col">Đơn giá</th>
                   <th></th>
                 </tr>
               </thead>
@@ -214,7 +165,6 @@
   </div>
 </div>
 @endsection
-
 @push('javascript')
-<script src="{{ asset('js/createOrder.js') }}"></script>
+<script src="{{ asset('js/orders/createOrder.js') }}"></script>
 @endpush

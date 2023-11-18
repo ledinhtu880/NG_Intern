@@ -39,9 +39,23 @@ class RawMaterialController extends Controller
      */
     public function store(MaterialStoreRequest $request)
     {
-        $material = new RawMaterial();
-        $material->fill($request->validated());
-        $material->save();
+        $validator = $request->validated();
+
+        $lastID = DB::table('RawMaterial')->max('Id_RawMaterial');
+
+        if ($lastID === null) {
+            $id = 0; // Gán giá trị mặc định cho biến $id nếu kết quả là NULL
+        } else {
+            $id = $lastID + 1;
+        }
+
+        DB::table('RawMaterial')->insert([
+            'Id_RawMaterial' => $id,
+            'Name_RawMaterial' => $validator['Name_RawMaterial'],
+            'Unit' => $validator['Unit'],
+            'Count' => $validator['Count'],
+            'FK_Id_RawMaterialType' => $validator['FK_Id_RawMaterialType'],
+        ]);
         return redirect()->route('rawMaterials.index')->with([
             'type' => 'success',
             'message' => 'Nguyên liệu thô được tạo thành công'
@@ -112,6 +126,19 @@ class RawMaterialController extends Controller
             return response()->json([
                 'status'     => 'success',
                 'data' => $data,
+            ]);
+        }
+    }
+
+    public function showUnit(Request $request)
+    {
+        if ($request->ajax()) {
+            $unit = DB::table('RawMaterial')
+                ->where('Id_RawMaterial', $request->input('id'))
+                ->value('RawMaterial.Unit');
+            return response()->json([
+                'status' => 'success',
+                'unit' => $unit,
             ]);
         }
     }

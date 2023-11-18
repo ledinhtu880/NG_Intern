@@ -9,7 +9,7 @@
       <div class="w-50 mt-3">
         <div class="card">
           <div class="card-header p-0 overflow-hidden">
-            <h3 class="card-title m-0 bg-secondary-subtle p-3 text-primary-color">Tạo nguyên liệu thô</h3>
+            <h4 class="card-title m-0 bg-primary-color p-3">Thêm nguyên liệu thô</h4>
           </div>
           <div class="card-body">
             <form method="POST" action="{{ route('rawMaterials.store') }}">
@@ -35,12 +35,12 @@
                 @endif
               </div>
               <div class="form-group">
-                <label for="count" class="form-label">Số lượng</label>
-                <input type="number" name="count" id="count" placeholder="Nhập số lượng"
-                  class="form-control{{ $errors->has('count') ? ' is-invalid' : '' }}">
-                @if ($errors->has('count'))
+                <label for="Count" class="form-label">Số lượng</label>
+                <input type="number" name="Count" id="Count" placeholder="Nhập số lượng"
+                  class="form-control{{ $errors->has('Count') ? ' is-invalid' : '' }}">
+                @if ($errors->has('Count'))
                 <span class="text-danger">
-                  {{ $errors->first('count') }}
+                  {{ $errors->first('Count') }}
                 </span>
                 @endif
               </div>
@@ -61,7 +61,7 @@
               </div>
               <div class="d-flex justify-content-end my-4 gap-3">
                 <a href="{{ route('rawMaterials.index') }}" class="btn btn-warning">Quay lại</a>
-                <button type="submit" class="btn btn-success">Tạo</button>
+                <button type="submit" class="btn btn-primary-color">Lưu</button>
               </div>
             </form>
           </div>

@@ -12,8 +12,4 @@ class OrderType extends Model
     protected $table = 'OrderType';
     protected $primaryKey = "Id_OrderType";
     public $timestamps = false;
-    public function orders()
-    {
-        return $this->hasMany(Order::class, 'Id_Order', 'FK_Id_Order');
-    }
 }

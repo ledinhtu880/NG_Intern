@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Order extends Model
 {
@@ -15,10 +16,6 @@ class Order extends Model
     {
         return $this->belongsTo(Customer::class, 'FK_Id_Customer', 'Id_Customer');
     }
-    public function type()
-    {
-        return $this->belongsTo(OrderType::class, 'FK_Id_OrderType', 'Id_OrderType');
-    }
     public function contentPacks()
     {
         return $this->hasMany(ContentPack::class, 'Id_Order', 'FK_Id_Order');
@@ -29,6 +26,21 @@ class Order extends Model
     }
     public function getOrderDateAttribute()
     {
-        return date('d/m/Y', strtotime($this->Date_Order));
+        $dateOrder = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Date_Order);
+
+        return $dateOrder->format('Y-m-d');
+    }
+
+    public function getDeliveryDateAttribute()
+    {
+        $dateOrder = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Date_Dilivery);
+
+        return $dateOrder->format('Y-m-d');
+    }
+    public function getReceptionDateAttribute()
+    {
+        $dateOrder = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Date_Reception);
+
+        return $dateOrder->format('Y-m-d');
     }
 }
