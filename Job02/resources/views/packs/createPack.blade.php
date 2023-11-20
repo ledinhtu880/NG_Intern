@@ -1,81 +1,19 @@
 @extends('layouts.master')
 
-@section('title', 'Tạo đơn hàng')
+@section('title', 'Thêm thùng hàng vào gói hàng')
 
 @section('content')
 <div class="container">
   <div class="row pb-5">
     <div class="col-md-12 d-flex justify-content-center">
       <div class="w-75">
-        <div class="card mb-2">
-          <div class="card-header p-0 overflow-hidden">
-            <h4 class="card-title m-0 bg-primary-color p-3">Thông tin chung</h4>
-          </div>
-          <div class="card-body">
-            <form method="POST" id="formInformation">
-              @csrf
-              <div class="row">
-                <div class="col-md-4">
-                  <div class="row">
-                    <div class="col-md-12 mb-3">
-                      <div class="input-group">
-                        <label class="input-group-text bg-secondary-subtle" for="FK_Id_Customer"
-                          style="width: 130px;">Khách hàng</label>
-                        <select class="form-select selectValidate" id="FK_Id_Customer" name="FK_Id_Customer">
-                          @foreach($customers as $each)
-                          <option value="{{ $each->Id_Customer }}">{{ $each->Name_Customer }}</option>
-                          @endforeach
-                        </select>
-                      </div>
-                      <span class="form-message text-danger"></span>
-                    </div>
-                    <div class="col-md-12">
-                      <div class="input-group">
-                        <label class="input-group-text bg-secondary-subtle" style="width: 130px;">Ngày đặt hàng</label>
-                        <input type="date" class="form-control" id="Date_Order" name="Date_Order">
-                      </div>
-                      <span class="form-message text-danger"></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="row">
-                    <div class="col-md-12 mb-3">
-                      <div class="input-group">
-                        <label class="input-group-text bg-secondary-subtle" style="width: 135px;">
-                          Ngày giao hàng
-                        </label>
-                        <input type="date" class="form-control" id="Date_Dilivery" name="Date_Dilivery">
-                      </div>
-                      <span class="form-message text-danger"></span>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                      <div class="input-group">
-                        <label class="input-group-text bg-secondary-subtle" style="width: 135px;">
-                          Ngày nhận hàng
-                        </label>
-                        <input type="date" class="form-control" id="Date_Reception" name="Date_Reception">
-                      </div>
-                      <span class="form-message text-danger"></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="input-group">
-                    <span class="input-group-text bg-secondary-subtle">Ghi chú</span>
-                    <textarea class="form-control" style="height: 91px;" aria-label="Notes" name="Note"
-                      rows="5"></textarea>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
         <div class="card">
           <div class="card-header p-0 overflow-hidden">
             <h4 class="card-title m-0 bg-primary-color p-3">Thông tin thùng hàng</h4>
           </div>
+          <h1>{{ session('count') }}</h1>
           <div class="card-body">
+            <input type="hidden" name="FK_Id_Order" value="{{ $_GET['id'] }}">
             <form method="POST" id="formProduct">
               @csrf
               <div class="row">
@@ -132,14 +70,23 @@
                     <input type="number" name="Price_Container" id="Price_Container" class="form-control" min="0">
                   </div>
                 </div>
-              </div>
-              <button type="submit" class="btn btn-primary-color mt-3 px-5">
-                <i class="fa-solid fa-plus text-white"></i>
-                Thêm sản phẩm
-              </button>
+                <div class="col-md-6">
+                  <button type="submit" class="btn btn-primary-color mb-3 px-5">
+                    <i class="fa-solid fa-plus text-white"></i>
+                    Thêm sản phẩm
+                  </button>
+                </div>
+                <div class="col-md-6">
+                  <div class="input-group mb-3">
+                    <label class="input-group-text bg-secondary-subtle" for="Count_Pack">
+                      Số lượng gói hàng
+                    </label>
+                    <input type="number" name="Count_Pack" id="Count_Pack" class="form-control" min="0">
+                  </div>
+                </div>
             </form>
           </div>
-          <div class="card-footer mt-3 p-0">
+          <div class="card-footer p-0">
             <table class="table table-striped m-0">
               <thead>
                 <tr>
@@ -157,14 +104,16 @@
             </table>
           </div>
         </div>
-        <div class="d-flex align-items-center justify-content-end mt-3">
-          <button type="submit" class="btn btn-lg btn-primary-color px-4" id="saveBtn">Lưu</button>
+        <div class="d-flex align-items-center justify-content-end my-3 me-3">
+          <button type="submit" class="btn btn-primary-color px-4" id="saveBtn">Lưu gói hàng</button>
         </div>
       </div>
     </div>
   </div>
 </div>
 @endsection
+
 @push('javascript')
-<script src="{{ asset('js/orders/createOrder.js') }}"></script>
+<script src="{{ asset('js/packs/createPack.js') }}"></script>
+<script src="{{ asset('js/eventHandler.js') }}"></script>
 @endpush

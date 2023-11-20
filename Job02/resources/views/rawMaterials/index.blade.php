@@ -74,7 +74,7 @@
     let token = $('meta[name="csrf-token"]').attr('content');
 
     $.ajax({
-      url: "{{ route('rawMaterial.showMaterials') }}",
+      url: "{{ route('rawMaterials.showMaterials') }}",
       method: 'POST',
       dataType: 'json',
       data: {

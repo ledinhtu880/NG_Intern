@@ -12,35 +12,39 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   */
   public function index()
   {
     if (!Session::has("type") && !Session::has("message")) {
       Session::flash('type', 'info');
-      Session::flash('message', 'Quản lý đơn hàng');
+      Session::flash('message', 'Quản lý đơn thùng hàng');
     }
-    $data = Order::paginate(5);
-    return view('orders.index', compact('data'));
+    $data = Order::where('isSimple', 1)->paginate(5);
+    return view('simples.index', compact('data'));
   }
   public function show(Order $order)
   {
     $data = DB::table('ContentSimple')
-      ->select('RawMaterial.Name_RawMaterial', 'ContentSimple.Count_RawMaterial', 'RawMaterial.unit', 'ContainerType.Name_ContainerType', 'ContentSimple.Count_Container', 'ContentSimple.Price_Container')
+      ->select(
+        'RawMaterial.Name_RawMaterial',
+        'ContentSimple.Count_RawMaterial',
+        'RawMaterial.unit',
+        'ContainerType.Name_ContainerType',
+        'ContentSimple.Count_Container',
+        'ContentSimple.Price_Container'
+      )
       ->join('RawMaterial', 'ContentSimple.FK_Id_RawMaterial', '=', 'RawMaterial.Id_RawMaterial')
       ->join('ContainerType', 'ContentSimple.FK_Id_ContainerType', '=', 'ContainerType.Id_ContainerType')
       ->join('Order', 'ContentSimple.FK_Id_Order', '=', 'Order.Id_Order')
       ->where('FK_Id_Order', $order->Id_Order)
       ->get();
-    return view('orders.show', compact('order', 'data'));
+    return view('simples.show', compact('order', 'data'));
   }
   public function create()
   {
     $customers = Customer::get();
     $containers = ContainerType::get();
     $materials = RawMaterial::get();
-    return view('orders.create', [
+    return view('simples.create', [
       'customers' => $customers,
       'containers' => $containers,
       'materials' => $materials,
@@ -62,13 +66,12 @@ class OrderController extends Controller
         'ContainerType.Name_ContainerType',
         'ContentSimple.Count_Container',
         'ContentSimple.Price_Container'
-      )
-      ->join('RawMaterial', 'ContentSimple.FK_Id_RawMaterial', '=', 'RawMaterial.Id_RawMaterial')
+      )->join('RawMaterial', 'ContentSimple.FK_Id_RawMaterial', '=', 'RawMaterial.Id_RawMaterial')
       ->join('ContainerType', 'ContentSimple.FK_Id_ContainerType', '=', 'ContainerType.Id_ContainerType')
       ->join('Order', 'ContentSimple.FK_Id_Order', '=', 'Order.Id_Order')
       ->where('FK_Id_Order', $order->Id_Order)
       ->get();
-    return view('orders.edit', [
+    return view('simples.edit', [
       'order' => $order,
       'customers' => $customers,
       'containers' => $containers,
@@ -80,7 +83,7 @@ class OrderController extends Controller
   {
     DB::table('ContentSimple')->where('FK_Id_Order', $order->Id_Order)->delete();
     $order->delete();
-    return redirect()->back()->with([
+    return redirect()->route('orders.index')->with([
       'message' => 'Xóa đơn hàng thành công',
       'type' => 'danger',
     ]);
@@ -96,7 +99,7 @@ class OrderController extends Controller
       $lastOrderId = DB::table('Order')->max('Id_Order');
 
       if ($lastOrderId === null) {
-        $id = 1; // Gán giá trị mặc định cho biến $id nếu kết quả là NULL
+        $id = 1; // Gán giá trị mặc định cho biến $id nếu kết quả là NULL 
       } else {
         $id = $lastOrderId + 1;
       }
@@ -104,6 +107,11 @@ class OrderController extends Controller
       $formDataArray['Id_Order'] = $id;
 
       $data[] = $formDataArray;
+      if ($formDataArray['isSimple']) {
+        $isSimple = 0;
+      } else {
+        $isSimple = 1;
+      }
       DB::table('order')->insert([
         'Id_Order' => $id,
         'FK_Id_Customer' => $formDataArray['FK_Id_Customer'],
@@ -111,7 +119,7 @@ class OrderController extends Controller
         'Date_Dilivery' => $formDataArray['Date_Dilivery'],
         'Date_Reception' => $formDataArray['Date_Reception'],
         'Note' => $formDataArray['Note'],
-        'IsSimple' => 1,
+        'IsSimple' => $isSimple,
       ]);
 
       return response()->json([

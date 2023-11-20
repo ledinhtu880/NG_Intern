@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Sửa đơn hàng')
+@section('title', 'Sửa đơn thùng hàng')
 
 @section('content')
 <div class="container">
@@ -92,7 +92,7 @@
                   <th class="text-center" scope="col" width="100">Đơn vị</th>
                   <th class="text-center" scope="col" width="200">Thùng chứa</th>
                   <th class="text-center" scope="col" width="200">Số lượng thùng chứa</th>
-                  <th class="text-center" scope="col" width="100">Đơn giá</th>
+                  <th class="text-center" scope="col" width="200">Đơn giá thùng chứa</th>
                   <th class="text-center" scope="col" width="200">Thành tiền</th>
                   <th scope="col"></th>
                 </tr>
@@ -116,7 +116,7 @@
                     <input class="form-control" type="number" name="Count_RawMaterial" id="Count_RawMaterial"
                       value="{{ $each->Count_RawMaterial}}" min="0">
                   </td>
-                  <td class="text-center" data-id="unit">{{ $each->unit}}</td>
+                  <td class="text-center" data-name="unit">{{ $each->unit}}</td>
                   <td class="text-center">
                     <select class="form-select selectValidate" id="FK_Id_ContainerType" name="FK_Id_ContainerType">
                       @foreach($containers as $container)
@@ -182,5 +182,6 @@
 @endsection
 
 @push('javascript')
-<script src="{{ asset('js/orders/editOrder.js') }}"></script>
+<script src="{{ asset('js/simples/editSimple.js') }}"></script>
+<script src="{{ asset('js/eventHandler.js') }}"></script>
 @endpush

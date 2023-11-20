@@ -1,21 +1,4 @@
 $(document).ready(function () {
-    $("select[name='FK_Id_RawMaterial']").on("change", function () {
-        let token = $('meta[name="csrf-token"]').attr("content");
-        let id = $(this).val();
-        let rowElement = $(this).closest(".js-row");
-        $.ajax({
-            url: "/rawMaterials/showUnit",
-            method: "POST",
-            dataType: "json",
-            data: {
-                id: id,
-                _token: token,
-            },
-            success: function (data) {
-                rowElement.find("[data-id='unit']").html(data.unit);
-            },
-        });
-    });
     $("input[name='Count_Container']").on("change", function () {
         let rowElement = $(this).closest(".js-row");
         let price = rowElement.find("#Price_Container").val();
@@ -49,7 +32,7 @@ $(document).ready(function () {
                 id: id,
             },
             success: function (response) {
-                let secondUrl = "/contentSimples/updateProduct";
+                let secondUrl = "/simples/updateSimple";
                 let rowDataArray = [];
                 $(".js-row").each(function () {
                     let row = $(this);
@@ -106,7 +89,7 @@ $(document).ready(function () {
 
         // Xóa hàng khi modal được ẩn
         $.ajax({
-            url: "/contentSimples/deleteProduct",
+            url: "/simples/deleteSimple",
             method: "POST",
             dataType: "json",
             data: {

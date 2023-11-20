@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class ContentSimpleController extends Controller
 {
-    public function addProduct(Request $request)
+    public function addSimple(Request $request)
     {
         if ($request->ajax()) {
             $formData = $request->input('formData');
@@ -28,7 +28,7 @@ class ContentSimpleController extends Controller
             ]);
         }
     }
-    public function storeProduct(Request $request)
+    public function storeSimple(Request $request)
     {
         if ($request->ajax()) {
             $rowData = $request->input('rowData');
@@ -61,7 +61,7 @@ class ContentSimpleController extends Controller
             ]);
         }
     }
-    public function updateProduct(Request $request)
+    public function updateSimple(Request $request)
     {
         if ($request->ajax()) {
             $rowData = $request->input('rowData');
@@ -81,7 +81,7 @@ class ContentSimpleController extends Controller
             ]);
         }
     }
-    public function deleteProduct(Request $request)
+    public function deleteSimple(Request $request)
     {
         if ($request->ajax()) {
             $id = $request->input('id');

@@ -29,10 +29,13 @@
           <div class="row">
             <div class="col-md-6">
               <div class="d-flex flex-column">
-                <a href="{{ route('orders.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý đơn hàng</a>
+                <a href="{{ route('orders.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý thùng
+                  hàng</a>
+                <a href="{{ route('packs.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý gói hàng</a>
                 <a href="{{ route('customers.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý khách hàng</a>
                 <a href="{{ route('rawMaterials.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý nguyên
                   liệu</a>
+                <a href="{{ route('stations.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý trạm</a>
               </div>
             </div>
             <div class="col-md-6 text-center">
@@ -68,7 +71,3 @@
 </div>
 @endif
 @endsection
-
-@push('javascript')
-<script src="{{ asset('js/app.js') }}"></script>
-@endpush

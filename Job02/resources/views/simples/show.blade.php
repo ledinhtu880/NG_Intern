@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Chi tiết đơn hàng')
+@section('title', 'Chi tiết đơn thùng hàng')
 
 @section('content')
 <div class="container">
@@ -72,12 +72,12 @@
             <table class="table table-striped table-bordered m-0">
               <thead>
                 <tr>
-                  <th style="width: 150px;" scope="col">Nguyên liệu</th>
+                  <th scope="col">Nguyên liệu</th>
                   <th class="text-center" scope="col">Số lượng nguyên liệu</th>
                   <th class="text-center" scope="col">Đơn vị</th>
                   <th class="text-center" scope="col">Thùng chứa</th>
                   <th class="text-center" scope="col">Số lượng thùng chứa</th>
-                  <th class="text-center" scope="col">Đơn giá</th>
+                  <th class="text-center" scope="col">Đơn giá thùng chứa</th>
                   <th class="text-center" scope="col">Thành tiền</th>
                 </tr>
               </thead>

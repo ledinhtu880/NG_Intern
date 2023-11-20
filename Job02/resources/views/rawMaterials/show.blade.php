@@ -7,10 +7,12 @@
   <div class="row">
     <div class="col-md-12 d-flex align-items-center justify-content-center">
       <div class="card border-0 shadow overflow-hidden" style="width: 650px">
+        <div class="card-header p-0 overflow-hidden">
+          <h4 class="card-title m-0 bg-primary-color p-3">Thông tin nguyên liệu thô</h4>
+        </div>
         <div class="row g-0">
           <div class="card-body d-flex flex-column justify-content-between h-100">
             <div class="row">
-              <h4 class="h4 card-title border-bottom mb-3">Thông tin nguyên liệu thô</h4>
               <div class="col-md-6 mb-4">
                 <h5 class="h5 fw-medium mb-1">Tên nguyên liệu</h5>
                 <h6 class="h6 text-muted fw-normal m-0">{{ $material->Name_RawMaterial }}</h6>

@@ -11,12 +11,18 @@ class Station extends Model
 
     protected $table = 'Station';
     public $timestamps = false;
-    public function types()
+    protected $primaryKey = 'Id_Station';
+    protected $fillable = [
+        'Name_Station',
+        'Ip_Address',
+        'FK_Id_StationType'
+    ];
+    public function stationType()
     {
         return $this->belongsTo(StationType::class, 'FK_Id_StationType', 'Id_StationType');
     }
-    public function stationLines()
+    public function detailProductionStationLines()
     {
-        return $this->hasMany(DetailProductionStationLine::class, 'FK_Id_ProdStationLine', 'Id_ProdStationLine');
+        return $this->hasMany(DetailProductionStationLine::class, 'FK_Id_Station', 'Id_Station');
     }
 }

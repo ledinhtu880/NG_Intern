@@ -1,7 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Quản lý đơn hàng')
-
+@section('title', 'Quản lý đơn gói hàng')
 
 @section('content')
 <div class="container">
@@ -9,9 +8,9 @@
     <div class="col-md-12">
       <div class="card mt-3">
         <div class="card-header p-0 overflow-hidden">
-          <h4 class="card-title m-0 bg-primary-color p-3">Quản lý đơn hàng</h4>
-          <a href="{{ route('orders.create')}}" class="btn btn-primary-color text-white p-2 my-3 ms-3">
-            Thêm đơn hàng
+          <h4 class="card-title m-0 bg-primary-color p-3">Quản lý đơn gói hàng</h4>
+          <a href="{{ route('packs.create')}}" class="btn btn-primary-color text-white p-2 my-3 ms-3">
+            Thêm đơn gói hàng
           </a>
         </div>
         <div class="card-body px-0">
@@ -19,7 +18,7 @@
             <thead>
               <tr>
                 <th class="text-center" scope="col">Mã đơn hàng</th>
-                <th scope="col">Tên khách hàng</th>
+                <th class="text-center" scope="col">Tên khách hàng</th>
                 <th class="text-center" scope="col">Ngày đặt hàng</th>
                 <th class="text-center" scope="col">Ngày giao hàng</th>
               </tr>
@@ -32,12 +31,10 @@
                 <td class="text-center">{{ $each->order_date}}</td>
                 <td class="text-center">{{ $each->delivery_date}}</td>
                 <td>
-                  <a href="{{ route('orders.show', $each) }}"
-                    class="btn btn-sm btn-outline-light text-primary-color border-secondary">
+                  <a href="" class="btn btn-sm btn-outline-light text-primary-color border-secondary">
                     <i class="fa-solid fa-eye"></i>
                   </a>
-                  <a href="{{ route('orders.edit', $each) }}"
-                    class="btn btn-sm btn-outline-light text-primary-color border-secondary">
+                  <a href="" class="btn btn-sm btn-outline-light text-primary-color border-secondary">
                     <i class="fa-solid fa-pen-to-square"></i>
                   </a>
                   <button type="button" class="btn btn-sm btn-outline-light text-primary-color border-secondary"
@@ -57,7 +54,7 @@
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                          <form method="POST" action="{{ route('orders.destroy', $each) }}">
+                          <form method="POST" action="">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Xóa</button>

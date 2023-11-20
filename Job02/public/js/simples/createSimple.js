@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let count = 0;
     function validateDate(firstControl, secondControl) {
         $(firstControl).on("change", function () {
             let firstControlValue = new Date($(this).val());
@@ -14,30 +15,11 @@ $(document).ready(function () {
             }
         });
     }
-    let count = 0;
-    let selectElement = $('select[name="FK_Id_RawMaterial"]');
-    selectElement.on("change", function () {
-        let token = $('meta[name="csrf-token"]').attr("content");
-        let id = $(this).val();
-        $.ajax({
-            url: "/rawMaterials/showUnit",
-            method: "POST",
-            dataType: "json",
-            data: {
-                id: id,
-                _token: token,
-            },
-            success: function (data) {
-                let unitElement = $("p[data-name='unit']");
-                unitElement.html(data.unit);
-            },
-        });
-    });
     $("#formProduct").on("submit", function (event) {
         event.preventDefault();
         let token = $('meta[name="csrf-token"]').attr("content");
         let form = $(this);
-        let url = "/contentSimples/addProduct";
+        let url = "/simples/addSimple";
         let unit = $("p[data-name='unit']").html();
         $.ajax({
             url: url,
@@ -119,7 +101,7 @@ $(document).ready(function () {
                 _token: token,
             },
             success: function (response) {
-                let secondUrl = "/contentSimples/storeProduct";
+                let secondUrl = "/simples/storeSimple";
                 let rowDataArray = [];
                 $("#table-data tr").each(function () {
                     let row = $(this);
@@ -180,7 +162,8 @@ $(document).ready(function () {
         modalElement.modal("hide");
     });
     let dateOrderControl = $("input[name='Date_Order']");
-    let deliveryDateControl = $("input[name='Date_Delivery']");
+    let deliveryDateControl = $("input[name='Date_Dilivery']");
+    console.log(deliveryDateControl);
     let receptionDateControl = $("input[name='Date_Reception']");
     dateOrderControl.on("change", function () {
         let selectedDate = new Date($(this).val());
