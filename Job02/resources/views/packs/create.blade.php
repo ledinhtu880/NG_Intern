@@ -14,8 +14,8 @@
           <div class="card-body">
             <form method="POST" id="formInformation">
               @csrf
-              <input type="hidden" name="count" value="{{ isset($count) ? 1 : 0}}">
-              <input type="hidden" name="isSimple" value="1">
+              <input type="hidden" name="count" value="{{ isset($count) ? $count : 0}}">
+              <input type="hidden" name="isSimple" value="0">
               <div class="row">
                 <div class="col-md-4">
                   <div class="row">
@@ -24,9 +24,9 @@
                         <label class="input-group-text bg-secondary-subtle" for="FK_Id_Customer"
                           style="width: 130px;">Khách hàng</label>
                         <select class="form-select selectValidate" id="FK_Id_Customer" name="FK_Id_Customer">
-                          @foreach($customers as $each)
-                          @if(isset($information))
-                          @if($information->FK_Id_Customer == $each->Id_Customer)
+                          @foreach ($customers as $each)
+                          @if (isset($information))
+                          @if ($information->FK_Id_Customer == $each->Id_Customer)
                           <option value="{{ $each->Id_Customer }}" selected>{{ $each->Name_Customer }}</option>
                           @else
                           <option value="{{ $each->Id_Customer }}">{{ $each->Name_Customer }}</option>
@@ -43,7 +43,7 @@
                       <div class="input-group">
                         <label class="input-group-text bg-secondary-subtle" style="width: 130px;">Ngày đặt hàng</label>
                         <input type="date" class="form-control" id="Date_Order" name="Date_Order"
-                          value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Order)->format('Y-m-d') : '' }}">
+                          value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Order)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
                       </div>
                       <span class="form-message text-danger"></span>
                     </div>
@@ -57,7 +57,7 @@
                           Ngày giao hàng
                         </label>
                         <input type="date" class="form-control" id="Date_Dilivery" name="Date_Dilivery"
-                          value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Dilivery)->format('Y-m-d') : '' }}">
+                          value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Dilivery)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
                       </div>
                       <span class="form-message text-danger"></span>
                     </div>
@@ -67,7 +67,7 @@
                           Ngày nhận hàng
                         </label>
                         <input type="date" class="form-control" id="Date_Reception" name="Date_Reception"
-                          value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Reception)->format('Y-m-d') : '' }}">
+                          value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Reception)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
                       </div>
                       <span class="form-message text-danger"></span>
                     </div>
@@ -77,7 +77,7 @@
                   <div class="input-group">
                     <span class="input-group-text bg-secondary-subtle">Ghi chú</span>
                     <textarea class="form-control" style="height: 91px;" aria-label="Notes" name="Note"
-                      rows="5">{{ isset($information) ? $information->Note : ''}}</textarea>
+                      rows="5">{{ isset($information) ? $information->Note : '' }}</textarea>
                   </div>
                 </div>
               </div>
@@ -104,18 +104,18 @@
                 </tr>
               </thead>
               <tbody id="table-data">
-                @if(isset($data))
-                @foreach($data as $each)
-                <tr data-id="{{ $each->Id_PackContent}}">
+                @if (isset($data))
+                @foreach ($data as $each)
+                <tr data-id="{{ $each->Id_PackContent }}">
                   <td class="text-center">{{ $each->Id_PackContent }}</td>
                   <td class="text-center">{{ $each->Count_Pack }} gói hàng</td>
-                  <td class="text-center">{{ number_format($each->Price_Pack, 0, ',', '.').' VNĐ' }}</td>
+                  <td class="text-center">{{ number_format($each->Price_Pack, 0, ',', '.') . ' VNĐ' }}</td>
                   <td class="text-center">
                     <button type="button" class="btn btn-sm btn-outline-light text-primary-color border-secondary"
-                      data-bs-toggle="modal" data-bs-target="#deleteID-{{$each->Id_PackContent}}">
+                      data-bs-toggle="modal" data-bs-target="#deleteID-{{ $each->Id_PackContent }}">
                       <i class="fa-solid fa-trash"></i>
                     </button>
-                    <div class="modal fade" id="deleteID-{{$each->Id_PackContent}}" tabindex="-1"
+                    <div class="modal fade" id="deleteID-{{ $each->Id_PackContent }}" tabindex="-1"
                       aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog">
                         <div class="modal-content">
@@ -129,7 +129,7 @@
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                             <button type="button" class="btn btn-danger deletePack"
-                              data-id="{{$each->Id_PackContent}}">Xóa</button>
+                              data-id="{{ $each->Id_PackContent }}">Xóa</button>
                           </div>
                         </div>
                       </div>
@@ -143,7 +143,7 @@
           </div>
         </div>
         <div class="d-flex align-items-center justify-content-end mt-3">
-          <a href="{{ route('packs.index') }}" class="btn btn-lg btn-primary-color px-4">Lưu</a>
+          <a href="{{ route('packs.index') }}" class="btn btn-lg btn-primary-color px-4" id="btn_save">Lưu</a>
         </div>
       </div>
     </div>

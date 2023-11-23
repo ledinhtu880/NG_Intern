@@ -22,7 +22,10 @@ class StationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'Id_Station' => [
+                'required',
+                'numeric'
+            ],
             'Name_Station' => [
                 'required',
                 'unique:Station,Name_Station'
@@ -34,9 +37,11 @@ class StationRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'Id_Station.required' => 'Vui lòng nhập ID',
+            'Id_Station.numeric' => 'ID phải là số',
             'Name_Station.required' => 'Vui lòng nhập tên trạm',
             'Name_Station.unique' => 'Tên trạm đã tồn tại',
-            'Ip_Address.ip' => 'Không đúng định dạng email',
+            'Ip_Address.ip' => 'Không đúng định dạng ip',
             'FK_Id_StationType.required' => 'Vui lòng chọn loại trạm'
         ];
     }

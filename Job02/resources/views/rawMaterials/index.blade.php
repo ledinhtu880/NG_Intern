@@ -2,7 +2,6 @@
 
 @section('title', 'Quản lý nguyên liệu thô')
 
-
 @section('content')
 <div class="container">
   <div class="row">

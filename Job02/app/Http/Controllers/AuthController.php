@@ -3,39 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
-use App\Models\Customer;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
-    public function login(LoginRequest $request): RedirectResponse
+    public function login()
     {
-        $credentials = [
-            'email' => $request->email,
-            'password' => $request->password,
-        ];
+        return view('login');
+    }
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            $name = Auth::user()->name;
-
-            // Lưu tên người dùng vào session store
+    public function checklogin(LoginRequest $request)
+    {
+        $user = User::where('Username', $request->username)->first();
+        if ($user && Hash::check($request->password, $user->Password)) {
+            Auth::login($user);
+            $name = Auth::user()->Name;
             $request->session()->put('name', $name);
-
             return redirect()->intended('')->with('type', 'success')
                 ->with('message', 'Đăng nhập thành công');
+        } else {
+            return redirect()->back()->with('type', 'warning')->with('message', 'Email hoặc mật khẩu không chính xác');
         }
-
-        return redirect()->route('index')->with('type', 'warning')->with('message', 'Email hoặc mật khẩu không chính xác');
     }
     public function logout()
     {
         Auth::logout();
-
-        return redirect()->route('index')->with('type', 'info')->with('message', 'Đăng xuất thành công');
+        session()->flush();
+        return redirect()->route('login')->with('type', 'success')->with('message', 'Đăng xuất thành công');
     }
 }

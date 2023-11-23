@@ -93,25 +93,14 @@ class OrderController extends Controller
     if ($request->ajax()) {
       $formData = $request->input('formData');
       $data = [];
-
       parse_str($formData, $formDataArray);
-
       $lastOrderId = DB::table('Order')->max('Id_Order');
-
       if ($lastOrderId === null) {
         $id = 1; // Gán giá trị mặc định cho biến $id nếu kết quả là NULL 
       } else {
         $id = $lastOrderId + 1;
       }
-
       $formDataArray['Id_Order'] = $id;
-
-      $data[] = $formDataArray;
-      if ($formDataArray['isSimple']) {
-        $isSimple = 0;
-      } else {
-        $isSimple = 1;
-      }
       DB::table('order')->insert([
         'Id_Order' => $id,
         'FK_Id_Customer' => $formDataArray['FK_Id_Customer'],
@@ -119,12 +108,12 @@ class OrderController extends Controller
         'Date_Dilivery' => $formDataArray['Date_Dilivery'],
         'Date_Reception' => $formDataArray['Date_Reception'],
         'Note' => $formDataArray['Note'],
-        'IsSimple' => $isSimple,
+        'IsSimple' => $formDataArray['isSimple'],
       ]);
-
       return response()->json([
         'status' => 'success',
         'id' => $id,
+        'data' => $formDataArray
       ]);
     }
   }
@@ -134,9 +123,7 @@ class OrderController extends Controller
       $formData = $request->input('formData');
       $id = $request->input('id');
       $data = [];
-
       parse_str($formData, $formDataArray);
-
       $data[] = $formDataArray;
       DB::table('Order')->where('Id_Order', $id)->update([
         'FK_Id_Customer' => $formDataArray['FK_Id_Customer'],
@@ -145,7 +132,6 @@ class OrderController extends Controller
         'Date_Reception' => $formDataArray['Date_Reception'],
         'Note' => $formDataArray['Note'],
       ]);
-
       return response()->json([
         'status' => 'success',
         'id' => $id,

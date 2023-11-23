@@ -16,7 +16,7 @@ class ContentPackController extends Controller
     {
         if (!Session::has("type") && !Session::has("message")) {
             Session::flash('type', 'info');
-            Session::flash('message', 'Quản lý đơn lô hàng');
+            Session::flash('message', 'Quản lý đơn gói hàng');
         }
         $data = Order::where('isSimple', 0)->paginate(5);
         return view('packs.index', compact('data'));
@@ -24,8 +24,6 @@ class ContentPackController extends Controller
     public function create()
     {
         $customers = Customer::get();
-        $containers = ContainerType::get();
-        $materials = RawMaterial::get();
         if (isset($_GET['id'])) {
             $id = $_GET['id'];
             $information = DB::table('Order')
@@ -37,8 +35,6 @@ class ContentPackController extends Controller
                 ->get();
             return view('packs.create', [
                 'customers' => $customers,
-                'containers' => $containers,
-                'materials' => $materials,
                 'information' => $information,
                 'data' => $data,
                 'count' => 1,
@@ -46,19 +42,14 @@ class ContentPackController extends Controller
         } else {
             return view('packs.create', [
                 'customers' => $customers,
-                'containers' => $containers,
-                'materials' => $materials,
             ]);
         }
     }
-    public function createPack(Request $request)
+    public function createPack()
     {
-        $customers = Customer::get();
         $containers = ContainerType::get();
         $materials = RawMaterial::get();
-
         return view('packs.createPack', [
-            'customers' => $customers,
             'containers' => $containers,
             'materials' => $materials,
         ]);
@@ -67,15 +58,12 @@ class ContentPackController extends Controller
     {
         if ($request->ajax()) {
             $data = $request->input('packData');
-
             $lastOrderId = DB::table('ContentPack')->max('Id_PackContent');
-
             if ($lastOrderId === null) {
                 $id = 1; // Gán giá trị mặc định cho biến $id nếu kết quả là NULL
             } else {
                 $id = $lastOrderId + 1;
             }
-
             DB::table('ContentPack')->insert([
                 'Id_PackContent' => $id,
                 'Count_Pack' => $data['Count_Pack'],
@@ -84,7 +72,6 @@ class ContentPackController extends Controller
                 'HaveEilmPE' => 0,
                 'HaveNFC' => 0,
             ]);
-
             return response()->json([
                 'status' => 'success',
                 'id' => $id,
@@ -106,7 +93,6 @@ class ContentPackController extends Controller
                     'FK_Id_PackContent' => $packID,
                 ]);
             }
-
             return response()->json([
                 'status' => 'success',
                 'id' => $OrderID,
@@ -121,7 +107,6 @@ class ContentPackController extends Controller
             DB::table('DetailContentSimpleOfPack')->where('FK_Id_PackContent', $id)->delete();
             DB::table('ContentSimple')->where('FK_Id_Order', $Id_Order)->delete();
             DB::table('ContentPack')->where('FK_Id_Order', $Id_Order)->delete();
-
             return response()->json([
                 'status' => 'success'
             ]);

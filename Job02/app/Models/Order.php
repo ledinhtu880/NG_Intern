@@ -28,19 +28,19 @@ class Order extends Model
     {
         $dateOrder = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Date_Order);
 
-        return $dateOrder->format('Y-m-d');
+        return $dateOrder->format('d/m/Y');
     }
 
     public function getDeliveryDateAttribute()
     {
         $dateDelivery = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Date_Dilivery);
 
-        return $dateDelivery->format('Y-m-d');
+        return $dateDelivery->format('d/m/Y');
     }
     public function getReceptionDateAttribute()
     {
         $dateReception = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Date_Reception);
 
-        return $dateReception->format('Y-m-d');
+        return $dateReception->format('d/m/Y');
     }
 }

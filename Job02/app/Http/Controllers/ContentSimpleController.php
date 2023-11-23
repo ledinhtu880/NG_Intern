@@ -12,16 +12,12 @@ class ContentSimpleController extends Controller
         if ($request->ajax()) {
             $formData = $request->input('formData');
             $unit = $request->input('unit');
-
             $data = [];
-
             parse_str($formData, $formDataArray);
             $formattedPrice = number_format($formDataArray['Price_Container'], 0, ',', '.') . ' VNĐ';
             $formDataArray['unit'] = $unit;
             $formDataArray['formattedPrice'] = $formattedPrice;
-
             $data[] = $formDataArray;
-
             return response()->json([
                 'status' => 'success',
                 'data' => $data,
@@ -34,13 +30,11 @@ class ContentSimpleController extends Controller
             $rowData = $request->input('rowData');
             foreach ($rowData as $row) {
                 $lastOrderId = DB::table('ContentSimple')->max('Id_SimpleContent');
-
                 if ($lastOrderId === null) {
                     $id = 1; // Gán giá trị mặc định cho biến $id nếu kết quả là NULL
                 } else {
                     $id = $lastOrderId + 1;
                 }
-
                 DB::table('ContentSimple')->insert([
                     'Id_SimpleContent' => $id,
                     'FK_Id_RawMaterial' => $row['FK_Id_RawMaterial'],
@@ -55,7 +49,6 @@ class ContentSimpleController extends Controller
                     'RawMaterialProvided' => 0,
                 ]);
             }
-
             return response()->json([
                 'status' => 'success',
             ]);
@@ -75,7 +68,6 @@ class ContentSimpleController extends Controller
                     'Price_Container' => $row['Price_Container'],
                 ]);
             }
-
             return response()->json([
                 'status' => 'success',
             ]);
@@ -86,7 +78,6 @@ class ContentSimpleController extends Controller
         if ($request->ajax()) {
             $id = $request->input('id');
             DB::table('ContentSimple')->where('Id_SimpleContent', $id)->delete();
-
             return response()->json([
                 'status' => 'success'
             ]);

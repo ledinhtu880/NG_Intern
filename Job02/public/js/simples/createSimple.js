@@ -1,5 +1,8 @@
 $(document).ready(function () {
+    const toastLiveExample = $("#liveToast");
+    const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
     let count = 0;
+
     function validateDate(firstControl, secondControl) {
         $(firstControl).on("change", function () {
             let firstControlValue = new Date($(this).val());
@@ -85,6 +88,11 @@ $(document).ready(function () {
                 $("#table-data").append(htmls);
                 // Xóa dữ liệu đã nhập/chọn trong form
                 form[0].reset();
+
+                $(".toast-body").addClass("bg-success");
+                $("#icon").addClass("fa-check-circle");
+                $("#toast-msg").html("Thêm thùng hàng thành công");
+                toastBootstrap.show();
             },
         });
     });
@@ -158,12 +166,15 @@ $(document).ready(function () {
             // Xóa hàng khi modal được ẩn
             rowElement.remove();
         });
+        $(".toast-body").addClass("bg-success");
+        $("#icon").addClass("fa-check-circle");
+        $("#toast-msg").html("Xóa thùng hàng thành công");
+        toastBootstrap.show();
         // Đóng modal
         modalElement.modal("hide");
     });
     let dateOrderControl = $("input[name='Date_Order']");
     let deliveryDateControl = $("input[name='Date_Dilivery']");
-    console.log(deliveryDateControl);
     let receptionDateControl = $("input[name='Date_Reception']");
     dateOrderControl.on("change", function () {
         let selectedDate = new Date($(this).val());
@@ -180,9 +191,4 @@ $(document).ready(function () {
     validateDate(deliveryDateControl, dateOrderControl);
     validateDate(receptionDateControl, dateOrderControl);
     validateDate(receptionDateControl, deliveryDateControl);
-    let firstOptionValue = $(selectElement).val();
-    // Gán giá trị cho phần tử select
-    $(selectElement).val(firstOptionValue);
-    // Gọi sự kiện change để hiển thị dữ liệu
-    $(selectElement).change();
 });

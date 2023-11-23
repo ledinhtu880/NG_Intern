@@ -13,6 +13,7 @@
           </div>
           <div class="card-body">
             <form method="POST" id="formInformation">
+              <input type="hidden" name="isSimple" value="1">
               @csrf
               <div class="row">
                 <div class="col-md-4">
@@ -22,7 +23,7 @@
                         <label class="input-group-text bg-secondary-subtle" for="FK_Id_Customer"
                           style="width: 130px;">Khách hàng</label>
                         <select class="form-select selectValidate" id="FK_Id_Customer" name="FK_Id_Customer">
-                          @foreach($customers as $each)
+                          @foreach ($customers as $each)
                           <option value="{{ $each->Id_Customer }}">{{ $each->Name_Customer }}</option>
                           @endforeach
                         </select>
@@ -32,7 +33,8 @@
                     <div class="col-md-12">
                       <div class="input-group">
                         <label class="input-group-text bg-secondary-subtle" style="width: 130px;">Ngày đặt hàng</label>
-                        <input type="date" class="form-control" id="Date_Order" name="Date_Order">
+                        <input type="date" class="form-control" id="Date_Order" name="Date_Order"
+                          value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
                       </div>
                       <span class="form-message text-danger"></span>
                     </div>
@@ -45,7 +47,8 @@
                         <label class="input-group-text bg-secondary-subtle" style="width: 135px;">
                           Ngày giao hàng
                         </label>
-                        <input type="date" class="form-control" id="Date_Dilivery" name="Date_Dilivery">
+                        <input type="date" class="form-control" id="Date_Dilivery" name="Date_Dilivery"
+                          value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
                       </div>
                       <span class="form-message text-danger"></span>
                     </div>
@@ -54,7 +57,8 @@
                         <label class="input-group-text bg-secondary-subtle" style="width: 135px;">
                           Ngày nhận hàng
                         </label>
-                        <input type="date" class="form-control" id="Date_Reception" name="Date_Reception">
+                        <input type="date" class="form-control" id="Date_Reception" name="Date_Reception"
+                          value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
                       </div>
                       <span class="form-message text-danger"></span>
                     </div>
@@ -85,7 +89,7 @@
                       Nguyên vật liệu
                     </label>
                     <select name="FK_Id_RawMaterial" id="FK_Id_RawMaterial" class="form-select">
-                      @foreach($materials as $each)
+                      @foreach ($materials as $each)
                       <option value="{{ $each->Id_RawMaterial }}" data-name="{{ $each->Name_RawMaterial }}">
                         {{ $each->Name_RawMaterial }}
                       </option>
@@ -98,7 +102,8 @@
                     <label class="input-group-text bg-secondary-subtle" for="Count_RawMaterial">
                       Số lượng nguyên vật liệu
                     </label>
-                    <input type="number" name="Count_RawMaterial" id="Count_RawMaterial" class="form-control" min="0">
+                    <input type="number" name="Count_RawMaterial" id="Count_RawMaterial" class="form-control" min="1"
+                      value='1'>
                     <p data-name="unit" class="m-0 ps-3"></p>
                   </div>
                 </div>
@@ -108,7 +113,7 @@
                       Thùng chứa
                     </label>
                     <select class="form-select selectValidate" name="FK_ID_ContainerType" id="FK_ID_ContainerType">
-                      @foreach($containers as $each)
+                      @foreach ($containers as $each)
                       <option value="{{ $each->Id_ContainerType }}" data-name="{{ $each->Name_ContainerType }}">
                         {{ $each->Name_ContainerType }}
                       </option>
@@ -121,7 +126,8 @@
                     <label class="input-group-text bg-secondary-subtle" for="Count_Container">
                       Số lượng thùng chứa
                     </label>
-                    <input type="number" name="Count_Container" id="Count_Container" class="form-control" min="0">
+                    <input type="number" name="Count_Container" id="Count_Container" class="form-control" min="1"
+                      value='1'>
                   </div>
                 </div>
                 <div class="col-md-4">
@@ -129,7 +135,8 @@
                     <label class="input-group-text bg-secondary-subtle" for="Price_Container">
                       Đơn giá
                     </label>
-                    <input type="number" name="Price_Container" id="Price_Container" class="form-control" min="0">
+                    <input type="number" name="Price_Container" id="Price_Container" class="form-control" min="1"
+                      value='1'>
                   </div>
                 </div>
               </div>
@@ -165,6 +172,17 @@
   </div>
 </div>
 @endsection
+<div class="toast-container rounded position-fixed bottom-0 end-0 p-3">
+  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-body d-flex align-items-center justify-content-between">
+      <div class="d-flex justify-content-center align-items-center gap-2">
+        <i id="icon" class="fas text-light fs-5"></i>
+        <h6 id="toast-msg" class="h6 text-white m-0"></h6>
+      </div>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
 
 @push('javascript')
 <script src="{{ asset('js/simples/createSimple.js') }}"></script>

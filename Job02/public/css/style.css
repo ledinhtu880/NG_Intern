@@ -1,3 +1,12 @@
+body{
+	display: flex;
+	flex-direction: column;
+  min-height: 100vh;
+}
+body main{
+	flex: 1;
+}
+
 textarea {
   resize: none;
 }
@@ -25,7 +34,6 @@ textarea {
 	border-bottom: 2px solid rgba(43, 76, 114, 0.1);
 
 }
-
 .tabs-line {
 	position: absolute;
 	left: 0;
@@ -35,7 +43,6 @@ textarea {
 	background-color: #224874;	
 	transform: all 0.2 ease;
 }
-
 .tab-item {
 	flex: 1;
 	font-size: 20px;
@@ -49,30 +56,24 @@ textarea {
 	cursor: pointer;
 	transform: all 0.5s ease;
 }
-
 .tab-item:hover {
 	opacity: 1;
 	background-color: rgba(43, 76, 114, 0.05);
 	border-color: rgba(43, 76, 114, 0.1);
 }
-
 .tab-item.active {
 	opacity: 1;
 }
-
 .tab-icon {
 	font-size: 24px;
 	width: 32px;
 	position: relative;
 	top: 2px;
 }
-
-
 .tab-pane {
 	color: #333;
 	display: none;
 }
-
 .tab-pane.active {
 	display: block;
 }

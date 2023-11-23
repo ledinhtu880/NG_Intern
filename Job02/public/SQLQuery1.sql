@@ -10,22 +10,40 @@ insert into Customer (Id_Customer, Name_Customer, Name_Contact, Email, Phone, Ad
 select * from [NG_Job02].dbo.[DetailContentSimpleOfPack]
 select * from [NG_Job02].dbo.[ContentPack]
 select * from [NG_Job02].dbo.[ContentSimple]
+select * from [NG_Job02].dbo.[ProcessContentSimple]
 select * from [NG_Job02].dbo.[Order]
 select * from [NG_Job02].dbo.[Customer]
 select * from [NG_Job02].dbo.[RawMaterial]
-select * from [NG_Job02].dbo.ProductionStationLine
+select * from [NG_Job02].dbo.[OrderMakeOrExpedition]
+select * from [NG_Job02].dbo.[DetailContentSimpleOrderMakeOrExpedition]
+select * from [NG_Job02].dbo.[DetailContentPackOrderMakeOrExpedition]
+select * from [NG_Job02].dbo.[StationType]
+select * from [NG_Job02].dbo.[Warehouse]
+select * from [NG_Job02].dbo.[User]
+select * from [NG_Job02].dbo.[Station]
 
-delete from [NG_Job02].dbo.[DetailContentSimpleOfPack] where FK_Id_PackContent = 1
-delete from [NG_Job02].dbo.[ContentSimple] where FK_Id_Order = 9
-delete from [NG_Job02].dbo.[ContentPack] where FK_Id_Order = 9
-delete from [NG_Job02].dbo.[Order] where Id_Order = 9
+SELECT  
+ Id_Order,
+ Id_SimpleContent,
+ Name_Customer,
+ Name_RawMaterial,
+ Count_RawMaterial,
+ Name_ContainerType,
+ Count_Container,
+ Id_SimpleContent,
+ Date_Order,
+ Date_Dilivery
+FROM
+ [ORDER]
+INNER JOIN ContentSimple ON Id_Order = FK_Id_Order
+INNER JOIN Customer ON FK_Id_Customer = Id_Customer
+INNER JOIN RawMaterial ON FK_Id_RawMaterial = Id_RawMaterial
+INNER JOIN ContainerType ON FK_Id_ContainerType = Id_ContainerType
+WHERE
+ isSimple = 1 AND ContainerProvided = 0 AND PedestalProvided = 0 AND Id_SimpleContent NOT IN (
+SELECT
+ FK_Id_ContentSimple
+FROM
+ ProcessContentSimple
+)
 
-select Id_SimpleContent from ContentSimple where FK_Id_Order = 5
-
-select FK_Id_Customer,Date_Order, Date_Dilivery, Date_Reception, Note
-from [NG_Job02].dbo.[Order]
-where Id_Order = 10
-
-select Id_PackContent, Count_Pack, Price_Pack
-from [NG_Job02].dbo.[ContentPack]
-where FK_Id_Order = 10

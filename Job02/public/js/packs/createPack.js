@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    const toastLiveExample = $("#liveToast");
+    const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
     let count = $("input[name='count']").val();
     $("#addBtn").on("click", function () {
         if (count == 0) {
@@ -15,6 +17,7 @@ $(document).ready(function () {
                     _token: token,
                 },
                 success: function (response) {
+                    console.log(response);
                     window.location.href =
                         "/packs/createPack?id=" + response.id;
                 },
@@ -24,8 +27,7 @@ $(document).ready(function () {
                     alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
                 },
             });
-        }
-        if (count == 1) {
+        } else if (count == 1) {
             let urlParams = new URLSearchParams(window.location.search);
             let id = urlParams.get("id");
             window.location.href = "/packs/createPack?id=" + id;
@@ -102,10 +104,14 @@ $(document).ready(function () {
                 $("#table-data").append(htmls);
                 // Xóa dữ liệu đã nhập/chọn trong form
                 form[0].reset();
+
+                $("#icon").addClass("fa-check-circle");
+                $(".toast-body").addClass("bg-success");
+                $("#toast-msg").html("Thêm thùng hàng thành công");
+                toastBootstrap.show();
             },
         });
     });
-
     $("#saveBtn").on("click", function () {
         let token = $('meta[name="csrf-token"]').attr("content");
         let url = "/simples/storeSimple";
@@ -204,6 +210,10 @@ $(document).ready(function () {
             rowElement.remove();
         });
         // Đóng modal
+        $("#icon").addClass("fa-check-circle");
+        $(".toast-body").addClass("bg-success");
+        $("#toast-msg").html("Xóa thùng hàng thành công");
+        toastBootstrap.show();
         modalElement.modal("hide");
     });
     $(".deletePack").each(function (index, element) {

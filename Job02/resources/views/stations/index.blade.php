@@ -109,7 +109,7 @@
 @endsection
 @push('javascript')
 {{--
-<script src="{{ asset('js/app1.js') }}"></script> --}}
+<script src="{{ asset('js/app.js') }}"></script> --}}
 <script>
   $(document).ready(function () {
     let selectElement = $("#FK_Id_StationType");
