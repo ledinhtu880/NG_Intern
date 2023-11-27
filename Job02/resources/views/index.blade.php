@@ -32,8 +32,8 @@
           <div class="row">
             <div class="col-md-6">
               <div class="d-flex flex-column">
-                <a href="{{ route('makesOrExpeditions.index') }}" class="btn btn-primary-color my-1 w-50">
-                  Quản lý đơn sản xuất và giao hàng
+                <a href="{{ route('orderLocals.index') }}" class="btn btn-primary-color my-1 w-50">
+                  Quản lý đơn sản xuất
                 </a>
                 <a href="{{ route('orders.index') }}" class="btn btn-primary-color my-1 w-50">
                   Quản lý thùng hàng
@@ -45,8 +45,9 @@
                 <a href="{{ route('rawMaterials.index') }}" class="btn btn-primary-color my-1 w-50">
                   Quản lý nguyên liệu
                 </a>
-                <a href="{{ route('stations.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý trạm</a>
                 <a href="{{ route('wares.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý kho hàng</a>
+                <a href="{{ route('stations.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý trạm</a>
+                <a href="{{ route('dispatch.index') }}" class="btn btn-primary-color my-1 w-50">Xử lý đơn hàng</a>
               </div>
             </div>
             <div class="col-md-6 text-center">
@@ -56,10 +57,11 @@
         </div>
         <div class="tab-pane">
           <div class="row">
-            <div class="d-flex flex-column">
-              <a href="{{ route('productionStationLines.create') }}" class="btn btn-primary-color w-25">
-                Thêm dây chuyền xử lý sản xuất mới
-              </a>
+            <div class="col-md-6">
+              <div class="d-flex flex-column">
+                <a href="{{ route('productStationLines.create') }}" class="btn btn-primary-color">Thêm dây chuyền xử lý
+                  sản xuất mới</a>
+              </div>
             </div>
             <div class="mt-2">
               <table class="table table-striped w-100">
@@ -68,31 +70,28 @@
                     <th class="text-center" scope="col">#</th>
                     <th scope="col">Tên dây chuyền</th>
                     <th scope="col">Mô tả</th>
-                    <th scope="col" class="text-center">Loại</th>
+                    <th scope="col">Loại</th>
                     <th scope="col" class="text-center">Hoạt động</th>
                   </tr>
                 </thead>
                 <tbody id="table-data" class="table-group-divider ">
-                  @foreach ($productionStationLines as $each)
+                  @foreach ($productStationLines as $productStationLine)
                   <tr>
-                    <th class="text-center" scope="col">{{ $each->Id_ProdStationLine }}</th>
-                    <td>{{ $each->Name_ProdStationLine }}</td>
-                    <td>{{ $each->Description }}</td>
-                    <td class="text-center" scope="col">{{ $each->orderType->Name_OrderType }}</td>
+                    <th class="text-center" scope="col">{{ $productStationLine->Id_ProdStationLine }}</th>
+                    <td>{{ $productStationLine->Name_ProdStationLine }}</td>
+                    <td>{{ $productStationLine->Description }}</td>
+                    <td scope="col">{{ $productStationLine->orderType->Name_OrderType }}</td>
                     <td class="text-center">
-                      <a href="{{ route('productionStationLines.show', $each) }}"
-                        class="btn btn-sm btn-outline-light text-primary-color border-secondary">
-                        <i class="fa-solid fa-eye"></i>
-                      </a>
-                      <a href="{{ route('productionStationLines.edit', $each) }}"
-                        class="btn btn-sm btn-outline-light text-primary-color border-secondary">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                      </a>
+                      <a href="{{ route('productStationLines.show', compact('productStationLine')) }}"
+                        class="btn btn-sm btn-outline-light text-primary-color border-secondary"><i
+                          class="fa-solid fa-eye"></i></a>
+                      <a href="{{ route('productStationLines.edit', compact('productStationLine')) }}"
+                        class="btn btn-sm btn-outline-light text-primary-color border-secondary"><i
+                          class="fa-solid fa-pen-to-square"></i></a>
                       <a href="" class="btn btn-sm btn-outline-light text-primary-color border-secondary"
-                        data-bs-toggle="modal" data-bs-target="#i{{ $each->Id_ProdStationLine }}">
-                        <i class="fa-solid fa-trash"></i>
-                      </a>
-                      <div class="modal fade" id="i{{ $each->Id_ProdStationLine }}" tabindex="-1"
+                        data-bs-toggle="modal" data-bs-target="#i{{ $productStationLine->Id_ProdStationLine }}"><i
+                          class="fa-solid fa-trash"></i></a>
+                      <div class="modal fade" id="i{{ $productStationLine->Id_ProdStationLine }}" tabindex="-1"
                         aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                           <div class="modal-content">
@@ -106,7 +105,9 @@
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                              <form action="{{ route('productionStationLines.destroy', $each) }}" method="POST">
+                              <form
+                                action="{{ route('productStationLines.destroy', ['productStationLine' => $productStationLine]) }}"
+                                method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Xóa</button>
@@ -186,84 +187,5 @@
     const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
     toastBootstrap.show();
   })
-
-  let selectElement = $("#Id_Station");
-  $(selectElement).on("change", function () {
-    let id = $(this).val();
-    $.ajax({
-      method: "POST",
-      data: {
-        id: id,
-        _token: $('meta[name="csrf-token"]').attr("content"),
-      },
-      url: "/",
-      // url: url,
-      success: function (response) {
-        let data = response.data;
-        console.log(data);
-        $("#table-data").empty();
-        $.each(data, function (key, value) {
-          let id = value.Id_ProdStationLine;
-          let name = value.Name_ProdStationLine;
-          let description = value.Description;
-          let showUrl =
-            "{{ route('productionStationLines.show', ':id') }}".replace(
-              ":id",
-              id
-            );
-          let editUrl =
-            "{{ route('productionStationLines.edit', ':id') }}".replace(
-              ":id",
-              id
-            );
-          let deleteModalId = "deleteModal-" + id;
-          let deleteUrl =
-            "{{ route('productionStationLines.destroy', ':id') }}".replace(
-              ":id",
-              id
-            );
-
-          let htmls = `<tr>
-                <th class="text-center" scope="row">${id}</th>
-                <td>${name}</td>
-                <td>${description}</td>
-                <td>
-                  <a href="${showUrl}" class="btn btn-sm btn-outline-light text-primary-color border-secondary">
-                    <i class="fa-solid fa-eye"></i>
-                  </a>
-                  <a href="${editUrl}" class="btn btn-sm btn-outline-light text-primary-color border-secondary">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                  </a>
-                  <button type="button" class="btn btn-sm btn-outline-light text-primary-color border-secondary" data-bs-toggle="modal" data-bs-target="#${deleteModalId}">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
-                  <div class="modal fade" id="${deleteModalId}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận</h1>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          Bạn có chắc chắn về việc xóa dây chuyền xử lý sản xuất này?
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-<form action="${deleteUrl}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Xóa</button>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>`;
-          $("#table-data").append(htmls);
-        });
-      },
-    });
-  });
 </script>
 @endpush

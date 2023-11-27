@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class RawMaterial extends Model
 {
     use HasFactory;
-    protected $fillable = ['Name_RawMaterial', 'Unit', 'count', 'FK_Id_RawMaterialType'];
+    protected $fillable = ['Id_RawMaterial', 'Name_RawMaterial', 'Unit', 'count', 'FK_Id_RawMaterialType'];
     protected $primaryKey = "Id_RawMaterial";
     protected $table = 'RawMaterial';
     public $timestamps = false;

@@ -27,21 +27,22 @@
               @foreach($data as $each)
               <tr>
                 <td class="text-center">{{ $each->Id_Order }}</td>
-                <td>{{ $each->customer->Name_Customer}}</td>
+                <td class="text-center">{{ $each->customer->Name_Customer}}</td>
                 <td class="text-center">{{ $each->order_date}}</td>
                 <td class="text-center">{{ $each->delivery_date}}</td>
                 <td>
                   <a href="" class="btn btn-sm btn-outline-light text-primary-color border-secondary">
                     <i class="fa-solid fa-eye"></i>
                   </a>
-                  <a href="" class="btn btn-sm btn-outline-light text-primary-color border-secondary">
+                  <a href="{{ route('orders.editOrder', ['Id_Order' => $each->Id_Order]) }}"
+                    class="btn btn-sm btn-outline-light text-primary-color border-secondary">
                     <i class="fa-solid fa-pen-to-square"></i>
                   </a>
                   <button type="button" class="btn btn-sm btn-outline-light text-primary-color border-secondary"
-                    data-bs-toggle="modal" data-bs-target="#deleteOrder-{{$each->Id_Order}}">
+                    data-bs-toggle="modal" data-bs-target="#deleteOrder-{{ $each->Id_Order }}">
                     <i class="fa-solid fa-trash"></i>
                   </button>
-                  <div class="modal fade" id="deleteOrder-{{$each->Id_Order}}" tabindex="-1"
+                  <div class="modal fade" id="deleteOrder-{{ $each->Id_Order }}" tabindex="-1"
                     aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                       <div class="modal-content">
@@ -54,7 +55,8 @@
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                          <form method="POST" action="">
+                          <form method="POST"
+                            action="{{ route('packs.destroyOrder', ['Id_Order' => $each->Id_Order]) }}">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Xóa</button>

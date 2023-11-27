@@ -15,9 +15,21 @@
               <form method="POST" action="{{ route('stations.store') }}">
                 @csrf
                 <div class="form-group">
+                  <label for="Id_Station" class="form-label">Mã trạm</label>
+                  <input type="text" name="Id_Station" id="Id_Station" placeholder="Nhập mã trạm"
+                    class="form-control{{ $errors->has('Id_Station') ? ' is-invalid' : '' }}"
+                    value="{{ old('Id_Station') }}">
+                  @if ($errors->has('Id_Station'))
+                    <span class="text-danger">
+                      {{ $errors->first('Id_Station') }}
+                    </span>
+                  @endif
+                </div>
+                <div class="form-group">
                   <label for="Name_Station" class="form-label">Tên trạm</label>
                   <input type="text" name="Name_Station" id="Name_Station" placeholder="Nhập tên trạm"
-                    class="form-control{{ $errors->has('Name_Station') ? ' is-invalid' : '' }}">
+                    class="form-control{{ $errors->has('Name_Station') ? ' is-invalid' : '' }}"
+                    value="{{ old('Name_Station') }}">
                   @if ($errors->has('Name_Station'))
                     <span class="text-danger">
                       {{ $errors->first('Name_Station') }}
@@ -27,7 +39,7 @@
                 <div class="form-group">
                   <label for="Ip_Address" class="form-label">Địa chỉ IP</label>
                   <input type="text" name="Ip_Address" id="Ip_Address" placeholder="Nhập địa chỉ IP"
-                    class="form-control{{ $errors->has('Unit') ? ' is-invalid' : '' }}">
+                    class="form-control{{ $errors->has('Unit') ? ' is-invalid' : '' }}" value="{{ old('Id_Address') }}">
                   @if ($errors->has('Ip_Address'))
                     <span class="text-danger">
                       {{ $errors->first('Ip_Address') }}

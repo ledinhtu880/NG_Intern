@@ -33,13 +33,13 @@ $(document).ready(function () {
             window.location.href = "/packs/createPack?id=" + id;
         }
     });
+    let countID = 0;
     $("#formProduct").on("submit", function (event) {
         event.preventDefault();
         let token = $('meta[name="csrf-token"]').attr("content");
         let form = $(this);
         let url = "/simples/addSimple";
         let unit = $("p[data-name='unit']").html();
-        let count = 0;
         $.ajax({
             url: url,
             type: "post",
@@ -49,8 +49,9 @@ $(document).ready(function () {
                 _token: token,
             },
             success: function (response) {
-                count++;
                 let htmls = "";
+                let id = countID + parseInt(response.maxID);
+                countID++;
                 $.each(response.data, function (key, value) {
                     let rawMaterialId = value.FK_Id_RawMaterial;
                     let rawMaterialName = $(
@@ -60,7 +61,7 @@ $(document).ready(function () {
                     let containerTypeName = $(
                         `#FK_ID_ContainerType option[value="${containerTypeId}"]`
                     ).data("name");
-                    htmls += `<tr data-id="${count}">
+                    htmls += `<tr data-id="${id}">
                         <td class="text-center" data-id="rawMaterialId" data-value="${rawMaterialId}">
                             ${rawMaterialName}
                         </td>
@@ -78,10 +79,10 @@ $(document).ready(function () {
                             ${value.formattedPrice}
                         </td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-outline-light text-primary-color border-secondary" data-bs-toggle="modal" data-bs-target="#deleteRow${count}">
+                            <button type="button" class="btn btn-sm btn-outline-light text-primary-color border-secondary" data-bs-toggle="modal" data-bs-target="#deleteRow${id}">
                             <i class="fa-solid fa-trash"></i>
                             </button>
-                            <div class="modal fade" id="deleteRow${count}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="deleteRow${id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                 <div class="modal-header">
@@ -93,7 +94,7 @@ $(document).ready(function () {
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="button" class="btn btn-danger btnDelete" data-id="${count}">Xóa</button>
+                                    <button type="button" class="btn btn-danger btnDelete" data-id="${id}">Xóa</button>
                                 </div>
                                 </div>
                             </div>
@@ -118,9 +119,13 @@ $(document).ready(function () {
         let order_Id = $("input[name='FK_Id_Order']").val();
         let rowDataArray = [];
         let Price_Pack = 0;
+        let idArr = [];
         $("#table-data tr").each(function () {
             let row = $(this);
             let rowData = {};
+            var Id_SimpleContent = row.attr("data-id");
+
+            rowData.Id_SimpleContent = Id_SimpleContent;
             rowData.FK_Id_RawMaterial = row
                 .find('td[data-id="rawMaterialId"]')
                 .data("value");
@@ -138,6 +143,7 @@ $(document).ready(function () {
                 .data("value");
             rowData.FK_Id_Order = order_Id;
             rowDataArray.push(rowData);
+            idArr.push(Id_SimpleContent);
 
             let subtotal = rowData.Count_Container * rowData.Price_Container; // Tính subtotal
             Price_Pack += subtotal;
@@ -174,6 +180,7 @@ $(document).ready(function () {
                             data: {
                                 FK_Id_Order: order_Id,
                                 Id_PackContent: Id_PackContent,
+                                idArr: idArr,
                                 _token: token,
                             },
                             success: function (response) {

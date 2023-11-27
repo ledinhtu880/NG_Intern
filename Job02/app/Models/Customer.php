@@ -4,14 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Customer extends Model
 {
     use HasFactory;
     protected $table = 'Customer';
-
     protected $primaryKey = "Id_Customer";
-
     protected $fillable = [
         'Name_Customer',
         'Email',
@@ -20,16 +19,21 @@ class Customer extends Model
         'Address',
         'Zipcode',
         'FK_Id_Mode_Transport',
-        'Time_Reception'
+        'Time_Reception',
+        'FK_Id_CustomerType'
     ];
-
     public $timestamps = false;
-    public function transport()
+    public function types()
     {
-        return $this->belongsTo(ModeTransport::class, 'FK_Id_ModeTransport', 'Id_ModeTransport');
+        return $this->belongsTo(ModeTransport::class, 'FK_Id_Mode_Transport', 'Id_ModeTransport');
     }
-    public function order()
+    public static function getIdMax()
     {
-        return $this->hasMany(Order::class, 'FK_Id_Customer');
+        $id = DB::table('Customer')->max('Id_Customer');
+        return $id === null ? 0 : ++$id;
+    }
+    public function customerType()
+    {
+        return $this->belongsTo(CustomerType::class, 'FK_Id_CustomerType', 'Id');
     }
 }

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Customer\CustomerStoreRequest;
+use App\Http\Requests\Customer\CustomerRequest;
 use App\Http\Requests\Customer\CustomerUpdateRequest;
 use App\Models\Customer;
+use App\Models\CustomerType;
 use App\Models\ModeTransport;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 class CustomerController extends Controller
@@ -19,28 +18,34 @@ class CustomerController extends Controller
     {
         if (!Session::has("type") && !Session::has("message")) {
             Session::flash('type', 'info');
-            Session::flash('message', 'Quản lý người dùng');
+            Session::flash('message', 'Quản lý khách hàng');
         }
-        $data = Customer::paginate(5);
-        return view('customers.index', compact('data'));
+        $datas = Customer::paginate(5);
+        return view('customers.index', compact('datas'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         $data = ModeTransport::all();
-        return view('customers.create', compact('data'));
+        $customerTypes = CustomerType::all();
+        return view('customers.create', compact('data', 'customerTypes'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CustomerStoreRequest $request)
+    public function store(CustomerRequest $request)
     {
         //
-        $customer = Customer::create($request->validated());
-        $customer->Time_Reception = Carbon::now();
+        $idMax = Customer::getIdMax();
+        $customer = new Customer();
+        $customer->Id_Customer = $idMax;
+        $customer->fill($request->all());
         $customer->save();
-        return redirect()->route('customers.show', compact('customer'))->with([
+        return redirect()->route('customers.show', ['customer' => $idMax])->with([
             'type' => 'success',
             'message' => 'Thêm người dùng thành công'
         ]);
@@ -49,10 +54,10 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Customer $customer)
+    public function show(string $customer_id)
     {
         //
-        return view('customers.show', ['customer' => $customer]);
+        return view('customers.show', ['customer' => Customer::find($customer_id)]);
     }
 
     /**
@@ -62,7 +67,8 @@ class CustomerController extends Controller
     {
         //
         $data = ModeTransport::all();
-        return view('customers.edit', compact('data', 'customer'));
+        $customerTypes = CustomerType::all();
+        return view('customers.edit', compact('data', 'customer', 'customerTypes'));
     }
 
     /**
@@ -72,7 +78,7 @@ class CustomerController extends Controller
     {
         //
         $customer->update($request->validated());
-        return redirect()->route('customers.show', compact('customer'))->with([
+        return redirect()->route('customers.show', ['customer' => $customer->Id_Customer])->with([
             'type' => 'success',
             'message' => 'Sửa người dùng thành công'
         ]);

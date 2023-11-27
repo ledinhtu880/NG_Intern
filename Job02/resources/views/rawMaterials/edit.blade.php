@@ -38,7 +38,7 @@
               </div>
               <div class="form-group">
                 <label for="count" class="form-label">Số lượng</label>
-                <input type="number" name="count" id="count" placeholder="Nhập số lượng" value="{{ $material->count}}"
+                <input type="number" name="count" id="count" placeholder="Nhập số lượng" value="{{ $material->Count }}"
                   class="form-control{{ $errors->has('count') ? ' is-invalid' : '' }}">
                 @if ($errors->has('count'))
                 <span class="text-danger">

@@ -79,7 +79,7 @@ class RawMaterialController extends Controller
 
         return redirect()->route('rawMaterials.index')->with([
             'message' => 'Xóa nguyên liệu thô thành công',
-            'type' => 'danger',
+            'type' => 'success',
         ]);
     }
     public function showRawMaterialsByType(Request $request)

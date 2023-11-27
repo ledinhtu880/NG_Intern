@@ -15,7 +15,7 @@
             <form method="POST" id="formInformation">
               @csrf
               <input type="hidden" name="count" value="{{ isset($count) ? $count : 0}}">
-              <input type="hidden" name="isSimple" value="0">
+              <input type="hidden" name="SimpleOrPack" value="1">
               <div class="row">
                 <div class="col-md-4">
                   <div class="row">
@@ -143,7 +143,7 @@
           </div>
         </div>
         <div class="d-flex align-items-center justify-content-end mt-3">
-          <a href="{{ route('packs.index') }}" class="btn btn-lg btn-primary-color px-4" id="btn_save">Lưu</a>
+          <a href="{{ route('packs.index') }}" class="btn btn-lg btn-primary-color px-4">Lưu</a>
         </div>
       </div>
     </div>

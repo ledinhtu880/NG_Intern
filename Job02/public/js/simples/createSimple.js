@@ -18,6 +18,7 @@ $(document).ready(function () {
             }
         });
     }
+    let countID = 0;
     $("#formProduct").on("submit", function (event) {
         event.preventDefault();
         let token = $('meta[name="csrf-token"]').attr("content");
@@ -33,8 +34,9 @@ $(document).ready(function () {
                 _token: token,
             },
             success: function (response) {
-                count++;
                 let htmls = "";
+                let id = countID + parseInt(response.maxID);
+                countID++;
                 $.each(response.data, function (key, value) {
                     let rawMaterialId = value.FK_Id_RawMaterial;
                     let rawMaterialName = $(
@@ -44,7 +46,7 @@ $(document).ready(function () {
                     let containerTypeName = $(
                         `#FK_ID_ContainerType option[value="${containerTypeId}"]`
                     ).data("name");
-                    htmls += `<tr data-id="${count}">
+                    htmls += `<tr data-id="${id}">
                         <td class="text-center" data-id="rawMaterialId" data-value="${rawMaterialId}">
                             ${rawMaterialName}
                         </td>
@@ -62,10 +64,10 @@ $(document).ready(function () {
                             ${value.formattedPrice}
                         </td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-outline-light text-primary-color border-secondary" data-bs-toggle="modal" data-bs-target="#deleteRow${count}">
+                            <button type="button" class="btn btn-sm btn-outline-light text-primary-color border-secondary" data-bs-toggle="modal" data-bs-target="#deleteRow${id}">
                             <i class="fa-solid fa-trash"></i>
                             </button>
-                            <div class="modal fade" id="deleteRow${count}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="deleteRow${id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                 <div class="modal-header">
@@ -77,7 +79,7 @@ $(document).ready(function () {
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="button" class="btn btn-danger btnDelete" data-id="${count}">Xóa</button>
+                                    <button type="button" class="btn btn-danger btnDelete" data-id="${id}">Xóa</button>
                                 </div>
                                 </div>
                             </div>
@@ -89,8 +91,8 @@ $(document).ready(function () {
                 // Xóa dữ liệu đã nhập/chọn trong form
                 form[0].reset();
 
-                $(".toast-body").addClass("bg-success");
                 $("#icon").addClass("fa-check-circle");
+                $(".toast-body").addClass("bg-success");
                 $("#toast-msg").html("Thêm thùng hàng thành công");
                 toastBootstrap.show();
             },
@@ -111,9 +113,13 @@ $(document).ready(function () {
             success: function (response) {
                 let secondUrl = "/simples/storeSimple";
                 let rowDataArray = [];
+                let idArr = [];
                 $("#table-data tr").each(function () {
                     let row = $(this);
                     let rowData = {};
+                    var Id_SimpleContent = row.attr("data-id");
+
+                    rowData.Id_SimpleContent = Id_SimpleContent;
                     rowData.FK_Id_RawMaterial = row
                         .find('td[data-id="rawMaterialId"]')
                         .data("value");
@@ -130,8 +136,8 @@ $(document).ready(function () {
                         .find('td[data-id="Price_Container"]')
                         .data("value");
                     rowData.FK_Id_Order = response.id;
-
                     rowDataArray.push(rowData);
+                    idArr.push(Id_SimpleContent);
                 });
                 $.ajax({
                     url: secondUrl,

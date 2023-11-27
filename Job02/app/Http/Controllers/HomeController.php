@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Station;
-use App\Models\ProductionStationLine;
 use Illuminate\Support\Facades\Session;
+use App\Models\ProductionStationLine;
+use App\Models\Station;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -15,6 +15,6 @@ class HomeController extends Controller
             Session::flash('type', 'info');
             Session::flash('message', 'Trang chủ');
         }
-        return view('index', ['productionStationLines' => ProductionStationLine::all(), 'stations' => Station::all()]);
+        return view('index', ['productStationLines' => ProductionStationLine::all(), 'stations' => Station::all()]);
     }
 }

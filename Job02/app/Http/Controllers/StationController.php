@@ -41,7 +41,7 @@ class StationController extends Controller
     {
         //
         $station = Station::create($request->validated());
-        return redirect()->route('stations.show', compact('station'))->with([
+        return redirect()->route('stations.index')->with([
             'type' => 'success',
             'message' => 'Thêm trạm mới thành công'
         ]);
@@ -71,7 +71,6 @@ class StationController extends Controller
     public function update(StationUpdate $request, Station $station)
     {
         //
-        $request->route('station');
         $station->update($request->validated());
         return redirect()->route('stations.show', compact('station'))->with([
             'type' => 'success',

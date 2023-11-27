@@ -38,7 +38,7 @@
                       <div class="input-group">
                         <label class="input-group-text bg-secondary-subtle" style="width: 130px;">Ngày đặt hàng</label>
                         <input type="date" class="form-control" id="Date_Order" name="Date_Order"
-                          value="{{ $order->order_date }}">
+                          value="{{ \Carbon\Carbon::parse($order->Date_Order)->format('Y-m-d') }}">
                       </div>
                       <span class="form-message text-danger"></span>
                     </div>
@@ -52,7 +52,7 @@
                           Ngày giao hàng
                         </label>
                         <input type="date" class="form-control" id="Date_Dilivery" name="Date_Dilivery"
-                          value="{{ $order->delivery_date }}">
+                          value="{{ \Carbon\Carbon::parse($order->Date_Dilivery)->format('Y-m-d') }}">
                       </div>
                       <span class="form-message text-danger"></span>
                     </div>
@@ -62,7 +62,7 @@
                           Ngày nhận hàng
                         </label>
                         <input type="date" class="form-control" id="Date_Reception" name="Date_Reception"
-                          value="{{ $order->reception_date }}">
+                          value="{{ \Carbon\Carbon::parse($order->Date_Reception)->format('Y-m-d') }}">
                       </div>
                       <span class="form-message text-danger"></span>
                     </div>
@@ -103,7 +103,7 @@
                   <td>
                     <select class="form-select selectValidate" id="FK_Id_RawMaterial" name="FK_Id_RawMaterial">
                       @foreach($materials as $material)
-                      @if($material->Id_RawMaterial == $each->FK_Id_RawMaterial)
+                      @if($each->FK_Id_RawMaterial == $material->Id_RawMaterial)
                       <option value="{{ $material->Id_RawMaterial }}" selected>{{ $material->Name_RawMaterial }}
                       </option>
                       @else
@@ -116,7 +116,7 @@
                     <input class="form-control" type="number" name="Count_RawMaterial" id="Count_RawMaterial"
                       value="{{ $each->Count_RawMaterial}}" min="0">
                   </td>
-                  <td class="text-center" data-name="unit">{{ $each->unit}}</td>
+                  <td class="text-center" data-name="unit">{{ $each->Unit}}</td>
                   <td class="text-center">
                     <select class="form-select selectValidate" id="FK_Id_ContainerType" name="FK_Id_ContainerType">
                       @foreach($containers as $container)
@@ -183,5 +183,28 @@
 
 @push('javascript')
 <script src="{{ asset('js/simples/editSimple.js') }}"></script>
-<script src="{{ asset('js/eventHandler.js') }}"></script>
+<script>
+  $(document).ready(function () {
+    let selectElement = $('select[name="FK_Id_RawMaterial"]');
+    selectElement.on("change", function () {
+      let token = $('meta[name="csrf-token"]').attr("content");
+      let id = $(this).val();
+      let rowElement = $(this).closest(".js-row");
+      $.ajax({
+        url: "/rawMaterials/showUnit",
+        method: "POST",
+        dataType: "json",
+        data: {
+          id: id,
+          _token: token,
+        },
+        success: function (data) {
+          let unitElement = rowElement.find("[data-name='unit']");
+          unitElement.html(data.unit);
+        },
+      });
+    });
+  });
+
+</script>
 @endpush

@@ -14,6 +14,17 @@
             <div class="card-body">
               <form method="POST" action="{{ route('stations.update', compact('station')) }}">
                 @csrf
+                <div class="form-group">
+                  <label for="Id_Station" class="form-label">Mã trạm</label>
+                  <input type="text" name="Id_Station" id="Id_Station" placeholder="Nhập mã trạm"
+                    class="form-control{{ $errors->has('Id_Station') ? ' is-invalid' : '' }}"
+                    value="{{ $station->Id_Station }}" readonly>
+                  @if ($errors->has('Id_Station'))
+                    <span class="text-danger">
+                      {{ $errors->first('Id_Station') }}
+                    </span>
+                  @endif
+                </div>
                 @method('PUT')
                 <div class="form-group">
                   <label for="Name_Station" class="form-label">Tên trạm</label>

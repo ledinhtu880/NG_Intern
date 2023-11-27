@@ -22,7 +22,7 @@ class CustomerUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        $customer_id = $this->route("customer");
+        $customer = $this->customer;
         return [
             //
             'Name_Customer' => [
@@ -32,12 +32,18 @@ class CustomerUpdateRequest extends FormRequest
             'Email' => [
                 'required',
                 'email',
-                Rule::unique('customer', 'Email')->ignore($customer_id)
+                Rule::unique('customer', 'Email')->ignore($customer->Id_Customer, 'Id_Customer')
+                    ->where(function ($query) use ($customer) {
+                        $query->where('Id_Customer', '!=', $customer->Id_Customer);
+                    })
             ],
             'Phone' => [
                 'required',
                 'regex:/(84|0[3|5|7|8|9])+([0-9]{8})\b/',
-                Rule::unique('customer', 'Phone')->ignore($customer_id)
+                Rule::unique('customer', 'Phone')->ignore($customer->Id_Customer, 'Id_Customer')
+                    ->where(function ($query) use ($customer) {
+                        $query->where('Id_Customer', '!=', $customer->Id_Customer);
+                    })
             ],
             'Name_Contact' => [
                 'required'
@@ -50,6 +56,13 @@ class CustomerUpdateRequest extends FormRequest
                 'numeric'
             ],
             'FK_Id_Mode_Transport' => [
+                'required'
+            ],
+            'Time_Reception' => [
+                'required',
+                'date'
+            ],
+            'FK_Id_CustomerType' => [
                 'required'
             ]
         ];
@@ -69,7 +82,10 @@ class CustomerUpdateRequest extends FormRequest
             'Address.required' => 'Vui lòng nhập địa chỉ',
             'Zipcode.required' => 'Vui lòng nhập zipcode',
             'Zipcode.numeric' => 'Zipcode phải là số',
-            'FK_Id_Mode_Transport.required' => 'Vui lòng chọn phương thức vận chuyển'
+            'FK_Id_Mode_Transport.required' => 'Vui lòng chọn phương thức vận chuyển',
+            'Time_Reception.required' => 'Vui lòng chọn thời gian nhận',
+            'Time_Reception.date' => 'Thời gian nhận theo định dạng: tháng/ngày/năm',
+            'FK_Id_CustomerType.required' => 'Vui lòng chọn kiểu khách hàng'
         ];
     }
 }
