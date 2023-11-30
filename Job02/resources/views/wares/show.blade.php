@@ -1,82 +1,74 @@
 @extends('layouts.master')
 
-@section('title', 'Chi tiết kho thùng')
-
-@push('css')
-<style>
-    .square-cell {
-        width: 100px;
-        /* Adjust the width as needed */
-        height: 100px;
-        /* Adjust the height as needed */
-        text-align: center;
-        /* Optional: Center the content within the square cell */
-        vertical-align: middle;
-        /* Optional: Vertically center the content within the square cell */
-    }
-
-    .small {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
-</style>
-@endpush
+@section('title', 'Chi tiết kho chứa')
 
 @section('content')
-<div class="container-fluid border border-dark-subtle ">
-    <div class="card">
-        <div class="card-header d-flex align-items-center" style="background-color: #2b4c72">
-            <h6 class="" style="color: white">Cấu hình kho chứa</h6>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-8">
-                    <div class="input-group mb-3">
-                        <label class="input-group-text" for="khochua">Kho chứa</label>
-                        <select class="form-select" id="khochua">
-                            @foreach($stations as $each)
-                            <option value="{{ $each->Id_Station }}">{{ $each->Name_Station }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-color px-2 py-3 rounded">
+                    <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang
+                            chủ</a></li>
+                    <li class="breadcrumb-item active">
+                        <a class="text-decoration-none" href="{{ route('wares.index') }}">Quản lý đơn sản xuất</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Xem chi tiết kho chứa</li>
+                </ol>
+            </nav>
+            <div class="card">
+                <div class="card-header p-0 overflow-hidden">
+                    <h4 class="card-title m-0 bg-primary-color p-3">Cấu hình kho chứa</h4>
                 </div>
-                <div class="col-2">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Số hàng</span>
-                        <input type="number" class="form-control" min="1" id="sohang" name="sohang" readonly>
-                    </div>
-                </div>
-                <div class="col-2">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Số cột</span>
-                        <input type="number" class="form-control" min="1" id="socot" name="socot" readonly>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="khochua">Kho chứa</label>
+                                <select class="form-select" id="khochua">
+                                    @foreach($stations as $each)
+                                    <option value="{{ $each->Id_Station }}">{{ $each->Name_Station }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Số hàng</span>
+                                <input type="number" class="form-control" min="1" id="sohang" name="sohang" readonly>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Số cột</span>
+                                <input type="number" class="form-control" min="1" id="socot" name="socot" readonly>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="card my-3">
-        <div class="card-header" style="background-color: #2b4c72">
-            <h6 style="color: white">Chi tiết kho chứa</h6>
-        </div>
-        <div class="card-body px-5 pb-5">
-            <h4 class="text-center">SỐ HÀNG VÀ CỘT CỦA KHO</h4>
-            <table class="table table-bordered border-primary">
-                <tr class="d-none">
-                    <td class="square-cell">1</td>
-                    <td class="square-cell">1</td>
-                    <td class="square-cell">1</td>
-                    <td class="square-cell">1</td>
-                    <td class="square-cell">1</td>
-                    <td class="square-cell">1</td>
-                    <td class="square-cell">1</td>
-                    <td class="square-cell">1</td>
-                    <td class="square-cell">1</td>
-                    <td class="square-cell">1</td>
-                </tr>
-            </table>
+            <div class="card my-3">
+                <div class="card-header p-0 overflow-hidden">
+                    <h4 class="card-title m-0 bg-primary-color p-3">Chi tiết kho chứa</h4>
+                </div>
+                <div class="card-body px-5">
+                    <h4 class="card-subtitle text-uppercase text-center mb-3">Số hàng và cột của kho</h4>
+                    <table class="table table-bordered border-primary">
+                        <tr class="d-none">
+                            <td class="square-cell">1</td>
+                            <td class="square-cell">1</td>
+                            <td class="square-cell">1</td>
+                            <td class="square-cell">1</td>
+                            <td class="square-cell">1</td>
+                            <td class="square-cell">1</td>
+                            <td class="square-cell">1</td>
+                            <td class="square-cell">1</td>
+                            <td class="square-cell">1</td>
+                            <td class="square-cell">1</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -87,7 +79,7 @@
     $(document).ready(function () {
         var kho = $('#khochua option:selected').val();
         $.ajax({
-            url: 'show',
+            url: 'showDetails',
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -106,7 +98,6 @@
 
                     $('#sohang').val(row);
                     $('#socot').val(col);
-                    //    console.log(details);
                     var count = 0;
                     for (var i = 1; i <= row; i++) {
 
@@ -147,7 +138,7 @@
             var kho = $(this).val();
 
             $.ajax({
-                url: 'show',
+                url: 'showDetails',
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

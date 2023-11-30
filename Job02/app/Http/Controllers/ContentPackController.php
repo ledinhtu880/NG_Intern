@@ -19,13 +19,17 @@ class ContentPackController extends Controller
     {
         if (!Session::has("type") && !Session::has("message")) {
             Session::flash('type', 'info');
-            Session::flash('message', 'Quản lý đơn gói hàng');
+            Session::flash('message', 'Quản lý đơn lô hàng');
         }
         $data = Order::where('SimpleOrPack', 1)->paginate(5);
         return view('packs.index', compact('data'));
     }
+
     public function showFormEditSimple(string $Id_PackContent)
     {
+        $Id_Order = DB::table('ContentPack')
+            ->where('Id_PackContent', '=', $Id_PackContent)
+            ->value('FK_Id_Order');
         $details = DetailContentSimpleOfPack::where('FK_Id_PackContent', $Id_PackContent)->get();
         $id_SimpleContents = [];
         foreach ($details as $detail) {
@@ -37,12 +41,19 @@ class ContentPackController extends Controller
         }
         $materials = RawMaterial::all();
         $containerTypes = ContainerType::all();
-        // return $simpleContents;
-        return view('packs.edits.editSimpleContent', compact('simpleContents', 'materials', 'containerTypes', 'Id_PackContent'));
+        return view('packs.edits.editSimpleContent', compact(
+            'Id_Order',
+            'simpleContents',
+            'materials',
+            'containerTypes',
+            'Id_PackContent'
+        ));
     }
     public function create()
     {
         $customers = Customer::get();
+        $containers = ContainerType::get();
+        $materials = RawMaterial::get();
         if (isset($_GET['id'])) {
             $id = $_GET['id'];
             $information = DB::table('Order')
@@ -54,6 +65,8 @@ class ContentPackController extends Controller
                 ->get();
             return view('packs.create', [
                 'customers' => $customers,
+                'containers' => $containers,
+                'materials' => $materials,
                 'information' => $information,
                 'data' => $data,
                 'count' => 1,
@@ -61,14 +74,19 @@ class ContentPackController extends Controller
         } else {
             return view('packs.create', [
                 'customers' => $customers,
+                'containers' => $containers,
+                'materials' => $materials,
             ]);
         }
     }
-    public function createPack()
+    public function createPack(Request $request)
     {
+        $customers = Customer::get();
         $containers = ContainerType::get();
         $materials = RawMaterial::get();
+
         return view('packs.createPack', [
+            'customers' => $customers,
             'containers' => $containers,
             'materials' => $materials,
         ]);
@@ -77,12 +95,15 @@ class ContentPackController extends Controller
     {
         if ($request->ajax()) {
             $data = $request->input('packData');
-            $maxID = DB::table('ContentPack')->max('Id_PackContent');
-            if ($maxID === null) {
+
+            $lastOrderId = DB::table('ContentPack')->max('Id_PackContent');
+
+            if ($lastOrderId === null) {
                 $id = 1; // Gán giá trị mặc định cho biến $id nếu kết quả là NULL
             } else {
-                $id = $maxID + 1;
+                $id = $lastOrderId + 1;
             }
+
             DB::table('ContentPack')->insert([
                 'Id_PackContent' => $id,
                 'Count_Pack' => $data['Count_Pack'],
@@ -91,6 +112,7 @@ class ContentPackController extends Controller
                 'HaveEilmPE' => 0,
                 'HaveNFC' => 0,
             ]);
+
             return response()->json([
                 'status' => 'success',
                 'id' => $id,
@@ -102,16 +124,20 @@ class ContentPackController extends Controller
         if ($request->ajax()) {
             $OrderID = $request->input('FK_Id_Order');
             $packID = $request->input('Id_PackContent');
-            $idArr = $request->input('idArr');
-            foreach ($idArr as $each) {
+            $IdArr = DB::table('ContentSimple')
+                ->where('FK_Id_Order', $OrderID)
+                ->pluck('Id_SimpleContent')
+                ->toArray();
+            foreach ($IdArr as $each) {
                 DB::table('DetailContentSimpleOfPack')->insert([
                     'FK_Id_SimpleContent' => $each,
                     'FK_Id_PackContent' => $packID,
                 ]);
             }
+
             return response()->json([
                 'status' => 'success',
-                'id' => $OrderID,
+                'id' => $OrderID
             ]);
         }
     }
@@ -123,6 +149,7 @@ class ContentPackController extends Controller
             DB::table('DetailContentSimpleOfPack')->where('FK_Id_PackContent', $id)->delete();
             DB::table('ContentSimple')->where('FK_Id_Order', $Id_Order)->delete();
             DB::table('ContentPack')->where('FK_Id_Order', $Id_Order)->delete();
+
             return response()->json([
                 'status' => 'success'
             ]);
@@ -144,35 +171,36 @@ class ContentPackController extends Controller
         $contentSimple = DB::table('ContentSimple')->where('FK_Id_Order', $Id_Order)->delete();
         // Xóa dữ liệu bảng order
         Order::find($Id_Order)->delete();
-        return redirect()->route('packs.index')
-            ->with('type', 'success')
-            ->with('message', 'Xóa đơn gói hàng thành công');
+        return redirect()->route('packs.index')->with('type', 'success')->with('message', 'Xóa đơn gói hàng thành công');
     }
 
     public function destroySimpleContent(Request $request)
     {
         $Id_SimpleContent = $request->Id_SimpleContent;
         $Id_PackContent = $request->Id_PackContent;
+        // // Xóa dữ liệu bảng detail
         DetailContentSimpleOfPack::where('FK_Id_SimpleContent', $Id_SimpleContent)->delete();
+        // Sửa giá tiền ở bảng PackContent
         $contentSimple = ContentSimple::find($Id_SimpleContent);
         $price_Container = $contentSimple->Price_Container;
+        // Xóa dữ liệu bảng simpleContent
         $contentSimple->delete();
+        // // Tìm idpack ở trong bảng detail, nếu còn tức là bảng ContentPack vẫn còn tồn tại, nếu không còn thì xóa
         $detail = DetailContentSimpleOfPack::where('FK_Id_PackContent', $Id_PackContent)->get();
         $result = '';
         $contentPack = ContentPack::find($Id_PackContent);
-
         if ($detail->isEmpty()) {
             $Id_Order = $contentPack->FK_Id_Order;
             $contentPack->delete();
-            $result = redirect()->route('orders.editOrder', compact('Id_Order'))
-                ->with('type', 'success')
-                ->with('message', 'Xóa thùng hàng mã: ' . $Id_SimpleContent . ' thành công');
+            $result = redirect()->route('orders.editOrder', compact('Id_Order'))->with('type', 'success')->with('message', 'Xóa thùng hàng mã: ' . $Id_SimpleContent . ' thành công');
         } else {
             $price_Pack = $contentPack->Price_Pack;
             $contentPack->Price_Pack = $price_Pack - $price_Container;
             $contentPack->save();
+            // return $price_Container;
             $result = redirect()->back()->with('type', 'success')->with('message', 'Xóa thùng hàng mã: ' . $Id_SimpleContent . ' thành công');
         }
+
         return response()->json([
             'url' => $result->getTargetUrl()
         ]);
@@ -193,6 +221,7 @@ class ContentPackController extends Controller
         // Xóa các bản ghi ở bảng DetailContentSimpleOfPack có liên quan tới packcontent 
         DetailContentSimpleOfPack::where('FK_Id_PackContent', $Id_PackContent)->delete();
 
+        // // Xóa các simplecontent liên quan
         for ($i = 0; $i < count($Id_SimpleContents); $i++) {
             ContentSimple::find($Id_SimpleContents[$i])->delete();
         }
@@ -203,5 +232,40 @@ class ContentPackController extends Controller
         return response()->json([
             'url' => $res->getTargetUrl()
         ]);
+    }
+
+    public function showDetails(string $Id_Order)
+    {
+        return view('packs.show', [
+            'order' => Order::find($Id_Order),
+            'contentPacks' => ContentPack::where('FK_Id_Order', $Id_Order)->get()
+        ]);
+    }
+
+    public function showDetailsPack(Request $request)
+    {
+        $id_PackContent = $request->id_PackContent;
+        $id_SimpleContents = DetailContentSimpleOfPack::where('FK_Id_PackContent', $id_PackContent)->pluck('FK_Id_SimpleContent')->toArray();
+
+        $simpleContents = [];
+        foreach ($id_SimpleContents as $id_SimpleContent) {
+            $simpleContents[] = ContentSimple::find($id_SimpleContent);
+        }
+
+        $htmls = '';
+
+        for ($i = 0; $i < count($simpleContents); $i++) {
+            $htmls .= '
+                <tr>
+                    <td>' . $simpleContents[$i]->material->Name_RawMaterial . '</td>
+                    <td>' . $simpleContents[$i]->Count_RawMaterial . '</td>
+                    <td>' . $simpleContents[$i]->material->Unit . '</td>
+                    <td>' . $simpleContents[$i]->type->Name_ContainerType . '</td>
+                    <td>' . $simpleContents[$i]->Count_Container . '</td>
+                    <td>' . $simpleContents[$i]->Price_Container . '</td>
+                </tr>
+            ';
+        }
+        return $htmls;
     }
 }

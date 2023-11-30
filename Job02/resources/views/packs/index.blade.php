@@ -6,10 +6,17 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-color px-2 py-3 rounded">
+          <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Quản lý đơn gói hàng</li>
+        </ol>
+      </nav>
       <div class="card mt-3">
         <div class="card-header p-0 overflow-hidden">
           <h4 class="card-title m-0 bg-primary-color p-3">Quản lý đơn gói hàng</h4>
-          <a href="{{ route('packs.create')}}" class="btn btn-primary-color text-white p-2 my-3 ms-3">
+          <a href="{{ route('packs.create') }}" class="btn btn-primary-color text-white py-2 px-5 m-3">
             Thêm đơn gói hàng
           </a>
         </div>
@@ -18,20 +25,21 @@
             <thead>
               <tr>
                 <th class="text-center" scope="col">Mã đơn hàng</th>
-                <th class="text-center" scope="col">Tên khách hàng</th>
+                <th scope="col">Tên khách hàng</th>
                 <th class="text-center" scope="col">Ngày đặt hàng</th>
                 <th class="text-center" scope="col">Ngày giao hàng</th>
               </tr>
             </thead>
             <tbody id="table-data" class="table-group-divider">
-              @foreach($data as $each)
+              @foreach ($data as $each)
               <tr>
                 <td class="text-center">{{ $each->Id_Order }}</td>
-                <td class="text-center">{{ $each->customer->Name_Customer}}</td>
-                <td class="text-center">{{ $each->order_date}}</td>
-                <td class="text-center">{{ $each->delivery_date}}</td>
+                <td>{{ $each->customer->Name_Customer }}</td>
+                <td class="text-center">{{ $each->order_date }}</td>
+                <td class="text-center">{{ $each->delivery_date }}</td>
                 <td>
-                  <a href="" class="btn btn-sm btn-outline-light text-primary-color border-secondary">
+                  <a href="{{ route('packs.showDetails', ['Id_Order' => $each->Id_Order]) }}"
+                    class="btn btn-sm btn-outline-light text-primary-color border-secondary">
                     <i class="fa-solid fa-eye"></i>
                   </a>
                   <a href="{{ route('orders.editOrder', ['Id_Order' => $each->Id_Order]) }}"
@@ -74,7 +82,7 @@
         @if ($data->lastPage() > 1)
         <div class="card-footer">
           <div class="paginate">
-            {{ $data->links('pagination::bootstrap-5')}}
+            {{ $data->links('pagination::bootstrap-5') }}
           </div>
         </div>
         @endif
@@ -82,12 +90,12 @@
     </div>
   </div>
 </div>
-@if(session('message') && session('type'))
+@if (session('message') && session('type'))
 <div class="toast-container rounded position-fixed bottom-0 end-0 p-3">
   <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-body bg-{{ session('type') }} d-flex align-items-center justify-content-between">
       <div class="d-flex justify-content-center align-items-center gap-2">
-        @if(session('type') == 'success')
+        @if (session('type') == 'success')
         <i class="fas fa-check-circle text-light fs-5"></i>
         @elseif(session('type') == 'danger' || session('type') == 'warning')
         <i class="fas fa-xmark-circle text-light fs-5"></i>

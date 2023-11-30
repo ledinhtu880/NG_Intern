@@ -6,6 +6,13 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-color px-2 py-3 rounded">
+          <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Quản lý nguyên liệu thô</li>
+        </ol>
+      </nav>
       <div class="card mt-3">
         <div class="card-header p-0 overflow-hidden">
           <h4 class="card-title m-0 bg-primary-color p-3">Quản lý nguyên liệu thô</h4>

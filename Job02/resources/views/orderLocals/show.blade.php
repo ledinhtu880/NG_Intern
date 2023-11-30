@@ -1,7 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Chi tiết đơn thùng hàng')
-
+@section('title', 'Hiển thị đơn sản xuất')
 @section('content')
 <div class="container">
   <div class="row pb-5">
@@ -11,9 +10,9 @@
           <ol class="breadcrumb breadcrumb-color px-2 py-3 rounded">
             <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
             <li class="breadcrumb-item active">
-              <a class="text-decoration-none" href="{{ route('orders.index') }}">Quản lý đơn thùng hàng</a>
+              <a class="text-decoration-none" href="{{ route('orderLocals.index') }}">Quản lý đơn sản xuất</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">Xem chi tiết đơn thùng hàng</li>
+            <li class="breadcrumb-item active" aria-current="page">Xem chi tiết đơn sản xuất</li>
           </ol>
         </nav>
         <div class="card mb-2">
@@ -22,52 +21,60 @@
           </div>
           <div class="card-body">
             <div class="row">
-              <div class="col-md-4 mb-3">
+              <div class="col-md-3 mb-3">
                 <h6 class="card-subtitle">
                   Mã đơn hàng
                 </h6>
                 <p class="card-text">
-                  {{ $order->Id_Order}}
+                  {{ $orderLocal->Id_OrderLocal}}
                 </p>
               </div>
-              <div class="col-md-4 mb-3">
+              <div class="col-md-3 mb-3">
                 <h6 class="card-subtitle">
-                  Tên khách hàng
+                  Số lượng
                 </h6>
                 <p class="card-text">
-                  {{ $order->customer->Name_Customer}}
+                  {{ $orderLocal->Count }} gói
                 </p>
               </div>
-              <div class="col-md-4 mb-3">
+              <div class="col-md-3 mb-3">
                 <h6 class="card-subtitle">
-                  Ngày đặt hàng
+                  Kiểu hàng
                 </h6>
                 <p class="card-text">
-                  {{ $order->order_date}}
+                  {{ $orderLocal->type }}
                 </p>
               </div>
-              <div class="col-md-4 mb-3">
+              <div class="col-md-3 mb-3">
+                <h6 class="card-subtitle">
+                  Trạng thái
+                </h6>
+                <p class="card-text">
+                  {{ $orderLocal->status}}
+                </p>
+              </div>
+              <div class="col-md-3 mb-3">
                 <h6 class="card-subtitle">
                   Ngày giao hàng
                 </h6>
                 <p class="card-text">
-                  {{ $order->delivery_date}}
+                  {{ $orderLocal->delivery_date}}
                 </p>
               </div>
-              <div class="col-md-4 mb-3">
+              <div class="col-md-3 mb-3">
                 <h6 class="card-subtitle">
-                  Ngày nhận hàng
+                  Ngày bắt đầu
                 </h6>
                 <p class="card-text">
-                  {{ $order->reception_date}}
+                  {{ $orderLocal->start_date}}
                 </p>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-3 mb-3">
                 <h6 class="card-subtitle">
-                  Ghi chú
+                  Ngày kết thúc
                 </h6>
                 <p class="card-text">
-                  {{ $order->Note}}
+                  {{ $orderLocal->finally_date}}
                 </p>
               </div>
             </div>
@@ -75,7 +82,7 @@
         </div>
         <div class="card">
           <div class="card-header p-0 overflow-hidden">
-            <h4 class="card-title m-0 bg-primary-color p-3">Thông tin thùng hàng</h4>
+            <h4 class="card-title m-0 bg-primary-color p-3">Thông tin chi tiết</h4>
           </div>
           <div class="card-body">
             <table class="table table-striped table-bordered m-0">
@@ -95,7 +102,7 @@
                 <tr>
                   <td>{{ $each->Name_RawMaterial}}</td>
                   <td class="text-center">{{ $each->Count_RawMaterial}}</td>
-                  <td class="text-center">{{ $each->unit}}</td>
+                  <td class="text-center">{{ $each->Unit}}</td>
                   <td class="text-center">{{ $each->Name_ContainerType}}</td>
                   <td class="text-center">{{ $each->Count_Container}}</td>
                   <td class="text-center">
@@ -110,7 +117,7 @@
             </table>
           </div>
           <div class="card-footer d-flex align-items-center justify-content-end">
-            <a href="{{ route('orders.index') }}" class="btn btn-warning">Quay lại</a>
+            <a href="{{ route('orderLocals.index') }}" class="btn btn-warning">Quay lại</a>
           </div>
         </div>
       </div>

@@ -6,10 +6,17 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-color px-2 py-3 rounded">
+          <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Quản lý đơn thùng hàng</li>
+        </ol>
+      </nav>
       <div class="card mt-3">
         <div class="card-header p-0 overflow-hidden">
           <h4 class="card-title m-0 bg-primary-color p-3">Quản lý đơn thùng hàng</h4>
-          <a href="{{ route('orders.create')}}" class="btn btn-primary-color text-white p-2 my-3 ms-3">
+          <a href="{{ route('orders.create')}}" class="btn btn-primary-color text-white py-2 px-5 m-3">
             Thêm đơn thùng hàng
           </a>
         </div>

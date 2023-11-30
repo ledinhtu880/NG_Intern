@@ -1,102 +1,39 @@
 @extends('layouts.master')
 
-@section('title', 'Thêm thùng hàng vào gói hàng')
+@section('title', 'Sửa thùng hàng trong gói hàng')
 
 @section('content')
 <div class="container">
   <div class="row pb-5">
     <div class="col-md-12 d-flex justify-content-center">
-      <div class="w-75">
+      <div class="w-100">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb breadcrumb-color px-2 py-3 rounded">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
+            <li class="breadcrumb-item active">
+              <a class="text-decoration-none" href="{{ route('packs.index') }}">Quản lý đơn gói hàng</a>
+            </li>
+            <li class="breadcrumb-item active">
+              <a class="text-decoration-none" href="{{ route('orders.editOrder', ['Id_Order' => $Id_Order]) }}">
+                Sửa gói hàng
+              </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Sửa thùng hàng trong gói hàng</li>
+          </ol>
+        </nav>
         <div class="card">
           <div class="card-header p-0 overflow-hidden">
-            <h4 class="card-title m-0 bg-primary-color p-3">Sửa thùng hàng</h4>
+            <h4 class="card-title m-0 bg-primary-color p-3">Thêm thùng hàng</h4>
           </div>
-          <h1>{{ session('count') }}</h1>
           <div class="card-body">
-            {{-- <input type="hidden" name="FK_Id_Order" value="{{ $_GET['id'] }}">
-            <form method="POST" id="formProduct">
-              @csrf
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="input-group mb-3">
-                    <label class="input-group-text bg-secondary-subtle" for="FK_Id_RawMaterial" style="width: 130px;">
-                      Nguyên vật liệu
-                    </label>
-                    <select name="FK_Id_RawMaterial" id="FK_Id_RawMaterial" class="form-select">
-                      @foreach ($materials as $each)
-                      <option value="{{ $each->Id_RawMaterial }}" data-name="{{ $each->Name_RawMaterial }}">
-                        {{ $each->Name_RawMaterial }}
-                      </option>
-                      @endforeach
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="input-group mb-3 align-items-center ">
-                    <label class="input-group-text bg-secondary-subtle" for="Count_RawMaterial">
-                      Số lượng nguyên vật liệu
-                    </label>
-                    <input type="number" name="Count_RawMaterial" id="Count_RawMaterial" class="form-control" min="1"
-                      value='1'>
-                    <p data-name="unit" class="m-0 ps-3"></p>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="input-group mb-3">
-                    <label class="input-group-text bg-secondary-subtle" for="FK_ID_ContainerType" style="width: 130px;">
-                      Thùng chứa
-                    </label>
-                    <select class="form-select selectValidate" name="FK_ID_ContainerType" id="FK_ID_ContainerType">
-                      @foreach ($containers as $each)
-                      <option value="{{ $each->Id_ContainerType }}" data-name="{{ $each->Name_ContainerType }}">
-                        {{ $each->Name_ContainerType }}
-                      </option>
-                      @endforeach
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="input-group mb-3">
-                    <label class="input-group-text bg-secondary-subtle" for="Count_Container">
-                      Số lượng thùng chứa
-                    </label>
-                    <input type="number" name="Count_Container" id="Count_Container" class="form-control" min="1"
-                      value='1'>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="input-group mb-3">
-                    <label class="input-group-text bg-secondary-subtle" for="Price_Container">
-                      Đơn giá
-                    </label>
-                    <input type="number" name="Price_Container" id="Price_Container" class="form-control" min="1"
-                      value='1'>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <button type="submit" class="btn btn-primary-color mb-3 px-5">
-                    <i class="fa-solid fa-plus text-white"></i>
-                    Thêm sản phẩm
-                  </button>
-                </div>
-                <div class="col-md-6">
-                  <div class="input-group mb-3">
-                    <label class="input-group-text bg-secondary-subtle" for="Count_Pack">
-                      Số lượng gói hàng
-                    </label>
-                    <input type="number" name="Count_Pack" id="Count_Pack" class="form-control" min="1" value='1'>
-                  </div>
-                </div>
-            </form> --}}
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  {{-- <th scope="col" class="text-center align-middle col-md-1">Mã thùng</th> --}}
                   <th scope="col" class="align-middle text-center col-md-2">Nguyên liệu</th>
-                  <th class="text-center align-middle " scope="col">Số lượng nguyên liệu</th>
+                  <th class="text-center align-middle" scope="col">Số lượng nguyên liệu</th>
                   <th class="text-center align-middle" scope="col">Đơn vị</th>
                   <th class="text-center align-middle" scope="col">Thùng chứa</th>
-                  <th class="text-center align-middle " scope="col">Số lượng thùng chứa</th>
+                  <th class="text-center align-middle" scope="col">Số lượng thùng chứa</th>
                   <th class="text-center align-middle" scope="col">Đơn giá</th>
                   <th class="text-center align-middle">Xóa</th>
                 </tr>
@@ -209,8 +146,6 @@
     $('.btnDeleteSimple').click(function () {
       let Id_SimpleContent = $(this).data('id');
       let Id_PackContent = @json($Id_PackContent);
-      // console.log(Id_SimpleContent);
-      // console.log(@json($Id_PackContent));
       $.ajax({
         method: 'POST',
         data: {
@@ -221,7 +156,6 @@
         url: "/packs/deleteSimpleContent/" + Id_SimpleContent,
         success: function (data) {
           window.location.href = data.url;
-          // console.log(data);
         }
       });
     })
@@ -238,21 +172,13 @@
 
     // Sự kiện lưu gói hàng
     $("#saveBtn").on('click', function () {
-      // IdPackContent
       let idPackContent = @json($Id_PackContent);
-      // IdSimpleContents
       let idSimpleContents = getValueIntoArr($(".Id_SimpleContent"));
-      // FK_Id_RawMaterials
       let fkIdRawMaterials = getValueIntoArr($(".Id_RawMaterial"))
-      // Count_RawMaterials
       let countRawMaterials = getValueIntoArr($(".Count_RawMaterial"));
-      // FK_Id_ContainerTypes
       let fkIdContainerTypes = getValueIntoArr($(".Id_ContainerType"));
-      // Count_Container
       let countContainers = getValueIntoArr($(".Count_Container"));
-      // Price_Container
       let priceContainers = getValueIntoArr($(".Price_Container"));
-      // console.log(priceContainer);
       $.ajax({
         url: '/simples/updateSimpleContent',
         type: 'POST',

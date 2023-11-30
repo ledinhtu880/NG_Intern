@@ -48,7 +48,7 @@ class OrderLocal extends Model
     }
     public function getFinallyDateAttribute()
     {
-        if ($this->Date_Fin == null) {
+        if ($this->Data_Fin == null) {
             return "Chưa hoàn thành";
         } else {
             $dateFinally = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Data_Fin);

@@ -6,7 +6,14 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <div class="card mt-3">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-color px-2 py-3 rounded">
+          <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Quản lý đơn sản xuất</li>
+        </ol>
+      </nav>
+      <div class="card">
         <div class="card-header p-0 overflow-hidden">
           <h4 class="card-title m-0 bg-primary-color p-3">Quản lý đơn sản xuất</h4>
           <a href="{{ route('orderLocals.create')}}" class="btn btn-primary-color text-white py-2 px-5 m-3">
@@ -14,29 +21,29 @@
           </a>
         </div>
         <div class="card-body px-0">
-          <table class="table table-striped w-100">
-            <thead>
+          <table class="table table-striped">
+            <thead class="text-center">
               <tr>
-                <th class="text-center" scope="col">Mã đơn</th>
-                <th class="text-center" scope="col">Kiểu gói</th>
-                <th class="text-center" scope="col">Số lượng</th>
-                <th class="text-center" scope="col">Ngày giao hàng</th>
-                <th class="text-center" scope="col">Trạng thái</th>
-                <th class="text-center" scope="col">Ngày hoàn thành</th>
+                <th scope="col">Mã đơn</th>
+                <th scope="col">Kiểu hàng</th>
+                <th scope="col">Số lượng</th>
+                <th scope="col">Ngày giao hàng</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col">Ngày hoàn thành</th>
                 <th></th>
               </tr>
             </thead>
-            <tbody id="table-data" class="table-group-divider">
+            <tbody id="table-data" class="table-group-divider text-center">
               @foreach($data as $each)
               <tr>
-                <td class="text-center">{{ $each->Id_OrderLocal }}</td>
-                <td class="text-center">{{ $each->type }}</td>
-                <td class="text-center">{{ $each->Count }} gói</td>
-                <td class="text-center">{{ $each->delivery_date }}</td>
-                <td class="text-center">{{ $each->status }}</td>
-                <td class="text-center">{{ $each->finally_date }}</td>
+                <td>{{ $each->Id_OrderLocal }}</td>
+                <td>{{ $each->type }}</td>
+                <td>{{ $each->Count }} gói</td>
+                <td>{{ $each->delivery_date }}</td>
+                <td>{{ $each->status }}</td>
+                <td>{{ $each->finally_date }}</td>
                 <td>
-                  <a href="{{ route('orders.show', $each) }}"
+                  <a href="{{ route('orderLocals.show', $each) }}"
                     class="btn btn-sm btn-outline-light text-primary-color border-secondary">
                     <i class="fa-solid fa-eye"></i>
                   </a>
@@ -45,10 +52,10 @@
                     <i class="fa-solid fa-pen-to-square"></i>
                   </a>
                   <button type="button" class="btn btn-sm btn-outline-light text-primary-color border-secondary"
-                    data-bs-toggle="modal" data-bs-target="#deleteOrder-{{$each->Id_OrderMakeOrExpedition}}">
+                    data-bs-toggle="modal" data-bs-target="#deleteOrder-{{$each->Id_OrderLocal}}">
                     <i class="fa-solid fa-trash"></i>
                   </button>
-                  <div class="modal fade" id="deleteOrder-{{$each->Id_OrderMakeOrExpedition}}" tabindex="-1"
+                  <div class="modal fade" id="deleteOrder-{{$each->Id_OrderLocal}}" tabindex="-1"
                     aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                       <div class="modal-content">
@@ -61,7 +68,7 @@
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                          <form method="POST" action="{{ route('orders.destroy', $each) }}">
+                          <form method="POST" action="{{ route('orderLocals.destroy', $each) }}">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Xóa</button>

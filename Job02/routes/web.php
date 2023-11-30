@@ -41,6 +41,8 @@ Route::middleware('checklogin')->group(function () {
     Route::get('/editSimple/{Id_PackContent}', [ContentPackController::class, 'showFormEditSimple'])->name('showFormEditSimple');
     Route::post('/deleteSimpleContent/{Id_SimpleContent}', [ContentPackController::class, 'destroySimpleContent'])->name('destroySimpleContent');
     Route::post('/destroyPackContent', [ContentPackController::class, 'destroyPackContent'])->name('destroyPackContent');
+    Route::get('/show/{Id_Order}', [ContentPackController::class, 'showDetails'])->name('showDetails');
+    Route::post('/showDetailsPack', [ContentPackController::class, 'showDetailsPack'])->name('showDetailsPack');
   });
   Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
     Route::post('/storeOrder', [OrderController::class, 'storeOrder'])->name('storeOrder');
@@ -59,22 +61,27 @@ Route::middleware('checklogin')->group(function () {
   Route::group(['prefix' => 'orderLocals', 'as' => 'orderLocals.'], function () {
     Route::get('/', [OrderLocalController::class, 'index'])->name('index');
     Route::get('/create', [OrderLocalController::class, 'create'])->name('create');
-    Route::get('/edit', [OrderLocalController::class, 'edit'])->name('edit');
     Route::post('/store', [OrderLocalController::class, 'store'])->name('store');
-    Route::post('/show', [OrderLocalController::class, 'show'])->name('show');
-    Route::post('/showSimpleOrPack', [OrderLocalController::class, 'showSimpleOrPack'])->name('showSimpleOrPack');
+    Route::get('/{orderLocal}', [OrderLocalController::class, 'show'])->name('show');
+    Route::post('/destroyOrder', [OrderLocalController::class, 'destroyOrder'])->name('destroyOrder');
+    Route::post('/destroySimple', [OrderLocalController::class, 'destroySimple'])->name('destroySimple');
+    Route::post('/showDetail', [OrderLocalController::class, 'showDetail'])->name('showDetail');
     Route::post('/showSimple', [OrderLocalController::class, 'showSimpleByCustomerType'])->name('showSimple');
     Route::post('/showOrder', [OrderLocalController::class, 'showOrderByCustomerType'])->name('showOrder');
-    Route::post('/destroy', [OrderLocalController::class, 'destroy'])->name('destroy');
+    Route::put('/update/{id}', [OrderLocalController::class, 'update'])->name('update');
+    Route::get('/edit/{id}', [OrderLocalController::class, 'edit'])->name('edit');
+    Route::get('/edit/{id}/addSimple', [OrderLocalController::class, 'addSimple'])->name('addSimple');
+    Route::post('/storeSimple', [OrderLocalController::class, 'storeSimple'])->name('storeSimple');
+    Route::delete('/{id}', [OrderLocalController::class, 'destroy'])->name('destroy');
   });
 
   Route::group(['prefix' => 'wares', 'as' => 'wares.'], function () {
     Route::get('/', [WareController::class, 'index'])->name('index');
     Route::get('/create', [WareController::class, 'create'])->name('create');
-    Route::get('/{id}', [WareController::class, 'show'])->name('show');
-    Route::post('createWare', [WareController::class, 'createWare']);
-    Route::post('show', [WareController::class, 'showDetails']);
-    Route::post('setCellStatus', [WareController::class, 'setCellStatus']);
+    Route::get('show', [WareController::class, 'show'])->name('show');
+    Route::post('createWare', [WareController::class, 'createWare'])->name('createWare');
+    Route::post('/showDetails', [WareController::class, 'showDetails'])->name('showDetails');
+    Route::post('setCellStatus', [WareController::class, 'setCellStatus'])->name('setCellStatus');
   });
 
   Route::post('/stations/showStation', [StationController::class, 'showStationTypeById'])->name('showStationTypeById');

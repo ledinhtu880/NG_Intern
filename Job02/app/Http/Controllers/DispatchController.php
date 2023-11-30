@@ -41,10 +41,10 @@ class DispatchController extends Controller
         $stationProd = $request->input('station');
         $contentSimple = DB::table('ContentSimple')->join('DetailContentSimpleOrderLocal', 'ContentSimple.Id_SimpleContent', '=', 'DetailContentSimpleOrderLocal.FK_Id_ContentSimple')
             ->join('OrderLocal', 'DetailContentSimpleOrderLocal.FK_Id_OrderLocal', '=', 'OrderLocal.Id_OrderLocal')->where('Id_OrderLocal', $id)->get();
-
         $contentPack = DB::table('ContentPack')->join('DetailContentPackOrderLocal', 'ContentPack.Id_PackContent', '=', 'DetailContentPackOrderLocal.FK_Id_ContentPack')
             ->join('OrderLocal', 'DetailContentPackOrderLocal.FK_Id_OrderLocal', '=', 'OrderLocal.Id_OrderLocal')->where('Id_OrderLocal', $id)->get();
-
+        $SimpleOrPack = DB::table('OrderLocal')->where('Id_OrderLocal', $id)->value('SimpleOrPack');
+        $status = DB::table('OrderLocal')->where('Id_OrderLocal', $id)->value('MakeOrPackOrExpedition');
 
         DB::table('DispatcherOrder')->insert([
             'FK_Id_OrderLocal' => $id,
@@ -53,31 +53,33 @@ class DispatchController extends Controller
             'IsFinish' => 0,
         ]);
 
-        if ($contentPack) {
-            foreach ($contentPack as $item) {
-                DB::table('ProcessContentPack')->insert([
-                    'FK_Id_ContentPack' => $item->Id_PackContent,
-                    'FK_Id_Station' => 406,
-                    'FK_Id_State' => 0,
-                    'Data_Start' => Carbon::now(),
-                ]);
-            }
-        }
-        if ($contentSimple) {
+        if ($SimpleOrPack == 0) {
+            $station = null;
+            if ($status == 0) $station = 401;
+            elseif ($status == 1 || $status == 2) $station = 406;
             foreach ($contentSimple as $item) {
                 DB::table('ProcessContentSimple')->insert([
                     'FK_Id_ContentSimple' => $item->Id_SimpleContent,
-                    'FK_Id_Station' => $item->MakeOrExpedition ? 406 : 401,
+                    'FK_Id_Station' => $station,
+                    'FK_Id_State' => 0,
+                    'Data_Start' => Carbon::now(),
+                ]);
+            }
+        } else if ($SimpleOrPack == 1) {
+            $station = null;
+            if ($status == 0) $station = 401;
+            elseif ($status == 1) $station = 406;
+            elseif ($status == 2) $station = 406;
+            foreach ($contentPack as $item) {
+                DB::table('ProcessContentPack')->insert([
+                    'FK_Id_ContentPack' => $item->Id_PackContent,
+                    'FK_Id_Station' => $station,
                     'FK_Id_State' => 0,
                     'Data_Start' => Carbon::now(),
                 ]);
             }
         }
-        return response()->json([
-            'status' => 'success',
-        ]);
     }
-
     public function show(Request $request)
     {
         $id = $request->input('id');

@@ -34,7 +34,6 @@ $(document).ready(function () {
         let SimpleOrPack = $("#SimpleOrPack").val();
         let firstUrl = "/orderLocals/showSimple";
         $("#table-data").empty();
-        $("#table-heading").empty();
         $("#table-result").empty();
         $.ajax({
             url: firstUrl,
@@ -48,20 +47,11 @@ $(document).ready(function () {
             success: function (response) {
                 let dataHtmls = "";
                 let secondUrl = "/orderLocals/showOrder";
-                $("#table-heading").html(`
-                    <tr>
-                        <th class="text-center" scope="col">Chọn</th>
-                        <th class="text-center" scope="col">Khách hàng</th>
-                        <th class="text-center" scope="col">Thùng chứa</th>
-                        <th class="text-center" scope="col">Số lượng thùng chứa</th>
-                        <th class="text-center" scope="col">Đơn giá thùng chứa</th>
-                    </tr>
-                `);
                 $.each(response.data, function (key, value) {
                     dataHtmls += `<tr>
                         <td class="d-flex justify-content-center" data-id="Id_SimpleContent"
                             data-value="${value.Id_SimpleContent}">
-                            <input type="checkbox" class="form-check" name="firstFormCheck"
+                            <input type="checkbox" class="checkbox form-check-input" name="firstFormCheck"
                             id="firstFormCheck-${value.Id_SimpleContent}">
                         </td>
                         <td data-id="Name_Customer" data-value="${
@@ -69,6 +59,16 @@ $(document).ready(function () {
                         }" class="text-center text-truncate"
                             style="max-width: 200px; width: 200px;">
                             ${value.Name_Customer}
+                        </td>
+                        <td data-id="Name_RawMaterial" data-value="${
+                            value.Name_RawMaterial
+                        }" class="text-center">
+                        ${value.Name_RawMaterial}
+                        </td>
+                        <td data-id="Count_RawMaterial" data-value="${
+                            value.Count_RawMaterial
+                        }" class="text-center">
+                        ${value.Count_RawMaterial}
                         </td>
                         <td data-id="Name_ContainerType" data-value="${
                             value.Name_ContainerType
@@ -104,7 +104,7 @@ $(document).ready(function () {
                                 <tr>
                                 <td class="align-middle">
                                     <div class="d-flex justify-content-center align-items-center">
-                                    <input type="checkbox" class="form-check" name="secondFormCheck"
+                                    <input type="checkbox" class="checkbox form-check-input" name="secondFormCheck"
                                         id="secondFormCheck-${
                                             value.Id_OrderLocal
                                         }">
@@ -203,35 +203,16 @@ $(document).ready(function () {
         let dateDeliveryInputValue = dateDeliveryInput.val();
         let SimpleOrPack = $("#SimpleOrPack").val();
         let isValid = false;
-        if (SimpleOrPack == 0) {
-            rowElements.each(function () {
-                if (
-                    $(this).find("input[type=checkbox]").prop("checked") ===
-                    true
-                ) {
-                    let rowData = {};
-                    rowData.Id_SimpleContent = $(this)
-                        .find('td[data-id="Id_SimpleContent"]')
-                        .data("value");
-                    rowDataArray.push(rowData);
-                    isValid = true;
-                }
-            });
-        } else if (SimpleOrPack == 1) {
-            rowElements.each(function () {
-                if (
-                    $(this).find("input[type=checkbox]").prop("checked") ===
-                    true
-                ) {
-                    let rowData = {};
-                    rowData.Id_SimpleContent = $(this)
-                        .find('td[data-id="Id_SimpleContent"]')
-                        .data("value");
-                    rowDataArray.push(rowData);
-                    isValid = true;
-                }
-            });
-        }
+        rowElements.each(function () {
+            if ($(this).find("input[type=checkbox]").prop("checked") === true) {
+                let rowData = {};
+                rowData.Id_SimpleContent = $(this)
+                    .find('td[data-id="Id_SimpleContent"]')
+                    .data("value");
+                rowDataArray.push(rowData);
+                isValid = true;
+            }
+        });
         if (isValid) {
             let url = "/orderLocals/store";
             $.ajax({
@@ -255,7 +236,7 @@ $(document).ready(function () {
                     <tr>
                         <td class="align-middle">
                         <div class="d-flex justify-content-center align-items-center">
-                            <input type="checkbox" class="form-check" name="secondFormCheck" id="secondFormCheck-${Id_OrderLocal}">
+                            <input type="checkbox" class="checkbox form-check-input" name="secondFormCheck" id="secondFormCheck-${Id_OrderLocal}">
                         </div>
                         </td>
                         <td data-id="Id_OrderLocal" data-value="${Id_OrderLocal}" class="text-center">${Id_OrderLocal}</td>
@@ -339,7 +320,6 @@ $(document).ready(function () {
         let rowElements = $("#table-result tr");
         let rowDataArray = [];
         let isValid = false;
-        let SimpleOrPack = $("#SimpleOrPack").val();
         rowElements.each(function () {
             if ($(this).find("input[type=checkbox]").prop("checked") === true) {
                 let rowData = {};
@@ -351,12 +331,11 @@ $(document).ready(function () {
             }
         });
         if (isValid) {
-            let url = "/orderLocals/destroy";
+            let url = "/orderLocals/destroyOrder";
             $.ajax({
                 url: url,
                 type: "post",
                 data: {
-                    SimpleOrPack: SimpleOrPack,
                     rowData: rowDataArray,
                     _token: token,
                 },
@@ -392,7 +371,7 @@ $(document).ready(function () {
     $(document).on("click", ".btnShow", function () {
         let id = $(this).data("id");
         $.ajax({
-            url: "/orderLocals/show",
+            url: "/orderLocals/showDetail",
             method: "POST",
             dataType: "json",
             data: {
@@ -411,8 +390,8 @@ $(document).ready(function () {
                     htmls += `<tr>
                         <td class="text-center">${value.Name_RawMaterial}</td>
                         <td class="text-center">${value.Count_RawMaterial}</td>
+                        <td class="text-center">${value.Unit}</td>
                         <td class="text-center">${value.Name_ContainerType}</td>
-                        <td class="text-center">${value.Count_Container}</td>
                         <td class="text-center">${value.Count_Container}</td>
                         <td class="text-center">${numberFormat(
                             value.Price_Container
@@ -429,16 +408,6 @@ $(document).ready(function () {
         });
     });
     $("#SimpleOrPack").on("change", function () {
-        $.ajax({
-            url: "/orderLocals/showSimpleOrPack",
-            method: "POST",
-            dataType: "json",
-            data: {
-                _token: token,
-            },
-            success: function (response) {
-                $(selectElement).change();
-            },
-        });
+        $(selectElement).change();
     });
 });

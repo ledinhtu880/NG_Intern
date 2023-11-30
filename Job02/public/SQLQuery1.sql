@@ -18,7 +18,23 @@ select * from [SIFMES].dbo.[RawMaterial]
 select * from [SIFMES].dbo.[OrderLocal]
 select * from [SIFMES].dbo.[DetailContentSimpleOrderLocal]
 select * from [SIFMES].dbo.[DetailContentPackOrderLocal]
+select * from [SIFMES].dbo. 
 
 -- Sửa độ dài của cột password trong bảng [User] (Chỉ dùng khi restore database)
 alter table [User]
 alter column password varchar(60)
+select * from ContentSimple
+select * from [Order]
+
+select * from CustomerType
+select CustomerType.Id from CustomerType
+inner join Customer on Customer.FK_Id_CustomerType = CustomerType.ID
+inner join [Order] on [Order].FK_Id_Customer = Customer.Id_Customer
+inner join ContentSimple on ContentSimple.FK_Id_Order = [Order].Id_Order
+inner join DetailContentSimpleOrderLocal on ContentSimple.Id_SimpleContent = DetailContentSimpleOrderLocal.FK_Id_ContentSimple
+where DetailContentSimpleOrderLocal.FK_Id_OrderLocal = 3
+group by CustomerType.Id
+
+delete from [Order]
+delete from DetailContentSimpleOfPack
+delete from ProcessContentSimple

@@ -14,7 +14,7 @@
           <div class="card-body">
             <form method="POST" id="formInformation">
               @csrf
-              <input type="hidden" name="count" value="{{ isset($count) ? $count : 0}}">
+              <input type="hidden" name="count" value="{{ isset($count) ? 1 : 0 }}">
               <input type="hidden" name="SimpleOrPack" value="1">
               <div class="row">
                 <div class="col-md-4">
@@ -42,8 +42,9 @@
                     <div class="col-md-12">
                       <div class="input-group">
                         <label class="input-group-text bg-secondary-subtle" style="width: 130px;">Ngày đặt hàng</label>
-                        <input type="date" class="form-control" id="Date_Order" name="Date_Order"
-                          value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Order)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                        <input type="date" class="form-control" id="Date_Order" name="Date_Order" value="{{ isset($information) 
+                          ? \Carbon\Carbon::parse($information->Date_Order)->format('Y-m-d') 
+                          : \Carbon\Carbon::now()->format('Y-m-d') }}">
                       </div>
                       <span class="form-message text-danger"></span>
                     </div>
@@ -143,7 +144,7 @@
           </div>
         </div>
         <div class="d-flex align-items-center justify-content-end mt-3">
-          <a href="{{ route('packs.index') }}" class="btn btn-lg btn-primary-color px-4">Lưu</a>
+          <a href="{{ route('packs.index') }}" class="btn btn-lg btn-primary-color px-4" id="btn_save">Lưu</a>
         </div>
       </div>
     </div>

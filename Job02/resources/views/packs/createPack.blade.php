@@ -36,8 +36,7 @@
                     <label class="input-group-text bg-secondary-subtle" for="Count_RawMaterial">
                       Số lượng nguyên vật liệu
                     </label>
-                    <input type="number" name="Count_RawMaterial" id="Count_RawMaterial" class="form-control" min="1"
-                      value='1'>
+                    <input type="number" name="Count_RawMaterial" id="Count_RawMaterial" class="form-control" min="1" value='1'>
                     <p data-name="unit" class="m-0 ps-3"></p>
                   </div>
                 </div>
@@ -60,8 +59,7 @@
                     <label class="input-group-text bg-secondary-subtle" for="Count_Container">
                       Số lượng thùng chứa
                     </label>
-                    <input type="number" name="Count_Container" id="Count_Container" class="form-control" min="1"
-                      value='1'>
+                    <input type="number" name="Count_Container" id="Count_Container" class="form-control" min="1" value='1'>
                   </div>
                 </div>
                 <div class="col-md-4">
@@ -69,8 +67,7 @@
                     <label class="input-group-text bg-secondary-subtle" for="Price_Container">
                       Đơn giá
                     </label>
-                    <input type="number" name="Price_Container" id="Price_Container" class="form-control" min="1"
-                      value='1'>
+                    <input type="number" name="Price_Container" id="Price_Container" class="form-control" min="1" value='1'>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -114,19 +111,6 @@
     </div>
   </div>
 </div>
-
-<div class="toast-container rounded position-fixed bottom-0 end-0 p-3">
-  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-body d-flex align-items-center justify-content-between">
-      <div class="d-flex justify-content-center align-items-center gap-2">
-        <i id="icon" class="fas text-light fs-5"></i>
-        <h6 id="toast-msg" class="h6 text-white m-0"></h6>
-      </div>
-      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  </div>
-</div>
-
 @endsection
 
 @push('javascript')
