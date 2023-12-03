@@ -32,13 +32,21 @@
           <div class="row">
             <div class="col-md-6">
               <div class="d-flex flex-column">
-                <a href="{{ route('orderLocals.index') }}" class="btn btn-primary-color my-1 w-50">
+                <a href="{{ route('orderLocals.makes.index') }}" class="btn btn-primary-color my-1 w-50">
                   Quản lý đơn sản xuất
                 </a>
-                <a href="{{ route('orders.index') }}" class="btn btn-primary-color my-1 w-50">
+                <a href="{{ route('orderLocals.packs.index') }}" class="btn btn-primary-color my-1 w-50">
+                  Quản lý đơn đóng gói
+                </a>
+                <a href="{{ route('orderLocals.expeditions.index') }}" class="btn btn-primary-color my-1 w-50">
+                  Quản lý đơn giao hàng
+                </a>
+                <a href="{{ route('orders.simples.index') }}" class="btn btn-primary-color my-1 w-50">
                   Quản lý thùng hàng
                 </a>
-                <a href="{{ route('packs.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý gói hàng</a>
+                <a href="{{ route('orders.packs.index') }}" class="btn btn-primary-color my-1 w-50">
+                  Quản lý gói hàng
+                </a>
                 <a href="{{ route('customers.index') }}" class="btn btn-primary-color my-1 w-50">
                   Quản lý khách hàng
                 </a>

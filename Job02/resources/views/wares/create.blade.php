@@ -10,7 +10,7 @@
         <ol class="breadcrumb breadcrumb-color px-2 py-3 rounded">
           <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
           <li class="breadcrumb-item active">
-            <a class="text-decoration-none" href="{{ route('wares.index') }}">Quản lý đơn sản xuất</a>
+            <a class="text-decoration-none" href="{{ route('wares.index') }}">Quản lý kho chứa</a>
           </li>
           <li class="breadcrumb-item active" aria-current="page">Thêm kho chứa</li>
         </ol>

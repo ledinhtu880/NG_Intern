@@ -10,10 +10,10 @@
           <ol class="breadcrumb breadcrumb-color px-2 py-3 rounded">
             <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
             <li class="breadcrumb-item active">
-              <a class="text-decoration-none" href="{{ route('orderLocals.index') }}">Quản lý đơn sản xuất</a>
+              <a class="text-decoration-none" href="{{ route('orderLocals.makes.index') }}">Quản lý đơn sản xuất</a>
             </li>
             <li class="breadcrumb-item active">
-              <a class="text-decoration-none" href="{{ route('orderLocals.edit', $id) }}">
+              <a class="text-decoration-none" href="{{ route('orderLocals.makes.edit', $id) }}">
                 Sửa đơn sản xuất
               </a>
             </li>
@@ -72,7 +72,7 @@
           </div>
           <div class="card-footer">
             <div class="d-flex align-content-center justify-content-end gap-3">
-              <a href="{{ route('orderLocals.edit', $id) }}" class="btn btn-warning px-3">Quay lại</a>
+              <a href="{{ route('orderLocals.makes.edit', $id) }}" class="btn btn-warning px-3">Quay lại</a>
               <button type="submit" class="btn btn-primary-color" id="storeSimpleBtn">Lưu</button>
             </div>
           </div>

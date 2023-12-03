@@ -9,30 +9,40 @@ class WareController extends Controller
 {
   public function index()
   {
-    $wares = DB::table('WareHouse')->get();
-    return view("wares.index", compact('wares'));
+    return view("wares.index");
   }
   public function create()
   {
-    $stations = DB::table('Station')->get();
+    $stations = DB::table('Station')->where('Id_Station', 406)->orWhere('Id_Station', 409)->get();
     return view('wares.create', compact('stations'));
   }
   public function show()
   {
-    $stations = DB::table('Station')->get();
+    $stations = DB::table('Station')->where('Id_Station', 406)->orWhere('Id_Station', 409)->get();
     return view('wares.show', compact('stations'));
   }
   public function showDetails(Request $request)
   {
     $ware = $request->input("kho");
-    $count = DB::table("DetailStateCellOfSimpleWareHouse")->where('Fk_Id_Station', $ware)->count();
-    if ($count > 0) {
-      $details = DB::table('DetailStateCellOfSimpleWareHouse')->where('Fk_Id_Station', $ware)->get();
-      $col = DB::table('DetailStateCellOfSimpleWareHouse')->where('Fk_Id_Station', $ware)->distinct()->count('Colj');
-      $row = DB::table('DetailStateCellOfSimpleWareHouse')->where('Fk_Id_Station', $ware)->distinct()->count('Rowi');
-      return response()->json(['details' => $details, 'col' => $col, 'row' => $row]);
+    if ($ware == 406) {
+      $count = DB::table("DetailStateCellOfSimpleWareHouse")->where('Fk_Id_Station', $ware)->count();
+      if ($count > 0) {
+        $details = DB::table('DetailStateCellOfSimpleWareHouse')->where('Fk_Id_Station', $ware)->get();
+        $col = DB::table('DetailStateCellOfSimpleWareHouse')->where('Fk_Id_Station', $ware)->distinct()->count('Colj');
+        $row = DB::table('DetailStateCellOfSimpleWareHouse')->where('Fk_Id_Station', $ware)->distinct()->count('Rowi');
+        return response()->json(['details' => $details, 'col' => $col, 'row' => $row]);
+      }
+      return response()->json(['count' => $count]);
+    } else if ($ware == 409) {
+      $count = DB::table("DetailStateCellOfPackWareHouse")->where('Fk_Id_Station', $ware)->count();
+      if ($count > 0) {
+        $details = DB::table('DetailStateCellOfPackWareHouse')->where('Fk_Id_Station', $ware)->get();
+        $col = DB::table('DetailStateCellOfPackWareHouse')->where('Fk_Id_Station', $ware)->distinct()->count('Colj');
+        $row = DB::table('DetailStateCellOfPackWareHouse')->where('Fk_Id_Station', $ware)->distinct()->count('Rowi');
+        return response()->json(['details' => $details, 'col' => $col, 'row' => $row]);
+      }
+      return response()->json(['count' => $count]);
     }
-    return response()->json(['count' => $count]);
   }
   public function createWare(Request $request)
   {
@@ -49,14 +59,26 @@ class WareController extends Controller
         "numRow" => $row,
         "numCol" => $col
       ]);
-      for ($i = 0; $i < count($data); $i++) {
-        DB::table("DetailStateCellOfSimpleWareHouse")->insert([
-          "Rowi" => $data[$i][0],
-          "Colj" => $data[$i][1],
-          "FK_Id_StateCell" => $data[$i][2],
-          "Fk_Id_Station" => $ware,
-          "Fk_Id_SimpleContent" => null,
-        ]);
+      if ($ware == 406) {
+        for ($i = 0; $i < count($data); $i++) {
+          DB::table("DetailStateCellOfSimpleWareHouse")->insert([
+            "Rowi" => $data[$i][0],
+            "Colj" => $data[$i][1],
+            "FK_Id_StateCell" => $data[$i][2],
+            "Fk_Id_Station" => $ware,
+            "Fk_Id_SimpleContent" => null,
+          ]);
+        }
+      } elseif ($ware == 409) {
+        for ($i = 0; $i < count($data); $i++) {
+          DB::table("DetailStateCellOfPackWareHouse")->insert([
+            "Rowi" => $data[$i][0],
+            "Colj" => $data[$i][1],
+            "FK_Id_StateCell" => $data[$i][2],
+            "Fk_Id_Station" => $ware,
+            "Fk_Id_PackContent" => null,
+          ]);
+        }
       }
       return response()->json(['success' => 'Khởi tạo kho thành công']);
     }
@@ -74,5 +96,17 @@ class WareController extends Controller
       ->update([
         'FK_Id_StateCell' => $status,
       ]);
+  }
+  public function showSimple(Request $request)
+  {
+    $id = $request->input('id');
+    $data = DB::table('ContentSimple')
+      ->select('Name_RawMaterial', 'Count_RawMaterial', 'Unit', 'Name_ContainerType', 'Count_Container', 'Price_Container')
+      ->join('RawMaterial', 'Id_RawMaterial', '=', 'FK_Id_RawMaterial')
+      ->join('ContainerType', 'Id_ContainerType', '=', 'FK_Id_ContainerType')
+      ->join('DetailStateCellOfSimpleWareHouse', 'Id_SimpleContent', '=', 'FK_Id_SimpleContent')
+      ->where('FK_Id_SimpleContent', '=', $id)
+      ->get();
+    return response()->json($data);
   }
 }
