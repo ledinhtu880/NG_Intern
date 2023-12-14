@@ -92,9 +92,8 @@
                   <div class="input-group">
                     <span class="input-group-text bg-secondary-subtle">Ghi chú</span>
                     <textarea class="form-control" style="height: 91px;" aria-label="Notes" name="Note" {{
-                      isset($information) ? "readonly" : '' }} rows="5">
-                      {{ isset($information) ? $information->Note : '' }}
-                    </textarea>
+                      isset($information) ? "readonly" : '' }}
+                      rows="5">{{ isset($information) ? $information->Note : '' }}</textarea>
                   </div>
                 </div>
               </div>
@@ -126,7 +125,9 @@
                 <tr data-id="{{ $each->Id_PackContent }}">
                   <td class="text-center">{{ $each->Id_PackContent }}</td>
                   <td class="text-center">{{ $each->Count_Pack }} gói hàng</td>
-                  <td class="text-center">{{ number_format($each->Price_Pack, 0, ',', '.') . ' VNĐ' }}</td>
+                  <td class="text-center">
+                    {{ number_format($each->Price_Pack, 0, ',', '.') . ' VNĐ' }}
+                  </td>
                   <td class="text-center">
                     <button type="button" class="btn btn-sm btn-outline-light text-primary-color border-secondary"
                       data-bs-toggle="modal" data-bs-target="#deleteID-{{ $each->Id_PackContent }}">
@@ -169,5 +170,6 @@
 @endsection
 
 @push('javascript')
+<script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/orders/packs/create.js') }}"></script>
 @endpush

@@ -92,7 +92,9 @@
                 <tr>
                   <th class="text-center ">{{ $contentPack->Id_PackContent }}</th>
                   <td class="text-center ">{{ $contentPack->Count_Pack }}</td>
-                  <td class="text-center ">{{ $contentPack->Price_Pack }}</td>
+                  <td class="text-center ">
+                    {{ number_format($contentPack->Price_Pack, 0, ',', '.') . ' VNĐ' }}
+                  </td>
                   <td class="text-center ">
                     <!-- Button trigger modal -->
                     <button type="button"
@@ -118,15 +120,14 @@
                               <thead>
                                 <tr>
                                   <th scope="col" class="align-middle text-center col-md-2">Nguyên liệu</th>
-                                  <th class="text-center align-middle " scope="col">Số lượng nguyên liệu</th>
+                                  <th class="text-center align-middle" scope="col">Số lượng nguyên liệu</th>
                                   <th class="text-center align-middle" scope="col">Đơn vị</th>
                                   <th class="text-center align-middle" scope="col">Thùng chứa</th>
-                                  <th class="text-center align-middle " scope="col">Số lượng thùng chứa</th>
+                                  <th class="text-center align-middle" scope="col">Số lượng thùng chứa</th>
                                   <th class="text-center align-middle" scope="col">Đơn giá</th>
                                 </tr>
                               </thead>
                               <tbody class="body-table">
-
                               </tbody>
                             </table>
                           </div>
@@ -136,7 +137,6 @@
                         </div>
                       </div>
                     </div>
-
                   </td>
                 </tr>
                 @endforeach

@@ -11,7 +11,7 @@
           <h6>Quản lý</h6>
         </div>
         <div class="tab-item">
-          <h6>Dây chuyền xử lý sản xuất</h6>
+          <h6>Quản lý đơn nội bộ</h6>
         </div>
         <div class="tab-item">
           <h6>Theo dõi</h6>
@@ -32,30 +32,23 @@
           <div class="row">
             <div class="col-md-6">
               <div class="d-flex flex-column">
-                <a href="{{ route('orderLocals.makes.index') }}" class="btn btn-primary-color my-1 w-50">
-                  Quản lý đơn sản xuất
-                </a>
-                <a href="{{ route('orderLocals.packs.index') }}" class="btn btn-primary-color my-1 w-50">
-                  Quản lý đơn đóng gói
-                </a>
-                <a href="{{ route('orderLocals.expeditions.index') }}" class="btn btn-primary-color my-1 w-50">
-                  Quản lý đơn giao hàng
-                </a>
-                <a href="{{ route('orders.simples.index') }}" class="btn btn-primary-color my-1 w-50">
-                  Quản lý thùng hàng
-                </a>
-                <a href="{{ route('orders.packs.index') }}" class="btn btn-primary-color my-1 w-50">
-                  Quản lý gói hàng
-                </a>
                 <a href="{{ route('customers.index') }}" class="btn btn-primary-color my-1 w-50">
                   Quản lý khách hàng
                 </a>
                 <a href="{{ route('rawMaterials.index') }}" class="btn btn-primary-color my-1 w-50">
                   Quản lý nguyên liệu
                 </a>
+                <a href="{{ route('orders.simples.index') }}" class="btn btn-primary-color my-1 w-50">
+                  Quản lý đơn thùng hàng
+                </a>
+                <a href="{{ route('orders.packs.index') }}" class="btn btn-primary-color my-1 w-50">
+                  Quản lý đơn gói hàng
+                </a>
                 <a href="{{ route('wares.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý kho hàng</a>
                 <a href="{{ route('stations.index') }}" class="btn btn-primary-color my-1 w-50">Quản lý trạm</a>
-                <a href="{{ route('dispatch.index') }}" class="btn btn-primary-color my-1 w-50">Xử lý đơn hàng</a>
+                <a href="{{ route('productStationLines.index') }}" class="btn btn-primary-color my-1 w-50">
+                  Quản lý dây chuyền sản xuất
+                </a>
               </div>
             </div>
             <div class="col-md-6 text-center">
@@ -67,68 +60,17 @@
           <div class="row">
             <div class="col-md-6">
               <div class="d-flex flex-column">
-                <a href="{{ route('productStationLines.create') }}" class="btn btn-primary-color">Thêm dây chuyền xử lý
-                  sản xuất mới</a>
+                <a href="{{ route('orderLocals.makes.index') }}" class="btn btn-primary-color my-1 w-50">
+                  Quản lý đơn sản xuất
+                </a>
+                <a href="{{ route('orderLocals.packs.index') }}" class="btn btn-primary-color my-1 w-50">
+                  Quản lý đơn đóng gói
+                </a>
+                <a href="{{ route('orderLocals.expeditions.index') }}" class="btn btn-primary-color my-1 w-50">
+                  Quản lý đơn giao hàng
+                </a>
+                <a href="{{ route('dispatch.index') }}" class="btn btn-primary-color my-1 w-50">Xử lý đơn hàng</a>
               </div>
-            </div>
-            <div class="mt-2">
-              <table class="table table-striped w-100">
-                <thead>
-                  <tr>
-                    <th class="text-center" scope="col">#</th>
-                    <th scope="col">Tên dây chuyền</th>
-                    <th scope="col">Mô tả</th>
-                    <th scope="col">Loại</th>
-                    <th scope="col" class="text-center">Hoạt động</th>
-                  </tr>
-                </thead>
-                <tbody id="table-data" class="table-group-divider ">
-                  @foreach ($productStationLines as $productStationLine)
-                  <tr>
-                    <th class="text-center" scope="col">{{ $productStationLine->Id_ProdStationLine }}</th>
-                    <td>{{ $productStationLine->Name_ProdStationLine }}</td>
-                    <td>{{ $productStationLine->Description }}</td>
-                    <td scope="col">{{ $productStationLine->orderType->Name_OrderType }}</td>
-                    <td class="text-center">
-                      <a href="{{ route('productStationLines.show', compact('productStationLine')) }}"
-                        class="btn btn-sm btn-outline-light text-primary-color border-secondary"><i
-                          class="fa-solid fa-eye"></i></a>
-                      <a href="{{ route('productStationLines.edit', compact('productStationLine')) }}"
-                        class="btn btn-sm btn-outline-light text-primary-color border-secondary"><i
-                          class="fa-solid fa-pen-to-square"></i></a>
-                      <a href="" class="btn btn-sm btn-outline-light text-primary-color border-secondary"
-                        data-bs-toggle="modal" data-bs-target="#i{{ $productStationLine->Id_ProdStationLine }}"><i
-                          class="fa-solid fa-trash"></i></a>
-                      <div class="modal fade" id="i{{ $productStationLine->Id_ProdStationLine }}" tabindex="-1"
-                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận</h1>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                              Bạn có chắc chắn về việc xóa dây chuyền xử lý sản xuất này?
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                              <form
-                                action="{{ route('productStationLines.destroy', ['productStationLine' => $productStationLine]) }}"
-                                method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Xóa</button>
-                              </form>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  @endforeach
-                </tbody>
-              </table>
             </div>
           </div>
         </div>

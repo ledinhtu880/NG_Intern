@@ -28,7 +28,7 @@
               @method('PUT')
               <input type="hidden" name="Id_OrderLocal" value="{{ $orderLocal->Id_OrderLocal }}">
               <div class="row">
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                   <div class="input-group">
                     <label class="input-group-text bg-secondary-subtle" for="Count">
                       Số lượng
@@ -37,7 +37,7 @@
                       value="{{ $orderLocal->Count }}">
                   </div>
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                   <div class="input-group">
                     <label class="input-group-text bg-secondary-subtle" for="MakeOrPackOrExpedition">
                       Trạng thái
@@ -60,7 +60,7 @@
                     </select>
                   </div>
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                   <div class="input-group">
                     <label class="input-group-text bg-secondary-subtle" for="DateDilivery">
                       Ngày giao hàng
@@ -69,24 +69,13 @@
                       value="{{ \Carbon\Carbon::parse($orderLocal->DateDilivery)->format('Y-m-d') }}">
                   </div>
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                   <div class="input-group">
                     <label class="input-group-text bg-secondary-subtle" for="Data_Start">
                       Ngày bắt đầu
                     </label>
                     <input type="date" class="form-control" id="Data_Start" name="Data_Start"
                       value="{{ \Carbon\Carbon::parse($orderLocal->Data_Start)->format('Y-m-d') }}">
-                  </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                  <div class="input-group">
-                    <label class="input-group-text bg-secondary-subtle" for="Data_Fin">
-                      Ngày kết thúc
-                    </label>
-                    <input type="date" class="form-control" id="Data_Fin" name="Data_Fin" value="{{ 
-                        $orderLocal->Data_Fin == null 
-                        ? \Carbon\Carbon::now()->format('Y-m-d') 
-                        : \Carbon\Carbon::parse($orderLocal->Data_Fin)->format('Y-m-d') }}">
                   </div>
                 </div>
               </div>

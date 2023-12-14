@@ -77,7 +77,6 @@ $(document).ready(function () {
             },
         });
     });
-
     $("#storeSimpleBtn").on("click", function () {
         let rowElements = $("#table-data tr");
         let rowDataArray = [];
@@ -106,7 +105,6 @@ $(document).ready(function () {
                 success: function (response) {
                     // Lấy URL từ phản hồi JSON
                     var redirectUrl = response.url;
-
                     // Chuyển hướng đến route "orderLocals.edit"
                     window.location.href = redirectUrl;
                 },

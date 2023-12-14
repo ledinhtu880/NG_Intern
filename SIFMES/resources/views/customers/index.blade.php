@@ -27,24 +27,22 @@
               <tr>
                 <th class="text-center" scope="col">#</th>
                 <th scope="col">Tên khách hàng</th>
-                <th scope="col">Email</th>
                 <th class="text-center" scope="col">Số điện thoại</th>
-                <th class="" scope="col">Kiểu khách hàng</th>
-                <th class="" scope="col">Phương thức vận chuyển</th>
-                <th class="" scope="col">Địa chỉ</th>
-                <th class="" scope="col">Hành động</th>
+                <th class="text-center" scope="col">Kiểu khách hàng</th>
+                <th class="text-center" scope="col">Phương thức vận chuyển</th>
+                <th class="text-center" scope="col">Địa chỉ</th>
+                <th class="text-center" scope="col"></th>
               </tr>
             </thead>
             <tbody id="table-data" class="table-group-divider">
               @foreach ($datas as $data)
               <tr>
                 <th class="text-center" scope="row">{{ $data->Id_Customer }}</th>
-                <td class="">{{ $data->Name_Customer }}</td>
-                <td>{{ $data->Email }}</td>
+                <td>{{ $data->Name_Customer }}</td>
                 <td class="text-center">{{ $data->Phone }}</td>
-                <td>{{ $data->customerType->Name }}</td>
-                <td>{{ $data->types->Name_ModeTransport }}</td>
-                <td>{{ $data->Address }}</td>
+                <td class="text-center">{{ $data->customerType->Name }}</td>
+                <td class="text-center">{{ $data->types->Name_ModeTransport }}</td>
+                <td class="text-center">{{ $data->Address }}</td>
                 <td class="text-center">
                   <a href="{{ route('customers.show', ['customer' => $data]) }}"
                     class="btn btn-sm btn-outline-light text-primary-color border-secondary">

@@ -277,6 +277,7 @@ $(document).ready(function () {
                                 .prop("checked", false);
                         });
                     });
+                    $(selectElement).change();
                 },
                 error: function (xhr) {
                     // Xử lý lỗi khi gửi yêu cầu Ajax

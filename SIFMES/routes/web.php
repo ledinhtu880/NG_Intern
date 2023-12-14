@@ -124,7 +124,7 @@ Route::middleware('checklogin')->group(function () {
   Route::post('stations/showStation', [StationController::class, 'showStationTypeById'])->name('showStationTypeById');
 
   Route::post('productStationLines/create', [ProductStationLineController::class, 'store']);
-  Route::post('productStationLines/update/{id}', [ProductStationLineController::class, 'update']);
+  Route::post('productStationLines/update/{id}', [ProductStationLineController::class, 'update'])->name('productStationLines.update');
 
   Route::prefix('dispatchs')->group(function () {
     Route::get('', [DispatchController::class, 'index'])->name('dispatch.index');

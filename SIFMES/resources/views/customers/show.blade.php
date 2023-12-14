@@ -94,3 +94,13 @@
 </div>
 @endif
 @endsection
+
+@push('javascript')
+<script>
+  $(document).ready(function () {
+    const toastLiveExample = $('#liveToast');
+    const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
+    toastBootstrap.show();
+  })
+</script>
+@endpush

@@ -120,8 +120,8 @@
                     </label>
                     <select name="FK_Id_RawMaterial" id="FK_Id_RawMaterial" class="form-select">
                       @foreach ($materials as $each)
-                      <option value="{{ $each->Id_RawMaterial }}" data-name="{{ $each->Name_RawMaterial }}">
-                        {{ $each->Name_RawMaterial }}
+                      <option value="{{ $each->Id_RawMaterial }}" data-name="{{ $each->Name_RawMaterial }}">{{
+                        $each->Name_RawMaterial }}
                       </option>
                       @endforeach
                     </select>
@@ -139,13 +139,13 @@
                 </div>
                 <div class="col-md-4">
                   <div class="input-group mb-3">
-                    <label class="input-group-text bg-secondary-subtle" for="FK_ID_ContainerType" style="width: 130px;">
+                    <label class="input-group-text bg-secondary-subtle" for="FK_Id_ContainerType" style="width: 130px;">
                       Thùng chứa
                     </label>
-                    <select class="form-select selectValidate" name="FK_ID_ContainerType" id="FK_ID_ContainerType">
+                    <select class="form-select selectValidate" name="FK_Id_ContainerType" id="FK_Id_ContainerType">
                       @foreach ($containers as $each)
-                      <option value="{{ $each->Id_ContainerType }}" data-name="{{ $each->Name_ContainerType }}">
-                        {{ $each->Name_ContainerType }}
+                      <option value="{{ $each->Id_ContainerType }}" data-name="{{ $each->Name_ContainerType }}">{{
+                        $each->Name_ContainerType }}
                       </option>
                       @endforeach
                     </select>
@@ -180,7 +180,7 @@
             <table class="table table-striped m-0">
               <thead>
                 <tr>
-                  <th style="width: 150px;" scope="col">Nguyên liệu</th>
+                  <th class="text-center" scope="col">Nguyên liệu</th>
                   <th class="text-center" scope="col">Số lượng nguyên liệu</th>
                   <th class="text-center" scope="col">Đơn vị</th>
                   <th class="text-center" scope="col">Thùng chứa</th>
@@ -265,4 +265,24 @@
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/orders/simples/create.js') }}"></script>
 <script src="{{ asset('js/eventHandler.js') }}"></script>
+<script>
+  $(document).ready(function () {
+    $(document).on("click", ".btnDelete", function () {
+      let id = $(this).data("id");
+      let rowElement = $(this).closest('tr[data-id="' + id + '"]');
+      let modalElement = $("#deleteRow" + id); // Lấy modal tương ứng với hàng
+      modalElement.on("hidden.bs.modal", function () {
+        // Xóa hàng khi modal được ẩn
+        rowElement.remove();
+      });
+      // Đóng modal
+      $("#icon").addClass("fa-check-circle");
+      $(".toast-body").addClass("bg-success");
+      $("#toast-msg").html("Xóa thùng hàng thành công");
+      toastBootstrap.show();
+      modalElement.modal("hide");
+    });
+  })
+
+</script>
 @endpush

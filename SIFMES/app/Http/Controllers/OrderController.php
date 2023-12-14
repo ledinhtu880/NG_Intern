@@ -158,6 +158,8 @@ class OrderController extends Controller
           'PedestalProvided' => 0,
           'RFIDProvided' => 0,
           'RawMaterialProvided' => 0,
+          'CoverHatProvided' => 0,
+          'QRCodeProvided' => 0,
         ]);
       }
       $res = redirect()->route('orders.simples.index')
@@ -223,6 +225,15 @@ class OrderController extends Controller
   }
   public function destroySimples(string $id)
   {
+    $arrID = DB::table('ContentSimple')
+      ->where('FK_Id_Order', $id)->pluck('Id_SimpleContent')
+      ->ToArray();
+    foreach ($arrID as $each) {
+      DB::table('ProcessContentSimple')->where('FK_Id_ContentSimple', $each)->delete();
+      DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_ContentSimple', $each)->delete();
+      DB::table('DetailStateCellOfSimpleWareHouse')->where('FK_Id_SimpleContent', $each)->delete();
+      DB::table('DetailContentSimpleOfPack')->where('FK_Id_SimpleContent', $each)->delete();
+    }
     DB::table('ContentSimple')->where('FK_Id_Order', $id)->delete();
     DB::table('Order')->where('Id_Order', $id)->delete();
     return redirect()->route('orders.simples.index')->with([
@@ -244,6 +255,7 @@ class OrderController extends Controller
       $data[] = $formDataArray;
 
       $maxID = DB::table('ContentSimple')->max('Id_SimpleContent');
+
       if ($maxID === null) {
         $id = 0; // Gán giá trị mặc định cho biến $id nếu kết quả là NULL
       } else {
@@ -252,19 +264,51 @@ class OrderController extends Controller
 
       if ($flag == 1) {
         $FK_Id_Order = DB::table('Order')->max('Id_Order');
-        DB::table('ContentSimple')->insert([
-          'Id_SimpleContent' => $id,
-          'FK_Id_RawMaterial' => $formDataArray['FK_Id_RawMaterial'],
-          'Count_RawMaterial' => $formDataArray['Count_RawMaterial'],
-          'FK_Id_ContainerType' => $formDataArray['FK_ID_ContainerType'],
-          'Count_Container' => $formDataArray['Count_Container'],
-          'Price_Container' => $formDataArray['Price_Container'],
-          'FK_Id_Order' => $FK_Id_Order,
-          'ContainerProvided' => 0,
-          'PedestalProvided' => 0,
-          'RFIDProvided' => 0,
-          'RawMaterialProvided' => 0,
-        ]);
+        $exists = DB::table('ContentSimple')
+          ->where('FK_Id_Order', $FK_Id_Order)
+          ->where('FK_Id_RawMaterial', $formDataArray['FK_Id_RawMaterial'])
+          ->where('FK_Id_ContainerType', $formDataArray['FK_Id_ContainerType'])
+          ->exists();
+
+        if ($exists) {
+          $id_simple = DB::table('ContentSimple')
+            ->where('FK_Id_Order', $FK_Id_Order)
+            ->where('FK_Id_RawMaterial', $formDataArray['FK_Id_RawMaterial'])
+            ->where('FK_Id_ContainerType', $formDataArray['FK_Id_ContainerType'])
+            ->value('Id_SimpleContent');
+
+          // Truy vấn để lấy giá trị hiện tại của Count_RawMaterial
+          $currentRawMaterial = DB::table('ContentSimple')->where('Id_SimpleContent', $id_simple)->value('Count_RawMaterial');
+          $currentContainer = DB::table('ContentSimple')->where('Id_SimpleContent', $id_simple)->value('Count_Container');
+
+          // Tính toán giá trị mới của Count_RawMaterial
+          $newCountRawMaterial = $currentRawMaterial + $formDataArray['Count_RawMaterial'];
+          $newCountContainer = $currentContainer + $formDataArray['Count_Container'];
+
+          // Thực hiện cập nhật
+          DB::table('ContentSimple')->where('Id_SimpleContent', $id_simple)->update([
+            'Count_RawMaterial' => $newCountRawMaterial,
+            'Count_Container' => $newCountContainer,
+            'Price_Container' => $formDataArray['Price_Container'],
+          ]);
+        } else {
+          DB::table('ContentSimple')->insert([
+            'Id_SimpleContent' => $id,
+            'FK_Id_RawMaterial' => $formDataArray['FK_Id_RawMaterial'],
+            'Count_RawMaterial' => $formDataArray['Count_RawMaterial'],
+            'FK_Id_ContainerType' => $formDataArray['FK_Id_ContainerType'],
+            'Count_Container' => $formDataArray['Count_Container'],
+            'Price_Container' => $formDataArray['Price_Container'],
+            'FK_Id_Order' => $FK_Id_Order,
+            'ContainerProvided' => 0,
+            'PedestalProvided' => 0,
+            'RFIDProvided' => 0,
+            'RawMaterialProvided' => 0,
+            'CoverHatProvided' => 0,
+            'QRCodeProvided' => 0,
+
+          ]);
+        }
       }
 
       return response()->json([
@@ -343,6 +387,9 @@ class OrderController extends Controller
           'PedestalProvided' => 0,
           'RFIDProvided' => 0,
           'RawMaterialProvided' => 0,
+          'CoverHatProvided' => 0,
+          'QRCodeProvided' => 0,
+
         ]);
       }
       $res = redirect()->route('orders.simples.create');
@@ -470,14 +517,12 @@ class OrderController extends Controller
     $contentSimple = DB::table('ContentSimple')->where('FK_Id_Order', $Id_Order)->get();
     foreach ($contentSimple as $each) {
       $Id_ContentSimple = $each->Id_SimpleContent;
-      // Xóa DetailContentSimpleOfPack
       DB::table('DetailContentSimpleOfPack')->where('FK_Id_SimpleContent', $Id_ContentSimple)->delete();
+      DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_ContentSimple', $Id_ContentSimple)->delete();
     }
-    // Xóa dữ liệu bảng ContentPack
     DB::table('ContentPack')->where('FK_Id_Order', $Id_Order)->delete();
-    // Xóa dữ liệu bảng ContentSimple
+
     $contentSimple = DB::table('ContentSimple')->where('FK_Id_Order', $Id_Order)->delete();
-    // Xóa dữ liệu bảng order
     Order::find($Id_Order)->delete();
     return redirect()->route('orders.packs.index')->with('type', 'success')->with('message', 'Xóa đơn gói hàng thành công');
   }
@@ -486,10 +531,7 @@ class OrderController extends Controller
     if ($request->ajax()) {
       $OrderID = $request->input('FK_Id_Order');
       $packID = $request->input('Id_PackContent');
-      $IdArr = DB::table('ContentSimple')
-        ->where('FK_Id_Order', $OrderID)
-        ->pluck('Id_SimpleContent')
-        ->toArray();
+      $IdArr = $request->input('idArr');
       foreach ($IdArr as $each) {
         DB::table('DetailContentSimpleOfPack')->insert([
           'FK_Id_SimpleContent' => $each,
@@ -631,7 +673,7 @@ class OrderController extends Controller
                     <td>' . $simpleContents[$i]->material->Unit . '</td>
                     <td>' . $simpleContents[$i]->type->Name_ContainerType . '</td>
                     <td>' . $simpleContents[$i]->Count_Container . '</td>
-                    <td>' . $simpleContents[$i]->Price_Container . '</td>
+                    <td>' . number_format($simpleContents[$i]->Price_Container, 0, ',', '.') . ' VNĐ' . '</td>
                 </tr>
             ';
     }

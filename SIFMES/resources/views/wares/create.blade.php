@@ -144,7 +144,7 @@
           var info = $('<p class="text-end position-absolute top-0 end-0"></p>');
           info.text(i + '.' + j);
           newCol.append(info);
-          newCol.css("background-color", "rgb(166 191 247)");
+          newCol.css("background-color", "#ffffff");
           newCol.append($('<p class="small">Trống</p>'));
           newRow.append(newCol);
 
@@ -194,7 +194,7 @@
             }
             for (var i = 1; i <= col * row; i++) {
               if (details[i - 1].FK_Id_StateCell == "1") {
-                $('#cell' + i).css("background-color", "rgb(166 191 247)");
+                $('#cell' + i).css("background-color", "#ffffff");
                 $('#cell' + i).attr("data-status", 1);
                 $('#cell' + i).append($('<p class="small">Trống</p>'));
               } else if (details[i - 1].FK_Id_StateCell == "0") {
@@ -255,7 +255,7 @@
             }
             for (var i = 1; i <= col * row; i++) {
               if (details[i - 1].FK_Id_StateCell == "1") {
-                $('#cell' + i).css("background-color", "rgb(166 191 247)");
+                $('#cell' + i).css("background-color", "#ffffff");
                 $('#cell' + i).attr("data-status", 1)
                 $('#cell' + i).append($('<p class="small">Trống</p>'));
               } else if (details[i - 1].FK_Id_StateCell == "0") {
@@ -309,7 +309,7 @@
                 data[id - 1] = [row, col, Number(key)];
               } else {
                 $(this).attr('data-status', key);
-                $(this).css("background-color", "rgb(166 191 247)");
+                $(this).css("background-color", "#ffffff");
                 $(this).find('.small').text("Trống");
                 data[id - 1] = [row, col, Number(key)];
               }

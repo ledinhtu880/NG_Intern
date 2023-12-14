@@ -1,6 +1,7 @@
+const toastLiveExample = $("#liveToast");
+const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
+
 $(document).ready(function () {
-    const toastLiveExample = $("#liveToast");
-    const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
     let token = $('meta[name="csrf-token"]').attr("content");
     let countID = 0;
     let count = $("input[name='count']").val();
@@ -128,9 +129,9 @@ $(document).ready(function () {
                     let rawMaterialName = $(
                         `#FK_Id_RawMaterial option[value="${rawMaterialId}"]`
                     ).data("name");
-                    let containerTypeId = value.FK_ID_ContainerType;
+                    let containerTypeId = value.FK_Id_ContainerType;
                     let containerTypeName = $(
-                        `#FK_ID_ContainerType option[value="${containerTypeId}"]`
+                        `#FK_Id_ContainerType option[value="${containerTypeId}"]`
                     ).data("name");
                     htmls += `<tr data-id="${id}">
                         <td class="text-center" data-id="rawMaterialId" data-value="${rawMaterialId}">

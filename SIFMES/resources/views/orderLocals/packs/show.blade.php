@@ -109,7 +109,7 @@
             </table>
           </div>
           <div class="card-footer d-flex align-items-center justify-content-end">
-            <a href="{{ route('orders.index') }}" class="btn btn-warning">Quay lại</a>
+            <a href="{{ route('orderLocals.packs.index') }}" class="btn btn-warning">Quay lại</a>
           </div>
         </div>
       </div>

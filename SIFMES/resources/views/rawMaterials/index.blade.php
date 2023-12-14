@@ -127,7 +127,7 @@
                           Bạn có chắc chắn về việc xóa nguyên liệu thô này?
                         </div>
                         <div class="modal-footer">
-                          <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Hủy</button>
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                           <form action="${deleteUrl}" method="POST">
                             @csrf
                             @method('DELETE')

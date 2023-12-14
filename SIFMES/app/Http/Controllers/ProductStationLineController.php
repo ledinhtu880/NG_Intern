@@ -4,12 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\DetailProductionStationLine;
 use App\Models\OrderType;
-use Illuminate\Http\Request;
+use App\Models\Station;
 use App\Models\ProductionStationLine;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class ProductStationLineController extends Controller
 {
+    public function index()
+    {
+        if (!Session::has("type") && !Session::has("message")) {
+            Session::flash('type', 'info');
+            Session::flash('message', 'Dây chuyền sản xuất');
+        }
+        return view(
+            'productStationLines.index',
+            [
+                'data' => ProductionStationLine::paginate(5),
+            ]
+        );
+    }
     public function create()
     {
         return view('productStationLines.create', ['orderTypes' => OrderType::all()]);
@@ -97,9 +112,9 @@ class ProductStationLineController extends Controller
     {
         DetailProductionStationLine::where('FK_Id_ProdStationLine', $productStationLine->Id_ProdStationLine)->delete();
         $productStationLine->delete();
-        return redirect()->route('index')->with([
+        return redirect()->route('productStationLines.index')->with([
             'type' => 'success',
-            'message' => 'Xóa dây chuyền xử lý sản xuất thành công'
+            'message' => 'Xóa dây chuyền thành công'
         ]);
     }
 }

@@ -23,7 +23,7 @@ class OrderLocalController extends Controller
       Session::flash('type', 'info');
       Session::flash('message', 'Quản lý đơn sản xuất và giao hàng');
     }
-    $data = OrderLocal::paginate(5);
+    $data = OrderLocal::where('MakeOrPackOrExpedition', '0')->paginate(5);
     return view('orderLocals.makes.index', compact('data'));
   }
   public function createMakes()
@@ -109,10 +109,16 @@ class OrderLocalController extends Controller
         ->where('Customer.FK_Id_CustomerType', $customerType)
         ->where('ContentSimple.ContainerProvided', 0)
         ->where('ContentSimple.PedestalProvided', 0)
+        ->where('ContentSimple.CoverHatProvided', 0)
+        ->where('ContentSimple.RawMaterialProvided', 0)
         ->where('Order.SimpleOrPack', $SimpleOrPack)
         ->whereNotIn('ContentSimple.Id_SimpleContent', function ($query) {
           $query->select('FK_Id_ContentSimple')
             ->from('ProcessContentSimple');
+        })
+        ->whereNotIn('ContentSimple.Id_SimpleContent', function ($query) {
+          $query->select('FK_Id_ContentSimple')
+            ->from('DetailContentSimpleOrderLocal');
         })
         ->select(
           'Id_SimpleContent',
@@ -239,7 +245,6 @@ class OrderLocalController extends Controller
       'MakeOrPackOrExpedition' => 'required',
       'DateDilivery' => 'required',
       'Data_Start' => 'required',
-      'Data_Fin' => 'required',
     ]);
 
     $Id_OrderLocal = $validator['Id_OrderLocal'];
@@ -247,7 +252,6 @@ class OrderLocalController extends Controller
     $MakeOrPackOrExpedition = $validator['MakeOrPackOrExpedition'];
     $DateDilivery = $validator['DateDilivery'];
     $Data_Start = $validator['Data_Start'];
-    $Data_Fin = $validator['Data_Fin'];
 
     DB::table('OrderLocal')->where('Id_OrderLocal', $Id_OrderLocal)->update([
       'Id_OrderLocal' => $Id_OrderLocal,
@@ -255,7 +259,6 @@ class OrderLocalController extends Controller
       'MakeOrPackOrExpedition' => $MakeOrPackOrExpedition,
       'DateDilivery' => $DateDilivery,
       'Data_Start' => $Data_Start,
-      'Data_Fin' => $Data_Fin,
     ]);
     return redirect()->route('orderLocals.makes.index')->with([
       'message' => 'Sửa đơn hàng sản xuất thành công',
@@ -369,13 +372,14 @@ class OrderLocalController extends Controller
 
   public function deleteOrderLocal(string $Id_OrderLocal)
   {
+    DB::table('DispatcherOrder')->where('FK_Id_OrderLocal', $Id_OrderLocal)->delete();
     // Xóa trong bảng DetailContentPackOrderLocal
     DetailContentPackOrderLocal::where('FK_Id_OrderLocal', $Id_OrderLocal)->delete();
 
     // Xóa trong bảng OrderLocal
     OrderLocal::find($Id_OrderLocal)->delete();
 
-    return redirect()->route('orderPacks.index')->with('type', 'success')->with('message', 'Xóa thành công');
+    return redirect()->route('orderLocals.packs.index')->with('type', 'success')->with('message', 'Xóa thành công');
   }
 
   public function storePacks(Request $request)
@@ -469,6 +473,7 @@ class OrderLocalController extends Controller
       // Xóa ở bảng OrderLocal
       OrderLocal::find($Id_OrderLocal)->delete();
     }
+
     $db = OrderLocal::where('SimpleOrPack', 1)
       ->where('MakeOrPackOrExpedition', 1)->get();
     return $this->getAllOrderLocal($db);
