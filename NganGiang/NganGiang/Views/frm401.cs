@@ -36,7 +36,7 @@ namespace NganGiang.Views
             {
                 if (Convert.ToBoolean(row.Cells[0].Value) == true)
                 {
-                    chk.Add(Convert.ToInt32(row.Cells[3].Value));
+                    chk.Add(Convert.ToInt32(row.Cells[3].Value));   
                 }
             }
 

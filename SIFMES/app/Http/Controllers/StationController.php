@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Session;
 
 class StationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         //
@@ -97,5 +94,13 @@ class StationController extends Controller
             'status' => 'success',
             'data' => $datas,
         ]);
+    }
+
+    public function getImgByStationType(Request $request)
+    {
+        $Id_StationType = $request->id;
+        $stationType = StationType::find($Id_StationType);
+
+        return response()->json($stationType);
     }
 }

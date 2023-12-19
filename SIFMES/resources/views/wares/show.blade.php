@@ -24,8 +24,8 @@
                     <div class="row">
                         <div class="col-8">
                             <div class="input-group mb-3">
-                                <label class="input-group-text" for="khochua">Kho chứa</label>
-                                <select class="form-select" id="khochua">
+                                <label class="input-group-text" for="ware">Kho chứa</label>
+                                <select class="form-select" id="ware">
                                     @foreach ($stations as $each)
                                     <option value="{{ $each->Id_Station }}">{{ $each->Name_Station }}</option>
                                     @endforeach
@@ -35,13 +35,15 @@
                         <div class="col-2">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">Số hàng</span>
-                                <input type="number" class="form-control" min="1" id="sohang" name="sohang" readonly>
+                                <input type="number" class="form-control" min="1" id="rowNumber" name="rowNumber"
+                                    readonly>
                             </div>
                         </div>
                         <div class="col-2">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">Số cột</span>
-                                <input type="number" class="form-control" min="1" id="socot" name="socot" readonly>
+                                <input type="number" class="form-control" min="1" id="colNumber" name="colNumber"
+                                    readonly>
                             </div>
                         </div>
                     </div>
@@ -77,7 +79,7 @@
 @push('javascript')
 <script>
     $(document).ready(function () {
-        var kho = $('#khochua option:selected').val();
+        var ware = $('#ware option:selected').val();
         $.ajax({
             url: 'showDetails',
             method: 'POST',
@@ -85,19 +87,19 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             data: {
-                kho: kho,
+                ware: ware,
             },
             success: function (response) {
                 if (response == 0) {
-                    $('#sohang').val("");
-                    $('#socot').val("");
+                    $('#rowNumber').val("");
+                    $('#colNumber').val("");
                 } else {
                     var details = response.details;
                     var col = response.col;
                     var row = response.row;
 
-                    $('#sohang').val(row);
-                    $('#socot').val(col);
+                    $('#rowNumber').val(row);
+                    $('#colNumber').val(col);
                     //    console.log(details);
                     var count = 0;
                     for (var i = 1; i <= row; i++) {
@@ -183,9 +185,9 @@
             }
         });
 
-        $('#khochua').change(function () {
+        $('#ware').change(function () {
             $('.table tr').empty();
-            var kho = $(this).val();
+            var ware = $(this).val();
 
             $.ajax({
                 url: 'showDetails',
@@ -194,22 +196,21 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: {
-                    kho: kho,
+                    ware: ware,
                 },
                 success: function (response) {
                     if (response == 0) {
                         $('.table tr').empty();
-                        $('#sohang').val("");
-                        $('#socot').val("");
+                        $('#rowNumber').val("");
+                        $('#colNumber').val("");
                     } else {
                         var details = response.details;
                         var col = response.col;
                         var row = response.row;
-                        $('#sohang').val(row);
-                        $('#socot').val(col);
+                        $('#rowNumber').val(row);
+                        $('#colNumber').val(col);
                         var count = 0;
                         for (var i = 1; i <= row; i++) {
-
                             var newRow = $('<tr></tr>');
                             for (var j = 1; j <= col; j++) {
                                 count++;
@@ -226,7 +227,6 @@
                                 newCol.append(info);
                                 newRow.append(newCol);
                             }
-
                             $('.table').append(newRow);
                         }
                         for (var i = 1; i <= col * row; i++) {

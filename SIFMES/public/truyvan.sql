@@ -18,23 +18,6 @@ select * from [SIFMES].dbo.[DetailStateCellOfPackWareHouse]
 alter table [User]
 alter column password varchar(60)
 
-select * from ProcessContentSimple
-select * from ProcessContentPack
-select * from ContentPack
-select * from OrderLocal
-select * from DetailStateCellOfSimpleWareHouse
-select * from ContentSimple
-
-select * from DetailProductionStationLine
-select * from ProductionStationLine
-
-delete from ProcessContentPack where FK_Id_Station = 410
-update ProcessContentPack set FK_Id_State = 0, Data_Fin = NULL where FK_Id_Station = 409
-update [DetailStateCellOfPackWareHouse] set FK_Id_StateCell = 1, FK_Id_PackContent = NULL
-
-select * from [User]
-select * from [Station]
-
 CREATE TABLE UserStationRole (
     FK_Id_User SMALLINT,
     FK_Id_Station INT,
@@ -54,8 +37,44 @@ insert into UserStationRole values
 ('0', '410'),
 ('0', '411');
 
-select Id_Station, Name_Station from Station
-inner join UserStationRole on Id_Station = FK_Id_Station
-inner join [User] on Id_User = FK_Id_User
-where username = 'admin'
 
+update ContentSimple
+    set ContainerProvided = 0, PedestalProvided = 0, RFIDProvided = 0, RFID = NULL,
+        RawMaterialProvided = 0,CoverHatProvided = 0, QRCodeProvided = 0
+update DetailStateCellOfSimpleWareHouse set FK_Id_StateCell = 1, FK_Id_SimpleContent = NULL
+update DetailStateCellOfPackWareHouse set FK_Id_StateCell = 1, FK_Id_PackContent = NULL
+delete from ProcessContentSimple
+delete from ProcessContentPack
+delete from DetailContentSimpleOrderLocal
+delete from DetailContentPackOrderLocal
+delete from DispatcherOrder
+delete from OrderLocal
+
+select * from ProcessContentSimple order by FK_Id_ContentSimple asc, FK_Id_Station asc
+select * from ProcessContentPack
+select * from DetailContentSimpleOrderLocal
+select * from DetailContentPackOrderLocal
+select * from DispatcherOrder
+select * from OrderLocal
+
+select * from Station
+select * from StationType
+
+update StationType set PathImage = 'stations/sif-401.jpg' where Description = 'SIF-401'
+update StationType set PathImage = 'stations/sif-402.jpg' where Description = 'SIF-402'
+update StationType set PathImage = 'stations/sif-403.jpg' where Description = 'SIF-403'
+update StationType set PathImage = 'stations/sif-404.jpg' where Description = 'SIF-404'
+update StationType set PathImage = 'stations/sif-405.jpg' where Description = 'SIF-405'
+update StationType set PathImage = 'stations/sif-406.jpg' where Description = 'SIF-406'
+update StationType set PathImage = 'stations/sif-407.jpg' where Description = 'SIF-407'
+update StationType set PathImage = 'storage/stations/sif-408.jpg' where Description = 'SIF-408'
+update StationType set PathImage = 'storage/stations/sif-409.jpg' where Description = 'SIF-409'
+update StationType set PathImage = 'storage/stations/sif-410.jpg' where Description = 'SIF-410'
+update StationType set PathImage = 'storage/stations/sif-411.jpg' where Description = 'SIF-411'
+update StationType set PathImage = 'storage/stations/sif-412.jpg' where Description = 'SIF-412'
+
+select * from Warehouse
+select * from DetailStateCellOfSimpleWareHouse
+delete from Warehouse
+delete from [DetailStateCellOfSimpleWareHouse]
+delete from [DetailStateCellOfPackWareHouse]

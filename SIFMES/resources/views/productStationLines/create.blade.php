@@ -175,14 +175,20 @@
       } else {
         let stationSelect = $(".station-select");
         var name = $("#Name_ProdStationLine").val();
+        var stationStart = $("#Station_Start").val();
+        var stationEnd = $("#Station_End").val();
         var stationLine = [$("#Station_Start").val()];
         var orderType = $('#FK_Id_OrderType').val();
-        stationSelect.each(function () {
-          if (!$(this).is(':hidden')) {
-            stationLine.push($(this).val());
-          }
-        });
 
+        if (stationStart == 406 && stationEnd == 407) {
+          stationLine.push('407');
+        } else {
+          stationSelect.each(function () {
+            if (!$(this).is(':hidden')) {
+              stationLine.push($(this).val());
+            }
+          });
+        }
 
         $.ajax({
           method: "POST",

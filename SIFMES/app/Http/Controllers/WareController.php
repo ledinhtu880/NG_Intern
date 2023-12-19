@@ -23,7 +23,7 @@ class WareController extends Controller
   }
   public function showDetails(Request $request)
   {
-    $ware = $request->input("kho");
+    $ware = $request->input("ware");
     if ($ware == 406) {
       $count = DB::table("DetailStateCellOfSimpleWareHouse")->where('Fk_Id_Station', $ware)->count();
       if ($count > 0) {
@@ -44,7 +44,7 @@ class WareController extends Controller
       return response()->json(['count' => $count]);
     }
   }
-  public function createWare(Request $request)
+  /* public function createWare(Request $request)
   {
     $data = $request->input('data');
     $col = $request->input("col");
@@ -82,6 +82,47 @@ class WareController extends Controller
       }
       return response()->json(['success' => 'Khởi tạo kho thành công']);
     }
+  } */
+  public function createWare(Request $request)
+  {
+    $data = $request->input('data');
+    $col = $request->input("col");
+    $row = $request->input("row");
+    $ware = $request->input("ware");
+
+    // Kiểm tra sự tồn tại của kho
+    $exists = DB::table("WareHouse")->where("FK_Id_Station", $ware)->exists();
+    if ($exists) {
+      return response()->json(['error' => 'Kho này đã tồn tại!']);
+    }
+
+    // Ghi thông tin kho vào bảng WareHouse
+    DB::table("WareHouse")->insert([
+      "FK_Id_Station" => $ware,
+      "numRow" => $row,
+      "numCol" => $col
+    ]);
+
+    // Tạo mảng dữ liệu để chèn vào bảng chi tiết dựa trên loại kho
+    $detailData = [];
+    $tableName = ($ware == 406) ? "DetailStateCellOfSimpleWareHouse" : "DetailStateCellOfPackWareHouse";
+    $columnId = ($ware == 406) ? "Fk_Id_SimpleContent" : "Fk_Id_PackContent";
+
+    // Tạo dữ liệu để chèn vào bảng chi tiết
+    for ($i = 0; $i < count($data); $i++) {
+      $detailData[] = [
+        "Rowi" => $data[$i][0],
+        "Colj" => $data[$i][1],
+        "FK_Id_StateCell" => $data[$i][2],
+        "Fk_Id_Station" => $ware,
+        $columnId => null,
+      ];
+    }
+
+    // Chèn dữ liệu vào bảng chi tiết tương ứng
+    DB::table($tableName)->insert($detailData);
+
+    return response()->json(['success' => 'Khởi tạo kho thành công']);
   }
   public function setCellStatus(Request $request)
   {

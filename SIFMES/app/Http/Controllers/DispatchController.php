@@ -40,7 +40,7 @@ class DispatchController extends Controller
         $ids = $request->input('id');
 
         foreach ($ids as $id) {
-            $stationProd = $request->input('$stationProd');
+            $stationProd = $request->input('stationProd');
             $contentSimple = DB::table('ContentSimple')->join('DetailContentSimpleOrderLocal', 'ContentSimple.Id_SimpleContent', '=', 'DetailContentSimpleOrderLocal.FK_Id_ContentSimple')
                 ->join('OrderLocal', 'DetailContentSimpleOrderLocal.FK_Id_OrderLocal', '=', 'OrderLocal.Id_OrderLocal')->where('Id_OrderLocal', $id)->get();
 

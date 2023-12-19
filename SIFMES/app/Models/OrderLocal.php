@@ -36,24 +36,26 @@ class OrderLocal extends Model
     }
     public function getDeliveryDateAttribute()
     {
-        $dateDelivery = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->DateDilivery);
-
-        return $dateDelivery->format('d/m/Y');
+        if ($this->DateDilivery != null) {
+            $dateDelivery = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->DateDilivery);
+            return $dateDelivery->format('d/m/Y');
+        }
+        return 'Chưa giao hàng';
     }
     public function getStartDateAttribute()
     {
-        $dateStart = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Data_Start);
-
-        return $dateStart->format('d/m/Y');
+        if ($this->Data_Start != null) {
+            $dateStart = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Data_Start);
+            return $dateStart->format('d/m/Y');
+        }
+        return 'Chưa bắt đầu';
     }
     public function getFinallyDateAttribute()
     {
-        if ($this->Data_Fin == null) {
-            return "Chưa hoàn thành";
-        } else {
+        if ($this->Data_Fin != null) {
             $dateFinally = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Data_Fin);
-
             return $dateFinally->format('d/m/Y');
         }
+        return 'Chưa hoàn thành';
     }
 }

@@ -26,21 +26,30 @@ class Order extends Model
     }
     public function getOrderDateAttribute()
     {
-        $dateOrder = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Date_Order);
+        if ($this->Date_Order != null) {
+            $dateOrder = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Date_Order);
 
-        return $dateOrder->format('d/m/Y');
+            return $dateOrder->format('d/m/Y');
+        }
+        return 'Chưa đặt hàng';
     }
 
     public function getDeliveryDateAttribute()
     {
-        $dateDelivery = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Date_Dilivery);
+        if ($this->Date_Dilivery != null) {
+            $dateDelivery = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Date_Dilivery);
 
-        return $dateDelivery->format('d/m/Y');
+            return $dateDelivery->format('d/m/Y');
+        }
+        return 'Chưa giao hàng';
     }
     public function getReceptionDateAttribute()
     {
-        $dateReception = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Date_Reception);
+        if ($this->Date_Reception != null) {
+            $dateReception = Carbon::createFromFormat('Y-m-d H:i:s.u', $this->Date_Reception);
 
-        return $dateReception->format('d/m/Y');
+            return $dateReception->format('d/m/Y');
+        }
+        return 'Chưa nhận hàng';
     }
 }

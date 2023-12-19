@@ -7,7 +7,18 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <div class="card mt-3">
+      <nav aria-label="breadcrumb" class="my-4">
+        <ol class="breadcrumb breadcrumb-color ps-2 py-3 rounded">
+          <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Quản lý trạm</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
         <div class="card-header px-0 pt-0 overflow-hidden">
           <h3 class="card-title bg-primary-color p-3 text-white">Quản lý trạm</h3>
           <a href="{{ route('stations.create') }}" class="btn btn-primary-color text-white p-2 my-3 ms-3">

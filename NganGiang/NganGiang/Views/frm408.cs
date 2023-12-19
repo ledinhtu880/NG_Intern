@@ -81,20 +81,23 @@ namespace NganGiang.Views
             if (listContentPack.Count > 0)
             {
                 bool flag = false;
-                foreach (var item in listContentPack)
+                if (MessageBox.Show("Bạn chắc chắn muốn đóng gói hàng?", "Xác nhận hành động", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    if (packController.Update(item))
+                    foreach (var item in listContentPack)
                     {
-                        flag = true;
+                        if (packController.Update(item))
+                        {
+                            flag = true;
+                        }
+                    }
+                    if (flag)
+                    {
+                        MessageBox.Show("Xử lý thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        loadData();
                     }
                 }
-                if (flag)
-                {
-                    MessageBox.Show("Xử lý thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    loadData();
                 }
-            }
-            else
+                else
             {
                 MessageBox.Show("Bạn chưa chọn nội dung sản xuất!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }

@@ -13,7 +13,7 @@ class HomeController extends Controller
     {
         if (!Session::has("type") && !Session::has("message")) {
             Session::flash('type', 'info');
-            Session::flash('message', 'Trang chủ');
+            Session::flash('message', 'Theo dõi đơn hàng');
         }
         return view('index', ['productStationLines' => ProductionStationLine::all(), 'stations' => Station::all()]);
     }

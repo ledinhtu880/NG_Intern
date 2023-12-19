@@ -35,7 +35,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(detailContentSimple));
             panelDGV = new Panel();
             dgv408 = new DataGridView();
-            Column1 = new DataGridViewCheckBoxColumn();
             lbHeader = new Label();
             btnBack = new Button();
             panelDGV.SuspendLayout();
@@ -72,7 +71,6 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
             dgv408.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgv408.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv408.Columns.AddRange(new DataGridViewColumn[] { Column1 });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 10F);
@@ -101,15 +99,6 @@
             dgv408.Size = new Size(1422, 464);
             dgv408.TabIndex = 2;
             dgv408.ColumnAdded += dgv408_ColumnAdded;
-            // 
-            // Column1
-            // 
-            Column1.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Column1.HeaderText = "";
-            Column1.MinimumWidth = 6;
-            Column1.Name = "Column1";
-            Column1.Resizable = DataGridViewTriState.False;
-            Column1.Width = 6;
             // 
             // lbHeader
             // 
@@ -160,7 +149,6 @@
 
         private Panel panelDGV;
         private DataGridView dgv408;
-        private DataGridViewCheckBoxColumn Column1;
         private Label lbHeader;
         private Button btnBack;
     }

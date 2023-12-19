@@ -75,6 +75,24 @@
           </div>
         </div>
         <div class="tab-pane">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="d-flex flex-column">
+                <a href="{{ route('tracking.orders.index') }}" class="btn btn-primary-color my-1 w-50">
+                  Theo dõi đơn hàng
+                </a>
+                <a href="{{ route('tracking.customers.index') }}" class="btn btn-primary-color my-1 w-50">
+                  Theo dõi khách hàng
+                </a>
+                <a href="{{ route('tracking.orderlocals.index') }}" class="btn btn-primary-color my-1 w-50">
+                  Theo dõi đơn hàng nội bộ
+                </a>
+              </div>
+            </div>
+            <div class="col-md-6 text-center">
+              <h2 class="h2 text-primary-color">Theo dõi</h2>
+            </div>
+          </div>
         </div>
         <div class="tab-pane">
         </div>

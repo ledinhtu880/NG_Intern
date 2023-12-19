@@ -25,8 +25,8 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="input-group mb-3">
-                  <label class="input-group-text" for="khochua">Kho chứa</label>
-                  <select class="form-select" name="FK_Id_Station" id="khochua">
+                  <label class="input-group-text" for="warehouse">Kho chứa</label>
+                  <select class="form-select" name="FK_Id_Station" id="warehouse">
                     @foreach($stations as $each)
                     <option value="{{ $each->Id_Station }}">{{ $each->Name_Station }}</option>
                     @endforeach
@@ -36,17 +36,17 @@
               <div class="col-md-2">
                 <div class="input-group mb-3">
                   <span class="input-group-text">Nhập số hàng</span>
-                  <input type="number" class="form-control" min="1" maxlength="3" id="sohang" name="sohang">
+                  <input type="number" class="form-control" min="1" maxlength="3" id="colNumber" name="colNumber">
                 </div>
               </div>
               <div class="col-md-2">
                 <div class="input-group mb-3">
                   <span class="input-group-text">Nhập số cột</span>
-                  <input type="number" class="form-control" min="1" id="socot" maxlength="3" name="socot">
+                  <input type="number" class="form-control" min="1" id="rowNumber" maxlength="3" name="rowNumber">
                 </div>
               </div>
               <div class="col-md-2">
-                <button class="btn btn-primary-color" id="xemtruoc">
+                <button class="btn btn-primary-color" id="showBtn">
                   Xem trước
                 </button>
               </div>
@@ -75,7 +75,7 @@
             </tr>
           </table>
           <div class="d-flex justify-content-end">
-            <button class="btn btn-primary" id="luu" data-bs-toggle="modal" data-bs-target="#exampleModal"
+            <button class="btn btn-primary" id="saveBtn" data-bs-toggle="modal" data-bs-target="#exampleModal"
               style="background-color: #2b4c72">Lưu</button>
             <!-- Modal -->
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -91,7 +91,7 @@
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="xacnhan"
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="confirmBtn"
                       style="background-color: #2b4c72">Xác nhận</button>
                   </div>
                 </div>
@@ -127,8 +127,8 @@
     function preview() {
       data.length = 0;
       $('.table tr').empty();
-      var col = $('#socot').val();
-      var row = $('#sohang').val();;
+      var col = $('#rowNumber').val();
+      var row = $('#colNumber').val();;
       var count = 0;
       for (var i = 1; i <= row; i++) {
         var newRow = $('<tr></tr>');
@@ -154,7 +154,7 @@
       }
     }
     function showDetails() {
-      var kho = $('#khochua option:selected').val();
+      var ware = $('#warehouse option:selected').val();
       $.ajax({
         url: 'showDetails',
         method: 'POST',
@@ -162,14 +162,14 @@
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         data: {
-          kho: kho,
+          ware: ware,
         },
         success: function (response) {
           if (response.count == 0) {
 
           } else {
-            $('#xemtruoc').prop('disabled', true);
-            $('#luu').prop('disabled', true);
+            $('#showBtn').prop('disabled', true);
+            $('#saveBtn').prop('disabled', true);
             var details = response.details;
             var col = response.col;
             var row = response.row;
@@ -208,11 +208,10 @@
       });
     }
     showDetails();
-    $('#khochua').change(function () {
-      var kho = $(this).val();
-      $('#sohang').val("");
-      $('#socot').val("");
-      console.log(kho);
+    $('#warehouse').change(function () {
+      var ware = $(this).val();
+      $('#colNumber').val("");
+      $('#rowNumber').val("");
       $('.table tr').empty();
       $.ajax({
         url: 'showDetails',
@@ -221,15 +220,15 @@
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         data: {
-          kho: kho,
+          ware: ware,
         },
         success: function (response) {
           if (response.count == 0) {
             $('.table tr').empty();
-            $('#xemtruoc').prop('disabled', false);
-            $('#luu').addClass('d-none');
+            $('#showBtn').prop('disabled', false);
+            $('#saveBtn').addClass('d-none');
           } else {
-            $('#xemtruoc').prop('disabled', true);
+            $('#showBtn').prop('disabled', true);
             var details = response.details;
             var col = response.col;
             var row = response.row;
@@ -277,9 +276,9 @@
           callback: function (key, options) {
             var col = $(this).data('col');
             var row = $(this).data('row');
-            var check = $('#xemtruoc').prop('disabled');
+            var check = $('#showBtn').prop('disabled');
             if (check) {
-              var kho = $('#khochua option:selected').val();
+              var ware = $('#warehouse option:selected').val();
               $.ajax({
                 url: 'setCellStatus',
                 method: 'POST',
@@ -290,7 +289,7 @@
                 data: {
                   row: row,
                   col: col,
-                  ware: kho,
+                  ware: ware,
                   status: key,
                 },
                 success: function (response) {
@@ -346,16 +345,16 @@
 
     });
 
-    $('#xemtruoc').click(function (e) {
+    $('#showBtn').click(function (e) {
       e.preventDefault();
-      var col = $('#socot').val();
-      var row = $('#sohang').val();
-      $('#luu').prop('disabled', false);
+      var col = $('#rowNumber').val();
+      var row = $('#colNumber').val();
+      $('#saveBtn').prop('disabled', false);
       if (col !== "" && row !== "") {
         if (/^\d+$/.test(col) && /^\d+$/.test(row)) {
           if (parseInt(col, 10) > 0 && parseInt(row, 10) > 0) {
             preview();
-            $('#luu').removeClass('d-none');
+            $('#saveBtn').removeClass('d-none');
           } else {
             $(".toast-body").addClass("bg-danger");
             $("#icon").addClass("fa-xmark-circle");
@@ -377,12 +376,12 @@
       }
     });
 
-    $('#xacnhan').click(function (e) {
+    $('#confirmBtn').click(function (e) {
       e.preventDefault();
       $('.table tr').empty();
-      var socot = $('#socot').val();
-      var sohang = $('#sohang').val();
-      var kho = $('#khochua option:selected').val();
+      var rowNumber = $('#rowNumber').val();
+      var colNumber = $('#colNumber').val();
+      var ware = $('#warehouse option:selected').val();
       $.ajax({
         url: 'createWare',
         method: 'POST',
@@ -391,9 +390,9 @@
         },
         data: {
           data: data,
-          ware: kho,
-          col: socot,
-          row: sohang,
+          ware: ware,
+          col: rowNumber,
+          row: colNumber,
         },
         success: function (response) {
           console.log(response.error);
@@ -402,8 +401,8 @@
             $("#icon").addClass("fa-xmark-circle");
             $("#toast-msg").html(response.error);
             toastBootstrap.show();
-            $('#socot').val("");
-            $('#sohang').val("");
+            $('#rowNumber').val("");
+            $('#colNumber').val("");
             $('.table tr').empty();
             showDetails();
           } else {

@@ -197,7 +197,6 @@
 
     $(".deletePack").on('click', function () {
       let Id_PackContent = $(this).data('id');
-      // console.log(Id_PackContent);
       $.ajax({
         url: '/orders/packs/destroyPackContent',
         type: 'POST',
@@ -207,7 +206,6 @@
           idOrder: @json($order -> Id_Order)
         },
         success: function (response) {
-          // console.log(response);
           window.location.href = response.url;
         }
       });

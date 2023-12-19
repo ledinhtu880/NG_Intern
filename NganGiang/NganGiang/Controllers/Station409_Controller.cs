@@ -47,6 +47,7 @@ namespace NganGiang.Controllers
                 try
                 {
                     Service.UpdateProcessContentPack(id);
+                    Service.UpdateProcessContentSimple(id);
                     Service.UpdateDetailStateCellOfPackWareHouse(id);
                     Service.UpdateOrderLocal(id);
                     if (Service.AreAllPackContentsInWareHouse(id))

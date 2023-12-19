@@ -74,6 +74,27 @@ namespace NganGiang.Services.Process
                 return false;
             }
         }
+        public List<int> GetIdSimpleContentList(int id)
+        {
+            string query = $"SELECT Id_SimpleContent AS [Mã thùng hàng] " +
+                $"FROM ContentSimple " +
+                $"INNER JOIN DetailContentSimpleOfPack ON Id_SimpleContent = FK_Id_SimpleContent " +
+                $"INNER JOIN DetailContentPackOrderLocal ON FK_Id_ContentPack = FK_Id_ContentPack " +
+                $"WHERE FK_Id_PackContent = {id} " +
+                $"GROUP BY Id_SimpleContent";
+
+            List<int> idSimpleContentList = new List<int>();
+
+            DataTable result = DataProvider.Instance.ExecuteQuery(query);
+
+            foreach (DataRow row in result.Rows)
+            {
+                int idSimpleContent = Convert.ToInt32(row["Mã thùng hàng"]);
+                idSimpleContentList.Add(idSimpleContent);
+            }
+
+            return idSimpleContentList;
+        }
         public void UpdateProcessContentPack(int id)
         {
             try
@@ -81,18 +102,25 @@ namespace NganGiang.Services.Process
                 string query = $"UPDATE ProcessContentPack SET FK_Id_State = 2, Data_Fin = " +
                 $"'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}' WHERE FK_Id_ContentPack = {id} AND FK_Id_Station = 409";
                 DataProvider.Instance.ExecuteNonQuery(query);
-
-                if (GetNextStation(id) != -1)
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        public void UpdateProcessContentSimple(int id)
+        {
+            try
+            {
+                List<int> idArr = GetIdSimpleContentList(id);
+                foreach (int each in idArr)
                 {
-                    query = "INSERT INTO ProcessContentPack (FK_Id_ContentPack, FK_Id_Station, FK_Id_State, Data_Start) " +
-                    "VALUES (@FK_Id_ContentPack, @FK_Id_Station, @FK_Id_State, @Data_Start)";
-
+                    string query = $"UPDATE ProcessContentSimple SET FK_Id_State = 2, Data_Fin = @Data_Fin " +
+                        $"WHERE FK_Id_ContentSimple = @FK_Id_ContentSimple AND FK_Id_Station = 409";
                     SqlParameter[] parameters = new SqlParameter[]
                     {
-                        new SqlParameter("@FK_Id_ContentPack", id),
-                        new SqlParameter("@FK_Id_Station", GetNextStation(id)),
-                        new SqlParameter("@FK_Id_State", SqlDbType.SmallInt) { Value = 0 },
-                        new SqlParameter("@Data_Start", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                        new SqlParameter("@FK_Id_ContentSimple", each),
+                        new SqlParameter("@Data_Fin", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
                     };
 
                     DataProvider.Instance.ExecuteNonQuery(query, parameters);
@@ -105,7 +133,6 @@ namespace NganGiang.Services.Process
         }
         public int GetIDOrder(int id)
         {
-
             try
             {
                 string query = "select Id_Order from [Order] " +

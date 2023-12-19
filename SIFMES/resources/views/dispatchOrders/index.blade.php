@@ -13,14 +13,14 @@
       </ol>
     </nav>
     <div class="card">
-      <div class="card-header btn-primary-color ">
-        <h4 class="card-title">Xử lý đơn hàng</h4>
+      <div class="card-header p-0 overflow-hidden">
+        <h4 class="card-title m-0 bg-primary-color p-3">Xử lý đơn hàng</h4>
       </div>
       <div class="row my-3 px-3 py-1">
         <div class="col-2">
           <div class="input-group mb-3">
-            <label class="input-group-text" for="trangthai">Hiển thị</label>
-            <select class="form-select" id="trangthai">
+            <label class="input-group-text" for="status">Hiển thị</label>
+            <select class="form-select" id="status">
               <option value="0">Sản xuất</option>
               <option value="1">Đóng gói</option>
               <option value="2">Giao hàng</option>
@@ -44,8 +44,8 @@
       <div class="row px-3 py-1">
         <div class="col-5">
           <div class="input-group mb-3">
-            <label class="input-group-text" for="daychuyen">Dây chuyền sản xuất</label>
-            <select class="form-select" id="daychuyen">
+            <label class="input-group-text" for="prodStationLine">Dây chuyền sản xuất</label>
+            <select class="form-select" id="prodStationLine">
               @foreach ($psl as $item)
               <option value="{{ $item->Id_ProdStationLine }}">{{ $item->Name_ProdStationLine }}
               </option>
@@ -55,12 +55,13 @@
         </div>
         <div class="col-6">
           <div class="input-group mb-3">
-            <label class="input-group-text" for="kieudon">Loại</label>
-            <input type="text" class="form-control" id="kieudon" readonly>
+            <label class="input-group-text" for="type">Loại</label>
+            <input type="text" class="form-control" id="type" readonly>
           </div>
         </div>
         <div class="col-1">
-          <button class="btn btn-primary-color" data-bs-toggle="modal" data-bs-target="#modalstart" id="khoidong">Khởi
+          <button class="btn btn-primary-color" data-bs-toggle="modal" data-bs-target="#modalstart"
+            id="dispatchBtn">Khởi
             động</button>
           <div class="modal fade" id="modalstart" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -75,8 +76,7 @@
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                   <button type="button" class="btn btn-primary btn-primary-color" data-bs-dismiss="modal"
-                    id="xacnhan">Xác
-                    nhận</button>
+                    id="confirmBtn">Xác nhận</button>
                 </div>
               </div>
             </div>
@@ -85,7 +85,7 @@
         <div class="col-4">
           <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">Tổng quan</span>
-            <input type="text" class="form-control" id="tongquan" readonly>
+            <input type="text" class="form-control" id="overview" readonly>
           </div>
         </div>
       </div>
@@ -115,7 +115,7 @@
 
     $('.modal').attr('id', 'abc');
 
-    $('#daychuyen').change(function () {
+    $('#prodStationLine').change(function () {
       var selectedValue = $(this).val();
       $.ajax({
         url: '/dispatchs/getProductStation',
@@ -127,17 +127,17 @@
           value: selectedValue,
         },
         success: function (response) {
-          $('#tongquan').val(response[0].Description);
-          $('#kieudon').val(response[0].Name_OrderType);
+          $('#overview').val(response[0].Description);
+          $('#type').val(response[0].Name_OrderType);
         }
       });
     });
 
-    let secondOptionValue = $('#daychuyen').val();
-    $('#daychuyen').val(secondOptionValue);
-    $('#daychuyen').change();
+    let secondOptionValue = $('#prodStationLine').val();
+    $('#prodStationLine').val(secondOptionValue);
+    $('#prodStationLine').change();
 
-    $('#trangthai').change(function () {
+    $('#status').change(function () {
       id = [];
       count = 0;
       $('.modal').attr('id', 'abc');
@@ -182,7 +182,9 @@
             }
             var col5 = $('<td></td>');
             var a = $(
-              '<a class="text-decoration-none details" target="_blank"><i class="fa-solid fa-eye"></i></a>'
+              `<a class="btn btn-sm btn-outline-light text-primary-color border-secondary" target="_blank">
+                  <i class="fa-solid fa-eye"></i>
+              </a>`
             );
             a.attr('href', 'http://127.0.0.1:8000/orderLocals/makes/' + element[
               'Id_OrderLocal']);
@@ -208,9 +210,9 @@
       });
     });
 
-    let firstOptionValue = $('#trangthai').val();
-    $('#trangthai').val(firstOptionValue);
-    $('#trangthai').change();
+    let firstOptionValue = $('#status').val();
+    $('#status').val(firstOptionValue);
+    $('#status').change();
 
     var id = [];
     $(document).on("change", ".checkbox", function () {
@@ -229,20 +231,18 @@
       else {
         $('.modal').attr('id', 'abc');
       }
-      console.log(id);
-      console.log(id.length);
     })
 
-    $('#khoidong').on('click', function () {
+    $('#dispatchBtn').on('click', function () {
       if (id.length < 1) {
         $(".toast-body").addClass("bg-warning");
         $("#icon").addClass("fa-xmark-circle");
         $("#toast-msg").html("Bạn chưa chọn hoá đơn nào!");
         toastBootstrap.show();
       }
-      else if (id.length > 1) {
-        $('#xacnhan').on('click', function () {
-          var daychuyen = $('#daychuyen option:selected').val();
+      else if (id.length >= 1) {
+        $('#confirmBtn').on('click', function () {
+          var prodStationLine = $('#prodStationLine option:selected').val();
           $.ajax({
             url: '/dispatchs/store',
             method: 'POST',
@@ -251,7 +251,7 @@
             },
             data: {
               id: id,
-              $stationProd: daychuyen,
+              stationProd: prodStationLine,
             },
             success: function (response) {
               $(".toast-body").addClass("bg-success");
