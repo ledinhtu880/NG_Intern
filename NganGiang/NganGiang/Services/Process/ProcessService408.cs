@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Data.SqlClient;
 using NganGiang.Models;
 using NganGiang.Libs;
+using System.Windows.Controls.Primitives;
 
 namespace NganGiang.Services.Process
 {
@@ -18,48 +19,122 @@ namespace NganGiang.Services.Process
     {
         public DataTable ShowContentPack()
         {
-            string query = @"SELECT FK_Id_OrderLocal AS [Mã đơn hàng], FK_Id_PackContent AS [Mã gói hàng],
+            string query = @"SELECT FK_Id_OrderLocal AS [Mã đơn hàng], FK_Id_ContentPack AS [Mã gói hàng],
             CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Kiểu hàng], 
-            Name_State AS [Trạng thái], CONVERT(DATE, ProcessContentPack.Data_Start) AS [Ngày bắt đầu]
+            Name_State AS [Trạng thái], CONVERT(DATE, ProcessContentPack.Date_Start) AS [Ngày bắt đầu]
             FROM ProcessContentPack
-                INNER JOIN ContentPack on FK_Id_ContentPack = Id_PackContent
-                INNER JOIN DetailContentSimpleOfPack on ContentPack.Id_PackContent = DetailContentSimpleOfPack.FK_Id_PackContent
-                INNER JOIN DetailContentPackOrderLocal on ContentPack.Id_PackContent = DetailContentPackOrderLocal.FK_Id_ContentPack
+                INNER JOIN ContentPack on FK_Id_ContentPack = Id_ContentPack
+                INNER JOIN DetailContentSimpleOfPack on ContentPack.Id_ContentPack = DetailContentSimpleOfPack.FK_Id_ContentPack
+                INNER JOIN DetailContentPackOrderLocal on ContentPack.Id_ContentPack = DetailContentPackOrderLocal.FK_Id_ContentPack
                 INNER JOIN State on FK_Id_State = Id_State
                 INNER JOIN OrderLocal ON FK_Id_OrderLocal = Id_OrderLocal
             WHERE ProcessContentPack.FK_Id_Station = 408 AND FK_Id_State = 0 AND
-            HaveEilmPE = 0 AND FK_Id_PackContent NOT IN (
-                SELECT DCS.FK_Id_PackContent FROM DetailContentSimpleOfPack DCS
-                INNER JOIN ContentSimple CS ON DCS.FK_Id_SimpleContent = CS.Id_SimpleContent
+            HaveEilmPE = 0 AND FK_Id_ContentPack NOT IN (
+                SELECT DCS.FK_Id_ContentPack FROM DetailContentSimpleOfPack DCS
+                INNER JOIN ContentSimple CS ON DCS.FK_Id_ContentSimple = CS.Id_ContentSimple
                 WHERE CS.ContainerProvided <> 1 OR CS.PedestalProvided <> 1 OR CS.RFIDProvided <> 1
                 OR CS.RawMaterialProvided <> 1 OR CS.CoverHatProvided <> 1) 
-            GROUP BY FK_Id_OrderLocal, FK_Id_PackContent, SimpleOrPack, Name_State, ProcessContentPack.Data_Start";
+            GROUP BY FK_Id_OrderLocal, FK_Id_ContentPack, SimpleOrPack, Name_State, ProcessContentPack.Date_Start";
             return DataProvider.Instance.ExecuteQuery(query);
         }
-        public void UpdateWarehouse(int id)
+        public int GetTotalCountInRegister(int id)
         {
-            string query = $"UPDATE DetailStateCellOfSimpleWareHouse SET FK_Id_StateCell = 1, FK_Id_SimpleContent = NULL " +
-                $"WHERE FK_Id_SimpleContent IN (SELECT DCS.FK_Id_SimpleContent FROM DetailContentSimpleOfPack DCS " +
-                    $"WHERE DCS.FK_Id_PackContent = {id})";
-            DataProvider.Instance.ExecuteNonQuery(query);
+            try
+            {
+                string query = $"SELECT SUM(COUNT) as SoLuong FROM RegisterContentSimpleAtWareHouse " +
+                    $"WHERE FK_Id_ContentSimple IN " +
+                    $"(SELECT DCS.FK_Id_ContentSimple FROM DetailContentSimpleOfPack DCS WHERE DCS.FK_Id_ContentPack = {id})";
+
+                DataTable result = DataProvider.Instance.ExecuteQuery(query);
+
+                if (result.Rows[0]["SoLuong"] != DBNull.Value)
+                {
+                    int totalCount = Convert.ToInt32(result.Rows[0]["SoLuong"]);
+                    return totalCount;
+                }
+                else
+                {
+                    return -1; // Hoặc giá trị tùy ý để chỉ ra rằng kết quả truy vấn là NULL
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lấy trạm tiếp theo.\n" + ex.Message);
+                return -1;
+            }
+        }
+        public int GetTotalCountInWarehouse(int id)
+        {
+            try
+            {
+                string query = $"Select SUM(Count_Container) as SoLuong from ContentSimple " +
+                    $"where Id_ContentSimple in (SELECT DCS.FK_Id_ContentSimple FROM DetailContentSimpleOfPack DCS " +
+                    $"WHERE DCS.FK_Id_ContentPack = ${id})";
+
+                DataTable result = DataProvider.Instance.ExecuteQuery(query);
+
+                if (result.Rows[0]["SoLuong"] != DBNull.Value)
+                {
+                    // Lấy giá trị trạm tiếp theo từ kết quả
+                    int totalCount = Convert.ToInt32(result.Rows[0]["SoLuong"]);
+                    return totalCount;
+                }
+                else
+                {
+                    // Không có kết quả trả về
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lấy số lượng thùng chứa của thùng hàng.\n" + ex.Message);
+                return -1;
+            }
+        }
+        public bool UpdateWarehouse(int id)
+        {
+            try
+            {
+                int totalCountInRegister = GetTotalCountInRegister(id);
+                int totalCountInWarehouse = GetTotalCountInWarehouse(id);
+                if (totalCountInRegister == totalCountInWarehouse)
+                {
+                    string query = $"UPDATE DetailStateCellOfSimpleWareHouse SET FK_Id_StateCell = 1, " +
+                        $"FK_Id_ContentSimple = NULL WHERE FK_Id_ContentSimple IN " +
+                        $"(SELECT DCS.FK_Id_ContentSimple FROM DetailContentSimpleOfPack DCS " +
+                        $"WHERE DCS.FK_Id_ContentPack = {id})";
+                    DataProvider.Instance.ExecuteNonQuery(query);
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
         public void UpdateProcessContentPack(int id)
         {
             try
             {
-                string query = $"UPDATE ProcessContentPack SET FK_Id_State = 2, Data_Fin = " +
+                string query = $"UPDATE ProcessContentPack SET FK_Id_State = 2, Date_Fin = " +
                 $"'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}' WHERE FK_Id_ContentPack = {id} AND FK_Id_Station = 408";
                 DataProvider.Instance.ExecuteNonQuery(query);
 
-                query = "INSERT INTO ProcessContentPack (FK_Id_ContentPack, FK_Id_Station, FK_Id_State, Data_Start) " +
-                "VALUES (@FK_Id_ContentPack, @FK_Id_Station, @FK_Id_State, @Data_Start)";
+                query = "INSERT INTO ProcessContentPack (FK_Id_ContentPack, FK_Id_Station, FK_Id_State, Date_Start) " +
+                "VALUES (@FK_Id_ContentPack, @FK_Id_Station, @FK_Id_State, @Date_Start)";
 
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@FK_Id_ContentPack", id),
                     new SqlParameter("@FK_Id_Station", 409),
                     new SqlParameter("@FK_Id_State", SqlDbType.SmallInt) { Value = 0 },
-                    new SqlParameter("@Data_Start", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                    new SqlParameter("@Date_Start", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
                 };
 
                 DataProvider.Instance.ExecuteNonQuery(query, parameters);
@@ -69,51 +144,81 @@ namespace NganGiang.Services.Process
                 MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        public List<int> GetIdSimpleContentList(int id)
+        public List<int> GetIdContentSimpleList(int id)
         {
-            string query = $"SELECT Id_SimpleContent AS [Mã thùng hàng] " +
+            string query = $"SELECT Id_ContentSimple AS [Mã thùng hàng] " +
                 $"FROM ContentSimple " +
-                $"INNER JOIN DetailContentSimpleOfPack ON Id_SimpleContent = FK_Id_SimpleContent " +
+                $"INNER JOIN DetailContentSimpleOfPack ON Id_ContentSimple = FK_Id_ContentSimple " +
                 $"INNER JOIN DetailContentPackOrderLocal ON FK_Id_ContentPack = FK_Id_ContentPack " +
-                $"WHERE FK_Id_PackContent = {id} " +
-                $"GROUP BY Id_SimpleContent";
+                $"WHERE FK_Id_ContentPack = {id} " +
+                $"GROUP BY Id_ContentSimple";
 
-            List<int> idSimpleContentList = new List<int>();
+            List<int> idContentSimpleList = new List<int>();
 
             DataTable result = DataProvider.Instance.ExecuteQuery(query);
 
             foreach (DataRow row in result.Rows)
             {
-                int idSimpleContent = Convert.ToInt32(row["Mã thùng hàng"]);
-                idSimpleContentList.Add(idSimpleContent);
+                int idContentSimple = Convert.ToInt32(row["Mã thùng hàng"]);
+                idContentSimpleList.Add(idContentSimple);
             }
 
-            return idSimpleContentList;
+            return idContentSimpleList;
+        }
+        public int GetBeforeStation(int id)
+        {
+            try
+            {
+                string query = "SELECT TOP 1 FK_Id_Station AS N'Trạm phía trước' FROM DispatcherOrder " +
+                    "INNER JOIN DetailContentPackOrderLocal ON DispatcherOrder.FK_Id_OrderLocal = " +
+                    "DetailContentPackOrderLocal.FK_Id_ContentPack " +
+                    "INNER JOIN DetailProductionStationLine ON DispatcherOrder.FK_Id_ProdStationLine = DetailProductionStationLine.FK_Id_ProdStationLine " +
+                    $"WHERE FK_Id_Station <= 408 AND FK_Id_ContentPack = {id}";
+
+                DataTable result = DataProvider.Instance.ExecuteQuery(query);
+
+                if (result.Rows.Count > 0)
+                {
+                    // Lấy giá trị trạm tiếp theo từ kết quả
+                    int nextStation = Convert.ToInt32(result.Rows[0]["Trạm tiếp theo"]);
+                    return nextStation;
+                }
+                else
+                {
+                    // Không có kết quả trả về
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lấy trạm tiếp theo.\n" + ex.Message);
+                return -1;
+            }
         }
         public void UpdateProcessContentSimple(int id)
         {
             try
             {
-                List<int> idArr = GetIdSimpleContentList(id);
+                List<int> idArr = GetIdContentSimpleList(id);
                 foreach (int each in idArr)
                 {
-                    string query = $"UPDATE ProcessContentSimple SET FK_Id_State = 2, Data_Fin = @Data_Fin " +
+                    string query = $"UPDATE ProcessContentSimple SET FK_Id_State = 2, Date_Fin = @Date_Fin " +
                         $"WHERE FK_Id_ContentSimple = @FK_Id_ContentSimple AND FK_Id_Station = 408";
                     SqlParameter[] parameters = new SqlParameter[]
                     {
                         new SqlParameter("@FK_Id_ContentSimple", each),
-                        new SqlParameter("@Data_Fin", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                        new SqlParameter("@Date_Fin", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
                     };
 
                     DataProvider.Instance.ExecuteNonQuery(query, parameters);
 
-                    query = $"insert into ProcessContentSimple (FK_Id_ContentSimple, FK_Id_Station, FK_Id_State, Data_Start) values " + $"(@FK_Id_ContentSimple, @FK_Id_Station, @FK_Id_State, @Data_Start); ";
+                    query = $"insert into ProcessContentSimple (FK_Id_ContentSimple, FK_Id_Station, FK_Id_State, Date_Start) values " + $"(@FK_Id_ContentSimple, @FK_Id_Station, @FK_Id_State, @Date_Start); ";
                     parameters = new SqlParameter[]
                     {
                         new SqlParameter("@FK_Id_ContentSimple", each),
                         new SqlParameter("@FK_Id_Station", 409),
                         new SqlParameter("@FK_Id_State", SqlDbType.SmallInt) { Value = 0 },
-                        new SqlParameter("@Data_Start", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                        new SqlParameter("@Date_Start", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
                     };
 
                     DataProvider.Instance.ExecuteNonQuery(query, parameters);

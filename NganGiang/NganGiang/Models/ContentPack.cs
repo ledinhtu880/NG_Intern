@@ -8,7 +8,7 @@ namespace NganGiang.Models
 {
     internal class ContentPack
     {
-        public decimal Id_PackContent { get; set; }
+        public decimal Id_ContentPack { get; set; }
         public int Count_Pack { get; set; }
         public double Price_Pack { get; set; }
         public decimal FK_Id_Order { get; set; }

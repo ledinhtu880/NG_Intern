@@ -31,27 +31,30 @@
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frm406));
             panelDGV = new Panel();
             dgv406 = new DataGridView();
             IsSelected = new DataGridViewCheckBoxColumn();
             FK_Id_OrderLocal = new DataGridViewTextBoxColumn();
             SimpleOrPack = new DataGridViewTextBoxColumn();
-            Id_SimpleContent = new DataGridViewTextBoxColumn();
+            Id_ContentSimple = new DataGridViewTextBoxColumn();
             Name_RawMaterial = new DataGridViewTextBoxColumn();
             Count = new DataGridViewTextBoxColumn();
             Count_Need = new DataGridViewTextBoxColumn();
-            Data_Start = new DataGridViewTextBoxColumn();
+            Date_Start = new DataGridViewTextBoxColumn();
             Name_State = new DataGridViewTextBoxColumn();
             panelWarehouse = new Panel();
             groupBox1 = new GroupBox();
-            tableWarehouse406 = new TableLayoutPanel();
+            dgv_ware = new DataGridView();
             btnProcess = new Button();
             lbHeader = new Label();
             panelDGV.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv406).BeginInit();
             panelWarehouse.SuspendLayout();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgv_ware).BeginInit();
             SuspendLayout();
             // 
             // panelDGV
@@ -82,7 +85,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
             dgv406.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgv406.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv406.Columns.AddRange(new DataGridViewColumn[] { IsSelected, FK_Id_OrderLocal, SimpleOrPack, Id_SimpleContent, Name_RawMaterial, Count, Count_Need, Data_Start, Name_State });
+            dgv406.Columns.AddRange(new DataGridViewColumn[] { IsSelected, FK_Id_OrderLocal, SimpleOrPack, Id_ContentSimple, Name_RawMaterial, Count, Count_Need, Date_Start, Name_State });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -137,15 +140,15 @@
             SimpleOrPack.Name = "SimpleOrPack";
             SimpleOrPack.ReadOnly = true;
             // 
-            // Id_SimpleContent
+            // Id_ContentSimple
             // 
-            Id_SimpleContent.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Id_SimpleContent.DataPropertyName = "Id_SimpleContent";
-            Id_SimpleContent.FillWeight = 50F;
-            Id_SimpleContent.HeaderText = "Mã thùng hàng";
-            Id_SimpleContent.MinimumWidth = 6;
-            Id_SimpleContent.Name = "Id_SimpleContent";
-            Id_SimpleContent.ReadOnly = true;
+            Id_ContentSimple.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Id_ContentSimple.DataPropertyName = "Id_ContentSimple";
+            Id_ContentSimple.FillWeight = 50F;
+            Id_ContentSimple.HeaderText = "Mã thùng hàng";
+            Id_ContentSimple.MinimumWidth = 6;
+            Id_ContentSimple.Name = "Id_ContentSimple";
+            Id_ContentSimple.ReadOnly = true;
             // 
             // Name_RawMaterial
             // 
@@ -177,15 +180,15 @@
             Count_Need.Name = "Count_Need";
             Count_Need.ReadOnly = true;
             // 
-            // Data_Start
+            // Date_Start
             // 
-            Data_Start.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Data_Start.DataPropertyName = "Data_Start";
-            Data_Start.FillWeight = 60F;
-            Data_Start.HeaderText = "Ngày bắt đầu";
-            Data_Start.MinimumWidth = 6;
-            Data_Start.Name = "Data_Start";
-            Data_Start.ReadOnly = true;
+            Date_Start.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Date_Start.DataPropertyName = "Date_Start";
+            Date_Start.FillWeight = 60F;
+            Date_Start.HeaderText = "Ngày bắt đầu";
+            Date_Start.MinimumWidth = 6;
+            Date_Start.Name = "Date_Start";
+            Date_Start.ReadOnly = true;
             // 
             // Name_State
             // 
@@ -208,7 +211,7 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(tableWarehouse406);
+            groupBox1.Controls.Add(dgv_ware);
             groupBox1.Dock = DockStyle.Fill;
             groupBox1.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox1.Location = new Point(0, 0);
@@ -216,22 +219,41 @@
             groupBox1.Size = new Size(1315, 310);
             groupBox1.TabIndex = 15;
             groupBox1.TabStop = false;
-            groupBox1.Text = "Các thùng hàng trong kho";
+            groupBox1.Text = "Các thùng hàng trong kho (Click để xem chi tiết)";
             // 
-            // tableWarehouse406
+            // dgv_ware
             // 
-            tableWarehouse406.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
-            tableWarehouse406.ColumnCount = 2;
-            tableWarehouse406.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableWarehouse406.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableWarehouse406.Dock = DockStyle.Fill;
-            tableWarehouse406.Location = new Point(3, 30);
-            tableWarehouse406.Name = "tableWarehouse406";
-            tableWarehouse406.RowCount = 2;
-            tableWarehouse406.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableWarehouse406.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableWarehouse406.Size = new Size(1309, 277);
-            tableWarehouse406.TabIndex = 16;
+            dgv_ware.AllowUserToAddRows = false;
+            dgv_ware.AllowUserToDeleteRows = false;
+            dgv_ware.BackgroundColor = Color.White;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = SystemColors.Control;
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dgv_ware.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dgv_ware.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.BackColor = SystemColors.Window;
+            dataGridViewCellStyle5.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
+            dgv_ware.DefaultCellStyle = dataGridViewCellStyle5;
+            dgv_ware.Dock = DockStyle.Fill;
+            dgv_ware.Location = new Point(3, 30);
+            dgv_ware.MultiSelect = false;
+            dgv_ware.Name = "dgv_ware";
+            dgv_ware.RowHeadersVisible = false;
+            dgv_ware.RowHeadersWidth = 51;
+            dgv_ware.SelectionMode = DataGridViewSelectionMode.CellSelect;
+            dgv_ware.Size = new Size(1309, 277);
+            dgv_ware.TabIndex = 0;
+            dgv_ware.CellContentClick += dgv_ware_CellContentClick;
+            dgv_ware.ColumnAdded += dgv_ware_ColumnAdded;
             // 
             // btnProcess
             // 
@@ -263,6 +285,7 @@
             // 
             // frm406
             // 
+            AcceptButton = btnProcess;
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1345, 865);
@@ -279,6 +302,7 @@
             ((System.ComponentModel.ISupportInitialize)dgv406).EndInit();
             panelWarehouse.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgv_ware).EndInit();
             ResumeLayout(false);
         }
 
@@ -287,18 +311,18 @@
         private Panel panelDGV;
         private Panel panelWarehouse;
         private GroupBox groupBox1;
-        private TableLayoutPanel tableWarehouse406;
         private Button btnProcess;
         private Label lbHeader;
         private DataGridView dgv406;
         private DataGridViewCheckBoxColumn IsSelected;
         private DataGridViewTextBoxColumn FK_Id_OrderLocal;
         private DataGridViewTextBoxColumn SimpleOrPack;
-        private DataGridViewTextBoxColumn Id_SimpleContent;
+        private DataGridViewTextBoxColumn Id_ContentSimple;
         private DataGridViewTextBoxColumn Name_RawMaterial;
         private DataGridViewTextBoxColumn Count;
         private DataGridViewTextBoxColumn Count_Need;
-        private DataGridViewTextBoxColumn Data_Start;
+        private DataGridViewTextBoxColumn Date_Start;
         private DataGridViewTextBoxColumn Name_State;
+        private DataGridView dgv_ware;
     }
 }

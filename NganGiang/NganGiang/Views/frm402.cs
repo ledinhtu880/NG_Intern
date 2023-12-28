@@ -32,7 +32,7 @@ namespace NganGiang.Views
 
         private void btnProcess_Click(object sender, EventArgs e)
         {
-            List<string> Id_SimpleContents = new List<string>();
+            List<string> Id_ContentSimples = new List<string>();
             bool check = false;
             // Kiểm tra xem checkbox đã được check hay chưa
             foreach (DataGridViewRow row in dgv402.Rows)
@@ -42,10 +42,10 @@ namespace NganGiang.Views
                     DataGridViewCheckBoxCell? cell = row.Cells["IsSelected"] as DataGridViewCheckBoxCell;
                     if (cell != null && cell.Value is bool)
                     {
-                        // Nếu checkbox được check thì thêm Id_SimpleContent vào danh sách
+                        // Nếu checkbox được check thì thêm Id_ContentSimple vào danh sách
                         if ((Boolean)cell.Value)
                         {
-                            Id_SimpleContents.Add(row.Cells["Mã thùng hàng"].Value.ToString());
+                            Id_ContentSimples.Add(row.Cells["Mã thùng hàng"].Value.ToString());
                             check = true;
                         }
                     }
@@ -55,7 +55,7 @@ namespace NganGiang.Views
             {
                 if (MessageBox.Show("Bạn chắc chắn muốn rót nguyên liệu rắn vào thùng hàng?", "Xác nhận hành động", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    processContentSimpleController.UpdateRawMaterialDispenser(Id_SimpleContents);
+                    processContentSimpleController.UpdateRawMaterialDispenser(Id_ContentSimples);
                     LoadData();
                 }
             }

@@ -12,6 +12,6 @@ namespace NganGiang.Models
         public int Colj { get; set; }
         public short FK_Id_StateCell { get; set; }
         public int FK_Id_Station { get; set; }
-        public decimal FK_Id_PackContent { get; set; }
+        public decimal FK_Id_ContentPack { get; set; }
     }
 }

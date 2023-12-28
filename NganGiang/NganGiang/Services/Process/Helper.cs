@@ -13,9 +13,9 @@ namespace NganGiang.Services.Process
 {
     internal class Helper
     {
-        public static DataTable getInforSimpleContentByContentPack(ContentPack contentPack)
+        public static DataTable getInforContentSimpleByContentPack(ContentPack contentPack)
         {
-            string query = $"SELECT FK_Id_SimpleContent as N'Mã thùng hàng', Name_RawMaterial as N'Nguyên liệu', Count_RawMaterial as N'Số lượng nguyên liệu',\r\nUnit as N'Đơn vị', Name_ContainerType as N'Thùng chứa',\r\nCount_Container as N'Số lượng thùng chứa', format(Price_Container, '##,###.## VNĐ') as N'Đơn giá'\r\nFROM ContentSimple CS\r\nINNER JOIN DetailContentSimpleOfPack DCSOP ON DCSOP.FK_Id_SimpleContent = CS.Id_SimpleContent\r\nINNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial\r\nINNER JOIN ContainerType on FK_Id_ContainerType = Id_ContainerType\r\nWHERE DCSOP.FK_Id_PackContent = {contentPack.Id_PackContent}";
+            string query = $"SELECT FK_Id_ContentSimple as N'Mã thùng hàng', Name_RawMaterial as N'Nguyên liệu', Count_RawMaterial as N'Số lượng nguyên liệu',\r\nUnit as N'Đơn vị', Name_ContainerType as N'Thùng chứa',\r\nCount_Container as N'Số lượng thùng chứa', format(Price_Container, '##,###.## VNĐ') as N'Đơn giá'\r\nFROM ContentSimple CS\r\nINNER JOIN DetailContentSimpleOfPack DCSOP ON DCSOP.FK_Id_ContentSimple = CS.Id_ContentSimple\r\nINNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial\r\nINNER JOIN ContainerType on FK_Id_ContainerType = Id_ContainerType\r\nWHERE DCSOP.FK_Id_ContentPack = {contentPack.Id_ContentPack}";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             return dt;
         }
@@ -24,8 +24,8 @@ namespace NganGiang.Services.Process
         {
             message = "";
             processContentPack.FK_Id_State = 2;
-            processContentPack.Data_Fin = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            string query = $"UPDATE ProcessContentPack SET FK_Id_State = {processContentPack.FK_Id_State}, Data_Fin = '{processContentPack.Data_Fin}' WHERE FK_Id_ContentPack = {processContentPack.FK_Id_ContentPack}";
+            processContentPack.Date_Fin = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            string query = $"UPDATE ProcessContentPack SET FK_Id_State = {processContentPack.FK_Id_State}, Date_Fin = '{processContentPack.Date_Fin}' WHERE FK_Id_ContentPack = {processContentPack.FK_Id_ContentPack}";
             int rowAffected = DataProvider.Instance.ExecuteNonQuery(query);
             if (rowAffected <= 0)
             {
@@ -39,8 +39,8 @@ namespace NganGiang.Services.Process
         {
             message = "";
             processContentPack.FK_Id_State = 0;
-            processContentPack.Data_Start = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            string query = $"INSERT INTO ProcessContentPack(FK_Id_ContentPack, FK_Id_State, FK_Id_Station, Data_Start) VALUES({processContentPack.FK_Id_ContentPack}, {processContentPack.FK_Id_State}, {processContentPack.FK_Id_Station}, '{processContentPack.Data_Start}')";
+            processContentPack.Date_Start = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            string query = $"INSERT INTO ProcessContentPack(FK_Id_ContentPack, FK_Id_State, FK_Id_Station, Date_Start) VALUES({processContentPack.FK_Id_ContentPack}, {processContentPack.FK_Id_State}, {processContentPack.FK_Id_Station}, '{processContentPack.Date_Start}')";
             int rowAffected = DataProvider.Instance.ExecuteNonQuery(query);
             if (rowAffected <= 0)
             {
@@ -55,7 +55,7 @@ namespace NganGiang.Services.Process
             try
             {
                 message = "";
-                string query = $"SELECT FK_Id_SimpleContent\r\nFROM DetailContentSimpleOfPack\r\nWHERE FK_Id_PackContent = {processContentPack.FK_Id_ContentPack}";
+                string query = $"SELECT FK_Id_ContentSimple\r\nFROM DetailContentSimpleOfPack\r\nWHERE FK_Id_ContentPack = {processContentPack.FK_Id_ContentPack}";
                 SqlDataReader reader = DataProvider.Instance.ExecuteReader(query);
                 List<decimal> listIdContentSimples = new List<decimal>();
                 while (reader.Read())

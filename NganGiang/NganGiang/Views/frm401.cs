@@ -48,10 +48,12 @@ namespace NganGiang.Views
                 {
                     foreach (var item in chk)
                     {
-                        var result = processController.UpdateProcessAndSimple(item);
-                        if (!string.IsNullOrEmpty(result))
+                        var state_containerProvided = processController.UpdateContainerProvided(item);
+                        var state_pedestalProvided = processController.UpdatePesdestalProvided(item);
+                        if (!string.IsNullOrEmpty(state_containerProvided) && !string.IsNullOrEmpty(state_pedestalProvided))
                         {
-                            MessageBox.Show($"{result}", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show($"{state_containerProvided}", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show($"{state_pedestalProvided}", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
 

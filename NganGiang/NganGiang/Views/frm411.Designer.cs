@@ -38,7 +38,7 @@
             FK_Id_ContentPack = new DataGridViewTextBoxColumn();
             FK_Id_OrderLocal = new DataGridViewTextBoxColumn();
             Name_State = new DataGridViewTextBoxColumn();
-            Data_Start = new DataGridViewTextBoxColumn();
+            Date_Start = new DataGridViewTextBoxColumn();
             btnProcess = new Button();
             lbHeader = new Label();
             panelDGV.SuspendLayout();
@@ -73,7 +73,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dgv411.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgv411.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv411.Columns.AddRange(new DataGridViewColumn[] { IsSelected, FK_Id_ContentPack, FK_Id_OrderLocal, Name_State, Data_Start });
+            dgv411.Columns.AddRange(new DataGridViewColumn[] { IsSelected, FK_Id_ContentPack, FK_Id_OrderLocal, Name_State, Date_Start });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -139,14 +139,14 @@
             Name_State.ReadOnly = true;
             Name_State.SortMode = DataGridViewColumnSortMode.NotSortable;
             // 
-            // Data_Start
+            // Date_Start
             // 
-            Data_Start.DataPropertyName = "Data_Start";
-            Data_Start.HeaderText = "Ngày bắt đầu";
-            Data_Start.MinimumWidth = 6;
-            Data_Start.Name = "Data_Start";
-            Data_Start.ReadOnly = true;
-            Data_Start.SortMode = DataGridViewColumnSortMode.NotSortable;
+            Date_Start.DataPropertyName = "Date_Start";
+            Date_Start.HeaderText = "Ngày bắt đầu";
+            Date_Start.MinimumWidth = 6;
+            Date_Start.Name = "Date_Start";
+            Date_Start.ReadOnly = true;
+            Date_Start.SortMode = DataGridViewColumnSortMode.NotSortable;
             // 
             // btnProcess
             // 
@@ -178,6 +178,7 @@
             // 
             // frm411
             // 
+            AcceptButton = btnProcess;
             AutoScaleDimensions = new SizeF(11F, 28F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1345, 546);
@@ -205,7 +206,7 @@
         private DataGridViewTextBoxColumn FK_Id_ContentPack;
         private DataGridViewTextBoxColumn FK_Id_OrderLocal;
         private DataGridViewTextBoxColumn Name_State;
-        private DataGridViewTextBoxColumn Data_Start;
+        private DataGridViewTextBoxColumn Date_Start;
         private Button btnProcess;
         private Label lbHeader;
     }

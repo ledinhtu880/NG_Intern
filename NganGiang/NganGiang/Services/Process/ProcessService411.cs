@@ -14,33 +14,33 @@ namespace NganGiang.Services.Process
     {
         public DataTable getProcessAt411()
         {
-            string query = $"SELECT DCPOL.FK_Id_OrderLocal, \r\n\t   PCP.FK_Id_ContentPack, S.Name_State, FORMAT(OL.Data_Start, 'dd-MM-yyyy') AS Data_Start\r\nFROM ProcessContentPack PCP\r\nINNER JOIN DetailContentPackOrderLocal DCPOL ON PCP.FK_Id_ContentPack = DCPOL.FK_Id_ContentPack\r\nINNER JOIN [State] S ON S.Id_State = PCP.FK_Id_State\r\nINNER JOIN OrderLocal OL ON OL.Id_OrderLocal = DCPOL.FK_Id_OrderLocal\r\nWHERE PCP.FK_Id_Station = 411 AND PCP.FK_Id_State = 0";
+            string query = $"SELECT DCPOL.FK_Id_OrderLocal, \r\n\t PCP.FK_Id_ContentPack, S.Name_State, FORMAT(OL.Date_Start, 'dd-MM-yyyy') AS Date_Start\r\nFROM ProcessContentPack PCP\r\nINNER JOIN DetailContentPackOrderLocal DCPOL ON PCP.FK_Id_ContentPack = DCPOL.FK_Id_ContentPack\r\nINNER JOIN [State] S ON S.Id_State = PCP.FK_Id_State\r\nINNER JOIN OrderLocal OL ON OL.Id_OrderLocal = DCPOL.FK_Id_OrderLocal\r\nWHERE PCP.FK_Id_Station = 411 AND PCP.FK_Id_State = 0";
             DataTable tb = DataProvider.Instance.ExecuteQuery(query);
             return tb;
         }
-        public DataTable getInforSimpleContentByContentPack(ContentPack contentPack)
+        public DataTable getInforContentSimpleByContentPack(ContentPack contentPack)
         {
-            return Helper.getInforSimpleContentByContentPack(contentPack);
+            return Helper.getInforContentSimpleByContentPack(contentPack);
         }
-        private string generaterCodeNFC(string Id_PackContent)
+        private string generaterCodeNFC(string Id_ContentPack)
         {
             string codeNFC = "NFC-IDPC-";
-            int len = Id_PackContent.Length;
+            int len = Id_ContentPack.Length;
             for (int i = 0; i < 11 - len; i++)
             {
                 codeNFC += "0";
             }
-            codeNFC += Id_PackContent;
+            codeNFC += Id_ContentPack;
             return codeNFC;
         }
 
         private bool updateContentPack(ContentPack contentPack, out string message)
         {
 
-            contentPack.CodeNFC = this.generaterCodeNFC(contentPack.Id_PackContent.ToString());
+            contentPack.CodeNFC = this.generaterCodeNFC(contentPack.Id_ContentPack.ToString());
             contentPack.HaveNFC = true;
             message = "";
-            string query = $"UPDATE ContentPack SET CodeNFC = '{contentPack.CodeNFC}', HaveNFC = '{contentPack.HaveNFC}' WHERE Id_PackContent = {contentPack.Id_PackContent}";
+            string query = $"UPDATE ContentPack SET CodeNFC = '{contentPack.CodeNFC}', HaveNFC = '{contentPack.HaveNFC}' WHERE Id_ContentPack = {contentPack.Id_ContentPack}";
             int rowAffected = DataProvider.Instance.ExecuteNonQuery(query);
             if (rowAffected <= 0)
             {
@@ -72,8 +72,8 @@ namespace NganGiang.Services.Process
                 processContentSimple.FK_Id_ContentSimple = IdContentSimple;
                 processContentSimple.FK_Id_State = 0;
                 processContentSimple.FK_Id_Station = 412;
-                processContentSimple.Data_Start = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                string query = $"INSERT INTO ProcessContentSimple(FK_Id_ContentSimple, FK_Id_State, FK_Id_Station, Data_Start) VALUES({processContentSimple.FK_Id_ContentSimple}, {processContentSimple.FK_Id_State}, {processContentSimple.FK_Id_Station}, '{processContentSimple.Data_Start}')";
+                processContentSimple.Date_Start = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                string query = $"INSERT INTO ProcessContentSimple(FK_Id_ContentSimple, FK_Id_State, FK_Id_Station, Date_Start) VALUES({processContentSimple.FK_Id_ContentSimple}, {processContentSimple.FK_Id_State}, {processContentSimple.FK_Id_Station}, '{processContentSimple.Date_Start}')";
                 int rowAffected = DataProvider.Instance.ExecuteNonQuery(query);
                 if (rowAffected <= 0)
                 {
@@ -92,8 +92,8 @@ namespace NganGiang.Services.Process
                 processContentSimple.FK_Id_ContentSimple = IdContentSimple;
                 processContentSimple.FK_Id_State = 2;
                 processContentSimple.FK_Id_Station = 411;
-                processContentSimple.Data_Fin = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                string query = $"UPDATE ProcessContentSimple SET FK_Id_State = {processContentSimple.FK_Id_State}, Data_Fin = '{processContentSimple.Data_Fin}' WHERE FK_Id_ContentSimple = {processContentSimple.FK_Id_ContentSimple} AND FK_Id_Station = {processContentSimple.FK_Id_Station}";
+                processContentSimple.Date_Fin = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                string query = $"UPDATE ProcessContentSimple SET FK_Id_State = {processContentSimple.FK_Id_State}, Date_Fin = '{processContentSimple.Date_Fin}' WHERE FK_Id_ContentSimple = {processContentSimple.FK_Id_ContentSimple} AND FK_Id_Station = {processContentSimple.FK_Id_Station}";
                 int rowAffected = DataProvider.Instance.ExecuteNonQuery(query);
                 if (rowAffected <= 0)
                 {
@@ -110,7 +110,7 @@ namespace NganGiang.Services.Process
                 return false;
             }
             ProcessContentPack processContentPack = new ProcessContentPack();
-            processContentPack.FK_Id_ContentPack = contentPack.Id_PackContent;
+            processContentPack.FK_Id_ContentPack = contentPack.Id_ContentPack;
             if (!this.updateProcessContentSimple(processContentPack, out message))
             {
                 return false;

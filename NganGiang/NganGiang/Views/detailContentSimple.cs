@@ -13,11 +13,11 @@ namespace NganGiang.Views
     public partial class detailContentSimple : Form
     {
         private DataTable dt;
-        private decimal Id_SimpleContent;
-        public detailContentSimple(DataTable dt, decimal Id_SimpleContent)
+        private decimal Id_ContentSimple;
+        public detailContentSimple(DataTable dt, decimal Id_ContentSimple)
         {
             this.dt = dt;
-            this.Id_SimpleContent = Id_SimpleContent;
+            this.Id_ContentSimple = Id_ContentSimple;
             InitializeComponent();
         }
 
@@ -33,7 +33,7 @@ namespace NganGiang.Views
         }
         private void detailContentSimple_Load(object sender, EventArgs e)
         {
-            lbHeader.Text = "Thông tin chi tiết thùng hàng số " + this.Id_SimpleContent;
+            lbHeader.Text = "Thông tin chi tiết thùng hàng số " + this.Id_ContentSimple;
             dgv408.DataSource = dt;
         }
     }

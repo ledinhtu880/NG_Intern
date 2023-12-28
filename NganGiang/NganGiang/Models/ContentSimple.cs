@@ -8,7 +8,7 @@ namespace NganGiang.Models
 {
     internal class ContentSimple
     {
-        public decimal Id_SimpleContent { get; set; }
+        public decimal Id_ContentSimple { get; set; }
         public int FK_Id_RawMaterial { get; set; }
         public int Count_RawMaterial { get; set; }
         public int FK_Id_ContainerType { get; set; }

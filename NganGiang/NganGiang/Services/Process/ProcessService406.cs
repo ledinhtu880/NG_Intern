@@ -17,18 +17,18 @@ namespace NganGiang.Services.Process
         {
             /**
              * Lấy ra các đơn hàng đang ở trạm 406 và chưa được xử lý
-             * Trả về bảng các cột: Id_OrderLocal, Id_SimpleContent, Name_RawMaterial, RawMaterial.Count, Count_RawMaterial * Count_Container as Count_Need, Name_State, Data_Start, SimpleOrPack
+             * Trả về bảng các cột: Id_OrderLocal, Id_ContentSimple, Name_RawMaterial, RawMaterial.Count, Count_RawMaterial * Count_Container as Count_Need, Name_State, Date_Start, SimpleOrPack
              **/
             int FK_Id_Station = 406;
             int FK_Id_State = 0;
-            string query = "SELECT FK_Id_OrderLocal, Id_SimpleContent, Name_RawMaterial, RawMaterial.Count, " +
+            string query = "SELECT FK_Id_OrderLocal, Id_ContentSimple, Name_RawMaterial, RawMaterial.Count, " +
                            "Count_RawMaterial * Count_Container as Count_Need, Name_State, " +
                            // Mã 103 là mã định dạng cho dd/mm/yyyy.
-                           "CONVERT(varchar(30), ProcessContentSimple.Data_Start, 103) as Data_Start, " +
+                           "CONVERT(varchar(30), ProcessContentSimple.Date_Start, 103) as Date_Start, " +
                            "CASE OrderLocal.SimpleOrPack WHEN 0 THEN N'Thùng hàng' ELSE N'Gói hàng' END as SimpleOrPack " +
                            "FROM ProcessContentSimple " +
-                           "INNER JOIN ContentSimple on Id_SimpleContent = ProcessContentSimple.FK_Id_ContentSimple " +
-                           "INNER JOIN DetailContentSimpleOrderLocal on Id_SimpleContent = DetailContentSimpleOrderLocal.FK_Id_ContentSimple " +
+                           "INNER JOIN ContentSimple on Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple " +
+                           "INNER JOIN DetailContentSimpleOrderLocal on Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple " +
                            "INNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial " +
                            "INNER JOIN [State] on Id_State = FK_Id_State " +
                            "INNER JOIN OrderLocal on FK_Id_OrderLocal = Id_OrderLocal " +
@@ -36,28 +36,34 @@ namespace NganGiang.Services.Process
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             return dt;
         }
-        public DataTable getInforOrderByIdSimpleContent(ContentSimple contentSimple)
+        public DataTable getInforOrderByIdContentSimple(ContentSimple contentSimple)
         {
-            // Lấy ra thông tin đơn hàng theo Id_SimpleContent
-            string query = $"SELECT  Name_RawMaterial as N'Nguyên liệu', Count_RawMaterial as N'Số lượng nguyên liệu',\r\n\t\tUnit as N'Đơn vị', Name_ContainerType as N'Thùng chứa',\r\n\t\tCount_Container as N'Số lượng thùng chứa', format(Price_Container, '##,###.## VNĐ') as N'Đơn giá'\r\nFROM ContentSimple \r\nINNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial\r\nINNER JOIN ContainerType on FK_Id_ContainerType = Id_ContainerType\r\nWHERE Id_SimpleContent = {contentSimple.Id_SimpleContent}";
+            // Lấy ra thông tin đơn hàng theo Id_ContentSimple
+            string query = $"SELECT  Name_RawMaterial as N'Nguyên liệu', Count_RawMaterial as N'Số lượng nguyên liệu', " +
+                $"Unit as N'Đơn vị', Name_ContainerType as N'Thùng chứa', " +
+                $"Count_Container as N'Số lượng thùng chứa', format(Price_Container, '##,###.## VNĐ') as N'Đơn giá' " +
+                $"FROM ContentSimple " +
+                $"INNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial " +
+                $"INNER JOIN ContainerType on FK_Id_ContainerType = Id_ContainerType " +
+                $"WHERE Id_ContentSimple = {contentSimple.Id_ContentSimple}";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             return dt;
         }
         public bool updateProcessContentSimple(ProcessContentSimple processContentSimple, out string message)
         {
             /**
-             * Bảng ProcessContentSimple: FK_Id_State chuyển thành 2 – Đã xử lý, cập nhật ngày hoàn thành Data_Fin
+             * Bảng ProcessContentSimple: FK_Id_State chuyển thành 2 – Đã xử lý, cập nhật ngày hoàn thành Date_Fin
              */
             try
             {
                 message = "";
                 processContentSimple.FK_Id_State = 2;
                 processContentSimple.FK_Id_Station = 406;
-                processContentSimple.Data_Fin = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                processContentSimple.Date_Fin = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
 
                 string query = @"UPDATE ProcessContentSimple SET " +
                 "FK_Id_State = '" + processContentSimple.FK_Id_State + "'" +
-                ", Data_Fin = '" + processContentSimple.Data_Fin + "'" +
+                ", Date_Fin = '" + processContentSimple.Date_Fin + "'" +
                 " WHERE FK_Id_ContentSimple = '" + processContentSimple.FK_Id_ContentSimple + "'" +
                 " AND FK_Id_Station = '" + processContentSimple.FK_Id_Station + "'";
 
@@ -81,22 +87,23 @@ namespace NganGiang.Services.Process
         {
             /**
              * Bảng DetailStateCellOfSimpleWareHouse: 
-             * Cập nhật FK_Id_SimpleContent
+             * Cập nhật FK_Id_ContentSimple
              * Cập nhật FK_Id_StateCell = 2
              **/
             try
             {
-                string query = "UPDATE DetailStateCellOfSimpleWareHouse " +
-                               "SET FK_Id_SimpleContent = " + processContentSimple.FK_Id_ContentSimple +
-                               ", FK_Id_StateCell = 2 " +
-                               "WHERE Rowi = (SELECT TOP 1 Rowi FROM DetailStateCellOfSimpleWareHouse " +
-                               "WHERE FK_Id_StateCell = 1 AND FK_Id_Station = 406) AND " +
-                               "Colj = (SELECT TOP 1 Colj FROM DetailStateCellOfSimpleWareHouse " +
-                               "WHERE FK_Id_StateCell = 1 AND FK_Id_Station = 406)";
+                string query = $"DECLARE @rowi INT; DECLARE @colj INT; " +
+                    $"SELECT TOP 1 @rowi = Rowi, @colj = Colj " +
+                    $"FROM DetailStateCellOfSimpleWareHouse " +
+                    $"WHERE FK_Id_ContentSimple IS NULL AND FK_Id_StateCell = 1 " +
+                    $"ORDER BY Rowi, Colj; " +
+                    $"UPDATE DetailStateCellOfSimpleWareHouse " +
+                    $"SET FK_Id_ContentSimple = {processContentSimple.FK_Id_ContentSimple}, FK_Id_StateCell = 2 " +
+                    $"WHERE Rowi = @rowi AND Colj = @colj;";
                 int rowAffected = DataProvider.Instance.ExecuteNonQuery(query);
-                if (rowAffected < 0)
+                if (rowAffected <= 0)
                 {
-                    message = "Lỗi khi cập nhật bảng DetailStateCellOfSimpleWareHouse";
+                    message = "Kho đầy";
                     return false;
                 }
                 message = "";
@@ -112,7 +119,9 @@ namespace NganGiang.Services.Process
         {
             // Lấy ra số hàng và số cột của kho 406
             WareHouse wareHouse = new WareHouse(406);
-            string query = "SELECT numRow, numCol\r\nFROM WareHouse\r\nWHERE FK_Id_Station = 406";
+            string query = $"SELECT numRow, numCol " +
+                $"FROM WareHouse " +
+                $"WHERE FK_Id_Station = {wareHouse.FK_Id_Station}";
             SqlDataReader reader = DataProvider.Instance.ExecuteReader(query);
             if (reader.Read())
             {
@@ -125,31 +134,37 @@ namespace NganGiang.Services.Process
         public DataTable getLocationMatrix()
         {
             // Lấy ra vị trí thùng hàng trong kho 406
-            string query = "SELECT Id_SimpleContent, Rowi, Colj\r\nFROM DetailStateCellOfSimpleWareHouse\r\nINNER JOIN ContentSimple ON FK_Id_SimpleContent = Id_SimpleContent";
+            string query = "SELECT Id_ContentSimple, Count_Container, Rowi, Colj " +
+                "FROM DetailStateCellOfSimpleWareHouse " +
+                "INNER JOIN ContentSimple ON FK_Id_ContentSimple = Id_ContentSimple";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             return dt;
         }
 
-        private List<decimal> getIdSimpleContentsByDetailContentSimpleOrderLocal(OrderLocal orderLocal)
+        private List<decimal> getIdContentSimplesByDetailContentSimpleOrderLocal(OrderLocal orderLocal)
         {
-            // Lấy ra danh sách Id_SimpleContent theo Id_OrderLocal
-            List<decimal> Id_SimpleContents = new List<decimal>();
-            string query = $"SELECT FK_Id_ContentSimple\r\nFROM DetailContentSimpleOrderLocal\r\nWHERE FK_Id_OrderLocal = {orderLocal.Id_OrderLocal}";
+            // Lấy ra danh sách Id_ContentSimple theo Id_OrderLocal
+            List<decimal> Id_ContentSimples = new List<decimal>();
+            string query = $"SELECT FK_Id_ContentSimple " +
+                $"FROM DetailContentSimpleOrderLocal " +
+                $"WHERE FK_Id_OrderLocal = {orderLocal.Id_OrderLocal}";
             SqlDataReader reader = DataProvider.Instance.ExecuteReader(query);
             while (reader.Read())
             {
-                Id_SimpleContents.Add(reader.GetDecimal(0));
+                Id_ContentSimples.Add(reader.GetDecimal(0));
             }
             reader.Close();
-            return Id_SimpleContents;
+            return Id_ContentSimples;
         }
 
-        private bool checkStation406AndSate2(List<decimal> Id_SimpleContents)
+        private bool checkStation406AndSate2(List<decimal> Id_ContentSimples)
         {
             bool check = true;
-            foreach (int Id_SimpleContent in Id_SimpleContents)
+            foreach (int Id_ContentSimple in Id_ContentSimples)
             {
-                string query = $"SELECT *\r\nFROM ProcessContentSimple\r\nWHERE FK_Id_ContentSimple = {Id_SimpleContent} AND FK_Id_State = 2 AND FK_Id_Station = 406";
+                string query = $"SELECT * " +
+                    $"FROM ProcessContentSimple " +
+                    $"WHERE FK_Id_ContentSimple = {Id_ContentSimple} AND FK_Id_State = 2 AND FK_Id_Station = 406";
                 SqlDataReader reader = DataProvider.Instance.ExecuteReader(query);
                 if (!reader.HasRows)
                 {
@@ -164,7 +179,7 @@ namespace NganGiang.Services.Process
         public bool updateOrderLocal(ProcessContentSimple processContentSimple, out string message)
         {
             // Cập nhật bảng OrderLocal
-            // Bảng OrderLocal cập nhật Data_Fin
+            // Bảng OrderLocal cập nhật Date_Fin
 
             string queryGetIdOrderLocal = $"SELECT FK_Id_OrderLocal\r\nFROM DetailContentSimpleOrderLocal\r\nWHERE FK_Id_ContentSimple = {processContentSimple.FK_Id_ContentSimple}";
 
@@ -175,15 +190,15 @@ namespace NganGiang.Services.Process
                 orderLocal.Id_OrderLocal = reader.GetDecimal(0);
             }
 
-            List<decimal> Id_SimpleContents = this.getIdSimpleContentsByDetailContentSimpleOrderLocal(orderLocal);
+            List<decimal> Id_ContentSimples = this.getIdContentSimplesByDetailContentSimpleOrderLocal(orderLocal);
             message = "";
 
-            orderLocal.Data_Fin = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            orderLocal.Date_Fin = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
 
-            if (this.checkStation406AndSate2(Id_SimpleContents))
+            if (this.checkStation406AndSate2(Id_ContentSimples))
             {
                 // Cập nhật bảng Order
-                string query = $"UPDATE OrderLocal SET Data_Fin = '{orderLocal.Data_Fin}' WHERE Id_OrderLocal = {orderLocal.Id_OrderLocal}";
+                string query = $"UPDATE OrderLocal SET Date_Fin = '{orderLocal.Date_Fin}' WHERE Id_OrderLocal = {orderLocal.Id_OrderLocal}";
                 int rowAffected = DataProvider.Instance.ExecuteNonQuery(query);
                 if (rowAffected <= 0)
                 {
@@ -196,9 +211,9 @@ namespace NganGiang.Services.Process
             return true;
         }
 
-        private decimal getIdOrderBySimpleContent(ProcessContentSimple process)
+        private decimal getIdOrderByContentSimple(ProcessContentSimple process)
         {
-            string query = $"SELECT FK_Id_Order\r\nFROM ContentSimple\r\nWHERE Id_SimpleContent = {process.FK_Id_ContentSimple}";
+            string query = $"SELECT FK_Id_Order\r\nFROM ContentSimple\r\nWHERE Id_ContentSimple = {process.FK_Id_ContentSimple}";
             decimal Id_Order = -1;
             SqlDataReader reader = DataProvider.Instance.ExecuteReader(query);
             if (reader.Read())
@@ -212,12 +227,12 @@ namespace NganGiang.Services.Process
         public bool updateOrder(ProcessContentSimple process, out string message)
         {
             // Cập nhật bảng Order
-            // Bảng Order cập nhật Date_Dilivery
+            // Bảng Order cập nhật Date_Delivery
             message = "";
             Order order = new Order();
-            order.Id_Order = this.getIdOrderBySimpleContent(process);
-            order.Date_Dilivery = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
-            string query = $"SELECT Id_SimpleContent\r\nFROM ContentSimple\r\nWHERE FK_Id_Order = {order.Id_Order}";
+            order.Id_Order = this.getIdOrderByContentSimple(process);
+            order.Date_Delivery = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            string query = $"SELECT Id_ContentSimple\r\nFROM ContentSimple\r\nWHERE FK_Id_Order = {order.Id_Order}";
             List<decimal> Id_ContentSimples = new List<decimal>();
             SqlDataReader reader = DataProvider.Instance.ExecuteReader(query);
             while (reader.Read())
@@ -228,39 +243,13 @@ namespace NganGiang.Services.Process
 
             if (this.checkStation406AndSate2(Id_ContentSimples))
             {
-                query = $"UPDATE [Order] SET Date_Dilivery = '{order.Date_Dilivery}' WHERE Id_Order = {order.Id_Order}";
+                query = $"UPDATE [Order] SET Date_Delivery = '{order.Date_Delivery}' WHERE Id_Order = {order.Id_Order}";
                 int rowAffected = DataProvider.Instance.ExecuteNonQuery(query);
                 if (rowAffected <= 0)
                 {
                     message = "Cập nhật bảng Order thất bại";
                     return false;
                 }
-            }
-            return true;
-        }
-
-        public int getStateByRowAndCol(int row, int col)
-        {
-            // Kiểm tra trạng thái trong kho 406 bằng dòng và cột nếu không có trả về -1
-            string query = $"SELECT FK_Id_StateCell\r\nFROM DetailStateCellOfSimpleWareHouse\r\nWHERE Rowi = {row} AND Colj = {col}";
-            SqlDataReader reader = DataProvider.Instance.ExecuteReader(query);
-            if (reader.Read())
-            {
-                return reader.GetInt32(0);
-            }
-            return -1;
-        }
-
-        public bool updateStateCellOfSimpleWareHouse(int row, int col, int state, out string message)
-        {
-            // Cập nhật trạng thái của kho 406
-            message = "";
-            string query = $"UPDATE DetailStateCellOfSimpleWareHouse SET FK_Id_StateCell = {state} WHERE Rowi = {row} AND Colj = {col}";
-            int rowAffected = DataProvider.Instance.ExecuteNonQuery(query);
-            if (rowAffected <= 0)
-            {
-                message = "Cập nhật bảng DetailStateCellOfSimpleWareHouse thất bại";
-                return false;
             }
             return true;
         }

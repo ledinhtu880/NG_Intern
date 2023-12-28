@@ -15,8 +15,7 @@ namespace NganGiang.Views
     public partial class frm406 : Form
     {
         private Station406_Controller controller;
-        private IconButton button;
-        private DataTable dtMatrix;
+        Point[] points;
         public frm406()
         {
             InitializeComponent();
@@ -30,151 +29,110 @@ namespace NganGiang.Views
         private void updateDGV()
         {
             dgv406.DataSource = controller.getProcessAt406();
-            updateTableLayoutPanel();
+            updateDGVWareHouse();
         }
 
-        private void updateTableLayoutPanel()
+        private void updateDGVWareHouse()
         {
-            tableWarehouse406.Controls.Clear();
-            dtMatrix = controller.getLocationMatrix();
-
-            tableWarehouse406.RowStyles.Clear();
-            tableWarehouse406.ColumnStyles.Clear();
+            dgv_ware.Rows.Clear();
+            dgv_ware.Columns.Clear();
             int row = controller.getRowAndCol(out int col);
-            tableWarehouse406.RowCount = row;
-            tableWarehouse406.ColumnCount = col;
-            tableWarehouse406.Dock = DockStyle.Fill;
 
-            for (int i = 0; i < tableWarehouse406.RowCount; i++)
+            if (row == 0 || col == 0)
             {
-                tableWarehouse406.RowStyles.Add(new RowStyle(SizeType.Percent, 100f / tableWarehouse406.RowCount));
+                MessageBox.Show("Kho chưa được thiết lập", "Chú ý", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
-            for (int i = 0; i < tableWarehouse406.ColumnCount; i++)
+            DataTable dt = controller.getLocationMatrix();
+            int[] Id_ContentSimples = new int[dt.Rows.Count];
+            int[] Count_Containers = new int[dt.Rows.Count];
+            int[] ro = new int[dt.Rows.Count];
+            int[] co = new int[dt.Rows.Count];
+            points = new Point[dt.Rows.Count];
+
+            if (dt.Rows.Count > 0)
             {
-                tableWarehouse406.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f / tableWarehouse406.ColumnCount));
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    ro[i] = Int32.Parse(dt.Rows[i]["Rowi"].ToString());
+                    co[i] = Int32.Parse(dt.Rows[i]["Colj"].ToString());
+                    Id_ContentSimples[i] = Int32.Parse(dt.Rows[i]["Id_ContentSimple"].ToString());
+                    Count_Containers[i] = Int32.Parse(dt.Rows[i]["Count_Container"].ToString());
+                }
+            }
+            dgv_ware.RowTemplate.Height = 150;
+
+            for (int i = 0; i <= col; i++)
+            {
+                DataGridViewColumn column = new DataGridViewTextBoxColumn();
+                column.Name = "Column" + i.ToString();
+                if (i == 0)
+                {
+                    column.Width = 50;
+                    column.HeaderText = "STT";
+                    column.ReadOnly = true;
+                    dgv_ware.Columns.Add(column);
+                    continue;
+                }
+                column.Width = 150;
+                column.HeaderText = i.ToString();
+                dgv_ware.Columns.Add(column);
             }
 
+            for (int i = 0; i < row; i++)
+            {
+                dgv_ware.Rows.Add();
+                dgv_ware.Rows[i].Cells[0].Value = i + 1;
+            }
+            int count = 0;
             for (int r = 0; r < row; r++)
             {
-                for (int c = 0; c < col; c++)
+                // r bắt đầu từ 0
+                for (int c = 1; c <= col; c++)
                 {
-                    Panel panel = new Panel();
-                    panel.Dock = DockStyle.Fill;
-                    panel.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
-
-                    Label label = new Label();
-                    label.Anchor = (AnchorStyles.Bottom | AnchorStyles.Right);
-                    label.TextAlign = ContentAlignment.TopRight;
-                    label.Text = (r + 1).ToString() + "." + (c + 1).ToString();
-                    label.AutoSize = true;
-                    label.Location = new Point(
-                        (panel.Width - label.Width / 2), 0
-                    );
-
-                    button = new IconButton();
-                    Label ept = new Label();
-                    if (dtMatrix.Rows.Count > 0)
+                    // c bắt đầu từ 1
+                    if (r <= ro.Length && c <= co.Length && ro.Length > 0 && co.Length > 0)
                     {
-                        int copyR = r + 1;
-                        int copyC = c + 1;
-                        foreach (DataRow dtRow in dtMatrix.Rows)
+                        if (ro.Length - 1 >= r && co.Length >= c && ro[r] == r + 1 && co[c - 1] == c)
                         {
-                            int rowi = Int32.Parse(dtRow["Rowi"].ToString());
-                            int colj = Int32.Parse(dtRow["Colj"].ToString());
-                            if (rowi == copyR && colj == copyC)
-                            {
-                                panel.Controls.Clear();
-                                Panel pn = new Panel();
-                                pn.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-                                pn.Height = 50;
-                                pn.Location = new Point(0, (panel.Height - pn.Height) / 2);
-
-                                button.IconChar = IconChar.Eye;
-                                button.IconColor = Color.FromArgb(52, 76, 114);
-                                button.IconSize = 40;
-                                button.FlatStyle = FlatStyle.Flat;
-                                button.FlatAppearance.BorderSize = 0;
-                                button.Anchor = AnchorStyles.None;
-                                button.Size = new Size(40, 50);
-                                button.Tag = new Point(colj, rowi);
-
-
-                                Label nonept = new Label();
-                                nonept.Text = "Thùng hàng số " + dtRow["Id_SimpleContent"].ToString();
-                                nonept.TextAlign = ContentAlignment.MiddleCenter;
-                                nonept.Width = 200;
-                                nonept.Height = 50;
-                                nonept.Anchor = AnchorStyles.None;
-                                nonept.Font = new Font("Segoe UI", 13.8f);
-                                nonept.Location = new Point(
-                                    (pn.Width - nonept.Width - 10) / 2, 0
-                                );
-
-                                button.Location = new Point(
-                                    (pn.Width - button.Width + nonept.Width) / 2, 5
-                                );
-
-                                pn.Controls.Add(nonept);
-                                pn.Controls.Add(button);
-                                button.BringToFront();
-                                panel.Controls.Add(pn);
-                                button.Click += IconButton_Click;
-                            }
-                            else
-                            {
-                                ept.Text = "Trống";
-                                ept.Anchor = AnchorStyles.None;
-                                ept.AutoSize = true;
-                                ept.Font = new Font("Segoe UI", 13.8f);
-                                ept.Location = new Point(
-                                    (panel.Width - ept.Width) / 2,
-                                    (panel.Height - ept.Height) / 2
-                                );
-                                panel.Controls.Add(ept);
-                            }
+                            /*DataGridViewImageCell imageCell = new DataGridViewImageCell();
+                            string imgPath = Path.Combine("..", "..", "..", "Resources", "eye-solid.png"); // Thay đổi đường dẫn tới hình ảnh của bạn
+                            imageCell.Value = Image.FromFile(imgPath);
+                            dgv_ware["Column" + c.ToString(), r] = imageCell;
+                            dgv_ware["Column" + c.ToString(), r].ReadOnly = false;
+                            points[count] = new Point(c, r);
+                            count++;*/
+                            DataGridViewButtonCell buttonCell = new DataGridViewButtonCell();
+                            buttonCell.Value = $"Thùng số {Id_ContentSimples[count]}\nSố lượng {Count_Containers[count]}";
+                            dgv_ware["Column" + c.ToString(), r].ReadOnly = false;
+                            points[count] = new Point(c, r);
+                            count++;
+                            dgv_ware["Column" + c.ToString(), r] = buttonCell;
+                        }
+                        else
+                        {
+                            dgv_ware["Column" + c.ToString(), r].Value = "Trống";
+                            dgv_ware["Column" + c.ToString(), r].ReadOnly = true;
                         }
                     }
                     else
                     {
-                        ept.Text = "Trống";
-                        ept.Anchor = AnchorStyles.None;
-                        ept.AutoSize = true;
-                        ept.Font = new Font("Segoe UI", 13.8f);
-                        ept.Location = new Point(
-                            (panel.Width - ept.Width) / 2,
-                            (panel.Height - ept.Height) / 2
-                        );
-                        panel.Controls.Add(ept);
+                        dgv_ware["Column" + c.ToString(), r].Value = "Trống";
+                        dgv_ware["Column" + c.ToString(), r].ReadOnly = true;
                     }
-
-                    panel.Controls.Add(label);
-                    tableWarehouse406.Controls.Add(panel, c, r);
-                }
-            }
-        }
-        private void IconButton_Click(object sender, EventArgs e)
-        {
-            IconButton button = (IconButton)sender;
-            Point pos = (Point)button.Tag;
-            int col = pos.X;
-            int row = pos.Y;
-
-
-            foreach (DataRow r in dtMatrix.Rows)
-            {
-                if (Int32.Parse(r["Rowi"].ToString()) == row && Int32.Parse(r["Colj"].ToString()) == col)
-                {
-                    decimal Id_SimpleContent = Decimal.Parse(r["Id_SimpleContent"].ToString());
-                    DataTable displayInfoOrder = controller.getInforOrderByIdSimpleContent(Id_SimpleContent);
-                    detailContentSimple dio = new detailContentSimple(displayInfoOrder, Id_SimpleContent);
-                    dio.ShowDialog();
-                    return;
                 }
             }
         }
         private void btnProcess_Click(object sender, EventArgs e)
         {
+            int rowWare = controller.getRowAndCol(out int colWare);
+            if (rowWare == 0 || colWare == 0)
+            {
+                MessageBox.Show("Kho chưa được thiết lập", "Chú ý", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             List<decimal> Id_ContentSimples = new List<decimal>();
             bool checkBox = false;
             foreach (DataGridViewRow row in dgv406.Rows)
@@ -184,7 +142,7 @@ namespace NganGiang.Views
                     DataGridViewCheckBoxCell? chk = row.Cells["IsSelected"] as DataGridViewCheckBoxCell;
                     if (chk != null && chk.Value != null && (bool)chk.Value)
                     {
-                        Id_ContentSimples.Add(Decimal.Parse(row.Cells["Id_SimpleContent"].Value.ToString()));
+                        Id_ContentSimples.Add(Decimal.Parse(row.Cells["Id_ContentSimple"].Value.ToString()));
                         checkBox = true;
                     }
                 }
@@ -194,9 +152,11 @@ namespace NganGiang.Views
             {
                 if (MessageBox.Show("Bạn chắc chắn muốn lưu các thùng hàng trên vào kho ?", "Xác nhận hành động", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    controller.processClickStorage(Id_ContentSimples);
-                    MessageBox.Show("Lưu kho thùng hàng thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    updateDGV();
+                    if (controller.processClickStorage(Id_ContentSimples))
+                    {
+                        MessageBox.Show("Lưu kho thùng hàng thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        updateDGV();
+                    }
                 }
             }
             else
@@ -207,6 +167,35 @@ namespace NganGiang.Views
         }
 
         private void dgv406_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
+        {
+            e.Column.SortMode = DataGridViewColumnSortMode.NotSortable;
+        }
+
+        private void dgv_ware_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            DataTable dt = controller.getLocationMatrix();
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && dgv_ware[e.ColumnIndex, e.RowIndex] is DataGridViewButtonCell)
+            {
+                Point pos = new Point(e.ColumnIndex, e.RowIndex);
+                int row = pos.Y + 1;
+                int col = pos.X;
+                foreach (DataRow r in dt.Rows)
+                {
+                    if (Int32.Parse(r["Rowi"].ToString()) == row && Int32.Parse(r["Colj"].ToString()) == col)
+                    {
+                        decimal Id_ContentSimple = Decimal.Parse(r["Id_ContentSimple"].ToString());
+                        DataTable displayInfoOrder = controller.getInforOrderByIdContentSimple(Id_ContentSimple);
+                        detailContentSimple dio = new detailContentSimple(displayInfoOrder, Id_ContentSimple);
+                        dio.ShowDialog();
+                        return;
+                    }
+                }
+                return;
+
+            }
+        }
+
+        private void dgv_ware_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
         {
             e.Column.SortMode = DataGridViewColumnSortMode.NotSortable;
         }

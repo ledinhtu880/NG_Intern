@@ -16,25 +16,25 @@ namespace NganGiang.Services.Process
     {
         public DataTable ShowContentPack()
         {
-            string query = @"SELECT FK_Id_OrderLocal AS [Mã đơn hàng], FK_Id_PackContent AS [Mã gói hàng],
+            string query = @"SELECT FK_Id_OrderLocal AS [Mã đơn hàng], FK_Id_ContentPack AS [Mã gói hàng],
             CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Kiểu hàng], 
-            Name_State AS [Trạng thái], CONVERT(DATE, ProcessContentPack.Data_Start) AS [Ngày bắt đầu]
+            Name_State AS [Trạng thái], CONVERT(DATE, ProcessContentPack.Date_Start) AS [Ngày bắt đầu]
             FROM ProcessContentPack
-                INNER JOIN ContentPack on FK_Id_ContentPack = Id_PackContent
-                INNER JOIN DetailContentSimpleOfPack on ContentPack.Id_PackContent = DetailContentSimpleOfPack.FK_Id_PackContent
-                INNER JOIN DetailContentPackOrderLocal on ContentPack.Id_PackContent = DetailContentPackOrderLocal.FK_Id_ContentPack
+                INNER JOIN ContentPack on FK_Id_ContentPack = Id_ContentPack
+                INNER JOIN DetailContentSimpleOfPack on ContentPack.Id_ContentPack = DetailContentSimpleOfPack.FK_Id_ContentPack
+                INNER JOIN DetailContentPackOrderLocal on ContentPack.Id_ContentPack = DetailContentPackOrderLocal.FK_Id_ContentPack
                 INNER JOIN State on FK_Id_State = Id_State
                 INNER JOIN OrderLocal ON FK_Id_OrderLocal = Id_OrderLocal
             WHERE ProcessContentPack.FK_Id_Station = 409 AND FK_Id_State = 0              
-            GROUP BY FK_Id_OrderLocal, FK_Id_PackContent, SimpleOrPack, Name_State, ProcessContentPack.Data_Start";
+            GROUP BY FK_Id_OrderLocal, FK_Id_ContentPack, SimpleOrPack, Name_State, ProcessContentPack.Date_Start";
             return DataProvider.Instance.ExecuteQuery(query);
         }
         public DataTable getLocationMatrix()
         {
             // Lấy ra vị trí thùng hàng trong kho 409
-            string query = "SELECT Id_PackContent, Rowi, Colj " +
+            string query = "SELECT Id_ContentPack, Rowi, Colj " +
                 "FROM DetailStateCellOfPackWareHouse " +
-                "INNER JOIN ContentPack ON FK_Id_PackContent = Id_PackContent";
+                "INNER JOIN ContentPack ON FK_Id_ContentPack = Id_ContentPack";
             return DataProvider.Instance.ExecuteQuery(query);
         }
         public WareHouse getRowAndCol()
@@ -57,7 +57,7 @@ namespace NganGiang.Services.Process
             try
             {
                 string query = "UPDATE DetailStateCellOfPackWareHouse " +
-                               "SET FK_Id_PackContent = " + id + ", FK_Id_StateCell = 2 " +
+                               "SET FK_Id_ContentPack = " + id + ", FK_Id_StateCell = 2 " +
                                "WHERE Rowi = (SELECT TOP 1 Rowi FROM DetailStateCellOfPackWareHouse " +
                                "WHERE FK_Id_StateCell = 1 AND FK_Id_Station = 409) AND " +
                                "Colj = (SELECT TOP 1 Colj FROM DetailStateCellOfPackWareHouse " +
@@ -74,32 +74,32 @@ namespace NganGiang.Services.Process
                 return false;
             }
         }
-        public List<int> GetIdSimpleContentList(int id)
+        public List<int> GetIdContentSimpleList(int id)
         {
-            string query = $"SELECT Id_SimpleContent AS [Mã thùng hàng] " +
+            string query = $"SELECT Id_ContentSimple AS [Mã thùng hàng] " +
                 $"FROM ContentSimple " +
-                $"INNER JOIN DetailContentSimpleOfPack ON Id_SimpleContent = FK_Id_SimpleContent " +
+                $"INNER JOIN DetailContentSimpleOfPack ON Id_ContentSimple = FK_Id_ContentSimple " +
                 $"INNER JOIN DetailContentPackOrderLocal ON FK_Id_ContentPack = FK_Id_ContentPack " +
-                $"WHERE FK_Id_PackContent = {id} " +
-                $"GROUP BY Id_SimpleContent";
+                $"WHERE FK_Id_ContentPack = {id} " +
+                $"GROUP BY Id_ContentSimple";
 
-            List<int> idSimpleContentList = new List<int>();
+            List<int> idContentSimpleList = new List<int>();
 
             DataTable result = DataProvider.Instance.ExecuteQuery(query);
 
             foreach (DataRow row in result.Rows)
             {
-                int idSimpleContent = Convert.ToInt32(row["Mã thùng hàng"]);
-                idSimpleContentList.Add(idSimpleContent);
+                int idContentSimple = Convert.ToInt32(row["Mã thùng hàng"]);
+                idContentSimpleList.Add(idContentSimple);
             }
 
-            return idSimpleContentList;
+            return idContentSimpleList;
         }
         public void UpdateProcessContentPack(int id)
         {
             try
             {
-                string query = $"UPDATE ProcessContentPack SET FK_Id_State = 2, Data_Fin = " +
+                string query = $"UPDATE ProcessContentPack SET FK_Id_State = 2, Date_Fin = " +
                 $"'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}' WHERE FK_Id_ContentPack = {id} AND FK_Id_Station = 409";
                 DataProvider.Instance.ExecuteNonQuery(query);
             }
@@ -112,15 +112,15 @@ namespace NganGiang.Services.Process
         {
             try
             {
-                List<int> idArr = GetIdSimpleContentList(id);
+                List<int> idArr = GetIdContentSimpleList(id);
                 foreach (int each in idArr)
                 {
-                    string query = $"UPDATE ProcessContentSimple SET FK_Id_State = 2, Data_Fin = @Data_Fin " +
+                    string query = $"UPDATE ProcessContentSimple SET FK_Id_State = 2, Date_Fin = @Date_Fin " +
                         $"WHERE FK_Id_ContentSimple = @FK_Id_ContentSimple AND FK_Id_Station = 409";
                     SqlParameter[] parameters = new SqlParameter[]
                     {
                         new SqlParameter("@FK_Id_ContentSimple", each),
-                        new SqlParameter("@Data_Fin", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                        new SqlParameter("@Date_Fin", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
                     };
 
                     DataProvider.Instance.ExecuteNonQuery(query, parameters);
@@ -137,7 +137,7 @@ namespace NganGiang.Services.Process
             {
                 string query = "select Id_Order from [Order] " +
                 "inner join ContentPack on FK_Id_Order = Id_Order " +
-                $"where Id_PackContent = {id}";
+                $"where Id_ContentPack = {id}";
 
                 DataTable result = DataProvider.Instance.ExecuteQuery(query);
 
@@ -163,13 +163,13 @@ namespace NganGiang.Services.Process
         {
             try
             {
-                string query = "UPDATE [Order] SET Date_Dilivery = @Date_Dilivery WHERE Id_Order = " +
-                    "(SELECT FK_Id_Order FROM ContentPack WHERE Id_PackContent = @Id_PackContent)";
+                string query = "UPDATE [Order] SET Date_Delivery = @Date_Delivery WHERE Id_Order = " +
+                    "(SELECT FK_Id_Order FROM ContentPack WHERE Id_ContentPack = @Id_ContentPack)";
 
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@Id_PackContent", id),
-                    new SqlParameter("@Date_Dilivery", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                    new SqlParameter("@Id_ContentPack", id),
+                    new SqlParameter("@Date_Delivery", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
                 };
 
                 DataProvider.Instance.ExecuteNonQuery(query, parameters);
@@ -183,7 +183,7 @@ namespace NganGiang.Services.Process
         {
             try
             {
-                string query = "update OrderLocal set Data_Fin = @Data_Fin " +
+                string query = "update OrderLocal set Date_Fin = @Date_Fin " +
                     "where Id_OrderLocal = (select Id_OrderLocal from OrderLocal " +
                     "inner join DetailContentPackOrderLocal on Id_OrderLocal = FK_Id_OrderLocal " +
                     "where FK_Id_ContentPack = @FK_Id_ContentPack)";
@@ -191,7 +191,7 @@ namespace NganGiang.Services.Process
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@FK_Id_ContentPack", id),
-                    new SqlParameter("@Data_Fin", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                    new SqlParameter("@Date_Fin", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
                 };
 
                 DataProvider.Instance.ExecuteNonQuery(query, parameters);
@@ -201,17 +201,17 @@ namespace NganGiang.Services.Process
                 MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        public bool AreAllPackContentsInWareHouse(int id)
+        public bool AreAllContentPacksInWareHouse(int id)
         {
             try
             {
-                string query = "SELECT Id_PackContent " +
+                string query = "SELECT Id_ContentPack " +
                     "FROM ContentPack " +
                     $"WHERE FK_Id_Order = {GetIDOrder(id)} " +
-                    "AND Id_PackContent NOT IN (" +
-                    "select Id_PackContent from ContentPack " +
+                    "AND Id_ContentPack NOT IN (" +
+                    "select Id_ContentPack from ContentPack " +
                     "inner join [Order] on FK_Id_Order = Id_Order " +
-                    "inner join [DetailStateCellOfPackWareHouse] on FK_Id_PackContent = Id_PackContent " +
+                    "inner join [DetailStateCellOfPackWareHouse] on FK_Id_ContentPack = Id_ContentPack " +
                     $"where FK_Id_Order = {GetIDOrder(id)})";
 
                 DataTable result = DataProvider.Instance.ExecuteQuery(query);
@@ -220,7 +220,7 @@ namespace NganGiang.Services.Process
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi kiểm tra PackContent trong WareHouse.\n" + ex.Message);
+                MessageBox.Show("Lỗi khi kiểm tra ContentPack trong WareHouse.\n" + ex.Message);
                 return false;
             }
         }

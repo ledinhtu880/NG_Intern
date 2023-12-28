@@ -21,23 +21,23 @@ namespace NganGiang.Controllers
         {
             return process.getProcessAt410();
         }
-        public DataTable getInforSimpleContentBySimplePack(decimal Id_ContentPack)
+        public DataTable getInforContentSimpleBySimplePack(decimal Id_ContentPack)
         {
             ContentPack contentPack = new ContentPack();
-            contentPack.Id_PackContent = Id_ContentPack;
-            return process.getInforSimpleContentByContentPack(contentPack);
+            contentPack.Id_ContentPack = Id_ContentPack;
+            return process.getInforContentSimpleByContentPack(contentPack);
         }
 
-        public bool processAt410(List<decimal> listIdPackContents, out string message)
+        public bool processAt410(List<decimal> listIdContentPacks, out string message)
         {
             message = "Quấn màng PE thành công";
-            foreach (decimal Id_PackContent in listIdPackContents)
+            foreach (decimal Id_ContentPack in listIdContentPacks)
             {
                 ContentPack contentPack = new ContentPack();
-                contentPack.Id_PackContent = Id_PackContent;
+                contentPack.Id_ContentPack = Id_ContentPack;
                 if (!process.processAt410(contentPack, out message))
                 {
-                    message += "\nXảy ra lỗi khi xử lý Id_PackContent = " + Id_PackContent;
+                    message += "\nXảy ra lỗi khi xử lý Id_ContentPack = " + Id_ContentPack;
                     return false;
                 }
             }

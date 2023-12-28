@@ -37,10 +37,11 @@ namespace NganGiang.Controllers
             bool isSuccess = true;
             int nextStation = Service.GetNextStation(id);
 
-            if (nextStation == -1)
+            if (nextStation != -1)
             {
                 Service.UpdateDetailStateCellOfPackWareHouse(id);
                 Service.UpdateProcessContentPack(id);
+                Service.UpdateProcessContentSimple(id);
             }
             else
             {
@@ -50,7 +51,7 @@ namespace NganGiang.Controllers
                     Service.UpdateProcessContentSimple(id);
                     Service.UpdateDetailStateCellOfPackWareHouse(id);
                     Service.UpdateOrderLocal(id);
-                    if (Service.AreAllPackContentsInWareHouse(id))
+                    if (Service.AreAllContentPacksInWareHouse(id))
                     {
                         Service.UpdateOrder(id);
                     }

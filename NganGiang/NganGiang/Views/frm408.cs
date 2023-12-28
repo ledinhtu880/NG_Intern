@@ -63,7 +63,7 @@ namespace NganGiang.Views
                 string id = dgv408.Rows[e.RowIndex].Cells["Mã gói hàng"].Value.ToString();
 
                 detailContentPack detailForm = new detailContentPack();
-                detailForm.SetPackContentID(id);
+                detailForm.SetContentPackID(id);
                 detailForm.Show();
             }
         }

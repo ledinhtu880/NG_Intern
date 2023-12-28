@@ -43,5 +43,8 @@
     <Compile Update="Views\frm411.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Views\frm412.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

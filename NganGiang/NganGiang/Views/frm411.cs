@@ -40,7 +40,7 @@ namespace NganGiang.Views
         }
         private void btnProcess_Click(object sender, EventArgs e)
         {
-            List<decimal> listIdPackContents = new List<decimal>();
+            List<decimal> listIdContentPacks = new List<decimal>();
             bool check = false;
             // Kiểm tra xem checkbox đã được check hay chưa
             foreach (DataGridViewRow row in dgv411.Rows)
@@ -50,10 +50,10 @@ namespace NganGiang.Views
                     DataGridViewCheckBoxCell? cell = row.Cells["IsSelected"] as DataGridViewCheckBoxCell;
                     if (cell != null && cell.Value is bool)
                     {
-                        // Nếu checkbox được check thì thêm Id_PackContent vào danh sách
+                        // Nếu checkbox được check thì thêm Id_ContentPack vào danh sách
                         if ((Boolean)cell.Value)
                         {
-                            listIdPackContents.Add(Convert.ToDecimal(row.Cells["FK_Id_ContentPack"].Value));
+                            listIdContentPacks.Add(Convert.ToDecimal(row.Cells["FK_Id_ContentPack"].Value));
                             check = true;
                         }
                     }
@@ -65,7 +65,7 @@ namespace NganGiang.Views
                 if (MessageBox.Show("Bạn chắc chắn muốn cấp mã NFC các gói trên?", "Xác nhận hành động", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     string message = "";
-                    bool result = controller.processAt411(listIdPackContents, out message);
+                    bool result = controller.processAt411(listIdContentPacks, out message);
                     if (result)
                     {
                         MessageBox.Show("Cấp mã thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -124,9 +124,9 @@ namespace NganGiang.Views
         {
             if (e.ColumnIndex == dgv411.Columns["btnShowInfor"].Index && e.RowIndex >= 0)
             {
-                decimal Id_SimpleContent = Convert.ToDecimal(dgv411.Rows[e.RowIndex].Cells["FK_Id_ContentPack"].Value);
-                DataTable displayInfoOrder = controller.getInforSimpleContentByContentPack(Id_SimpleContent);
-                detailContentSimple dio = new detailContentSimple(displayInfoOrder, Id_SimpleContent);
+                decimal Id_ContentSimple = Convert.ToDecimal(dgv411.Rows[e.RowIndex].Cells["FK_Id_ContentPack"].Value);
+                DataTable displayInfoOrder = controller.getInforContentSimpleByContentPack(Id_ContentSimple);
+                detailContentSimple dio = new detailContentSimple(displayInfoOrder, Id_ContentSimple);
                 dio.ShowDialog();
             }
         }

@@ -104,6 +104,13 @@ namespace NganGiang
                     newForm411.ShowDialog();
                     this.MinimizeBox = true;
                     break;
+                case "412":
+                    frm412 newForm412 = new frm412();
+                    newForm412.FormClosed += (s, args) => this.Show();
+                    this.Hide(); // Ẩn form chính
+                    newForm412.ShowDialog();
+                    this.MinimizeBox = true;
+                    break;
             }
         }
 

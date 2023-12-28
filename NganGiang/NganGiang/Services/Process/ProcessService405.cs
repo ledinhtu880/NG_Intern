@@ -1,32 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using NganGiang.Libs;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
 
 namespace NganGiang.Services.Process
 {
     internal class ProcessService405
     {
-        private DatabaseService dbserve { get; set; }
         public ProcessService405()
         {
-            dbserve = new DatabaseService();
+
         }
 
         public void listProcessSimpleOrderLocal(DataGridView dgv)
         {
             try
             {
-                var cmd = dbserve.SqlCommandText;
-                cmd.CommandText = "SELECT FK_Id_OrderLocal as id_orderlocal, Id_SimpleContent as id_simple, Name_RawMaterial as name_raw, RawMaterial.Count as quantity, \r\n\t\tUnit as unit, Count_RawMaterial * Count_Container as quantity_order, Name_State as status, ProcessContentSimple.Data_Start as date_start, SimpleOrPack as type_simple FROM ProcessContentSimple \r\nINNER JOIN ContentSimple on Id_SimpleContent = ProcessContentSimple.FK_Id_ContentSimple\r\nINNER JOIN DetailContentSimpleOrderLocal on Id_SimpleContent = DetailContentSimpleOrderLocal.FK_Id_ContentSimple\r\nINNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial\r\nINNER JOIN [State] on Id_State = FK_Id_State\r\nINNER JOIN OrderLocal on FK_Id_OrderLocal = Id_OrderLocal\r\nWHERE FK_Id_Station = 405 and FK_Id_State = 0 order by date_start desc";
-                DataTable dt = new DataTable();
-                using (var reader = dbserve.ExecuteCommand(cmd).CreateDataReader())
-                {
-                    dt.Load(reader);
-                }
+                string query = "SELECT FK_Id_OrderLocal as id_orderlocal, Id_ContentSimple as id_simple, Name_RawMaterial as name_raw, RawMaterial.Count as quantity, \r\n\t\tUnit as unit, Count_RawMaterial * Count_Container as quantity_order, Name_State as status, ProcessContentSimple.Date_Start as date_start, SimpleOrPack as type_simple FROM ProcessContentSimple \r\nINNER JOIN ContentSimple on Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple\r\nINNER JOIN DetailContentSimpleOrderLocal on Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple\r\nINNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial\r\nINNER JOIN [State] on Id_State = FK_Id_State\r\nINNER JOIN OrderLocal on FK_Id_OrderLocal = Id_OrderLocal\r\nWHERE FK_Id_Station = 405 and FK_Id_State = 0 order by date_start desc";
+                DataTable dt = DataProvider.Instance.ExecuteQuery(query);
 
                 dgv.AutoGenerateColumns = false;
 
@@ -115,10 +105,8 @@ namespace NganGiang.Services.Process
 
         public int getQuantityContentSimple(int id_simple_content)
         {
-            var cmd = dbserve.SqlCommandText;
-            cmd.CommandText = "select Count_Container * Count_RawMaterial as quantity_simple from ContentSimple where Id_SimpleContent = @id";
-            cmd.Parameters.AddWithValue("id", id_simple_content);
-            DataTable dt = dbserve.ExecuteCommand(cmd);
+            string query = $"select Count_Container * Count_RawMaterial as quantity_simple from ContentSimple where Id_ContentSimple = {id_simple_content}";
+            DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             int quantity = 0;
             if (dt.Rows.Count > 0)
             {
@@ -129,9 +117,8 @@ namespace NganGiang.Services.Process
 
         public bool checkQuantity(int id_simple_content)
         {
-            var cmd = dbserve.SqlCommandText;
-            cmd.CommandText = "select Count from RawMaterial where Id_RawMaterial = 2";
-            DataTable dt = dbserve.ExecuteCommand(cmd);
+            string query = "select Count from RawMaterial where Id_RawMaterial = 2";
+            DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             int quantity_raw = 0;
             int quantity_raw_simple = getQuantityContentSimple(id_simple_content);
             if (dt.Rows.Count > 0)
@@ -148,10 +135,8 @@ namespace NganGiang.Services.Process
 
         private int FindNextStation(int id_simple_content)
         {
-            var cmd = dbserve.SqlCommandText;
-            cmd.CommandText = "SELECT top 1 FK_Id_Station from DetailProductionStationLine DP inner join DispatcherOrder D on DP.FK_Id_ProdStationLine = D.FK_Id_ProdStationLine inner join OrderLocal O on O.Id_OrderLocal = D.FK_Id_OrderLocal WHERE FK_Id_OrderLocal =(select FK_Id_OrderLocal from DetailContentSimpleOrderLocal where FK_Id_ContentSimple = @id) and FK_Id_Station > 405";
-            cmd.Parameters.AddWithValue("id", id_simple_content);
-            DataTable dt = dbserve.ExecuteCommand(cmd);
+            string query = $"SELECT top 1 FK_Id_Station from DetailProductionStationLine DP inner join DispatcherOrder D on DP.FK_Id_ProdStationLine = D.FK_Id_ProdStationLine inner join OrderLocal O on O.Id_OrderLocal = D.FK_Id_OrderLocal WHERE FK_Id_OrderLocal =(select FK_Id_OrderLocal from DetailContentSimpleOrderLocal where FK_Id_ContentSimple = {id_simple_content}) and FK_Id_Station > 405";
+            DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             int station = 0;
             if (dt.Rows.Count > 0)
             {
@@ -164,34 +149,25 @@ namespace NganGiang.Services.Process
         {
             try
             {
-                var cmd = dbserve.SqlCommandText;
-                cmd.CommandText = "Update ContentSimple set CoverHatProvided = 1 where Id_SimpleContent = @fk_id";
-                cmd.Parameters.AddWithValue("fk_id", id_simple_content);
-                dbserve.ExecuteCommand(cmd);
+                string query = $"Update ContentSimple set CoverHatProvided = 1 where Id_ContentSimple = {id_simple_content}";
+                DataProvider.Instance.ExecuteNonQuery(query);
 
-                cmd = dbserve.SqlCommandText;
-                cmd.CommandText = "Update ProcessContentSimple set FK_Id_State = 2, Data_Fin = @date_fin where FK_Id_ContentSimple = @id and FK_Id_Station = 405";
-                cmd.Parameters.AddWithValue("id", id_simple_content);
-                cmd.Parameters.AddWithValue("date_fin", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
-                dbserve.ExecuteCommand(cmd);
+                var date = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_Fin = '{date}' where FK_Id_ContentSimple = {id_simple_content} and FK_Id_Station = 405";
+                DataProvider.Instance.ExecuteNonQuery(query);
 
                 int quantity = getQuantityContentSimple(id_simple_content);
-                cmd.CommandText = "update RawMaterial set Count = Count - @quantity where Id_RawMaterial = 2";
-                cmd.Parameters.AddWithValue("quantity", quantity);
-                dbserve.ExecuteCommand(cmd);
+                query = $"update RawMaterial set Count = Count - {quantity} where Id_RawMaterial = 2";
+                DataProvider.Instance.ExecuteNonQuery(query);
 
                 int station = FindNextStation(id_simple_content);
-                cmd = dbserve.SqlCommandText;
-                cmd.CommandText = "insert into ProcessContentSimple(FK_Id_ContentSimple, FK_Id_Station, FK_Id_State, Data_Start) values(@id_content, @station, @state, @date_start)";
-                cmd.Parameters.AddWithValue("id_content", id_simple_content);
-                cmd.Parameters.AddWithValue("station", station);
-                cmd.Parameters.AddWithValue("state", 0);
-                cmd.Parameters.AddWithValue("date_start", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
-                dbserve.ExecuteCommand(cmd);
+                query = $"insert into ProcessContentSimple(FK_Id_ContentSimple, FK_Id_Station, FK_Id_State, Date_Start) values({id_simple_content}, {station}, 0, '{date}')";
+
+                DataProvider.Instance.ExecuteNonQuery(query);
             }
             catch (SqlException e)
             {
-                MessageBox.Show($"{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Đã có lỗi xảy ra \n{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

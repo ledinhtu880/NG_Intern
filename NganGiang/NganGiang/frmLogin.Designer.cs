@@ -116,11 +116,12 @@
             // 
             // btnLogIn
             // 
+            btnLogIn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             btnLogIn.AutoSize = true;
             btnLogIn.BackColor = Color.FromArgb(43, 76, 114);
             btnLogIn.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             btnLogIn.ForeColor = SystemColors.ControlLightLight;
-            btnLogIn.Location = new Point(146, 221);
+            btnLogIn.Location = new Point(171, 223);
             btnLogIn.Name = "btnLogIn";
             btnLogIn.Size = new Size(158, 44);
             btnLogIn.TabIndex = 3;
@@ -167,6 +168,7 @@
             // 
             // frmLogin
             // 
+            AcceptButton = btnLogIn;
             AutoScaleDimensions = new SizeF(11F, 28F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(493, 358);

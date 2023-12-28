@@ -20,11 +20,11 @@ namespace NganGiang.Controllers
         {
             return service.getProcessAt406();
         }
-        public DataTable getInforOrderByIdSimpleContent(decimal Id_SimpleContent)
+        public DataTable getInforOrderByIdContentSimple(decimal Id_ContentSimple)
         {
             ContentSimple contentSimple = new ContentSimple();
-            contentSimple.Id_SimpleContent = Id_SimpleContent;
-            return service.getInforOrderByIdSimpleContent(contentSimple);
+            contentSimple.Id_ContentSimple = Id_ContentSimple;
+            return service.getInforOrderByIdContentSimple(contentSimple);
         }
         public int getRowAndCol(out int col)
         {
@@ -56,14 +56,6 @@ namespace NganGiang.Controllers
                 }
             }
             return true;
-        }
-        public int getStateByRowAndCol(int row, int col)
-        {
-            return service.getStateByRowAndCol(row, col);
-        }
-        public bool updateStateCellOfSimpleWareHouse(int row, int col, int state, out string message)
-        {
-            return service.updateStateCellOfSimpleWareHouse(row, col, state, out message);
         }
     }
 }

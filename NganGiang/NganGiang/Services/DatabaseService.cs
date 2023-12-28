@@ -5,7 +5,7 @@ namespace NganGiang.Services
 {
     public class DatabaseService
     {
-        const string CONN = @"Data Source=MSI;Initial Catalog=SIFMES;User ID=tus;Password=6451389tu";
+        const string CONN = @"Data Source=DESKTOP-KS6PGS1;Initial Catalog=SIFMES;User ID=sa;Password=123";
 
         public SqlCommand SqlCommandText
         {

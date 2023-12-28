@@ -108,11 +108,11 @@ namespace NganGiang.Views
                                 button.FlatAppearance.BorderSize = 0;
                                 button.Anchor = AnchorStyles.None;
                                 button.Size = new Size(40, 50);
-                                button.Tag = dtRow["Id_PackContent"].ToString(); // Lưu trữ giá trị vào thuộc tính Tag của button
+                                button.Tag = dtRow["Id_ContentPack"].ToString(); // Lưu trữ giá trị vào thuộc tính Tag của button
 
 
                                 Label nonept = new Label();
-                                nonept.Text = "Gói hàng số " + dtRow["Id_PackContent"].ToString();
+                                nonept.Text = "Gói hàng số " + dtRow["Id_ContentPack"].ToString();
                                 nonept.TextAlign = ContentAlignment.MiddleCenter;
                                 nonept.Width = 200;
                                 nonept.Height = 50;
@@ -168,10 +168,10 @@ namespace NganGiang.Views
         private void IconButton_Click(object? sender, EventArgs e)
         {
             IconButton button = (IconButton)sender;
-            string idPackContent = button.Tag.ToString(); // Truy cập giá trị đã lưu trữ trong Tag của button
+            string idContentPack = button.Tag.ToString(); // Truy cập giá trị đã lưu trữ trong Tag của button
 
             detailContentPack detailForm = new detailContentPack();
-            detailForm.SetPackContentID(idPackContent);
+            detailForm.SetContentPackID(idContentPack);
             detailForm.Show();
         }
 
@@ -216,7 +216,7 @@ namespace NganGiang.Views
                 string id = dgv409.Rows[e.RowIndex].Cells["Mã gói hàng"].Value.ToString();
 
                 detailContentPack detailForm = new detailContentPack();
-                detailForm.SetPackContentID(id);
+                detailForm.SetContentPackID(id);
                 detailForm.Show();
             }
         }

@@ -35,6 +35,11 @@ namespace NganGiang.Controllers
         {
             process407Services.UpdateQrCodeAndState(id_simple_content);
             bool isLastStation = process407Services.IsLastStation(id_simple_content);
+            bool isOutOfStockConatiner = process407Services.IsOutOfStockContainer(id_simple_content);
+            if (isOutOfStockConatiner == true)
+            {
+                process407Services.FreeCellDetail(id_simple_content);
+            }
             if (isLastStation == true)
             {
                 process407Services.UpdateProcessAndOrder(id_simple_content);

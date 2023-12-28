@@ -22,33 +22,30 @@ namespace NganGiang.Controllers
             return dt;
         }
 
-        public void UpdateRawMaterialDispenser(List<string> Id_SimpleContents)
+        public void UpdateRawMaterialDispenser(List<string> Id_ContentSimples)
         {
             string message = "";
             try
             {
-                foreach (var Id_SimpleContent in Id_SimpleContents)
+                foreach (var Id_ContentSimple in Id_ContentSimples)
                 {
-                    if (processContentSimpleServices.checkQuantity(Id_SimpleContent))
+                    if (processContentSimpleServices.checkQuantity(Id_ContentSimple))
                     {
-                        if (!processContentSimpleServices.UpdateContentSimple(Id_SimpleContent, out message) ||
-                            !processContentSimpleServices.UpdateProcessContentSimple(Id_SimpleContent, out message) ||
-                            !processContentSimpleServices.InsertProcessContentSimple(Id_SimpleContent, out message) ||
-                            !processContentSimpleServices.UpdateRawMaterial(Id_SimpleContent, out message)
+                        if (!processContentSimpleServices.UpdateContentSimple(Id_ContentSimple, out message) ||
+                            !processContentSimpleServices.UpdateProcessContentSimple(Id_ContentSimple, out message) ||
+                            !processContentSimpleServices.InsertProcessContentSimple(Id_ContentSimple, out message) ||
+                            !processContentSimpleServices.UpdateRawMaterial(Id_ContentSimple, out message)
                         )
                         {
-                            MessageBox.Show("Mã thùng hàng " + Id_SimpleContent + " rót thất bại.\n" + message, "Chú ý", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Rót vào thùng mã " + Id_SimpleContent + " thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show("Mã thùng hàng " + Id_ContentSimple + " rót thất bại.\n" + message, "Chú ý", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Mã thùng hàng " + Id_SimpleContent + " rót thất bại. Không đủ số lượng tồn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Mã thùng hàng " + Id_ContentSimple + " rót thất bại. Không đủ số lượng tồn", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
+                MessageBox.Show("Rót thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception e)
             {

@@ -1,33 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using NganGiang.Libs;
 using System.Data;
-using System.Linq;
+using System.Data.SqlClient;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NganGiang.Services.Process
 {
     internal class ProcessService407
     {
-        private DatabaseService dbserve { get; set; }
-
         public ProcessService407()
         {
-            dbserve = new DatabaseService();
+
         }
 
         public void listProcessSimpleOrderLocal(DataGridView dgv)
         {
             try
             {
-                var cmd = dbserve.SqlCommandText;
-                cmd.CommandText = "SELECT FK_Id_OrderLocal as id_orderlocal, Id_SimpleContent as id_simple, Name_RawMaterial as name_raw, RawMaterial.Count as quantity, \r\n\t\tUnit as unit, Count_RawMaterial * Count_Container as quantity_order, Name_State as status, ProcessContentSimple.Data_Start as date_start, SimpleOrPack as type_simple FROM ProcessContentSimple \r\nINNER JOIN ContentSimple on Id_SimpleContent = ProcessContentSimple.FK_Id_ContentSimple\r\nINNER JOIN DetailContentSimpleOrderLocal on Id_SimpleContent = DetailContentSimpleOrderLocal.FK_Id_ContentSimple\r\nINNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial\r\nINNER JOIN [State] on Id_State = FK_Id_State\r\nINNER JOIN OrderLocal on FK_Id_OrderLocal = Id_OrderLocal\r\nWHERE FK_Id_Station = 407 and FK_Id_State = 0 order by date_start desc";
-                DataTable dt = new DataTable();
-                using (var reader = dbserve.ExecuteCommand(cmd).CreateDataReader())
-                {
-                    dt.Load(reader);
-                }
+                string query = "SELECT FK_Id_OrderLocal as id_orderlocal, Id_ContentSimple as id_simple, Name_RawMaterial as name_raw, RawMaterial.Count as quantity, \r\n\t\tUnit as unit, Count_RawMaterial * Count_Container as quantity_order, Name_State as status, ProcessContentSimple.Date_Start as date_start, SimpleOrPack as type_simple FROM ProcessContentSimple \r\nINNER JOIN ContentSimple on Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple\r\nINNER JOIN DetailContentSimpleOrderLocal on Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple\r\nINNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial\r\nINNER JOIN [State] on Id_State = FK_Id_State\r\nINNER JOIN OrderLocal on FK_Id_OrderLocal = Id_OrderLocal\r\nWHERE FK_Id_Station = 407 and FK_Id_State = 0 order by date_start desc";
+                DataTable dt = DataProvider.Instance.ExecuteQuery(query);
 
                 dgv.AutoGenerateColumns = false;
 
@@ -116,13 +106,40 @@ namespace NganGiang.Services.Process
 
         public bool IsLastStation(int id_simple_content)
         {
-            var cmd = dbserve.SqlCommandText;
-            cmd.CommandText = "SELECT FK_Id_Station from DetailProductionStationLine DP inner join DispatcherOrder D on DP.FK_Id_ProdStationLine = D.FK_Id_ProdStationLine inner join OrderLocal O on O.Id_OrderLocal = D.FK_Id_OrderLocal WHERE FK_Id_OrderLocal =(select FK_Id_OrderLocal from DetailContentSimpleOrderLocal where FK_Id_ContentSimple = @id) and FK_Id_Station > 407";
-            cmd.Parameters.AddWithValue("id", id_simple_content);
-            DataTable dt = dbserve.ExecuteCommand(cmd);
+            string query = $"SELECT FK_Id_Station from DetailProductionStationLine DP inner join DispatcherOrder D on DP.FK_Id_ProdStationLine = D.FK_Id_ProdStationLine inner join OrderLocal O on O.Id_OrderLocal = D.FK_Id_OrderLocal WHERE FK_Id_OrderLocal =(select FK_Id_OrderLocal from DetailContentSimpleOrderLocal where FK_Id_ContentSimple = {id_simple_content}) and FK_Id_Station > 407";
+            DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             if (dt.Rows.Count > 0)
             {
                 return false;
+            }
+            return true;
+        }
+
+        public int getCountInRegister(int id_simple_content)
+        {
+            string query = $"select sum(Count) as countTotal from RegisterContentSimpleAtWareHouse where FK_Id_ContentSimple = {id_simple_content} group by FK_Id_ContentSimple";
+            DataTable dt = DataProvider.Instance.ExecuteQuery(query);
+            int count = 0;
+            if (dt.Rows.Count > 0)
+            {
+                count = Convert.ToInt32(dt.Rows[0][0]);
+                return count;
+            }
+            return 0;
+        }
+
+        public bool IsOutOfStockContainer(int id_simple_content)
+        {
+            int countRegister = getCountInRegister(id_simple_content);
+            string query = $"select Count_Container - {countRegister} from ContentSimple where Id_ContentSimple = {id_simple_content}";
+            DataTable dt = DataProvider.Instance.ExecuteQuery(query);
+            if (dt.Rows.Count > 0)
+            {
+                int countLeft = Convert.ToInt32(dt.Rows[0][0]);
+                if (countLeft > 0)
+                {
+                    return false;
+                }
             }
             return true;
         }
@@ -136,25 +153,34 @@ namespace NganGiang.Services.Process
             return binaryData;
         }
 
+        public void FreeCellDetail(int id_simple_content)
+        {
+            try
+            {
+                string query = $"Update DetailStateCellOfSimpleWareHouse set FK_Id_StateCell = 1, FK_Id_ContentSimple = NULL where FK_Id_Station = 406 and FK_Id_ContentSimple = {id_simple_content}";
+                DataProvider.Instance.ExecuteNonQuery(query);
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show($"{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         public void UpdateQrCodeAndState(int id_simple_content)
         {
             try
             {
-                var cmd = dbserve.SqlCommandText;
-                cmd.CommandText = "Update DetailStateCellOfSimpleWareHouse set FK_Id_StateCell = 1, FK_Id_SimpleContent = NULL where FK_Id_Station = 406 and FK_Id_SimpleContent = @id_content";
-                cmd.Parameters.AddWithValue("id_content", id_simple_content);
-                dbserve.ExecuteCommand(cmd);
-
                 byte[] qrcode = GenerateQrCode(id_simple_content);
-                cmd = dbserve.SqlCommandText;
-                cmd.CommandText = "Update ContentSimple set QRCode = @qr, QRCodeProvided = 1 where Id_SimpleContent = @id";
-                cmd.Parameters.AddWithValue("id", id_simple_content);
-                cmd.Parameters.AddWithValue("qr", qrcode);
-                dbserve.ExecuteCommand(cmd);
+                string query = "Update ContentSimple set QRCode = @qr, QRCodeProvided = 1 where Id_ContentSimple = @id_simple";
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@id_simple", id_simple_content),
+                    new SqlParameter("@qr", qrcode)
+                };
+                DataProvider.Instance.ExecuteNonQuery(query, parameters);
 
-                cmd.CommandText = "Update ProcessContentSimple set FK_Id_State = 1 where FK_Id_ContentSimple = @id_simple";
-                cmd.Parameters.AddWithValue("@id_simple", id_simple_content);
-                dbserve.ExecuteCommand(cmd);
+                query = $"Update ProcessContentSimple set FK_Id_State = 1 where FK_Id_ContentSimple = {id_simple_content}";
+                DataProvider.Instance.ExecuteNonQuery(query);
             }
             catch (SqlException e)
             {
@@ -166,18 +192,19 @@ namespace NganGiang.Services.Process
         {
             try
             {
-                var cmd = dbserve.SqlCommandText;
-                cmd.CommandText = "Update ProcessContentSimple set FK_Id_State = 2, Data_fin = @date_fin where FK_Id_ContentSimple = @id and FK_Id_Station = 407";
-                cmd.Parameters.AddWithValue("id", id_simple_content);
-                cmd.Parameters.AddWithValue("date_fin", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
-                dbserve.ExecuteCommand(cmd);
+                var date = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                string query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentSimple = {id_simple_content} and FK_Id_Station = 407";
+                DataProvider.Instance.ExecuteNonQuery(query);
 
-                cmd.CommandText = "insert into ProcessContentSimple(FK_Id_ContentSimple, FK_Id_Station, FK_Id_State, Data_Start) values(@id_content, @station, @state, @date_start)";
-                cmd.Parameters.AddWithValue("id_content", id_simple_content);
-                cmd.Parameters.AddWithValue("station", 408);
-                cmd.Parameters.AddWithValue("state", 0);
-                cmd.Parameters.AddWithValue("date_start", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
-                dbserve.ExecuteCommand(cmd);
+                query = "insert into ProcessContentSimple(FK_Id_ContentSimple, FK_Id_Station, FK_Id_State, Date_Start) values(@id_content, @station, @state, @date_start)";
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@id_content", id_simple_content),
+                    new SqlParameter("@station", 408),
+                    new SqlParameter("@state", 0),
+                    new SqlParameter("@date_start", date)
+                };
+                DataProvider.Instance.ExecuteNonQuery(query, parameters);
             }
             catch (SqlException e)
             {
@@ -186,15 +213,13 @@ namespace NganGiang.Services.Process
         }
 
         private List<int> contentPack = new List<int>();
-        public void GetPackContent(int id_simple_content)
+        public void GetContentPack(int id_simple_content)
         {
             contentPack.Clear();
             try
             {
-                var cmd = dbserve.SqlCommandText;
-                cmd.CommandText = "select Id_PackContent from ContentPack P join DetailContentSimpleOfPack DP on P.Id_PackContent = DP.FK_Id_PackContent where DP.FK_Id_SimpleContent = @id";
-                cmd.Parameters.AddWithValue("id", id_simple_content);
-                DataTable dt = dbserve.ExecuteCommand(cmd);
+                string query = $"select Id_ContentPack from ContentPack P join DetailContentSimpleOfPack DP on P.Id_ContentPack = DP.FK_Id_ContentPack where DP.FK_Id_ContentSimple = {id_simple_content}";
+                DataTable dt = DataProvider.Instance.ExecuteQuery(query);
                 if (dt.Rows.Count > 0)
                 {
                     foreach (DataRow dr in dt.Rows)
@@ -213,20 +238,21 @@ namespace NganGiang.Services.Process
         {
             try
             {
-                var cmd = dbserve.SqlCommandText;
-                cmd.CommandText = "Update ProcessContentPack set FK_Id_State = 2, Data_fin = @date_fin where FK_Id_ContentPack = @id and FK_Id_Station = 407";
-                cmd.Parameters.AddWithValue("id", id_simple_content);
-                cmd.Parameters.AddWithValue("date_fin", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
-                dbserve.ExecuteCommand(cmd);
+                var date = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                string query = $"Update ProcessContentPack set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentPack = {id_simple_content} and FK_Id_Station = 407";
+                DataProvider.Instance.ExecuteNonQuery(query);
 
                 foreach (var item in contentPack)
                 {
-                    cmd.CommandText = "insert into ProcessContentPack(FK_Id_ContentPack, FK_Id_Station, FK_Id_State, Data_Start) values(@id_pack, @station, @state, @date_start)";
-                    cmd.Parameters.AddWithValue("id_pack", item);
-                    cmd.Parameters.AddWithValue("station", 408);
-                    cmd.Parameters.AddWithValue("state", 0);
-                    cmd.Parameters.AddWithValue("date_start", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
-                    dbserve.ExecuteCommand(cmd);
+                    query = "insert into ProcessContentPack(FK_Id_ContentPack, FK_Id_Station, FK_Id_State, Date_Start) values(@id_pack, @station, @state, @date_start)";
+                    SqlParameter[] parameters = new SqlParameter[]
+                    {
+                        new SqlParameter("@id_pack", item),
+                        new SqlParameter("@station", 408),
+                        new SqlParameter("@state", 0),
+                        new SqlParameter("@date_start", date)
+                    };
+                    DataProvider.Instance.ExecuteNonQuery(query, parameters);
                 }
             }
             catch (SqlException e)
@@ -239,21 +265,15 @@ namespace NganGiang.Services.Process
         {
             try
             {
-                var cmd = dbserve.SqlCommandText;
-                cmd.CommandText = "Update ProcessContentSimple set FK_Id_State = 2, Data_fin = @date_fin where FK_Id_ContentSimple = @id and FK_Id_Station = 407";
-                cmd.Parameters.AddWithValue("id", id_simple_content);
-                cmd.Parameters.AddWithValue("date_fin", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
-                dbserve.ExecuteCommand(cmd);
+                var date = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                string query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentSimple = {id_simple_content} and FK_Id_Station = 407";
+                DataProvider.Instance.ExecuteNonQuery(query);
 
-                cmd.CommandText = "UPDATE OrderLocal set Data_Fin = @date_fin_local FROM DetailContentSimpleOrderLocal D JOIN OrderLocal O ON D.FK_Id_OrderLocal = O.Id_OrderLocal WHERE D.FK_Id_ContentSimple = @id_simple";
-                cmd.Parameters.AddWithValue("id_simple", id_simple_content);
-                cmd.Parameters.AddWithValue("date_fin_local", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
-                dbserve.ExecuteCommand(cmd);
+                query = $"UPDATE OrderLocal set Date_Fin = '{date}' FROM DetailContentSimpleOrderLocal D JOIN OrderLocal O ON D.FK_Id_OrderLocal = O.Id_OrderLocal WHERE D.FK_Id_ContentSimple = {id_simple_content}";
+                DataProvider.Instance.ExecuteNonQuery(query);
 
-                cmd.CommandText = "UPDATE dbo.[Order] SET Date_Dilivery = @date_delivery FROM ContentSimple C join dbo.[Order] O on C.FK_Id_Order = O.Id_Order WHERE C.Id_SimpleContent = @id_simple_content";
-                cmd.Parameters.AddWithValue("id_simple_content", id_simple_content);
-                cmd.Parameters.AddWithValue("date_delivery", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
-                dbserve.ExecuteCommand(cmd);
+                query = $"UPDATE dbo.[Order] SET Date_Delivery = '{date}' FROM ContentSimple C join dbo.[Order] O on C.FK_Id_Order = O.Id_Order WHERE C.Id_ContentSimple = {id_simple_content}";
+                DataProvider.Instance.ExecuteNonQuery(query);
             }
             catch (SqlException e)
             {

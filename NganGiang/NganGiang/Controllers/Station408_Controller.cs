@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,9 +26,16 @@ namespace NganGiang.Controllers
 
             try
             {
-                Service.UpdateWarehouse(id);
-                Service.UpdateProcessContentSimple(id);
-                Service.UpdateProcessContentPack(id);
+                if (Service.UpdateWarehouse(id))
+                {
+                    Service.UpdateProcessContentSimple(id);
+                    Service.UpdateProcessContentPack(id);
+                }
+                else
+                {
+                    isSuccess = false;
+                    MessageBox.Show($"Số lượng thùng chứa trong kho 406 vẫn còn dư.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             catch (SqlException ex)
             {
