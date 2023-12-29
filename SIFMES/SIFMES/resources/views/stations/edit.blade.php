@@ -5,7 +5,7 @@
 @section('content')
   <div class="container">
     <nav aria-label="breadcrumb" class="d-flex my-4 justify-content-center ">
-      <ol class="breadcrumb breadcrumb-color px-2 py-3 rounded w-75">
+      <ol class="breadcrumb breadcrumb-color px-2 py-3 rounded w-25">
         <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
         </li>
         <li class="breadcrumb-item" aria-current="page">
@@ -16,7 +16,7 @@
     </nav>
     <div class="row mb-5">
       <div class="col-md-12 d-flex justify-content-center">
-        <div class="w-75">
+        <div class="w-25">
           <div class="card">
             <div class="card-header p-0 overflow-hidden">
               <h3 class="card-title m-0 bg-primary-color p-3 text-white">Sửa trạm</h3>
