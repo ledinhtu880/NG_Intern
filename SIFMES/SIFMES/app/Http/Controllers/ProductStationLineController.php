@@ -31,6 +31,14 @@ class ProductStationLineController extends Controller
     }
     public function store(Request $request)
     {
+        $Name_ProdStationLine = $request->name;
+        $isDuplicate = ProductionStationLine::where('Name_ProdStationLine', $Name_ProdStationLine)->exists();
+        if ($isDuplicate) {
+            return response()->json([
+                'message' => 'Tên dây chuyền đã tồn tại',
+                'status' => 400
+            ]);
+        }
         $Id_ProdStationLine = ProductionStationLine::getIdMax();
         $stationLine = $request->stationLine;
         $data = [
@@ -50,12 +58,13 @@ class ProductStationLineController extends Controller
 
         $redirectResponse = redirect()->route('productStationLines.show', ['productStationLine' => $Id_ProdStationLine])->with([
             'type' => 'success',
-            'message' => 'Thêm dây chuyền mới thành công'
+            'message' => 'Thêm dây chuyền mới thành công',
         ]);
 
 
         return response()->json([
-            'url' => $redirectResponse->getTargetUrl()
+            'url' => $redirectResponse->getTargetUrl(),
+            'status' => 200
         ]);
     }
     public function show(ProductionStationLine $productStationLine)
@@ -74,38 +83,37 @@ class ProductStationLineController extends Controller
 
     public function update(Request $request, string $productStationLine_id)
     {
+        $Name_ProdStationLine = $request->name;
+        $isDuplicate = ProductionStationLine::where('Name_ProdStationLine', $Name_ProdStationLine)->where('Id_ProdStationLine', '!=', $productStationLine_id)->exists();
+        if ($isDuplicate) {
+            return response()->json([
+                'message' => 'Tên dây chuyền đã tồn tại',
+                'status' => 400
+            ]);
+        }
         $stationLine = $request->stationLine;
         $data = [
             'Name_ProdStationLine' => $request->name,
             'Description' => $request->description,
             'FK_Id_OrderType' => intval($request->orderType)
         ];
-
-
         $productStationLine = ProductionStationLine::find($productStationLine_id);
-
         $productStationLine->update($data);
-
         DB::table('DetailProductionStationLine')->where('FK_Id_ProdStationLine', $productStationLine_id)->delete();
-
-
         for ($i = 0; $i < count($stationLine); $i++) {
             DetailProductionStationLine::create([
                 'FK_Id_Station' => $stationLine[$i],
                 'FK_Id_ProdStationLine' => $productStationLine_id,
             ]);
         }
-
         $redirectResponse = redirect()->route('productStationLines.show', ['productStationLine' => $productStationLine_id])->with([
             'type' => 'success',
-            'message' => 'Sửa dây chuyền thành công'
+            'message' => 'Sửa dây chuyền thành công',
         ]);
-
-
         return response()->json([
-            'url' => $redirectResponse->getTargetUrl()
+            'url' => $redirectResponse->getTargetUrl(),
+            'status' => 200
         ]);
-        // return $productStationLine;
     }
 
     public function destroy(ProductionStationLine $productStationLine)
