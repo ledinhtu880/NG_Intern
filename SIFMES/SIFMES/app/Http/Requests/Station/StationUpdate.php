@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Station;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StationUpdate extends FormRequest
@@ -24,13 +25,18 @@ class StationUpdate extends FormRequest
             //
             'Id_Station' => [
                 'required',
-                'numeric'
+                'numeric',
+                Rule::unique('Station', 'Id_Station')->ignore($this->station->Id_Station, 'Id_Station')
             ],
             'Name_Station' => [
                 'required',
-                'unique:Station,Name_Station'
+                Rule::unique('Station', 'Name_Station')->ignore($this->station->Name_Station, 'Name_Station')
             ],
-            'Ip_Address' => 'nullable|ip',
+            'Ip_Address' => [
+                'nullable',
+                'ip',
+                Rule::unique('Station', 'Ip_Address')->ignore($this->station->Ip_Address, 'Ip_Address')
+            ],
             'FK_Id_StationType' => 'required'
         ];
     }
@@ -39,9 +45,11 @@ class StationUpdate extends FormRequest
         return [
             'Id_Station.required' => 'Vui lòng nhập ID',
             'Id_Station.numeric' => 'ID phải là số',
+            'Id_Station.unique' => 'ID đã tồn tại',
             'Name_Station.required' => 'Vui lòng nhập tên trạm',
             'Name_Station.unique' => 'Tên trạm đã tồn tại',
             'Ip_Address.ip' => 'Không đúng định dạng ip',
+            'Ip_Address.unique' => 'IP đã tồn tại',
             'FK_Id_StationType.required' => 'Vui lòng chọn loại trạm'
         ];
     }

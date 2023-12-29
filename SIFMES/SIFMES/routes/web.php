@@ -25,7 +25,10 @@ Route::middleware('checklogin')->group(function () {
   Route::get('', [HomeController::class, 'index'])->name('index');
   Route::resource('rawMaterials', RawMaterialController::class);
   Route::resource('customers', CustomerController::class);
+
   Route::resource('stations', StationController::class);
+  Route::post('/getImgByStationType', [StationController::class, 'getImgByStationType'])->name('getImgByStationType');
+
   Route::resource('productStationLines', ProductStationLineController::class);
   Route::resource('users', UserController::class);
 

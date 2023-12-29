@@ -9,6 +9,7 @@ class StationType extends Model
 {
     use HasFactory;
     protected $table = 'StationType';
+    protected $primaryKey = 'Id_StationType';
     public $timestamps = false;
     public function station()
     {
