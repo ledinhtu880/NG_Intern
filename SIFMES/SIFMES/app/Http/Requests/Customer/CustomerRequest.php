@@ -25,16 +25,17 @@ class CustomerRequest extends FormRequest
             'Name_Customer' => [
                 'required',
                 'max:255',
-                'regex:/^[\pL\s]+$/'
+                'regex:/^[\pL\s]+$/u'
             ],
             'Email' => [
                 'required',
                 'email',
+                'regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                 'unique:customer,Email'
             ],
             'Phone' => [
                 'required',
-                'regex:/(84|0[3|5|7|8|9])+([0-9]{8})\b/',
+                'regex:/^(84|0[3|5|7|8|9])+([0-9]{8})\b/',
                 'unique:customer,phone'
             ],
             'Name_Contact' => [
@@ -66,7 +67,8 @@ class CustomerRequest extends FormRequest
             'Name_Customer.required' => 'Vui lòng nhập tên bạn',
             'Name_Customer.regex' => 'Tên bạn không được chứa số và ký tự đặc biệt',
             'Email.required' => 'Vui lòng nhập email',
-            'Email.email' => 'Không đúng định dạng',
+            'Email.regex' => 'Không đúng định dạng email',
+            'Email.email' => 'Không đúng định dạng email',
             'Email.unique' => 'Email đã tồn tại',
             'Phone.required' => 'Vui lòng nhập số điện thoại',
             'Phone.regex' => 'Không đúng định dạng',

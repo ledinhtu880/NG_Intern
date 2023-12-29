@@ -28,10 +28,12 @@ class CustomerUpdateRequest extends FormRequest
             'Name_Customer' => [
                 'required',
                 'max:255',
+                'regex:/^[\pL\s]+$/u'
             ],
             'Email' => [
                 'required',
                 'email',
+                'regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                 Rule::unique('customer', 'Email')->ignore($customer->Id_Customer, 'Id_Customer')
                     ->where(function ($query) use ($customer) {
                         $query->where('Id_Customer', '!=', $customer->Id_Customer);
@@ -39,7 +41,7 @@ class CustomerUpdateRequest extends FormRequest
             ],
             'Phone' => [
                 'required',
-                'regex:/(84|0[3|5|7|8|9])+([0-9]{8})\b/',
+                'regex:/^(84|0[3|5|7|8|9])+([0-9]{8})\b/',
                 Rule::unique('customer', 'Phone')->ignore($customer->Id_Customer, 'Id_Customer')
                     ->where(function ($query) use ($customer) {
                         $query->where('Id_Customer', '!=', $customer->Id_Customer);

@@ -65,7 +65,7 @@ class CustomerController extends Controller
         $customer->delete();
         return redirect()->route('customers.index')->with([
             'message' => 'Xóa người dùng thành công',
-            'type' => 'message',
+            'type' => 'success',
         ]);
     }
 }
