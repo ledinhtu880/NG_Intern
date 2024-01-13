@@ -58,7 +58,7 @@ namespace NganGiang.Views
                     ro[i] = Int32.Parse(dt.Rows[i]["Rowi"].ToString());
                     co[i] = Int32.Parse(dt.Rows[i]["Colj"].ToString());
                     Id_ContentSimples[i] = Int32.Parse(dt.Rows[i]["Id_ContentSimple"].ToString());
-                    Count_Containers[i] = Int32.Parse(dt.Rows[i]["Count_Container"].ToString());
+                    Count_Containers[i] = Int32.Parse(dt.Rows[i]["SoLuong"].ToString());
                 }
             }
             dgv_ware.RowTemplate.Height = 150;
@@ -191,7 +191,6 @@ namespace NganGiang.Views
                     }
                 }
                 return;
-
             }
         }
 

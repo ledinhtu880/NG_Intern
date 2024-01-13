@@ -16,25 +16,28 @@ namespace NganGiang.Services.Process
     {
         public DataTable ShowContentPack()
         {
-            string query = @"SELECT FK_Id_OrderLocal AS [Mã đơn hàng], FK_Id_ContentPack AS [Mã gói hàng],
+            string query = @"SELECT FK_Id_OrderLocal AS [Mã đơn hàng], Id_ContentPack AS [Mã gói hàng],
             CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Kiểu hàng], 
             Name_State AS [Trạng thái], CONVERT(DATE, ProcessContentPack.Date_Start) AS [Ngày bắt đầu]
             FROM ProcessContentPack
-                INNER JOIN ContentPack on FK_Id_ContentPack = Id_ContentPack
+                INNER JOIN ContentPack on ProcessContentPack.FK_Id_ContentPack = Id_ContentPack
                 INNER JOIN DetailContentSimpleOfPack on ContentPack.Id_ContentPack = DetailContentSimpleOfPack.FK_Id_ContentPack
                 INNER JOIN DetailContentPackOrderLocal on ContentPack.Id_ContentPack = DetailContentPackOrderLocal.FK_Id_ContentPack
                 INNER JOIN State on FK_Id_State = Id_State
                 INNER JOIN OrderLocal ON FK_Id_OrderLocal = Id_OrderLocal
             WHERE ProcessContentPack.FK_Id_Station = 409 AND FK_Id_State = 0              
-            GROUP BY FK_Id_OrderLocal, FK_Id_ContentPack, SimpleOrPack, Name_State, ProcessContentPack.Date_Start";
+            GROUP BY FK_Id_OrderLocal, Id_ContentPack, SimpleOrPack, Name_State, ProcessContentPack.Date_Start";
             return DataProvider.Instance.ExecuteQuery(query);
         }
         public DataTable getLocationMatrix()
         {
             // Lấy ra vị trí thùng hàng trong kho 409
-            string query = "SELECT Id_ContentPack, Rowi, Colj " +
-                "FROM DetailStateCellOfPackWareHouse " +
-                "INNER JOIN ContentPack ON FK_Id_ContentPack = Id_ContentPack";
+            string query = "SELECT Rowi, Colj, Id_ContentPack, Count_Pack, " +
+                "(Count_Pack - COALESCE(SUM(RegisterContentPackAtWareHouse.Count), 0)) as SoLuong " +
+                "FROM ContentPack " +
+                "LEFT JOIN RegisterContentPackAtWareHouse ON Id_ContentPack = FK_Id_ContentPack " +
+                "JOIN DetailStateCellOfPackWareHouse p on Id_ContentPack = p.FK_Id_ContentPack " +
+                "GROUP BY Rowi, Colj, Id_ContentPack, Count_Pack";
             return DataProvider.Instance.ExecuteQuery(query);
         }
         public WareHouse getRowAndCol()
@@ -50,6 +53,7 @@ namespace NganGiang.Services.Process
                 wareHouse.numRow = reader.GetInt32(0);
                 wareHouse.numCol = reader.GetInt32(1);
             }
+            reader.Close();
             return wareHouse;
         }
         public bool UpdateDetailStateCellOfPackWareHouse(int id)
@@ -79,8 +83,8 @@ namespace NganGiang.Services.Process
             string query = $"SELECT Id_ContentSimple AS [Mã thùng hàng] " +
                 $"FROM ContentSimple " +
                 $"INNER JOIN DetailContentSimpleOfPack ON Id_ContentSimple = FK_Id_ContentSimple " +
-                $"INNER JOIN DetailContentPackOrderLocal ON FK_Id_ContentPack = FK_Id_ContentPack " +
-                $"WHERE FK_Id_ContentPack = {id} " +
+                $"INNER JOIN DetailContentPackOrderLocal ON DetailContentPackOrderLocal.FK_Id_ContentPack = DetailContentSimpleOfPack.FK_Id_ContentPack " +
+                $"WHERE DetailContentPackOrderLocal.FK_Id_ContentPack = {id} " +
                 $"GROUP BY Id_ContentSimple";
 
             List<int> idContentSimpleList = new List<int>();
@@ -186,7 +190,7 @@ namespace NganGiang.Services.Process
                 string query = "update OrderLocal set Date_Fin = @Date_Fin " +
                     "where Id_OrderLocal = (select Id_OrderLocal from OrderLocal " +
                     "inner join DetailContentPackOrderLocal on Id_OrderLocal = FK_Id_OrderLocal " +
-                    "where FK_Id_ContentPack = @FK_Id_ContentPack)";
+                    "where DetailContentPackOrderLocal.FK_Id_ContentPack = @FK_Id_ContentPack)";
 
                 SqlParameter[] parameters = new SqlParameter[]
                 {
@@ -230,7 +234,7 @@ namespace NganGiang.Services.Process
             {
                 string query = "SELECT TOP 1 FK_Id_Station AS N'Trạm tiếp theo' FROM DispatcherOrder " +
                     "INNER JOIN DetailContentPackOrderLocal ON DispatcherOrder.FK_Id_OrderLocal = " +
-                    "DetailContentPackOrderLocal.FK_Id_ContentPack " +
+                    "DetailContentPackOrderLocal.FK_Id_OrderLocal " +
                     "INNER JOIN DetailProductionStationLine ON DispatcherOrder.FK_Id_ProdStationLine = DetailProductionStationLine.FK_Id_ProdStationLine " +
                     $"WHERE FK_Id_Station > 409 AND FK_Id_ContentPack = {id}";
 

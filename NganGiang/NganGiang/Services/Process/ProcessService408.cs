@@ -12,6 +12,7 @@ using System.Data.SqlClient;
 using NganGiang.Models;
 using NganGiang.Libs;
 using System.Windows.Controls.Primitives;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace NganGiang.Services.Process
 {
@@ -19,7 +20,7 @@ namespace NganGiang.Services.Process
     {
         public DataTable ShowContentPack()
         {
-            string query = @"SELECT FK_Id_OrderLocal AS [Mã đơn hàng], FK_Id_ContentPack AS [Mã gói hàng],
+            string query = @"SELECT FK_Id_OrderLocal AS [Mã đơn hàng], ProcessContentPack.FK_Id_ContentPack AS [Mã gói hàng],
             CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Kiểu hàng], 
             Name_State AS [Trạng thái], CONVERT(DATE, ProcessContentPack.Date_Start) AS [Ngày bắt đầu]
             FROM ProcessContentPack
@@ -29,12 +30,12 @@ namespace NganGiang.Services.Process
                 INNER JOIN State on FK_Id_State = Id_State
                 INNER JOIN OrderLocal ON FK_Id_OrderLocal = Id_OrderLocal
             WHERE ProcessContentPack.FK_Id_Station = 408 AND FK_Id_State = 0 AND
-            HaveEilmPE = 0 AND FK_Id_ContentPack NOT IN (
+            HaveEilmPE = 0 AND ProcessContentPack.FK_Id_ContentPack NOT IN (
                 SELECT DCS.FK_Id_ContentPack FROM DetailContentSimpleOfPack DCS
                 INNER JOIN ContentSimple CS ON DCS.FK_Id_ContentSimple = CS.Id_ContentSimple
                 WHERE CS.ContainerProvided <> 1 OR CS.PedestalProvided <> 1 OR CS.RFIDProvided <> 1
                 OR CS.RawMaterialProvided <> 1 OR CS.CoverHatProvided <> 1) 
-            GROUP BY FK_Id_OrderLocal, FK_Id_ContentPack, SimpleOrPack, Name_State, ProcessContentPack.Date_Start";
+            GROUP BY FK_Id_OrderLocal, ProcessContentPack.FK_Id_ContentPack, SimpleOrPack, Name_State, ProcessContentPack.Date_Start";
             return DataProvider.Instance.ExecuteQuery(query);
         }
         public int GetTotalCountInRegister(int id)
@@ -60,6 +61,37 @@ namespace NganGiang.Services.Process
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi khi lấy trạm tiếp theo.\n" + ex.Message);
+                return -1;
+            }
+        }
+        public int checkCustomer(int id)
+        {
+            try
+            {
+                string query = $"SELECT CustomerType.ID " +
+                    $"FROM ContentPack " +
+                    $"JOIN [Order] ON ContentPack.FK_Id_Order = [Order].Id_Order " +
+                    $"JOIN Customer ON [Order].FK_Id_Customer = Customer.Id_Customer " +
+                    $"JOIN CustomerType ON Customer.FK_Id_CustomerType = CustomerType.Id " +
+                    $"WHERE ContentPack.Id_ContentPack = {id}";
+
+                DataTable result = DataProvider.Instance.ExecuteQuery(query);
+
+                if (result.Rows.Count > 0 && result.Rows[0]["ID"] != DBNull.Value)
+                {
+                    // Lấy giá trị trạm tiếp theo từ kết quả
+                    int customerType = Convert.ToInt32(result.Rows[0]["ID"]);
+                    return customerType;
+                }
+                else
+                {
+                    // Không có kết quả trả về
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lấy kiểu khách hàng.\n" + ex.Message);
                 return -1;
             }
         }
@@ -104,7 +136,6 @@ namespace NganGiang.Services.Process
                         $"(SELECT DCS.FK_Id_ContentSimple FROM DetailContentSimpleOfPack DCS " +
                         $"WHERE DCS.FK_Id_ContentPack = {id})";
                     DataProvider.Instance.ExecuteNonQuery(query);
-
                     return true;
                 }
                 else
@@ -123,7 +154,7 @@ namespace NganGiang.Services.Process
             try
             {
                 string query = $"UPDATE ProcessContentPack SET FK_Id_State = 2, Date_Fin = " +
-                $"'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}' WHERE FK_Id_ContentPack = {id} AND FK_Id_Station = 408";
+                $"'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}' WHERE ProcessContentPack.FK_Id_ContentPack = {id} AND FK_Id_Station = 408";
                 DataProvider.Instance.ExecuteNonQuery(query);
 
                 query = "INSERT INTO ProcessContentPack (FK_Id_ContentPack, FK_Id_Station, FK_Id_State, Date_Start) " +
@@ -149,8 +180,8 @@ namespace NganGiang.Services.Process
             string query = $"SELECT Id_ContentSimple AS [Mã thùng hàng] " +
                 $"FROM ContentSimple " +
                 $"INNER JOIN DetailContentSimpleOfPack ON Id_ContentSimple = FK_Id_ContentSimple " +
-                $"INNER JOIN DetailContentPackOrderLocal ON FK_Id_ContentPack = FK_Id_ContentPack " +
-                $"WHERE FK_Id_ContentPack = {id} " +
+                $"INNER JOIN DetailContentPackOrderLocal ON DetailContentPackOrderLocal.FK_Id_ContentPack = DetailContentSimpleOfPack.FK_Id_ContentPack " +
+                $"WHERE DetailContentPackOrderLocal.FK_Id_ContentPack = {id} " +
                 $"GROUP BY Id_ContentSimple";
 
             List<int> idContentSimpleList = new List<int>();
@@ -173,7 +204,7 @@ namespace NganGiang.Services.Process
                     "INNER JOIN DetailContentPackOrderLocal ON DispatcherOrder.FK_Id_OrderLocal = " +
                     "DetailContentPackOrderLocal.FK_Id_ContentPack " +
                     "INNER JOIN DetailProductionStationLine ON DispatcherOrder.FK_Id_ProdStationLine = DetailProductionStationLine.FK_Id_ProdStationLine " +
-                    $"WHERE FK_Id_Station <= 408 AND FK_Id_ContentPack = {id}";
+                    $"WHERE FK_Id_Station <= 408 AND DetailContentPackOrderLocal.FK_Id_ContentPack = {id}";
 
                 DataTable result = DataProvider.Instance.ExecuteQuery(query);
 

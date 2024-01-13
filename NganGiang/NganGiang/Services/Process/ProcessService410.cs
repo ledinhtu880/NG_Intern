@@ -1,5 +1,6 @@
 ﻿using NganGiang.Libs;
 using NganGiang.Models;
+using Org.BouncyCastle.Math.Field;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,7 +16,7 @@ namespace NganGiang.Services.Process
     {
         public DataTable getProcessAt410()
         {
-            string query = $"SELECT DCPOL.FK_Id_OrderLocal,\r\n\tPCP.FK_Id_ContentPack, S.Name_State,\r\n\tFORMAT(OL.Date_Start, 'dd-MM-yyyy') AS Date_Start\r\nFROM ProcessContentPack PCP\r\nINNER JOIN DetailContentPackOrderLocal DCPOL ON PCP.FK_Id_ContentPack = DCPOL.FK_Id_ContentPack\r\nINNER JOIN [State] S ON S.Id_State = PCP.FK_Id_State\r\nINNER JOIN OrderLocal OL ON OL.Id_OrderLocal = DCPOL.FK_Id_OrderLocal\r\nWHERE PCP.FK_Id_Station = 410 AND PCP.FK_Id_State = 0 AND OL.Date_Fin IS NULL";
+            string query = $"SELECT DISTINCT DCPOL.FK_Id_OrderLocal,\r\nPCP.FK_Id_ContentPack, S.Name_State,\r\nFORMAT(OL.Date_Start, 'dd-MM-yyyy') AS Date_Start\r\nFROM ProcessContentPack PCP\r\nINNER JOIN DetailContentPackOrderLocal DCPOL ON PCP.FK_Id_ContentPack = DCPOL.FK_Id_ContentPack\r\nINNER JOIN [State] S ON S.Id_State = PCP.FK_Id_State\r\nINNER JOIN OrderLocal OL ON OL.Id_OrderLocal = DCPOL.FK_Id_OrderLocal\r\nWHERE PCP.FK_Id_Station = 410 AND PCP.FK_Id_State = 0 AND OL.Date_Fin IS NULL AND OL.MakeOrPackOrExpedition = 2\r\nORDER BY DCPOL.FK_Id_OrderLocal, PCP.FK_Id_ContentPack, S.Name_State, Date_Start\r\n";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             return dt;
         }
@@ -126,15 +127,49 @@ namespace NganGiang.Services.Process
             }
             return true;
         }
+        public int checkCustomer(ProcessContentPack processContentPack)
+        {
+            try
+            {
+                string query = $"SELECT CustomerType.ID " +
+                    $"FROM ContentPack " +
+                    $"JOIN [Order] ON ContentPack.FK_Id_Order = [Order].Id_Order " +
+                    $"JOIN Customer ON [Order].FK_Id_Customer = Customer.Id_Customer " +
+                    $"JOIN CustomerType ON Customer.FK_Id_CustomerType = CustomerType.Id " +
+                    $"WHERE ContentPack.Id_ContentPack = {processContentPack.FK_Id_ContentPack}";
+
+                DataTable result = DataProvider.Instance.ExecuteQuery(query);
+
+                if (result.Rows.Count > 0 && result.Rows[0]["ID"] != DBNull.Value)
+                {
+                    // Lấy giá trị trạm tiếp theo từ kết quả
+                    int customerType = Convert.ToInt32(result.Rows[0]["ID"]);
+                    return customerType;
+                }
+                else
+                {
+                    // Không có kết quả trả về
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lấy kiểu khách hàng.\n" + ex.Message);
+                return -1;
+            }
+        }
         private bool updateDetailStateCellOfPackWareHouse(ContentPack contentPack, out string message)
         {
             message = "";
             ProcessContentPack processContentPack = new ProcessContentPack();
             processContentPack.FK_Id_ContentPack = contentPack.Id_ContentPack;
-            if (this.getTotalCountInRegister(processContentPack, out message) != this.getTotalCountInWareHouse(processContentPack, out message))
+            if (this.checkCustomer(processContentPack) == 1)
             {
-                message = "Số lượng thùng hàng trong kho không đủ";
-                return false;
+                if (this.getTotalCountInRegister(processContentPack, out message) != this.getTotalCountInWareHouse(processContentPack, out message))
+                {
+                    message = "Số lượng thùng hàng trong kho không đủ";
+                    return false;
+                }
             }
 
             DetailStateCellOfPackWareHouse detail = new DetailStateCellOfPackWareHouse();

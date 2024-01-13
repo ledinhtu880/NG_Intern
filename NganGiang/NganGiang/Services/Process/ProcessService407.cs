@@ -11,12 +11,11 @@ namespace NganGiang.Services.Process
         {
 
         }
-
         public void listProcessSimpleOrderLocal(DataGridView dgv)
         {
             try
             {
-                string query = "SELECT FK_Id_OrderLocal as id_orderlocal, Id_ContentSimple as id_simple, Name_RawMaterial as name_raw, RawMaterial.Count as quantity, \r\n\t\tUnit as unit, Count_RawMaterial * Count_Container as quantity_order, Name_State as status, ProcessContentSimple.Date_Start as date_start, SimpleOrPack as type_simple FROM ProcessContentSimple \r\nINNER JOIN ContentSimple on Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple\r\nINNER JOIN DetailContentSimpleOrderLocal on Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple\r\nINNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial\r\nINNER JOIN [State] on Id_State = FK_Id_State\r\nINNER JOIN OrderLocal on FK_Id_OrderLocal = Id_OrderLocal\r\nWHERE FK_Id_Station = 407 and FK_Id_State = 0 order by date_start desc";
+                string query = "SELECT FK_Id_OrderLocal as id_orderlocal, Id_ContentSimple as id_simple, Name_RawMaterial as name_raw, RawMaterial.Count as quantity, \r\n\t\tUnit as unit, Count_RawMaterial * Count_Container as quantity_order, Name_State as status, ProcessContentSimple.Date_Start as date_start, SimpleOrPack as type_simple FROM ProcessContentSimple \r\nINNER JOIN ContentSimple on Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple\r\nINNER JOIN DetailContentSimpleOrderLocal on Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple\r\nINNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial\r\nINNER JOIN [State] on Id_State = FK_Id_State\r\nINNER JOIN OrderLocal on FK_Id_OrderLocal = Id_OrderLocal\r\nWHERE FK_Id_Station = 407 and FK_Id_State = 0 AND OrderLocal.MakeOrPackOrExpedition = 2 order by date_start desc";
                 DataTable dt = DataProvider.Instance.ExecuteQuery(query);
 
                 dgv.AutoGenerateColumns = false;
@@ -100,13 +99,13 @@ namespace NganGiang.Services.Process
 
             catch (Exception e)
             {
-                MessageBox.Show("Đã có lỗi xảy ra!", $"{e.Message}", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Đã có lỗi xảy ra!" + $"{e.Message}", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         public bool IsLastStation(int id_simple_content)
         {
-            string query = $"SELECT FK_Id_Station from DetailProductionStationLine DP inner join DispatcherOrder D on DP.FK_Id_ProdStationLine = D.FK_Id_ProdStationLine inner join OrderLocal O on O.Id_OrderLocal = D.FK_Id_OrderLocal WHERE FK_Id_OrderLocal =(select FK_Id_OrderLocal from DetailContentSimpleOrderLocal where FK_Id_ContentSimple = {id_simple_content}) and FK_Id_Station > 407";
+            string query = $"SELECT FK_Id_Station from DetailProductionStationLine DP inner join DispatcherOrder D on DP.FK_Id_ProdStationLine = D.FK_Id_ProdStationLine inner join OrderLocal O on O.Id_OrderLocal = D.FK_Id_OrderLocal WHERE FK_Id_OrderLocal =(select FK_Id_OrderLocal from DetailContentSimpleOrderLocal, OrderLocal \r\nwhere FK_Id_ContentSimple = {id_simple_content} and OrderLocal.Id_OrderLocal = DetailContentSimpleOrderLocal.FK_Id_OrderLocal and OrderLocal.MakeOrPackOrExpedition = 2) and FK_Id_Station > 407";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             if (dt.Rows.Count > 0)
             {
@@ -114,7 +113,37 @@ namespace NganGiang.Services.Process
             }
             return true;
         }
+        public int checkCustomer(int id)
+        {
+            try
+            {
+                string query = $"SELECT CustomerType.ID " +
+                    $"FROM ContentSimple " +
+                    $"JOIN [Order] ON ContentSimple.FK_Id_Order = [Order].Id_Order " +
+                    $"JOIN Customer ON [Order].FK_Id_Customer = Customer.Id_Customer " +
+                    $"JOIN CustomerType ON Customer.FK_Id_CustomerType = CustomerType.Id " +
+                    $"WHERE ContentSimple.Id_ContentSimple= {id}";
 
+                DataTable result = DataProvider.Instance.ExecuteQuery(query);
+
+                if (result.Rows.Count > 0 && result.Rows[0]["ID"] != DBNull.Value)
+                {
+                    // Lấy giá trị trạm tiếp theo từ kết quả
+                    int customerType = Convert.ToInt32(result.Rows[0]["ID"]);
+                    return customerType;
+                }
+                else
+                {
+                    // Không có kết quả trả về
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lấy kiểu khách hàng.\n" + ex.Message);
+                return -1;
+            }
+        }
         public int getCountInRegister(int id_simple_content)
         {
             string query = $"select sum(Count) as countTotal from RegisterContentSimpleAtWareHouse where FK_Id_ContentSimple = {id_simple_content} group by FK_Id_ContentSimple";
@@ -179,7 +208,7 @@ namespace NganGiang.Services.Process
                 };
                 DataProvider.Instance.ExecuteNonQuery(query, parameters);
 
-                query = $"Update ProcessContentSimple set FK_Id_State = 1 where FK_Id_ContentSimple = {id_simple_content}";
+                query = $"Update ProcessContentSimple set FK_Id_State = 1 where FK_Id_ContentSimple = {id_simple_content} AND  where FK_Id_Station = 407";
                 DataProvider.Instance.ExecuteNonQuery(query);
             }
             catch (SqlException e)
@@ -203,6 +232,15 @@ namespace NganGiang.Services.Process
                     new SqlParameter("@station", 408),
                     new SqlParameter("@state", 0),
                     new SqlParameter("@date_start", date)
+                };
+                DataProvider.Instance.ExecuteNonQuery(query, parameters);
+
+                byte[] qrcode = GenerateQrCode(id_simple_content);
+                query = "Update ContentSimple set QRCode = @qr, QRCodeProvided = 1 where Id_ContentSimple = @id_simple";
+                parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@id_simple", id_simple_content),
+                    new SqlParameter("@qr", qrcode)
                 };
                 DataProvider.Instance.ExecuteNonQuery(query, parameters);
             }

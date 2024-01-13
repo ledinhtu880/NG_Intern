@@ -56,7 +56,8 @@ namespace NganGiang.Services.Process
                 "INNER JOIN OrderLocal ON FK_Id_OrderLocal = Id_OrderLocal " +
                 "WHERE FK_Id_Station = 403 AND FK_Id_State = 0 " +
                 "group by FK_Id_OrderLocal, SimpleOrPack, Id_ContentSimple, Name_RawMaterial, RawMaterial.Count, Unit, Name_State, " +
-                "Count_RawMaterial * Count_Container, CONVERT(date, ProcessContentSimple.Date_Start)";
+                "Count_RawMaterial * Count_Container, CONVERT(date, ProcessContentSimple.Date_Start)" +
+                "order by FK_Id_OrderLocal asc, Id_ContentSimple asc, CONVERT(date, ProcessContentSimple.Date_Start) desc";
             return DataProvider.Instance.ExecuteQuery(query);
         }
         public void UpdateRawMaterial(int amount, int id)

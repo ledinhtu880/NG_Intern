@@ -16,8 +16,7 @@ namespace NganGiang.Views
     {
         Station409_Controller packController { get; set; }
         List<int> listContentPack = new List<int>();
-        private IconButton button;
-        private DataTable dtMatrix;
+        Point[] points;
         public frm409()
         {
             InitializeComponent();
@@ -37,144 +36,97 @@ namespace NganGiang.Views
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
-            updateTableLayoutPanel();
+            updateDGVWareHouse();
         }
         private void frm409_Load(object sender, EventArgs e)
         {
             loadData();
         }
-        private void updateTableLayoutPanel()
+        private void updateDGVWareHouse()
         {
-            tableWarehouse409.Controls.Clear();
-            dtMatrix = packController.getMatrix();
-
-            tableWarehouse409.RowStyles.Clear();
-            tableWarehouse409.ColumnStyles.Clear();
+            dgvWare.Rows.Clear();
+            dgvWare.Columns.Clear();
             int row = packController.getRowAndCol(out int col);
-            tableWarehouse409.RowCount = row;
-            tableWarehouse409.ColumnCount = col;
-            tableWarehouse409.Dock = DockStyle.Fill;
 
-            for (int i = 0; i < tableWarehouse409.RowCount; i++)
+            if (row == 0 || col == 0)
             {
-                tableWarehouse409.RowStyles.Add(new RowStyle(SizeType.Percent, 100f / tableWarehouse409.RowCount));
+                MessageBox.Show("Kho chưa được thiết lập", "Chú ý", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
-            for (int i = 0; i < tableWarehouse409.ColumnCount; i++)
+            DataTable dt = packController.getMatrix();
+            int[] Id_PackContents = new int[dt.Rows.Count];
+            int[] Count_Containers = new int[dt.Rows.Count];
+            int[] ro = new int[dt.Rows.Count];
+            int[] co = new int[dt.Rows.Count];
+            points = new Point[dt.Rows.Count];
+
+            if (dt.Rows.Count > 0)
             {
-                tableWarehouse409.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f / tableWarehouse409.ColumnCount));
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    ro[i] = Int32.Parse(dt.Rows[i]["Rowi"].ToString());
+                    co[i] = Int32.Parse(dt.Rows[i]["Colj"].ToString());
+                    Id_PackContents[i] = Int32.Parse(dt.Rows[i]["Id_ContentPack"].ToString());
+                    Count_Containers[i] = Int32.Parse(dt.Rows[i]["SoLuong"].ToString());
+                }
+            }
+            dgvWare.RowTemplate.Height = 150;
+
+            for (int i = 0; i <= col; i++)
+            {
+                DataGridViewColumn column = new DataGridViewTextBoxColumn();
+                column.Name = "Column" + i.ToString();
+                if (i == 0)
+                {
+                    column.Width = 50;
+                    column.HeaderText = "STT";
+                    column.ReadOnly = true;
+                    dgvWare.Columns.Add(column);
+                    continue;
+                }
+                column.Width = 150;
+                column.HeaderText = i.ToString();
+                dgvWare.Columns.Add(column);
             }
 
+            for (int i = 0; i < row; i++)
+            {
+                dgvWare.Rows.Add();
+                dgvWare.Rows[i].Cells[0].Value = i + 1;
+            }
+            int count = 0;
             for (int r = 0; r < row; r++)
             {
-                for (int c = 0; c < col; c++)
+                // r bắt đầu từ 0
+                for (int c = 1; c <= col; c++)
                 {
-                    Panel panel = new Panel();
-                    panel.Dock = DockStyle.Fill;
-                    panel.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
-
-
-                    Label label = new Label();
-                    label.Anchor = (AnchorStyles.Bottom | AnchorStyles.Right);
-                    label.TextAlign = ContentAlignment.TopRight;
-                    label.Text = (r + 1).ToString() + "." + (c + 1).ToString();
-                    label.AutoSize = true;
-                    label.Location = new Point(
-                        (panel.Width - label.Width / 2), 0
-                    );
-
-                    button = new IconButton();
-                    Label ept = new Label();
-                    if (dtMatrix.Rows.Count > 0)
+                    // c bắt đầu từ 1
+                    if (r <= ro.Length && c <= co.Length && ro.Length > 0 && co.Length > 0)
                     {
-                        int copyR = r + 1;
-                        int copyC = c + 1;
-                        foreach (DataRow dtRow in dtMatrix.Rows)
+                        if (ro.Length - 1 >= r && co.Length >= c && ro[r] == r + 1 && co[c - 1] == c)
                         {
-                            int rowi = Int32.Parse(dtRow["Rowi"].ToString());
-                            int colj = Int32.Parse(dtRow["Colj"].ToString());
-                            if (rowi == copyR && colj == copyC)
-                            {
-                                panel.Controls.Clear();
-                                Panel pn = new Panel();
-                                pn.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-                                pn.Height = 40;
-                                pn.Location = new Point(0, (panel.Height - pn.Height) / 2);
-
-                                button.IconChar = IconChar.Eye;
-                                button.IconColor = Color.FromArgb(52, 76, 114);
-                                button.IconSize = 40;
-                                button.FlatStyle = FlatStyle.Flat;
-                                button.FlatAppearance.BorderSize = 0;
-                                button.Anchor = AnchorStyles.None;
-                                button.Size = new Size(40, 50);
-                                button.Tag = dtRow["Id_ContentPack"].ToString(); // Lưu trữ giá trị vào thuộc tính Tag của button
-
-
-                                Label nonept = new Label();
-                                nonept.Text = "Gói hàng số " + dtRow["Id_ContentPack"].ToString();
-                                nonept.TextAlign = ContentAlignment.MiddleCenter;
-                                nonept.Width = 200;
-                                nonept.Height = 50;
-                                nonept.Anchor = AnchorStyles.None;
-                                nonept.Font = new Font("Segoe UI", 13.8f);
-                                nonept.Location = new Point(
-                                    (pn.Width - nonept.Width - 10) / 2, 0
-                                );
-
-                                button.Location = new Point(
-                                    (pn.Width - button.Width + nonept.Width) / 2, 5
-                                );
-
-                                pn.Controls.Add(nonept);
-                                pn.Controls.Add(button);
-                                button.BringToFront();
-                                panel.Controls.Add(pn);
-                                button.Click += IconButton_Click;
-                            }
-                            else
-                            {
-                                ept.Text = "Trống";
-                                ept.Anchor = AnchorStyles.None;
-                                ept.AutoSize = true;
-                                ept.Font = new Font("Segoe UI", 13.8f);
-                                ept.Location = new Point(
-                                    (panel.Width - ept.Width) / 2,
-                                    (panel.Height - ept.Height) / 2
-                                );
-                                panel.Controls.Add(ept);
-                            }
+                            DataGridViewButtonCell buttonCell = new DataGridViewButtonCell();
+                            buttonCell.Value = $"Gói hàng số {Id_PackContents[count]}\nSố lượng {Count_Containers[count]}";
+                            dgvWare["Column" + c.ToString(), r].ReadOnly = false;
+                            points[count] = new Point(c, r);
+                            count++;
+                            dgvWare["Column" + c.ToString(), r] = buttonCell;
+                        }
+                        else
+                        {
+                            dgvWare["Column" + c.ToString(), r].Value = "Trống";
+                            dgvWare["Column" + c.ToString(), r].ReadOnly = true;
                         }
                     }
                     else
                     {
-                        ept.Text = "Trống";
-                        ept.Anchor = AnchorStyles.None;
-                        ept.AutoSize = true;
-                        ept.Font = new Font("Segoe UI", 13.8f);
-                        ept.Location = new Point(
-                            (panel.Width - ept.Width) / 2,
-                            (panel.Height - ept.Height) / 2
-                        );
-                        panel.Controls.Add(ept);
+                        dgvWare["Column" + c.ToString(), r].Value = "Trống";
+                        dgvWare["Column" + c.ToString(), r].ReadOnly = true;
                     }
-
-                    panel.Controls.Add(label);
-                    tableWarehouse409.Controls.Add(panel, c, r);
                 }
             }
         }
-
-        private void IconButton_Click(object? sender, EventArgs e)
-        {
-            IconButton button = (IconButton)sender;
-            string idContentPack = button.Tag.ToString(); // Truy cập giá trị đã lưu trữ trong Tag của button
-
-            detailContentPack detailForm = new detailContentPack();
-            detailForm.SetContentPackID(idContentPack);
-            detailForm.Show();
-        }
-
         private void btnProcess_Click(object sender, EventArgs e)
         {
             listContentPack.Clear();
@@ -211,13 +163,26 @@ namespace NganGiang.Views
         }
         private void dgv409_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex == dgv409.Columns["XemChiTietColumn"].Index)
+            DataTable dt = packController.getMatrix();
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && dgv409[e.ColumnIndex, e.RowIndex] is DataGridViewButtonCell)
             {
-                string id = dgv409.Rows[e.RowIndex].Cells["Mã gói hàng"].Value.ToString();
+                Point pos = new Point(e.ColumnIndex, e.RowIndex);
+                int row = pos.Y + 1;
+                int col = pos.X;
+                foreach (DataRow r in dt.Rows)
+                {
+                    if (Int32.Parse(r["Rowi"].ToString()) == row && Int32.Parse(r["Colj"].ToString()) == col)
+                    {
 
-                detailContentPack detailForm = new detailContentPack();
-                detailForm.SetContentPackID(id);
-                detailForm.Show();
+                        string id = dgv409.Rows[e.RowIndex].Cells["Id_ContentPack"].Value.ToString();
+
+                        detailContentPack detailForm = new detailContentPack();
+                        detailForm.SetContentPackID(id);
+                        detailForm.Show();
+                        return;
+                    }
+                }
+                return;
             }
         }
         private void dgv409_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)

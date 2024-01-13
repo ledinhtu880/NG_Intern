@@ -14,7 +14,7 @@ namespace NganGiang.Services.Process
     {
         public DataTable getProcessAt411()
         {
-            string query = $"SELECT DCPOL.FK_Id_OrderLocal, \r\n\t PCP.FK_Id_ContentPack, S.Name_State, FORMAT(OL.Date_Start, 'dd-MM-yyyy') AS Date_Start\r\nFROM ProcessContentPack PCP\r\nINNER JOIN DetailContentPackOrderLocal DCPOL ON PCP.FK_Id_ContentPack = DCPOL.FK_Id_ContentPack\r\nINNER JOIN [State] S ON S.Id_State = PCP.FK_Id_State\r\nINNER JOIN OrderLocal OL ON OL.Id_OrderLocal = DCPOL.FK_Id_OrderLocal\r\nWHERE PCP.FK_Id_Station = 411 AND PCP.FK_Id_State = 0";
+            string query = $"SELECT DCPOL.FK_Id_OrderLocal, \r\n\t PCP.FK_Id_ContentPack, S.Name_State, FORMAT(OL.Date_Start, 'dd-MM-yyyy') AS Date_Start\r\nFROM ProcessContentPack PCP\r\nINNER JOIN DetailContentPackOrderLocal DCPOL ON PCP.FK_Id_ContentPack = DCPOL.FK_Id_ContentPack\r\nINNER JOIN [State] S ON S.Id_State = PCP.FK_Id_State\r\nINNER JOIN OrderLocal OL ON OL.Id_OrderLocal = DCPOL.FK_Id_OrderLocal\r\nWHERE PCP.FK_Id_Station = 411 AND PCP.FK_Id_State = 0 AND OL.Date_Fin IS NULL";
             DataTable tb = DataProvider.Instance.ExecuteQuery(query);
             return tb;
         }

@@ -69,21 +69,23 @@ namespace NganGiang.Views
             }
             if (list_id_simple.Count > 0)
             {
+                bool flag = false;
                 DialogResult confirm = MessageBox.Show("Bạn chắc chắn muốn dán nhãn cho các thùng hàng trên?", "Xác nhận hành động", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                 if (confirm == DialogResult.OK)
                 {
                     foreach (var item in list_id_simple)
                     {
-                        process407Controller.UpdateData(item);
-                        //byte[] qrcode = process407Controller.GenerateQrCode(item);
-                        //foreach (var bytes in qrcode)
-                        //{
-                        //    MessageBox.Show($"{bytes}");
-                        //}
+                        if (process407Controller.UpdateData(item))
+                        {
+                            flag = true;
+                        }
 
                     }
-                    MessageBox.Show("Dán nhãn thùng và xuất phiếu giao thành công!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadData();
+                    if (flag)
+                    {
+                        MessageBox.Show("Dán nhãn thùng và xuất phiếu giao thành công!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadData();
+                    }
                 }
             }
             else

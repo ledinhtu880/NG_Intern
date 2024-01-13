@@ -159,7 +159,7 @@
             btnProcess.Name = "btnProcess";
             btnProcess.Size = new Size(260, 65);
             btnProcess.TabIndex = 27;
-            btnProcess.Text = "Quấn màng PE";
+            btnProcess.Text = "Cấp mã NFC";
             btnProcess.UseVisualStyleBackColor = false;
             btnProcess.Click += btnProcess_Click;
             // 

@@ -26,15 +26,23 @@ namespace NganGiang.Controllers
 
             try
             {
-                if (Service.UpdateWarehouse(id))
+                if (Service.checkCustomer(id) == 1)
                 {
-                    Service.UpdateProcessContentSimple(id);
-                    Service.UpdateProcessContentPack(id);
+                    if (Service.UpdateWarehouse(id))
+                    {
+                        Service.UpdateProcessContentSimple(id);
+                        Service.UpdateProcessContentPack(id);
+                    }
+                    else
+                    {
+                        isSuccess = false;
+                        MessageBox.Show($"Số lượng thùng chứa trong kho 406 vẫn còn dư.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
                 else
                 {
-                    isSuccess = false;
-                    MessageBox.Show($"Số lượng thùng chứa trong kho 406 vẫn còn dư.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Service.UpdateProcessContentSimple(id);
+                    Service.UpdateProcessContentPack(id);
                 }
             }
             catch (SqlException ex)

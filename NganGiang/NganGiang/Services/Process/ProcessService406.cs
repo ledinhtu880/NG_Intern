@@ -134,13 +134,10 @@ namespace NganGiang.Services.Process
         public DataTable getLocationMatrix()
         {
             // Lấy ra vị trí thùng hàng trong kho 406
-            string query = "SELECT Id_ContentSimple, Count_Container, Rowi, Colj " +
-                "FROM DetailStateCellOfSimpleWareHouse " +
-                "INNER JOIN ContentSimple ON FK_Id_ContentSimple = Id_ContentSimple";
+            string query = "SELECT RowI, ColJ, Id_ContentSimple, (Count_Container - COALESCE(SUM(RegisterContentSimpleAtWareHouse.Count), 0)) as SoLuong FROM ContentSimple LEFT JOIN RegisterContentSimpleAtWareHouse ON Id_ContentSimple = FK_Id_ContentSimple JOIN DetailStateCellOfSimpleWareHouse on Id_ContentSimple = DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple GROUP BY RowI, ColJ, Id_ContentSimple, Count_Container";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             return dt;
         }
-
         private List<decimal> getIdContentSimplesByDetailContentSimpleOrderLocal(OrderLocal orderLocal)
         {
             // Lấy ra danh sách Id_ContentSimple theo Id_OrderLocal
