@@ -19,7 +19,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm">
       <div class="card-body">
-        <form method="POST" action="{{ route('stations.update', compact('station')) }}">
+        <form id="formInformation" method="POST" action="{{ route('stations.update', compact('station')) }}">
           @csrf
           <div class="d-flex gap-3">
             <div class="form-group" style="flex: 1;">
@@ -73,16 +73,39 @@
             </span>
             @endif
           </div>
-          <!-- <div class="mt-3">
+          <div class="mt-3">
             <div class="d-flex align-items-center justify-content-center ">
               <img src="{{ asset($station->stationType->PathImage) }}" class="img-thumbnail img-change me-3">
             </div>
-          </div> -->
-          <div class="d-flex justify-content-end my-4 gap-3">
-            <a href="{{ route('stations.index') }}" class="btn btn-light">Quay lại</a>
-            <button type="submit" class="btn btn-primary">Sửa</button>
           </div>
         </form>
+      </div>
+      <div class="card-footer">
+        <div class="d-flex justify-content-end gap-3">
+          <a href="{{ route('stations.index') }}" class="btn btn-light">Quay lại</a>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#deleteOrder-{{ $station->Id_Station }}">
+            Cập nhật
+          </button>
+          <div class="modal fade" id="deleteOrder-{{ $station->Id_Station }}" tabindex="-1"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Bạn có chắc chắn muốn cập nhật trạm này?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                  <button type="submit" class="btn btn-primary" id="saveBtn">Xác nhận</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -105,6 +128,9 @@
         },
       });
     });
+    $("#saveBtn").on('click', function () {
+      $("#formInformation").submit();
+    })
   });
 </script>
 @endpush

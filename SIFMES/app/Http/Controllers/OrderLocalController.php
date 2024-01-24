@@ -21,6 +21,7 @@ class OrderLocalController extends Controller
       Session::flash('type', 'info');
       Session::flash('message', 'Quản lý đơn sản xuất và giao hàng');
     }
+
     $data = OrderLocal::where('MakeOrPackOrExpedition', '0')->paginate(5);
     return view('orderLocals.makes.index', compact('data'));
   }
@@ -114,10 +115,6 @@ class OrderLocalController extends Controller
         ->where('RawMaterial.FK_Id_RawMaterialType', $LiquidOrSolid)
         ->whereNotIn('ContentSimple.Id_ContentSimple', function ($query) {
           $query->select('FK_Id_ContentSimple')
-            ->from('ProcessContentSimple');
-        })
-        ->whereNotIn('ContentSimple.Id_ContentSimple', function ($query) {
-          $query->select('FK_Id_ContentSimple')
             ->from('DetailContentSimpleOrderLocal');
         })
         ->select(
@@ -164,6 +161,11 @@ class OrderLocalController extends Controller
     $orderLocal = OrderLocal::where('Id_OrderLocal', $id)->first();
     $materials = RawMaterial::get();
     $containers = ContainerType::get();
+    $exists = DB::table('OrderLocal')
+      ->join('DispatcherOrder', 'OrderLocal.Id_OrderLocal', '=', 'DispatcherOrder.FK_Id_OrderLocal')
+      ->where('OrderLocal.Id_OrderLocal', '=', $id)
+      ->select('OrderLocal.Id_OrderLocal')
+      ->exists();
     $data = DB::table('ContentSimple')
       ->select(
         'Id_ContentSimple',
@@ -184,14 +186,19 @@ class OrderLocalController extends Controller
       ->get();
     $LiquidOrSolid = $data->first()->FK_Id_RawMaterialType;
 
-    if (session()->has('message') && session()->has('type')) {
-      // Lấy nội dung của thông báo và loại thông báo
-      $message = session()->get('message');
-      $type = session()->get('type');
-      return view('orderLocals.makes.edit', compact('orderLocal', 'data', 'containers', 'materials', 'LiquidOrSolid'))
-        ->with('type', 'success');
+    if ($exists) {
+      $inProcess = 1;
+      return view('orderLocals.makes.edit', compact('orderLocal', 'data', 'containers', 'materials', 'LiquidOrSolid', 'inProcess'));
+    } else {
+      if (session()->has('message') && session()->has('type')) {
+        // Lấy nội dung của thông báo và loại thông báo
+        $message = session()->get('message');
+        $type = session()->get('type');
+        return view('orderLocals.makes.edit', compact('orderLocal', 'data', 'containers', 'materials', 'LiquidOrSolid'))
+          ->with('type', 'success');
+      }
+      return view('orderLocals.makes.edit', compact('orderLocal', 'data', 'containers', 'materials', 'LiquidOrSolid'));
     }
-    return view('orderLocals.makes.edit', compact('orderLocal', 'data', 'containers', 'materials', 'LiquidOrSolid'));
   }
   public function addSimple(string $id)
   {
@@ -222,7 +229,7 @@ class OrderLocalController extends Controller
       ->where('Order.SimpleOrPack', $orderLocal->SimpleOrPack)
       ->whereNotIn('ContentSimple.Id_ContentSimple', function ($query) {
         $query->select('FK_Id_ContentSimple')
-          ->from('ProcessContentSimple');
+          ->from('DetailContentSimpleOrderLocal');
       })
       ->select(
         'Id_ContentSimple',
@@ -262,21 +269,18 @@ class OrderLocalController extends Controller
     $validator = $request->validate([
       'Id_OrderLocal' => 'required',
       'Count' => 'required',
-      'MakeOrPackOrExpedition' => 'required',
       'Date_Delivery' => 'required',
       'Date_Start' => 'required',
     ]);
 
     $Id_OrderLocal = $validator['Id_OrderLocal'];
     $Count = $validator['Count'];
-    $MakeOrPackOrExpedition = $validator['MakeOrPackOrExpedition'];
     $dateDelivery = $validator['Date_Delivery'];
     $Date_Start = $validator['Date_Start'];
 
     DB::table('OrderLocal')->where('Id_OrderLocal', $Id_OrderLocal)->update([
       'Id_OrderLocal' => $Id_OrderLocal,
       'Count' => $Count,
-      'MakeOrPackOrExpedition' => $MakeOrPackOrExpedition,
       'Date_Delivery' => $dateDelivery,
       'Date_Start' => $Date_Start,
     ]);
@@ -317,15 +321,25 @@ class OrderLocalController extends Controller
   }
   public function destroyMakes(string $id)
   {
-    DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();
-    DB::table('DispatcherOrder')->where('FK_Id_OrderLocal', $id)->delete();
-    DB::table('OrderLocal')->where('Id_OrderLocal', $id)->delete();
-    return redirect()->route('orderLocals.makes.index')->with([
-      'message' => 'Xóa đơn hàng sản xuất thành công',
-      'type' => 'success',
-    ]);
+    $exists = DB::table('OrderLocal')
+      ->join('DispatcherOrder', 'OrderLocal.Id_OrderLocal', '=', 'DispatcherOrder.FK_Id_OrderLocal')
+      ->where('OrderLocal.Id_OrderLocal', '=', $id)
+      ->select('OrderLocal.Id_OrderLocal')
+      ->exists();
+    if ($exists) {
+      return redirect()->route('orderLocals.makes.index')->with([
+        'message' => 'Đơn hàng sản xuất đã được khởi động, không thể xóa',
+        'type' => 'warning',
+      ]);
+    } else {
+      DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();
+      DB::table('OrderLocal')->where('Id_OrderLocal', $id)->delete();
+      return redirect()->route('orderLocals.makes.index')->with([
+        'message' => 'Xóa đơn hàng sản xuất thành công',
+        'type' => 'success',
+      ]);
+    }
   }
-  // ! OrderLocal Packs
   public function indexPacks()
   {
     return view('orderLocals.packs.index', [
@@ -392,8 +406,8 @@ class OrderLocalController extends Controller
         <td class="text-center">
             <input type="checkbox" class="form-check-input checkbox-add">
         </td>
-        <td class="Id_ContentPack">' . $item->Id_ContentPack . '</td>
-        <td>' . $item->Id_Order . '</td>
+        <td class="text-center Id_ContentPack">' . $item->Id_ContentPack . '</td>
+        <td class="text-center">' . $item->Id_Order . '</td>
         <td>' . $item->Name_Customer . '</td>
         <td class="text-center">' . $item->Count_Pack . '</td>
         <td class="text-center">' . $this->numberFormat($item->Price_Pack) . ' VNĐ' .
@@ -407,14 +421,24 @@ class OrderLocalController extends Controller
 
   public function deleteOrderLocal(string $Id_OrderLocal)
   {
-    DB::table('DispatcherOrder')->where('FK_Id_OrderLocal', $Id_OrderLocal)->delete();
-    // Xóa trong bảng DetailContentPackOrderLocal
-    DetailContentPackOrderLocal::where('FK_Id_OrderLocal', $Id_OrderLocal)->delete();
-
-    // Xóa trong bảng OrderLocal
-    OrderLocal::find($Id_OrderLocal)->delete();
-
-    return redirect()->route('orderLocals.packs.index')->with('type', 'success')->with('message', 'Xóa thành công');
+    $exists = DB::table('OrderLocal')
+      ->join('DispatcherOrder', 'OrderLocal.Id_OrderLocal', '=', 'DispatcherOrder.FK_Id_OrderLocal')
+      ->where('OrderLocal.Id_OrderLocal', '=', $Id_OrderLocal)
+      ->select('OrderLocal.Id_OrderLocal')
+      ->exists();
+    if ($exists) {
+      return redirect()->route('orderLocals.packs.index')->with([
+        'message' => 'Đơn hàng gói hàng đã được khởi động, không thể xóa',
+        'type' => 'warning',
+      ]);
+    } else {
+      DB::table('DetailContentPackOrderLocal')->where('FK_Id_OrderLocal', $Id_OrderLocal)->delete();
+      DB::table('OrderLocal')->where('Id_OrderLocal', $Id_OrderLocal)->delete();
+      return redirect()->route('orderLocals.packs.index')->with([
+        'message' => 'Xóa đơn hàng gói hàng thành công',
+        'type' => 'success',
+      ]);
+    }
   }
 
   public function storePacks(Request $request)
@@ -448,20 +472,28 @@ class OrderLocalController extends Controller
 
   public function showPacks(Request $request)
   {
-    $Id_OrderLocal = $request->id_OrderLocal;
-    $res = DB::table('ContentSimple')
-      ->select('Name_RawMaterial', 'Count_RawMaterial', 'Name_ContainerType', 'Count_Container', 'Price_Container', 'Unit')
-      ->join('RawMaterial', 'FK_Id_RawMaterial', '=', 'Id_RawMaterial')
-      ->join('ContainerType', 'FK_Id_ContainerType', '=', 'Id_ContainerType')
-      ->join('DetailContentSimpleOfPack', 'FK_Id_ContentSimple', '=', 'Id_ContentSimple')
-      ->join('ContentPack', 'FK_Id_ContentPack', '=', 'Id_ContentPack')
-      ->join('DetailContentPackOrderLocal', 'FK_Id_ContentPack', '=', 'Id_ContentPack')
-      ->where('DetailContentPackOrderLocal.FK_Id_OrderLocal', $Id_OrderLocal)
-      ->get();
+    if ($request->ajax()) {
+      $Id_OrderLocal = $request->input('id_OrderLocal');
+      $res = DB::table('ContentSimple')
+        ->select(
+          'RawMaterial.Name_RawMaterial',
+          'ContentSimple.Count_RawMaterial',
+          'ContainerType.Name_ContainerType',
+          'ContentSimple.Count_Container',
+          'ContentSimple.Price_Container',
+          'Unit'
+        )
+        ->join('RawMaterial', 'ContentSimple.FK_Id_RawMaterial', '=', 'RawMaterial.Id_RawMaterial')
+        ->join('ContainerType', 'ContentSimple.FK_Id_ContainerType', '=', 'ContainerType.Id_ContainerType')
+        ->join('DetailContentSimpleOfPack', 'ContentSimple.Id_ContentSimple', '=', 'DetailContentSimpleOfPack.FK_Id_ContentSimple')
+        ->join('ContentPack', 'DetailContentSimpleOfPack.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
+        ->join('DetailContentPackOrderLocal', 'ContentPack.Id_ContentPack', '=', 'DetailContentPackOrderLocal.FK_Id_ContentPack')
+        ->where('DetailContentPackOrderLocal.FK_Id_OrderLocal', '=', $Id_OrderLocal)
+        ->get();
 
-    $htmls = '';
-    foreach ($res as $contentSimple) {
-      $htmls .= '
+      $htmls = '';
+      foreach ($res as $contentSimple) {
+        $htmls .= '
                 <tr>
                     <td>
                         ' . $contentSimple->Name_RawMaterial . '
@@ -483,8 +515,9 @@ class OrderLocalController extends Controller
                     </td>
                 </tr>
             ';
+      }
+      return response()->json($htmls);
     }
-    return $htmls;
   }
 
   private function numberFormat($number, $decimals = 0, $decimalSeparator = ",", $thousandSeparator = ".")
@@ -563,29 +596,32 @@ class OrderLocalController extends Controller
                     </button>
                     <div class="modal fade" id="show-' . $orderLocal->Id_OrderLocal . '" tabindex="-1"
                         aria-labelledby="show-$' . $orderLocal->Id_OrderLocal . 'Label" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered ">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header p-2 bg-primary text-start" data-bs-theme="dark">
-                                <h5 class="modal-title w-100 " id="exampleModalLabel">
+                                <div class="modal-header" data-bs-theme="dark">
+                                <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">
                                     Thông tin chi tiết đơn hàng số ' . $orderLocal->Id_OrderLocal . '
-                                </h5>
+                                </h4>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <table class="table table-striped m-0">
-                                        <thead>
-                                        <tr>
-                                            <th class="text-center" scope="col">Nguyên liệu</th>
-                                            <th class="text-center" scope="col">Số lượng nguyên liệu</th>
-                                            <th class="text-center" scope="col">Đơn vị</th>
-                                            <th class="text-center" scope="col">Thùng chứa</th>
-                                            <th class="text-center" scope="col">Số lượng thùng chứa</th>
-                                            <th class="text-center" scope="col">Đơn giá</th>
-                                        </tr>
+                                    <table class="table">
+                                        <thead class="table-light">
+                                          <tr>
+                                              <th class="py-3" scope="col">Nguyên liệu</th>
+                                              <th class="py-3" scope="col">Số lượng nguyên liệu</th>
+                                              <th class="py-3" scope="col">Đơn vị</th>
+                                              <th class="py-3" scope="col">Thùng chứa</th>
+                                              <th class="py-3" scope="col">Số lượng thùng chứa</th>
+                                              <th class="py-3" scope="col">Đơn giá</th>
+                                          </tr>
                                         </thead>
-                                        <tbody class="table-simples" class="p-5" data-value="${Id_OrderLocal}">
+                                        <tbody class="table-simples" data-value="${Id_OrderLocal}">
                                         </tbody>
                                     </table>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
                                 </div>
                             </div>
                         </div>
@@ -636,6 +672,11 @@ class OrderLocalController extends Controller
   public function showEditPacks(string $Id_OrderLocal)
   {
     $orderLocal = OrderLocal::find($Id_OrderLocal);
+    $exists = DB::table('OrderLocal')
+      ->join('DispatcherOrder', 'OrderLocal.Id_OrderLocal', '=', 'DispatcherOrder.FK_Id_OrderLocal')
+      ->where('OrderLocal.Id_OrderLocal', '=', $Id_OrderLocal)
+      ->select('OrderLocal.Id_OrderLocal')
+      ->exists();
     $data = DB::table('ContentPack')
       ->select(
         'ContentPack.Id_ContentPack',
@@ -645,6 +686,10 @@ class OrderLocalController extends Controller
       ->join('DetailContentPackOrderLocal', 'Id_ContentPack', '=', 'FK_Id_ContentPack')
       ->where('FK_Id_OrderLocal', '=', $Id_OrderLocal)
       ->get();
+    if ($exists) {
+      $inProcess = 1;
+      return view('orderLocals.packs.edit', compact('orderLocal', 'data', 'inProcess'));
+    }
     return view('orderLocals.packs.edit', compact('orderLocal', 'data'));
   }
   public function destroyPack(Request $request)
@@ -657,14 +702,14 @@ class OrderLocalController extends Controller
       ]);
     }
   }
-  public function updatePacks(string $Id_OrderLocal, Request $request)
+  public function updatePacks(Request $request, string $Id_OrderLocal)
   {
     $orderLocal = OrderLocal::find($Id_OrderLocal);
-    $orderLocal->Date_Delivery = $request->input('Date_Delivery');
     $orderLocal->Count = $request->input('Count');
     $orderLocal->Date_Start = $request->input('Date_Start');
+    $orderLocal->Date_Delivery = $request->input('Date_Delivery');
     $orderLocal->save();
-    return redirect()->route('orderPacks.index')->with('type', 'success')->with('message', 'Sửa đơn thành công');
+    return redirect()->route('orderLocals.packs.index')->with('type', 'success')->with('message', 'Sửa đơn thành công');
   }
 
   // ! OrderLocal Expedition
@@ -762,7 +807,6 @@ class OrderLocalController extends Controller
       }
     }
   }
-
   public function showOrderExpeditionDetails(Request $request)
   {
     $id = $request->input('id');
@@ -787,8 +831,35 @@ class OrderLocalController extends Controller
   }
   public function editOrderExpedition(string $id)
   {
+    $exists = DB::table('OrderLocal')
+      ->join('DispatcherOrder', 'OrderLocal.Id_OrderLocal', '=', 'DispatcherOrder.FK_Id_OrderLocal')
+      ->where('OrderLocal.Id_OrderLocal', '=', $id)
+      ->select('OrderLocal.Id_OrderLocal')
+      ->exists();
     $orderLocal = DB::table('OrderLocal')->where('MakeOrPackOrExpedition', 2)->where('Id_OrderLocal', $id)->first();
-    return view('orderLocals.expeditions.edit', compact('orderLocal'));
+    $data = DB::table('ContentSimple')
+      ->select(
+        'Id_ContentSimple',
+        'FK_Id_RawMaterial',
+        'Name_RawMaterial',
+        'Count_RawMaterial',
+        'Unit',
+        'FK_Id_ContainerType',
+        'Name_ContainerType',
+        'Count_Container',
+        'Price_Container',
+        'FK_Id_RawMaterialType'
+      )
+      ->join('RawMaterial', 'Id_RawMaterial', '=', 'FK_Id_RawMaterial')
+      ->join('ContainerType', 'Id_ContainerType', '=', 'FK_Id_ContainerType')
+      ->join('DetailContentSimpleOrderLocal', 'ContentSimple.Id_ContentSimple', '=', 'DetailContentSimpleOrderLocal.FK_Id_ContentSimple')
+      ->where('FK_Id_OrderLocal', '=', $id)
+      ->get();
+    if ($exists) {
+      $inProcess = 1;
+      return view('orderLocals.expeditions.edit', compact('orderLocal', 'data', 'inProcess'));
+    }
+    return view('orderLocals.expeditions.edit', compact('orderLocal', 'data'));
   }
   public function showExpeditions(string $id)
   {
@@ -824,7 +895,7 @@ class OrderLocalController extends Controller
     $orderLocal->Date_Start = $request->input('Date_Start');
     $orderLocal->save();
     if ($request->input('Date_Delivery') < $request->input('Date_Start')) {
-      return redirect()->back()->with('type', 'danger')->with('message', 'Ngày bất đầu phải nhỏ hơn ngày giao hàng!');
+      return redirect()->back()->with('type', 'warning')->with('message', 'Ngày bất đầu phải nhỏ hơn ngày giao hàng!');
     }
     return redirect()->route('orderLocals.expeditions.index')->with('type', 'success')->with('message', 'Sửa đơn thành công');
   }
@@ -843,13 +914,28 @@ class OrderLocalController extends Controller
   }
   public function deleteOrderExpeditionByIndex(string $id)
   {
-    $exist = DB::table('DetailContentSimpleOrderLocal')->where('Fk_Id_OrderLocal', $id)->exists();
-    if ($exist) {
-      DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();
+    $exists = DB::table('OrderLocal')
+      ->join('DispatcherOrder', 'OrderLocal.Id_OrderLocal', '=', 'DispatcherOrder.FK_Id_OrderLocal')
+      ->where('OrderLocal.Id_OrderLocal', '=', $id)
+      ->select('OrderLocal.Id_OrderLocal')
+      ->exists();
+    if ($exists) {
+      return redirect()->route('orderLocals.makes.index')->with([
+        'message' => 'Đơn hàng giao hàng đã được khởi động, không thể xóa',
+        'type' => 'warning',
+      ]);
     } else {
-      DB::table('DetailContentPackOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();
+      $isSimple = DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_OrderLocal', $id)->exists();
+      if ($isSimple) {
+        DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();
+      } else {
+        DB::table('DetailContentPackOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();
+      }
+      DB::table('OrderLocal')->where('Id_OrderLocal', $id)->delete();
+      return redirect()->route('orderLocals.makes.index')->with([
+        'message' => 'Xóa đơn hàng giao hàng thành công',
+        'type' => 'success',
+      ]);
     }
-    DB::table('OrderLocal')->where('Id_OrderLocal', $id)->delete();
-    return redirect()->back();
   }
 }

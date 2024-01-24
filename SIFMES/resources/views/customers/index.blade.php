@@ -70,7 +70,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <form action="{{ route('customers.destroy', ['customer' => $data]) }}" method="POST">
+                        <form action="{{ route('customers.destroy', $each) }}" method="POST">
                           @csrf
                           @method('DELETE')
                           <button type="submit" class="btn btn-danger">Xóa</button>
@@ -90,7 +90,7 @@
         </div>
         @endif
       </div>
-      <div class="card-footer d-flex gap-2 align-items-end justify-content-end">
+      <div class="card-footer d-flex align-items-end justify-content-end">
         <a href="{{ route('index') }}" class="btn btn-light">Quay lại</a>
       </div>
     </div>
@@ -100,7 +100,7 @@
 <div class="toast-container rounded position-fixed bottom-0 end-0 p-3">
   <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-body bg-{{ session('type') }} d-flex align-items-center justify-content-between">
-      <div class=" d-flex justify-content-center align-items-center gap-2">
+      <div class="d-flex justify-content-center align-items-center gap-2">
         @if (session('type') == 'success')
         <i class="fas fa-check-circle text-light fs-5"></i>
         @elseif(session('type') == 'danger' || session('type') == 'warning')

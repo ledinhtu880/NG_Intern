@@ -35,6 +35,11 @@ Route::middleware('checklogin')->group(function () {
     Route::post('showMaterials', [RawMaterialController::class, 'showRawMaterialsByType'])->name('showMaterials');
     Route::post('showUnit', [RawMaterialController::class, 'showUnit'])->name('showUnit');
   });
+  Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
+    Route::post('showRoles', [UserController::class, 'showRoles'])->name('showRoles');
+    Route::post('destroyUsers', [UserController::class, 'destroyUsers'])->name('destroyUsers');
+    Route::post('searchUsers', [UserController::class, 'searchUsers'])->name('searchUsers');
+  });
   Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
     Route::post('store', [OrderController::class, 'storeOrder'])->name('store');
     Route::post('update', [OrderController::class, 'updateOrder'])->name('update');

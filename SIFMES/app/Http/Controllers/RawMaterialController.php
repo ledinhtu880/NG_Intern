@@ -89,7 +89,7 @@ class RawMaterialController extends Controller
         if ($exists) {
             return redirect()->route('rawMaterials.index')->with([
                 'message' => 'Không thể xóa nguyên liệu thô này do nó đã tồn tại trong thùng hàng.',
-                'type' => 'danger',
+                'type' => 'warning',
             ]);
         } else {
             RawMaterial::where('Id_RawMaterial', '=', $id)->delete();

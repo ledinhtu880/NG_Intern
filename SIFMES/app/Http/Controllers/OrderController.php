@@ -120,6 +120,16 @@ class OrderController extends Controller
       return response()->json($flag);
     }
   }
+  public function checkPackInProcess(Request $request)
+  {
+    if ($request->ajax()) {
+      $id = $request->input('Id_ContentPack');
+      $flag = DB::table('ContentPack')
+        ->join('ProcessContentPack', 'ContentPack.Id_ContentPack', '=', 'ProcessContentPack.FK_Id_ContentPack')
+        ->exists();
+      return response()->json($flag);
+    }
+  }
   public function showSimples(string $id)
   {
     $order = Order::where('Id_Order', $id)->first();
@@ -238,6 +248,7 @@ class OrderController extends Controller
         DB::table('RegisterContentSimpleAtWareHouse')->where('FK_Id_ContentSimple', $each)->delete();
       }
 
+      DB::table('RegisterContentSimpleAtWareHouse')->where('FK_Id_Order', $id)->delete();
       DB::table('ContentSimple')->where('FK_Id_Order', $id)->delete();
       DB::table('Order')->where('Id_Order', $id)->delete();
 
@@ -362,16 +373,25 @@ class OrderController extends Controller
   {
     $arrID = DB::table('ContentSimple')
       ->where('FK_Id_Order', $id)->pluck('Id_ContentSimple')
-      ->ToArray();
+      ->toArray();
+
     foreach ($arrID as $each) {
-      DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_ContentSimple', $each)->delete();
-      DB::table('DetailStateCellOfSimpleWareHouse')->where('FK_Id_ContentSimple', $each)->delete();
-      DB::table('DetailContentSimpleOfPack')->where('FK_Id_ContentSimple', $each)->delete();
+      $exists = DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_ContentSimple', $each)->exists();
+      if ($exists) {
+        return redirect()->route('orders.simples.index')->with([
+          'message' => 'Không thể xóa do đơn hàng đã được khởi động.',
+          'type' => 'warning',
+        ]);
+      }
     }
+
     DB::table('ContentSimple')->where('FK_Id_Order', $id)->delete();
+    DB::table('RegisterContentSimpleAtWareHouse')->where('FK_Id_Order', $id)->delete();
+    DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_Order', $id)->delete();
     DB::table('Order')->where('Id_Order', $id)->delete();
+
     return redirect()->route('orders.simples.index')->with([
-      'message' => 'Xóa đơn hàng thành công',
+      'message' => 'Xóa đơn hàng thành công.',
       'type' => 'success',
     ]);
   }
@@ -580,16 +600,6 @@ class OrderController extends Controller
     if (isset($_GET['id'])) {
       $id = $_GET['id'];
 
-      $simplesToDelete = DB::table('ContentSimple')
-        ->leftJoin('Order', 'Order.Id_Order', '=', 'ContentSimple.FK_Id_Order')
-        ->leftJoin('DetailContentSimpleOfPack', 'Id_ContentSimple', '=', 'FK_Id_ContentSimple')
-        ->whereNull('DetailContentSimpleOfPack.FK_Id_ContentSimple')
-        ->where('Order.SimpleOrPack', '1')
-        ->pluck('ContentSimple.Id_ContentSimple');
-
-      // Xóa các Order không có ContentPack hoặc ContentSimple
-      DB::table('ContentSimple')->whereIn('Id_ContentSimple', $simplesToDelete)->delete();
-
       $information = DB::table('Order')
         ->select('FK_Id_Customer', 'Date_Order', 'Date_Delivery', 'Date_Reception', 'Note')
         ->where('Id_Order', $id)
@@ -640,6 +650,7 @@ class OrderController extends Controller
         DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_ContentPack', $each)->delete();
       }
 
+      DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_Order', $id)->delete();
       DB::table('ContentPack')->where('FK_Id_Order', $id)->delete();
       DB::table('ContentSimple')->where('FK_Id_Order', $id)->delete();
 
@@ -905,6 +916,13 @@ class OrderController extends Controller
     // Xóa dữ liệu ở bảng DetailContentSimpleOfPack trước
     $contentSimple = DB::table('ContentSimple')->where('FK_Id_Order', $Id_Order)->get();
     foreach ($contentSimple as $each) {
+      $exists = DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_ContentSimple', $each->Id_ContentSimple)->exists();
+      if ($exists) {
+        return redirect()->route('orders.simples.index')->with([
+          'message' => 'Không thể xóa do đơn hàng đã được khởi động.',
+          'type' => 'warning',
+        ]);
+      }
       DB::table('DetailContentSimpleOfPack')->where('FK_Id_ContentSimple', $each->Id_ContentSimple)->delete();
     }
 

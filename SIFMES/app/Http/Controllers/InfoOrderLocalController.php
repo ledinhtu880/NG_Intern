@@ -218,9 +218,9 @@ class InfoOrderLocalController extends Controller
 
         $result = DB::table('ProcessContentSimple')
             ->select('FK_Id_Station', 'Date_Fin', DB::raw("CONCAT(
-                    FLOOR(DATEDIFF(second, Date_Fin, Date_Start) / 3600), N' giờ, ',
-                    FLOOR((DATEDIFF(second, Date_Fin, Date_Start) % 3600) / 60), N' phút, ',
-                    (DATEDIFF(second, Date_Fin, Date_Start) % 60), N' giây') as elapsedTime"))
+                    FLOOR(DATEDIFF(second, Date_Start, Date_Fin) / 3600), N' giờ, ',
+                    FLOOR((DATEDIFF(second, Date_Start, Date_Fin) % 3600) / 60), N' phút, ',
+                    (DATEDIFF(second, Date_Start, Date_Fin) % 60), N' giây') as elapsedTime"))
             ->where('FK_Id_ContentSimple', '=', $id)
             ->orderBy('FK_Id_Station')
             ->get();
@@ -258,12 +258,11 @@ class InfoOrderLocalController extends Controller
             $simple->progress = (int) $percent;
             $totalTime = DB::table('ProcessContentSimple')
                 ->select(DB::raw("CONCAT(
-          FLOOR(SUM(DATEDIFF(second, Date_Fin, Date_Start)) / 3600), N' giờ, ',
-          FLOOR((SUM(DATEDIFF(second, Date_Fin, Date_Start)) % 3600) / 60), N' phút, ',
-          (SUM(DATEDIFF(second, Date_Fin, Date_Start)) % 60), N' giây'
-      ) as elapsedTime"))
+                                FLOOR(SUM(DATEDIFF(second, Date_Start, Date_Fin)) / 3600), N' giờ, ',
+                                FLOOR((SUM(DATEDIFF(second, Date_Start, Date_Fin)) % 3600) / 60), N' phút, ',
+                                (SUM(DATEDIFF(second, Date_Start, Date_Fin)) % 60), N' giây') as elapsedTime"))
                 ->where('FK_Id_ContentSimple', $id)
-                ->havingRaw('SUM(DATEDIFF(second, Date_Fin, Date_Start)) IS NOT NULL')
+                ->havingRaw('SUM(DATEDIFF(second, Date_Start, Date_Fin)) IS NOT NULL')
                 ->first();
             $simple->elapsedTime = $totalTime->elapsedTime;
         }

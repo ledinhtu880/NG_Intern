@@ -50,7 +50,7 @@
         <table class="table mt-4">
           <thead class="table-light" id="table-heading">
             <tr>
-              <th scope="col" class="py-3">Chọn</th>
+              <th scope="col" class="py-3 text-center">Chọn</th>
               <th scope="col" class="py-3">Khách hàng</th>
               <th scope="col" class="py-3">Nguyên liệu</th>
               <th scope="col" class="py-3 text-center">Số lượng nguyên liệu</th>
@@ -95,7 +95,7 @@
               <th scope="col" class="py-3 text-center">Số lượng</th>
               <th scope="col" class="py-3">Kiểu hàng</th>
               <th scope="col" class="py-3 text-center">Ngày giao hàng</th>
-              <th scope="col" class="py-3">Mô tả</th>
+              <th scope="col" class="py-3 text-center">Mô tả</th>
             </tr>
           </thead class="table-light">
           <tbody id="table-result">

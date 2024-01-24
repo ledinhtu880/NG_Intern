@@ -136,6 +136,23 @@
   $(document).ready(function () {
     const toastLiveExample = $("#liveToast");
     const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
+
+    function showToast(message, bgColorClass, iconClass) {
+      $(".toast-body").addClass(bgColorClass);
+      $("#icon").addClass(iconClass);
+      $("#toast-msg").html(message);
+      toastBootstrap.show();
+
+      setTimeout(() => {
+        toastBootstrap.hide();
+        setTimeout(() => {
+          $(".toast-body").removeClass(bgColorClass);
+          $("#icon").removeClass(iconClass);
+          $("#toast-msg").html();
+        }, 1000);
+      }, 5000);
+    }
+
     let token = $('meta[name="csrf-token"]').attr("content");
 
     $('.btnDeleteSimple').click(function () {
@@ -164,10 +181,7 @@
             });
           }
           else {
-            $(".toast-body").addClass("bg-warning");
-            $("#icon").addClass("fa-xmark-circle");
-            $("#toast-msg").html("Thùng hàng đang trong quá trình sản xuất, không thể xóa!");
-            toastBootstrap.show();
+            showToast("Thùng hàng đang trong quá trình sản xuất, không thể xóa!", "bg-warning", "fa-xmark-circle");
           }
         },
         error: function (xhr) {

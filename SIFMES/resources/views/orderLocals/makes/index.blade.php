@@ -40,7 +40,7 @@
             <tr>
               <td class="text-center">{{ $each->Id_OrderLocal }}</td>
               <td>{{ $each->type }}</td>
-              <td>{{ $each->Count }} thùng</td>
+              <td>{{ $each->Count }} {{ $each->SimpleOrPack == 0 ? 'thùng' : 'gói'}}</td>
               <td>
                 <span class="badge text-bg-primary fw-normal fs-6">{{ $each->status }}</span>
               </td>
@@ -88,7 +88,7 @@
       @if ($data->lastPage() > 1)
       <div class="card-footer">
         <div class="paginate">
-          {{ $data->links('pagination::bootstrap-5')}}
+          {{ $data->links('pagination::bootstrap-4')}}
         </div>
       </div>
       @endif

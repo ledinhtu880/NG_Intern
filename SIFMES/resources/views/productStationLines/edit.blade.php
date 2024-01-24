@@ -143,12 +143,34 @@
               </div>
             </div>
           </div>
-
-          <div class="d-flex justify-content-end my-4 gap-3">
-            <a href="{{ route('productStationLines.index') }}" class="btn btn-light">Quay lại</a>
-            <button type="button" class="btn btn-primary" id="btn_edit">Lưu</button>
-          </div>
         </form>
+      </div>
+      <div class="card-footer">
+        <div class="d-flex justify-content-end gap-3">
+          <a href="{{ route('productStationLines.index') }}" class="btn btn-light">Quay lại</a>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#deleteOrder-{{ $productStationLine->Id_ProdStationLine }}">
+            Cập nhật
+          </button>
+          <div class="modal fade" id="deleteOrder-{{ $productStationLine->Id_ProdStationLine }}" tabindex="-1"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Bạn có chắc chắn muốn cập nhật dây chuyền này?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                  <button type="submit" class="btn btn-primary" id="btn_edit">Xác nhận</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -159,7 +181,6 @@
 <script type="text/javascript">
   var isFirstLoad = true;
   $(document).ready(function () {
-
 
     if (isFirstLoad) {
       $("#FK_Id_OrderType").change();
@@ -231,7 +252,6 @@
           stationLine.push($("#Station_End").val());
         }
 
-
         $.ajax({
           method: "POST",
           data: {
@@ -250,8 +270,6 @@
               $("#err_nameProdStationLine").show();
               $("#err_nameProdStationLine").text(data.message);
               $("#Name_ProdStationLine").addClass("is-invalid");
-            } else {
-              console.log('hih');
             }
           }
         });

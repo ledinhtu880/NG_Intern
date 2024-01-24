@@ -154,12 +154,12 @@
                   </td>
                   <td>
                     <input class="form-control" type="number" name="Price_Container" id="Price_Container"
-                      value="{{ number_format($each->Price_Container, 0, '', '')}}" min="0">
+                      value="{{ $each->Price_Container }}" min="0" step="0.01">
                   </td>
-                  <td data-id="total">
+                  <td class="text-truncate" data-id="total">
                     {{ number_format($each->Price_Container * $each->Count_Container, 0, ',', '.'). ' VNĐ' }}
                   </td>
-                  <td data-id="Status" data-value="{{ $each->Status == 'Sản xuất mới' ? 0 : 1 }}">
+                  <td class="text-truncate" data-id="Status" data-value="{{ $each->Status == 'Sản xuất mới' ? 0 : 1 }}">
                     {{ $each->Status}}
                   </td>
                   <td class="text-center">
@@ -176,7 +176,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
                           <div class="modal-body">
-                            Bạn có chắc chắn về việc sản phẩm này
+                            Bạn có chắc chắn muốn xóa thùng hàng này
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
@@ -220,6 +220,17 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+<div class="toast-container rounded position-fixed bottom-0 end-0 p-3">
+  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-body d-flex align-items-center justify-content-between">
+      <div class="d-flex justify-content-center align-items-center gap-2">
+        <i id="icon" class="fas text-light fs-5"></i>
+        <h6 id="toast-msg" class="h6 text-white m-0"></h6>
+      </div>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
   </div>
 </div>

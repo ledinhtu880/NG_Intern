@@ -17,7 +17,7 @@
 </div>
 <div class="row g-0 p-3">
   <div class="col-md-12">
-    <div class="card border-0 shadow-sm mb-3">
+    <div class="card border-0 shadow-sm">
       <div class="card-header border-0 bg-white">
         <h5 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
       </div>
@@ -88,12 +88,12 @@
             <tr>
               <th scope="col" class="py-3 text-center">#</th>
               <th scope="col" class="py-3">Nguyên liệu</th>
-              <th scope="col" class="py-3">Số lượng nguyên liệu</th>
+              <th scope="col" class="py-3 text-center">Số lượng nguyên liệu</th>
               <th scope="col" class="py-3">Đơn vị</th>
               <th scope="col" class="py-3">Thùng chứa</th>
-              <th scope="col" class="py-3">Số lượng thùng chứa</th>
-              <th scope="col" class="py-3">Đơn giá thùng chứa</th>
-              <th scope="col" class="py-3">Trạng thái</th>
+              <th scope="col" class="py-3 text-center">Số lượng thùng chứa</th>
+              <th scope="col" class="py-3 text-center">Đơn giá thùng chứa</th>
+              <th scope="col" class="py-3 text-center">Trạng thái</th>
               <th scope="col" class="py-3 text-center">Thành tiền</th>
             </tr>
           </thead>
@@ -102,11 +102,11 @@
             <tr>
               <th scope="row" class="text-center text-body-secondary">{{ $each->Id_ContentSimple}}</th>
               <td>{{ $each->Name_RawMaterial}}</td>
-              <td>{{ $each->Count_RawMaterial}}</td>
+              <td class="text-center">{{ $each->Count_RawMaterial}}</td>
               <td>{{ $each->Unit}}</td>
               <td>{{ $each->Name_ContainerType}}</td>
-              <td>{{ $each->Count_Container}}</td>
-              <td>
+              <td class="text-center">{{ $each->Count_Container}}</td>
+              <td class="text-center">
                 {{ number_format($each->Price_Container, 0, ',', '.'). ' VNĐ' }} </td>
               <td>
                 <span class="badge text-bg-primary fw-normal fs-6">{{ $each->Status }}</span>

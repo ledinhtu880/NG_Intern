@@ -74,14 +74,15 @@
             @endforeach
           </tbody>
         </table>
-      </div>
-      @if ($data->lastPage() > 1)
-      <div class="card-footer">
-        <div class="paginate">
+        @if ($data->lastPage() > 1)
+        <div class="d-flex align-items-end justify-content-end">
           {{ $data->links('pagination::bootstrap-4') }}
         </div>
+        @endif
       </div>
-      @endif
+      <div class="card-footer d-flex align-items-end justify-content-end">
+        <a href="{{ route('index') }}" class="btn btn-light">Quay lại</a>
+      </div>
     </div>
   </div>
 </div>

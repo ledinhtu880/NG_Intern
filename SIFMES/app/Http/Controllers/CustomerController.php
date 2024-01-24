@@ -7,6 +7,7 @@ use App\Http\Requests\Customer\CustomerUpdateRequest;
 use App\Models\Customer;
 use App\Models\CustomerType;
 use App\Models\ModeTransport;
+use App\Models\Order;
 use Illuminate\Support\Facades\Session;
 
 class CustomerController extends Controller
@@ -78,10 +79,19 @@ class CustomerController extends Controller
   }
   public function destroy(Customer $customer)
   {
-    $customer->delete();
-    return redirect()->route('customers.index')->with([
-      'message' => 'Xóa người dùng thành công',
-      'type' => 'success',
-    ]);
+    $exists = Order::where('FK_Id_Customer', $customer->Id_Customer)->exists();
+    if ($exists) {
+      return redirect()->route('customers.index')->with([
+        'message' => 'Không thể xóa khách hàng này.',
+        'type' => 'warning',
+      ]);
+    } else {
+      Customer::destroy($customer->Id_Customer);;
+
+      return redirect()->route('customers.index')->with([
+        'message' => 'Xóa khách hàng thành công',
+        'type' => 'success',
+      ]);
+    }
   }
 }

@@ -19,7 +19,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm">
       <div class="card-body">
-        <form method="POST" action="{{ route('customers.store') }}">
+        <form id="formInformation" method="POST" action="{{ route('customers.store') }}">
           @csrf
           <div class="d-flex gap-2">
             <div class="form-group" style="flex: 1;">
@@ -131,13 +131,25 @@
               @endif
             </div>
           </div>
-          <div class="d-flex justify-content-end gap-3">
-            <a href="{{ route('customers.index') }}" class="btn btn-warning">Quay lại</a>
-            <button type="submit" class="btn btn-primary">Tạo</button>
-          </div>
         </form>
+      </div>
+      <div class="card-footer">
+        <div class="d-flex justify-content-end gap-3">
+          <a href="{{ route('customers.index') }}" class="btn btn-light">Quay lại</a>
+          <button type="submit" class="btn btn-primary" id="saveBtn">Tạo</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 @endsection
+
+@push('javascript')
+<script>
+  $(document).ready(function () {
+    $("#saveBtn").on('click', function () {
+      $("#formInformation").submit();
+    })
+  })
+</script>
+@endpush

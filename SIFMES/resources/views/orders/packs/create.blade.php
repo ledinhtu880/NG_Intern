@@ -121,11 +121,11 @@
         <table class="table mt-4">
           <thead class="table-light">
             <tr>
-              <th class="text-center" scope="col">Mã gói hàng</th>
-              <th class="text-center" scope="col">Số lượng</th>
-              <th class="text-center" scope="col">Đơn giá</th>
-              <th class="text-center" scope="col">Trạng thái</th>
-              <th></th>
+              <th scope="col" class="py-3 text-center">#</th>
+              <th scope="col" class="py-3 text-center">Số lượng</th>
+              <th scope="col" class="py-3 text-center">Đơn giá</th>
+              <th scope="col" class="py-3 text-center">Trạng thái</th>
+              <th scope="col" class="py-3 text-center">Hoạt động</th>
             </tr>
           </thead>
           <tbody id="table-data">
@@ -171,9 +171,9 @@
       </div>
       <div class="card-footer">
         <div class="d-flex align-items-center justify-content-end gap-3">
-          <button class="btn btn-lg btn-light px-3 fs-6" id="backBtn">Quay
+          <button class="btn btn-light" id="backBtn">Quay
             lại</button>
-          <a href="{{ route('orders.packs.index') }}" class="btn btn-lg btn-primary px-3 fs-6">Lưu</a>
+          <a href="{{ route('orders.packs.index') }}" class="btn btn-primary">Lưu</a>
         </div>
       </div>
     </div>
@@ -201,6 +201,22 @@
     const toastLiveExample = $("#liveToast");
     const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
 
+    function showToast(message, bgColorClass, iconClass) {
+      $(".toast-body").addClass(bgColorClass);
+      $("#icon").addClass(iconClass);
+      $("#toast-msg").html(message);
+      toastBootstrap.show();
+
+      setTimeout(() => {
+        toastBootstrap.hide();
+        setTimeout(() => {
+          $(".toast-body").removeClass(bgColorClass);
+          $("#icon").removeClass(iconClass);
+          $("#toast-msg").html();
+        }, 1000);
+      }, 5000);
+    }
+
     $(document).on("click", ".btnDelete", function () {
       let id = $(this).data("id");
       let modalElement = $("#deleteID-" + id);
@@ -220,11 +236,11 @@
 
           // Đóng modal
           modalElement.modal("hide");
-          $(".toast-body").addClass("bg-success");
-          $("#icon").addClass("fa-check-circle");
-          $("#toast-msg").html("Xóa gói hàng thành công");
-          toastBootstrap.show();
-          console.log(response);
+          showToast(
+            "Xóa gói hàng thành công",
+            "bg-success",
+            "fa-check-circle"
+          );
         },
         error: function (xhr) {
           // Xử lý lỗi khi gửi yêu cầu Ajax

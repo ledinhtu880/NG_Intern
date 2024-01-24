@@ -44,11 +44,11 @@
             <h6 class="card-text text-secondary fw-normal">{{ $productStationLine->orderType->Name_OrderType }}</h6>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="d-flex justify-content-end align-items-center gap-2">
-              <a href="{{ route('customers.index') }}" class="btn btn-light">Quay lại</a>
-            </div>
+      </div>
+      <div class="card-footer">
+        <div class="col-md-12">
+          <div class="d-flex justify-content-end align-items-center gap-2">
+            <a href="{{ route('productStationLines.index') }}" class="btn btn-light">Quay lại</a>
           </div>
         </div>
       </div>

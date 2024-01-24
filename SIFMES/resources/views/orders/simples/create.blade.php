@@ -276,7 +276,27 @@
 <script src="{{ asset('js/eventHandler.js') }}"></script>
 <script>
   $(document).ready(function () {
+    const toastLiveExample = $('#liveToast');
+    const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
+
+    let count = $("input[name='count']").val();
     let token = $('meta[name="csrf-token"]').attr("content");
+
+    function showToast(message, bgColorClass, iconClass) {
+      $(".toast-body").addClass(bgColorClass);
+      $("#icon").addClass(iconClass);
+      $("#toast-msg").html(message);
+      toastBootstrap.show();
+
+      setTimeout(() => {
+        toastBootstrap.hide();
+        setTimeout(() => {
+          $(".toast-body").removeClass(bgColorClass);
+          $("#icon").removeClass(iconClass);
+          $("#toast-msg").html();
+        }, 1000);
+      }, 5000);
+    }
 
     $(document).on("click", ".btnDelete", function () {
       let id = $(this).data("id");
@@ -297,10 +317,11 @@
         },
         success: function (data) {
           modalElement.on("hidden.bs.modal", function () {
-            $(".toast-body").addClass("bg-success");
-            $("#icon").addClass("fa-check-circle");
-            $("#toast-msg").html("Xóa thùng hàng thành công");
-            toastBootstrap.show();
+            showToast(
+              "Xóa thùng hàng thành công",
+              "bg-success",
+              "fa-check-circle"
+            );
             rowElement.remove();
           });
 
@@ -330,30 +351,36 @@
         });
       }
       else {
-        $(".toast-body").addClass("bg-warning");
-        $("#icon").addClass("fa-xmark-circle");
-        $("#toast-msg").html("Bạn chưa thêm thùng hàng nào");
-        toastBootstrap.show();
+        showToast(
+          "Bạn chưa thêm thùng hàng nào",
+          "bg-warning",
+          "fa-xmark-circle"
+        );
       }
     })
 
     $("#backBtn").on('click', function () {
-      $.ajax({
-        url: "/orders/simples/destroySimplesWhenBack",
-        method: "POST",
-        dataType: "json",
-        data: {
-          _token: token,
-        },
-        success: function (response) {
-          window.location.href = "{{ route('orders.simples.index') }}"
-        },
-        error: function (xhr) {
-          // Xử lý lỗi khi gửi yêu cầu Ajax
-          console.log(xhr.responseText);
-          alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
-        },
-      });
+      if (count > 0) {
+        $.ajax({
+          url: "/orders/simples/destroySimplesWhenBack",
+          method: "POST",
+          dataType: "json",
+          data: {
+            _token: token,
+          },
+          success: function (response) {
+            window.location.href = "{{ route('orders.simples.index') }}"
+          },
+          error: function (xhr) {
+            // Xử lý lỗi khi gửi yêu cầu Ajax
+            console.log(xhr.responseText);
+            alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+          },
+        });
+      }
+      else {
+        window.location.href = "{{ route('orders.simples.index') }}"
+      }
     })
   })
 

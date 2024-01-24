@@ -15,19 +15,19 @@
                 <div class="card-body p-4">
                     <div class="text-center">
                         <h4 class="text-dark-emphasis text-center pb-0 fs-5 fw-bold">Đăng nhập</h4>
-                        <p class="text-muted mb-4">Nhập địa chỉ email và mật khẩu của bạn</p>
+                        <p class="text-muted mb-4">Nhập tên đăng nhập và mật khẩu của bạn</p>
                     </div>
                     <form action="{{ route('checkLogin') }}" method="post">
                         @csrf
                         <div class="mb-3">
                             <label class="form-label fw-medium text-secondary" for="floatingInput">Tên đăng nhập</label>
                             <input name="username" type="username" class="form-control" id="floatingInput"
-                                placeholder="Enter your username">
+                                placeholder="Vui lòng nhập tên đăng nhập">
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-medium text-secondary" for="floatingPassword">Password</label>
                             <input name="password" type="password" class="form-control" id="floatingPassword"
-                                placeholder="Enter your password">
+                                placeholder="Vui lòng nhập mật khẩu">
                         </div>
                         <div class="mt-4 text-center">
                             <button type="submit" class="btn btn-primary rounded-1">Đăng nhập</button>

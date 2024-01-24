@@ -3,6 +3,22 @@ $(document).ready(function () {
     const toastLiveExample = $("#liveToast");
     const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
 
+    function showToast(message, bgColorClass, iconClass) {
+        $(".toast-body").addClass(bgColorClass);
+        $("#icon").addClass(iconClass);
+        $("#toast-msg").html(message);
+        toastBootstrap.show();
+
+        setTimeout(() => {
+            toastBootstrap.hide();
+            setTimeout(() => {
+                $(".toast-body").removeClass(bgColorClass);
+                $("#icon").removeClass(iconClass);
+                $("#toast-msg").html();
+            }, 1000);
+        }, 5000);
+    }
+
     let slBox_CustomerType = $("#FK_Id_CustomerType");
 
     slBox_CustomerType.on("change", function () {
@@ -44,10 +60,11 @@ $(document).ready(function () {
             }
         }
         if (Id_ContentPacks.length == 0) {
-            $(".toast-body").addClass("bg-danger");
-            $("#icon").addClass("fa-xmark-circle");
-            $("#toast-msg").html("Vui lòng chọn ít nhất 1 gói");
-            toastBootstrap.show();
+            showToast(
+                "Vui lòng chọn ít nhất 1 gói",
+                "bg-warning",
+                "fa-xmark-circle"
+            );
             return;
         }
         $.ajax({
@@ -60,11 +77,7 @@ $(document).ready(function () {
             },
             success: function (response) {
                 // $("#table-result").append(response);
-                console.log(response);
-                $(".toast-body").addClass("bg-success");
-                $("#icon").addClass("fa-check-circle");
-                $("#toast-msg").html("Thêm thành công");
-                toastBootstrap.show();
+                showToast("Thêm thành công", "bg-success", "fa-check-circle");
                 slBox_CustomerType.change();
             },
             error: function (xhr) {
@@ -85,10 +98,11 @@ $(document).ready(function () {
             Id_OrderLocals[i] = Id_OrderLocals[i].replace(/\s/g, "");
         }
         if (Id_OrderLocals.length == 0) {
-            $(".toast-body").addClass("bg-danger");
-            $("#icon").addClass("fa-xmark-circle");
-            $("#toast-msg").html("Vui lòng chọn ít nhất 1 đơn đóng gói");
-            toastBootstrap.show();
+            showToast(
+                "Vui lòng chọn ít nhất 1 đơn đóng gói",
+                "bg-warning",
+                "fa-xmark-circle"
+            );
             return;
         }
         $.ajax({
@@ -100,10 +114,11 @@ $(document).ready(function () {
             },
             success: function (response) {
                 $("#table-result").html(response);
-                $(".toast-body").addClass("bg-success");
-                $("#icon").addClass("fa-check-circle");
-                $("#toast-msg").html("Xóa thành công");
-                toastBootstrap.show();
+                showToast(
+                    "Vui lòng chọn ít nhất 1 đơn đóng gói",
+                    "bg-warning",
+                    "fa-xmark-circle"
+                );
                 slBox_CustomerType.change();
             },
         });
@@ -120,7 +135,7 @@ $(document).on("click", ".btnShow", function () {
             id_OrderLocal: id_OrderLocal,
         },
         success: function (response) {
-            // console.log(response);
+            console.log(response);
             $(".table-simples").html(response);
         },
     });

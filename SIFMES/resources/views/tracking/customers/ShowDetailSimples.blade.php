@@ -34,50 +34,50 @@
       <div class="card-body">
         <div class="row">
           <div class="col-md-4 mb-3">
-            <h6 class="card-subtitle">
+            <h6 class="card-subtitle" style="font-weight: 600;">
               Mã đơn hàng
             </h6>
-            <p class="card-text">
+            <p class="card-text text-secondary fw-normal">
               {{ $order->Id_Order }}
             </p>
           </div>
           <div class="col-md-4 mb-3">
-            <h6 class="card-subtitle">
+            <h6 class="card-subtitle" style="font-weight: 600;">
               Tên khách hàng
             </h6>
-            <p class="card-text">
+            <p class="card-text text-secondary fw-normal">
               {{ $order->customer->Name_Customer }}
             </p>
           </div>
           <div class="col-md-4 mb-3">
-            <h6 class="card-subtitle">
+            <h6 class="card-subtitle" style="font-weight: 600;">
               Ngày đặt hàng
             </h6>
-            <p class="card-text">
+            <p class="card-text text-secondary fw-normal">
               {{ $order->order_date }}
             </p>
           </div>
           <div class="col-md-4 mb-3">
-            <h6 class="card-subtitle">
+            <h6 class="card-subtitle" style="font-weight: 600;">
               Ngày giao hàng
             </h6>
-            <p class="card-text">
+            <p class="card-text text-secondary fw-normal">
               {{ $order->delivery_date }}
             </p>
           </div>
           <div class="col-md-4 mb-3">
-            <h6 class="card-subtitle">
+            <h6 class="card-subtitle" style="font-weight: 600;">
               Ngày nhận hàng
             </h6>
-            <p class="card-text">
+            <p class="card-text text-secondary fw-normal">
               {{ $order->reception_date }}
             </p>
           </div>
           <div class="col-md-4">
-            <h6 class="card-subtitle">
+            <h6 class="card-subtitle" style="font-weight: 600;">
               Ghi chú
             </h6>
-            <p class="card-text">
+            <p class="card-text text-secondary fw-normal">
               {{ $order->Note }}
             </p>
           </div>
@@ -97,12 +97,12 @@
         <table class="table">
           <thead class="table-light">
             <tr>
-              <th class="py-3 text-center align-middle" scope="col">Mã thùng hàng</th>
-              <th class="py-3 text-center align-middle" scope="col">Nguyên liệu</th>
-              <th class="py-3 text-center align-middle" scope="col">Đơn vị</th>
-              <th class="py-3 text-center align-middle" scope="col">Thùng chứa</th>
-              <th class="py-3 text-center align-middle" scope="col">Thành tiền</th>
-              <th class="py-3 text-center align-middle" scope="col">Trạng thái dây chuyền</th>
+              <th scope="col" class="py-3 text-center align-middle">#</th>
+              <th scope="col" class="py-3">Nguyên liệu</th>
+              <th scope="col" class="py-3">Đơn vị</th>
+              <th scope="col" class="py-3">Thùng chứa</th>
+              <th scope="col" class="py-3 text-center align-middle">Thành tiền</th>
+              <th scope="col" class="py-3 text-center align-middle">Trạng thái dây chuyền</th>
             </tr>
           </thead>
           <tbody id="table-data">
@@ -112,9 +112,9 @@
             @foreach ($data as $each)
             <tr>
               <td class="text-center align-middle">{{ $each->Id_ContentSimple }}</td>
-              <td class="text-center align-middle">{{ $each->material->Name_RawMaterial }}</td>
-              <td class="text-center align-middle">{{ $each->material->Unit }}</td>
-              <td class="text-center align-middle">{{ $each->type->Name_ContainerType }}</td>
+              <td>{{ $each->material->Name_RawMaterial }}</td>
+              <td>{{ $each->material->Unit }}</td>
+              <td>{{ $each->type->Name_ContainerType }}</td=>
               <td class="text-center align-middle">
                 {{ number_format($each->Price_Container * $each->Count_Container, 0, ',', '.') . ' VNĐ' }}
               </td>
@@ -143,7 +143,7 @@
         </table>
       </div>
       <div class="card-footer d-flex align-items-center justify-content-end mt-3">
-        <a href="{{ route('tracking.customers.index') }}" class="btn btn-primary px-4">
+        <a href="{{ route('tracking.customers.index') }}" class="btn btn-primary">
           Quay lại
         </a>
       </div>

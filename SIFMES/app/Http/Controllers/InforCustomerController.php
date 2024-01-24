@@ -17,14 +17,11 @@ use Exception;
 
 class InforCustomerController extends Controller
 {
-
-    //
     public function index()
     {
         $customers = Customer::all();
         return view('tracking.customers.InforCustomerController', compact('customers'));
     }
-    // Hiển thị trang index khi thay đổi khách hàng
     public function getInforCustomer(Request $request)
     {
         $Id_Customer = $request->Id_Customer;
@@ -34,8 +31,8 @@ class InforCustomerController extends Controller
         $orders = Order::where('FK_Id_Customer', $Id_Customer)->get();
         $percents = [];
         foreach ($orders as $order) {
-            $order->Date_Delivery = date('h:m:s d-m-Y', strtotime($order->Date_Delivery));
-            $order->Date_Order = date('h:m:s d-m-Y', strtotime($order->Date_Order));
+            $order->Date_Delivery = date('d-m-Y h:m:s', strtotime($order->Date_Delivery));
+            $order->Date_Order = date('d-m-Y h:m:s', strtotime($order->Date_Order));
             if ($order->SimpleOrPack == 0) {
                 // Tính trạng thái sản phẩm đối với thùng hàng
                 $contentSimple = ContentSimple::where('FK_Id_Order', $order->Id_Order)->get();
@@ -66,8 +63,6 @@ class InforCustomerController extends Controller
         ];
         return response()->json($infor);
     }
-
-    // Tính phần trăm hoàn thành của thùng hàng, lấy ra trạm đầu và trạm cuối cùng của 1 thùng
     private function getStationPercentByContentSimple($contentSimples)
     {
         $stations = [];
@@ -111,7 +106,6 @@ class InforCustomerController extends Controller
                 }
             }
 
-            // Tính phần trăm hoàn thành
             foreach ($station_currents as &$station_current) {
                 $count = 0;
                 foreach ($stations as $station) {
@@ -134,7 +128,6 @@ class InforCustomerController extends Controller
             ];
         }
     }
-    // Hiển thị chi tiết thùng hàng
     public function detailSimples(Request $request)
     {
         $Id_Order = $request->Id_Order;
@@ -152,7 +145,6 @@ class InforCustomerController extends Controller
             ]
         );
     }
-
     private function percentSimpleOrPack($ContentSimples)
     {
         $station = $this->getStationPercentByContentSimple($ContentSimples);
@@ -169,8 +161,6 @@ class InforCustomerController extends Controller
         }
         return $percent;
     }
-
-    // Hiển thị chi tiết gói hàng
     public function detailPacks(Request $request)
     {
         $Id_Order = $request->Id_Order;
@@ -235,7 +225,6 @@ class InforCustomerController extends Controller
                 </tr>
             ';
         }
-
         return $htmls;
     }
 }

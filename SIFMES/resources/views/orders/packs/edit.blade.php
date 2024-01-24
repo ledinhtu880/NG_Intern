@@ -166,7 +166,28 @@
       <div class="card-footer">
         <div class="d-flex align-items-center justify-content-end gap-3">
           <a href="{{ route('orders.packs.index') }}" class="btn btn-light">Quay lại</a>
-          <button class="btn btn-primary" id="saveBtn">Lưu</button>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#deleteOrder-{{ $order->Id_Order }}">
+            Lưu
+          </button>
+          <div class="modal fade" id="deleteOrder-{{ $order->Id_Order }}" tabindex="-1"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Bạn có chắc chắn muốn cập nhật đơn gói hàng này?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                  <button type="submit" class="btn btn-primary" id="saveBtn">Xác nhận</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -193,6 +214,22 @@
     const toastLiveExample = $("#liveToast");
     const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
 
+    function showToast(message, bgColorClass, iconClass) {
+      $(".toast-body").addClass(bgColorClass);
+      $("#icon").addClass(iconClass);
+      $("#toast-msg").html(message);
+      toastBootstrap.show();
+
+      setTimeout(() => {
+        toastBootstrap.hide();
+        setTimeout(() => {
+          $(".toast-body").removeClass(bgColorClass);
+          $("#icon").removeClass(iconClass);
+          $("#toast-msg").html();
+        }, 1000);
+      }, 5000);
+    }
+
     $(".deletePack").on('click', function () {
       let Id_ContentPack = $(this).data('id');
       let modalElement = $("#deleteID-" + Id_ContentPack); // Lấy modal tương ứng với hàng
@@ -208,10 +245,11 @@
         },
         success: function (response) {
           modalElement.on("hidden.bs.modal", function () {
-            $(".toast-body").addClass("bg-success");
-            $("#icon").addClass("fa-check-circle");
-            $("#toast-msg").html("Xóa gói hàng thành công");
-            toastBootstrap.show();
+            showToast(
+              "Xóa gói hàng thành công",
+              "bg-success",
+              "fa-check-circle"
+            );
             rowElement.remove();
           });
 
@@ -242,15 +280,20 @@
         return $(this).val();
       }).get();
 
+      let isNegative = false;
       countPacks.forEach(function (count) {
         if (count <= 0) {
-          $(".toast-body").addClass("bg-danger");
-          $("#icon").addClass("fa-exclamation-circle");
-          $("#toast-msg").html("Số lượng gói hàng phải lớn hơn 0");
-          toastBootstrap.show();
-          return false;
+          isNegative = true;
+          return isNegative;
         }
       });
+      if (isNegative) {
+        showToast(
+          "Số lượng gói hàng phải lớn hơn 0",
+          "bg-warning",
+          "fa-xmark-circle"
+        );
+      }
       else {
         let order = {
           Id_Order: $("input[name='Id_Order']").val(),

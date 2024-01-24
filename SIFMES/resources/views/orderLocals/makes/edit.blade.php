@@ -23,8 +23,11 @@
         <h5 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
       </div>
       <div class="card-body">
-        @if(session('type'))
-        <input type="hidden" name="checkFlash" value="1">
+        @if(isset($inProcess))
+        <div class="alert alert-danger" role="alert">
+          <i class="fas fa-exclamation-circle me-2"></i>
+          <span>Đơn hàng này đang trong quá trình sản xuất, không thể chỉnh sửa</span>
+        </div>
         @endif
         <form action="{{ route('orderLocals.makes.update', $orderLocal) }}" method="POST" id="formInformation">
           @csrf
@@ -37,7 +40,7 @@
                   Số lượng
                 </label>
                 <input type="number" name="Count" id="Count" class="form-control" min="0"
-                  value="{{ $orderLocal->Count }}">
+                  value="{{ $orderLocal->Count }}" {{ isset($inProcess) ? 'disabled' : '' }}>
               </div>
             </div>
             <div class="col-md-3 mb-3">
@@ -61,7 +64,8 @@
                   Ngày giao hàng
                 </label>
                 <input type="date" class="form-control" id="Date_Delivery" name="Date_Delivery"
-                  value="{{ \Carbon\Carbon::parse($orderLocal->Date_Delivery)->format('Y-m-d') }}">
+                  value="{{ \Carbon\Carbon::parse($orderLocal->Date_Delivery)->format('Y-m-d') }}" {{ isset($inProcess)
+                  ? 'disabled' : '' }}>
               </div>
             </div>
             <div class="col-md-3 mb-3">
@@ -70,7 +74,8 @@
                   Ngày bắt đầu
                 </label>
                 <input type="date" class="form-control" id="Date_Start" name="Date_Start"
-                  value="{{ \Carbon\Carbon::parse($orderLocal->Date_Start)->format('Y-m-d') }}">
+                  value="{{ \Carbon\Carbon::parse($orderLocal->Date_Start)->format('Y-m-d') }}" {{ isset($inProcess)
+                  ? 'disabled' : '' }}>
               </div>
             </div>
           </div>
@@ -97,7 +102,7 @@
               <th scope="col" class="py-3 text-center">Số lượng thùng chứa</th>
               <th scope="col" class="py-3 text-center">Đơn giá thùng chứa</th>
               <th scope="col" class="py-3 text-center">Thành tiền</th>
-              <th scope="col" class="py-3 text-center"></th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="table-data">
@@ -106,8 +111,8 @@
               <th scope="row" class="text-center text-body-secondary">{{ $each->Id_ContentSimple}}</th>
               <td>{{ $each->Name_RawMaterial}}</td>
               <td class="text-center">{{ $each->Count_RawMaterial}}</td>
-              <td class="text-center">{{ $each->Unit}}</td>
-              <td class="text-center">{{ $each->Name_ContainerType}}</td>
+              <td>{{ $each->Unit}}</td>
+              <td>{{ $each->Name_ContainerType}}</td=>
               <td class="text-center">{{ $each->Count_Container}}</td>
               <td class="text-center">
                 {{ number_format($each->Price_Container, 0, '', '')}}
@@ -115,12 +120,13 @@
               <td class="text-center">
                 {{ number_format($each->Price_Container * $each->Count_Container, 0, ',', '.'). ' VNĐ' }}
               </td>
+              @if(!isset($inProcess))
               <td class="text-center">
                 <button type="button" class="btn btn-sm text-secondary" data-bs-toggle="modal"
-                  data-bs-target="#deleteID-{{$each->Id_ContentSimple}}">
+                  data-bs-target="#deleteID-{{ $each->Id_ContentSimple }}">
                   <i class="fa-solid fa-trash"></i>
                 </button>
-                <div class="modal fade" id="deleteID-{{$each->Id_ContentSimple}}" tabindex="-1"
+                <div class="modal fade" id="deleteID-{{ $each->Id_ContentSimple }}" tabindex="-1"
                   aria-labelledby="exampleModalLabel" aria-hidden="true">
                   <div class="modal-dialog">
                     <div class="modal-content">
@@ -134,23 +140,47 @@
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                         <button type="button" class="btn btn-danger btnDelete"
-                          data-id="{{$each->Id_ContentSimple}}">Xóa</button>
+                          data-id="{{ $each->Id_ContentSimple }}">Xóa</button>
                       </div>
                     </div>
                   </div>
                 </div>
               </td>
+              @endif
             </tr>
             @endforeach
           </tbody>
         </table>
       </div>
       <div class="card-footer d-flex align-items-center justify-content-between gap-2">
-        <a href="{{  route('orderLocals.makes.addSimple', $orderLocal) }}" class="btn btn-primary">
-          <span>Thêm đơn thùng hàng</span> </a>
+        <a href="{{ route('orderLocals.makes.addSimple', $orderLocal) }}"
+          class="btn btn-primary{{ isset($inProcess) ? ' btn-disabled' : '' }}">
+          <span>Thêm đơn thùng hàng</span>
+        </a>
         <div class="d-flex gap-2">
           <a href="{{ route('orderLocals.makes.index') }}" class="btn btn-light">Quay lại</a>
-          <button type="submit" class="btn btn-primary" id="updateBtn">Lưu</button>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#deleteOrder-{{ $orderLocal->Id_OrderLocal }}">
+            Lưu
+          </button>
+          <div class="modal fade" id="deleteOrder-{{ $orderLocal->Id_OrderLocal }}" tabindex="-1"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Bạn có chắc chắn muốn cập nhật đơn sản xuất này?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                  <button type="submit" class="btn btn-primary" id="updateBtn">Xác nhận</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

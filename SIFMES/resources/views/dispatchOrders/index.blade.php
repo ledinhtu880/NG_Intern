@@ -96,7 +96,7 @@
                     Bạn chắc chắn muốn khởi động quá trình xử lí đơn hàng này?
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
                     <button type="button" class="btn btn-primary btn-primary" data-bs-dismiss="modal" id="xacnhan">Xác
                       nhận</button>
                   </div>
@@ -162,7 +162,7 @@
         }
         </td>
         <td>
-          <a class="btn btn-sm textsecondary details" target="_blank" href="${route}">
+          <a class="btn btn-sm text-secondary details" target="_blank" href="${route}">
             <i class="fa-solid fa-eye"></i>
           </a>
         </td>
@@ -195,6 +195,7 @@
     $('#daychuyen').change();
 
     $('#raw_type').change(function () {
+      id = [];
       let id_type = $(this).val();
       $.ajax({
         url: '/dispatchs/getOrderlocalsByRawType',
@@ -285,16 +286,31 @@
       } else {
         $('.modal').attr('id', 'abc');
       }
-      console.log(id);
-      console.log(id.length);
     })
+
+    function showToast(message, bgColorClass, iconClass) {
+      $(".toast-body").addClass(bgColorClass);
+      $("#icon").addClass(iconClass);
+      $("#toast-msg").html(message);
+      toastBootstrap.show();
+
+      setTimeout(() => {
+        toastBootstrap.hide();
+        setTimeout(() => {
+          $(".toast-body").removeClass(bgColorClass);
+          $("#icon").removeClass(iconClass);
+          $("#toast-msg").html();
+        }, 1000);
+      }, 5000);
+    }
 
     $('#khoidong').on('click', function () {
       if (id.length < 1) {
-        $(".toast-body").addClass("bg-warning");
-        $("#icon").addClass("fa-xmark-circle");
-        $("#toast-msg").html("Bạn chưa chọn hoá đơn nào!");
-        toastBootstrap.show();
+        showToast(
+          "Bạn chưa chọn hoá đơn nào!",
+          "bg-warning",
+          "fa-xmark-circle"
+        );
       } else if (id.length >= 1) {
         $('#xacnhan').on('click', function () {
           var daychuyen = $('#daychuyen option:selected').val();
@@ -309,9 +325,11 @@
               $stationProd: daychuyen,
             },
             success: function (response) {
-              $(".toast-body").addClass("bg-success");
-              $("#icon").addClass("fa-check-circle");
-              $("#toast-msg").html("Khởi động đơn hàng thành công!");
+              showToast(
+                "Khởi động đơn hàng thành công!",
+                "bg-success",
+                "fa-check-circle"
+              );
               toastBootstrap.show();
               setTimeout(() => {
                 window.location.reload();

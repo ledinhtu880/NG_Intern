@@ -126,6 +126,23 @@
   $(document).ready(function () {
     const toastLiveExample = $("#liveToast");
     const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
+
+    function showToast(message, bgColorClass, iconClass) {
+      $(".toast-body").addClass(bgColorClass);
+      $("#icon").addClass(iconClass);
+      $("#toast-msg").html(message);
+      toastBootstrap.show();
+
+      setTimeout(() => {
+        toastBootstrap.hide();
+        setTimeout(() => {
+          $(".toast-body").removeClass(bgColorClass);
+          $("#icon").removeClass(iconClass);
+          $("#toast-msg").html();
+        }, 1000);
+      }, 5000);
+    }
+
     let token = $('meta[name="csrf-token"]').attr("content");
     var data = [];
 
@@ -429,23 +446,26 @@
             preview();
             $('#saveBtn').removeClass('d-none');
           } else {
-            $(".toast-body").addClass("bg-danger");
-            $("#icon").addClass("fa-xmark-circle");
-            $("#toast-msg").html("Số hàng và cột phải lớn hơn 0!");
-            toastBootstrap.show();
+            showToast(
+              "Số hàng và cột phải lớn hơn 0!",
+              "bg-warning",
+              "fa-xmark-circle"
+            );
           }
         } else {
-          $(".toast-body").addClass("bg-danger");
-          $("#icon").addClass("fa-xmark-circle");
-          $("#toast-msg").html("Vui lòng nhập lại!");
-          toastBootstrap.show();
+          showToast(
+            "Vui lòng nhập lại!",
+            "bg-warning",
+            "fa-xmark-circle"
+          );
         }
 
       } else {
-        $(".toast-body").addClass("bg-warning");
-        $("#icon").addClass("fa-xmark-circle");
-        $("#toast-msg").html("Vui lòng điền đầy đủ số hàng và số cột!");
-        toastBootstrap.show();
+        showToast(
+          "Vui lòng điền đầy đủ số hàng và số cột",
+          "bg-warning",
+          "fa-xmark-circle"
+        );
       }
     });
     $(document).on("click", ".btnShowSimple", function () {
@@ -549,25 +569,30 @@
         },
         success: function (response) {
           if (response.flag) {
-            $(".toast-body").addClass("bg-success");
-            $("#icon").addClass("fa-check-circle");
-            $("#toast-msg").html('Khởi tạo kho thành công');
-            toastBootstrap.show();
+            showToast(
+              "Khởi tạo kho thành công",
+              "bg-success",
+              "fa-check-circle"
+            );
             $('#rowNumber').val("");
             $('#colNumber').val("");
             $('.table').empty();
           } else {
-            $(".toast-body").addClass("bg-warning");
-            $("#icon").addClass("fa-xmark-circle");
-            $("#toast-msg").html('Khởi tạo kho thất bại, kho đã tồn tại!');
+            showToast(
+              "Khởi tạo kho thất bại, kho đã tồn tại!",
+              "bg-warning",
+              "fa-xmark-circle"
+            );
             toastBootstrap.show();
             $('.table').empty();
           }
           showDetails();
         },
-        error: function (error) {
-          console.log(error.responseJSON.message);
-        }
+        error: function (xhr) {
+          // Xử lý lỗi khi gửi yêu cầu Ajax
+          console.log(xhr.responseText);
+          alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+        },
       });
     })
   });

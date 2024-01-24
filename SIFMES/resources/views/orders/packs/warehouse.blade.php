@@ -48,7 +48,7 @@
       <div class="card-footer">
         <div class="d-flex align-items-center justify-content-end">
           <a class="btn btn-light" href="/orders/packs/create?id={{ $_GET['id'] }}">Quay lại</a>
-          <button type="submit" class="btn btn-lg btn-primary px-4" id="saveBtn">Lưu</button>
+          <button type="submit" class="btn btn-primary" id="saveBtn">Lưu</button>
         </div>
       </div>
     </div>
@@ -135,11 +135,11 @@
                       <i class="fa-solid fa-eye"></i>
                   </button> </p>`));
               let modals = `
-              <div class="modal fade" id="show-${details[i - 1].FK_Id_ContentPack}" tabindex="-1"
+              <div class="modal fade bg-transparent" id="show-${details[i - 1].FK_Id_ContentPack}" tabindex="-1"
                     aria-labelledby="#show-${details[i - 1].FK_Id_ContentPack}Label" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-dialog modal-xl">
                   <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-title w-100">
                       <h5 class="modal-title fw-bold text-secondary" id="show-${details[i - 1].FK_Id_ContentPack}Label">
                       Thông tin chi tiết gói hàng số ${details[i - 1].FK_Id_ContentPack}
                       </h5>

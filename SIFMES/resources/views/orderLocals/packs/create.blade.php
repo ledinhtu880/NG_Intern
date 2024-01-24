@@ -38,9 +38,9 @@
         <table class="table mt-4">
           <thead class="table-light" id="table-heading">
             <tr>
-              <th scope="col" class="py-3 text-centerd">Chọn</th>
-              <th scope="col" class="py-3">Mã gói hàng</th>
-              <th scope="col" class="py-3">Mã đơn hàng</th>
+              <th scope="col" class="py-3 text-center">Chọn</th>
+              <th scope="col" class="py-3 text-center">Mã gói hàng</th>
+              <th scope="col" class="py-3 text-center">Mã đơn hàng</th>
               <th scope="col" class="py-3">Khách hàng</th>
               <th scope="col" class="py-3 text-center">Số lượng gói hàng</th>
               <th scope="col" class="py-3 text-center">Giá gói hàng</th>

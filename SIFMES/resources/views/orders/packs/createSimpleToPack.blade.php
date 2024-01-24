@@ -119,9 +119,9 @@
       </div>
       <div class="card-footer">
         <div class="d-flex align-items-center justify-content-end gap-3">
-          <a href="/orders/packs/create?id={{ $_GET['id'] }}" class="btn btn-lg btn-light px-3 fs-6">Quay
+          <a href="/orders/packs/create?id={{ $_GET['id'] }}" class="btn btn-light">Quay
             lại</a>
-          <button type="submit" class="btn btn-lg btn-primary px-3 fs-6" id="saveBtn">Lưu gói hàng</button>
+          <button type="submit" class="btn btn-primary" id="saveBtn">Lưu gói hàng</button>
         </div>
       </div>
     </div>
@@ -148,6 +148,23 @@
   $(document).ready(function () {
     const toastLiveExample = $("#liveToast");
     const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
+
+    function showToast(message, bgColorClass, iconClass) {
+      $(".toast-body").addClass(bgColorClass);
+      $("#icon").addClass(iconClass);
+      $("#toast-msg").html(message);
+      toastBootstrap.show();
+
+      setTimeout(() => {
+        toastBootstrap.hide();
+        setTimeout(() => {
+          $(".toast-body").removeClass(bgColorClass);
+          $("#icon").removeClass(iconClass);
+          $("#toast-msg").html();
+        }, 1000);
+      }, 5000);
+    }
+
     let token = $('meta[name="csrf-token"]').attr("content");
     $("#formProduct").on("submit", function (event) {
       let urlParams = new URLSearchParams(window.location.search);
@@ -230,10 +247,11 @@
             existingRow.find('[data-id="Price_Container"]').text(response.existsData.formattedPrice);
           }
 
-          $("#icon").addClass("fa-check-circle");
-          $(".toast-body").addClass("bg-success");
-          $("#toast-msg").html("Thêm thùng hàng thành công");
-          toastBootstrap.show();
+          showToast(
+            "Thêm thùng hàng thành công",
+            "bg-success",
+            "fa-check-circle"
+          );
         },
       });
     });
@@ -253,10 +271,11 @@
         },
         success: function (data) {
           modalElement.on("hidden.bs.modal", function () {
-            $(".toast-body").addClass("bg-success");
-            $("#icon").addClass("fa-check-circle");
-            $("#toast-msg").html("Xóa thùng hàng thành công");
-            toastBootstrap.show();
+            showToast(
+              "Xóa thùng hàng thành công",
+              "bg-success",
+              "fa-check-circle"
+            );
             rowElement.remove();
           });
 
@@ -331,10 +350,11 @@
                   "/orders/packs/create?id=" + response.id;
               },
               error: function (xhr) {
-                $(".toast-body").addClass("bg-danger");
-                $("#icon").addClass("fa-xmark-circle");
-                $("#toast-msg").html("Vui lòng thêm ít nhất 1 thùng hàng");
-                toastBootstrap.show();
+                showToast(
+                  "Vui lòng thêm ít nhất 1 thùng hàng",
+                  "bg-danger",
+                  "fa-xmark-circle"
+                );
                 rowElement.remove();
 
                 // Đóng modal
@@ -352,10 +372,7 @@
 
       }
       else {
-        $(".toast-body").addClass("bg-warning");
-        $("#icon").addClass("fa-xmark-circle");
-        $("#toast-msg").html("Bạn chưa thêm thùng hàng nào");
-        toastBootstrap.show();
+        showToast("Bạn chưa thêm thùng hàng nào", "bg-warning", "fa-xmark-circle");
       }
     });
   })

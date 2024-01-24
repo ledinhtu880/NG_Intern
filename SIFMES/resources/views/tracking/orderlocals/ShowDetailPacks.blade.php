@@ -12,117 +12,115 @@
 </style>
 @endpush
 @section('content')
-<div class="container">
-  <div class="row pb-5">
-    <div class="col-md-12 d-flex justify-content-center">
-      <div class="w-100">
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb breadcrumb-color px-2 py-3 rounded">
-            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
-            <li class="breadcrumb-item active">
-              <a class="text-decoration-none" href="{{ route('tracking.orderlocals.index') }}">Theo dõi đơn hàng nội
-                bộ</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">Xem chi tiết đơn gói hàng</li>
-          </ol>
-        </nav>
-        <div class="card">
-          <div class="card-header p-0 overflow-hidden">
-            <h4 class="card-title m-0 bg-primary p-3">Thông tin gói hàng</h4>
-          </div>
-          <div class="card-body">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th class="text-center" scope="col">Mã gói hàng</th>
-                  <th class="text-center" scope="col">Số lượng</th>
-                  <th class="text-center" scope="col">Đơn giá</th>
-                  <th class="text-center" scope="col">Trạng thái dây chuyền</th>
-                  <th class="text-center" scope="col">Hoạt động</th>
-                </tr>
-              </thead>
-              <tbody class="table-group-divider ">
-                @php
-                $count = 0;
-                @endphp
-                @foreach ($contentPacks as $contentPack)
-                <tr>
-                  <th class="text-center ">{{ $contentPack->Id_ContentPack }}</th>
-                  <td class="text-center ">{{ $contentPack->Count_Pack }}</td>
-                  <td class="text-center ">
-                    {{ number_format($contentPack->Price_Pack, 0, ',', '.') . ' VNĐ' }}
-                  </td>
-                  <td class="text-center">
-                    <div class="d-flex justify-content-center">
-                      <div class="progress w-50 position-relative" role="progressbar"
-                        aria-valuenow="{{ $percents[$count] * 100 }}" aria-valuemin="0" aria-valuemax="100"
-                        style="height: 20px">
-                        <div class="progress-bar bg-primary" style="width: {{ $percents[$count] * 100 }}%">
-                        </div>
-                        <span class="progress-text fw-bold fs-6
-                            @if ($percents[$count] * 100 >= 50) text-white @else text-primary @endif
-                            ">
-                          {{ $percents[$count] * 100 }}%
-                        </span>
-                      </div>
+<div class="row g-0 p-3">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4 class="h4 m-0 fw-bold text-body-secondary">Theo dõi đơn hàng nội bộ</h4>
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+      </li>
+      <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('tracking.orderlocals.index') }}">Theo
+          dõi đơn hàng nội bộ</a>
+      </li>
+      <li class="breadcrumb-item active fw-medium" aria-current="page">Thông tin gói hàng</li>
+    </ol>
+  </div>
+</div>
+<div class="row g-0 p-3">
+  <div class="col-md-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header border-0 bg-white">
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin gói hàng</h4>
+      </div>
+      <div class="card-body">
+        <table class="table">
+          <thead class="table-light">
+            <tr>
+              <th scope="col" class="py-3 text-center">#</th>
+              <th scope="col" class="py-3 text-center">Số lượng</th>
+              <th scope="col" class="py-3 text-center">Đơn giá</th>
+              <th scope="col" class="py-3 text-center">Trạng thái dây chuyền</th>
+              <th scope="col" class="py-3 text-center"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @php
+            $count = 0;
+            @endphp
+            @foreach ($contentPacks as $contentPack)
+            <tr>
+              <th class="text-center">{{ $contentPack->Id_ContentPack }}</th>
+              <td class="text-center">{{ $contentPack->Count_Pack }}</td>
+              <td class="text-center">
+                {{ number_format($contentPack->Price_Pack, 0, ',', '.') . ' VNĐ' }}
+              </td>
+              <td class="text-center">
+                <div class="d-flex justify-content-center">
+                  <div class="progress w-50 position-relative" role="progressbar"
+                    aria-valuenow="{{ $percents[$count] * 100 }}" aria-valuemin="0" aria-valuemax="100"
+                    style="height: 20px">
+                    <div class="progress-bar bg-primary" style="width: {{ $percents[$count] * 100 }}%">
                     </div>
-                  </td>
-                  <td class="text-center ">
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-sm btn-outline-light text-primary border-secondary btn-detail"
-                      data-bs-toggle="modal" data-id="{{ $contentPack->Id_ContentPack }}"
-                      data-bs-target="#i{{ $contentPack->Id_ContentPack }}">
-                      <i class="fa-solid fa-eye"></i>
-                    </button>
+                    <span class="progress-text fw-bold fs-6
+                        @if ($percents[$count] * 100 >= 50) text-white @else text-primary @endif
+                        ">
+                      {{ $percents[$count] * 100 }}%
+                    </span>
+                  </div>
+                </div>
+              </td>
+              <td class="text-center">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-sm text-secondary btn-detail" data-bs-toggle="modal"
+                  data-id="{{ $contentPack->Id_ContentPack }}" data-bs-target="#i{{ $contentPack->Id_ContentPack }}">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
 
-                    <!-- Modal -->
-                    <div class="modal fade" id="i{{ $contentPack->Id_ContentPack }}" data-bs-backdrop="static"
-                      data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                      <div class="modal-dialog modal-xl modal-dialog-centered ">
-                        <div class="modal-content">
-                          <div class="modal-header p-2 bg-primary text-start" data-bs-theme="dark">
-                            <h5 class="modal-title w-100 " id="istaticBackdropLabel">
-                              Chi tiết gói hàng
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                          </div>
-                          <div class="modal-body">
-                            <table class='table table-bordered '>
-                              <thead>
-                                <tr>
-                                  <th scope="col" class="align-middle text-center">Mã thùng hàng</th>
-                                  <th scope="col" class="align-middle text-center">Nguyên liệu</th>
-                                  <th class="text-center align-middle" scope="col">Đơn vị</th>
-                                  <th class="text-center align-middle" scope="col">Thùng chứa</th>
-                                  <th class="text-center align-middle" scope="col">Thành tiền</th>
-                                  <th class="text-center align-middle" scope="col">Trạng thái dây chuyền</th>
-                                </tr>
-                              </thead>
-                              <tbody class="body-table">
-                              </tbody>
-                            </table>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-warning " data-bs-dismiss="modal">Close</button>
-                          </div>
-                        </div>
+                <!-- Modal -->
+                <div class="modal fade" id="i{{ $contentPack->Id_ContentPack }}" data-bs-backdrop="static"
+                  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-xl modal-dialog-centered ">
+                    <div class="modal-content">
+                      <div class="modal-header p-2 bg-primary text-start" data-bs-theme="dark">
+                        <h5 class="modal-title w-100 " id="istaticBackdropLabel">
+                          Chi tiết gói hàng
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <table class='table table-bordered '>
+                          <thead>
+                            <tr>
+                              <th scope="col" class="text-center align-middle">Mã thùng hàng</th>
+                              <th scope="col" class="text-center align-middle">Nguyên liệu</th>
+                              <th scope="col" class="text-center align-middle">Đơn vị</th>
+                              <th scope="col" class="text-center align-middle">Thùng chứa</th>
+                              <th scope="col" class="text-center align-middle">Thành tiền</th>
+                              <th scope="col" class="text-center align-middle">Trạng thái dây chuyền</th>
+                            </tr>
+                          </thead>
+                          <tbody class="body-table">
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Quay lạ</button>
                       </div>
                     </div>
-                  </td>
-                </tr>
-                @php
-                $count++;
-                @endphp
-                @endforeach
-              </tbody>
-            </table>
-          </div>
-          <div class="card-footer d-flex align-items-center justify-content-end mt-3">
-            <a href="{{ route('tracking.orderlocals.index') }}" class="btn btn-lg btn-primary px-4">
-              Quay lại
-            </a>
-          </div>
-        </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            @php
+            $count++;
+            @endphp
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+      <div class="card-footer d-flex align-items-center justify-content-end">
+        <a href="{{ route('tracking.orderlocals.index') }}" class="btn btn-light">
+          Quay lại
+        </a>
       </div>
     </div>
   </div>

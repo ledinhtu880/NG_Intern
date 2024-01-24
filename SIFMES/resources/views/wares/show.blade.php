@@ -524,12 +524,90 @@
                       <td class="text-center" data-id="SoLuong" data-value="${data.SoLuong}">${data.SoLuong}</td>
                       <td class="text-center">${numberFormat(data.Price_Pack)} VNĐ</td>
                       <td class="text-center">
-                        <button class="btn btn-sm btnDetail border-secondary" data-bs-target="#showDetails-${data.Id_ContentPack}" 
+                        <button class="btn btn-sm text-secondary btnDetail" data-bs-target="#showDetails-${data.Id_ContentPack}" 
                         data-id="${data.Id_ContentPack}" data-bs-toggle="modal">
                           <i class="fa-solid fa-eye"></i>
                         </button>
                       </td>
                     </tr>`;
+          table.html(htmls);
+
+          let modal = ` 
+              <div class="modal fade bg-transparent" id="showDetails-${data.Id_ContentPack}" tabindex="-1"
+                    aria-labelledby="#show-${data.Id_ContentPack}Label" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title fw-bold text-secondary" id="show-${data.Id_ContentPack}Label">
+                      Thông tin các thùng hàng của gói hàng số ${data.Id_ContentPack}
+                      </h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="wrapper w-100 overflow-x-auto">
+                        <div class="table-responsive">
+                          <table class="table">
+                            <thead class="table-light">
+                              <tr>
+                                <th class="py-3" scope="col">Tên nguyên liệu</th>
+                                <th class="py-3" scope="col">Số lượng nguyên liệu</th>
+                                <th class="py-3" scope="col">Đơn vị</th>
+                                <th class="py-3" scope="col">Thùng chứa</th>
+                                <th class="py-3" scope="col">Số lượng thùng chứa</th>
+                                <th class="py-3" scope="col">Đơn giá</th>
+                              </tr>
+                            </thead>
+                            <tbody id="table-packs-${data.Id_ContentPack}" class="p-5">
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer" style="height: 100px">
+                      <div class="d-flex align-items-center justify-content-end w-100">
+                        <button type="button" class="btn btn-light" data-bs-toggle="modal"
+                      data-bs-target="#show-${data.Id_ContentPack}">
+                        Quay lại
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>`
+          let cell = $("#pack-" + data.Id_ContentPack);
+          cell.parent().append(modal);
+        },
+        error: function (xhr) {
+          // Xử lý lỗi khi gửi yêu cầu Ajax
+          console.log(xhr.responseText);
+          alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+        },
+      });
+    });
+    $(document).on("click", ".btnDetail", function () {
+      let id = $(this).data("id");
+      let table = $(`#table-packs-${id}`)
+      $.ajax({
+        url: "{{ route('wares.showSimpleInPack') }}",
+        type: 'POST',
+        data: {
+          id: id,
+          _token: token,
+        },
+        success: function (response) {
+          htmls = "";
+          $.each(response.data, function (key, value) {
+            htmls += `<tr>
+                        <td class="text-center">${value.Name_RawMaterial}</td>
+                        <td class="text-center">${value.Count_RawMaterial}</td>
+                        <td class="text-center">${value.Unit}</td>
+                        <td class="text-center">${value.Name_ContainerType}</td>
+                        <td class="text-center">${value.Count_Container}</td>
+                        <td class="text-center">${numberFormat(
+              value.Price_Container
+            )} VNĐ </td>
+                        </tr>`;
+          });
           table.html(htmls);
         },
         error: function (xhr) {

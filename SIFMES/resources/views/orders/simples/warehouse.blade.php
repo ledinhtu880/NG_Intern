@@ -80,11 +80,16 @@
       $(".toast-body").addClass(bgColorClass);
       $("#icon").addClass(iconClass);
       $("#toast-msg").html(message);
-      setTimeout(() => {
-        $(".toast-body").removeClass(bgColorClass);
-        $("#icon").removeClass(iconClass);
-      }, 5000);
       toastBootstrap.show();
+
+      setTimeout(() => {
+        toastBootstrap.hide();
+        setTimeout(() => {
+          $(".toast-body").removeClass(bgColorClass);
+          $("#icon").removeClass(iconClass);
+          $("#toast-msg").html();
+        }, 1000);
+      }, 5000);
     }
     $.ajax({
       url: "{{ route('wares.showDetails') }}",
@@ -257,7 +262,13 @@
             let soLuongTon = modalElement.find("td[data-id='SoLuong']").data("value");
             if (soLuongLay === "") {
               showToast("Chưa nhập số lượng cần lấy", "bg-warning", "fa-xmark-circle");
-            } else {
+            } else if (soLuongLay <= 0) {
+              showToast("Số lượng lấy phải lớn hơn 0", "bg-warning", "fa-xmark-circle");
+            }
+            else if (soLuongTon === 0) {
+              showToast("Kho đã hết thùng hàng", "bg-danger", "fa-xmark-circle");
+            }
+            else {
               let simple = $("tbody").find("#simple-" + id);
               let cell = simple.closest("td");
               cell.attr('data-value', soLuongLay);
@@ -271,7 +282,7 @@
               }
             }
           } else {
-            showToast("Lấy thùng hàng thất bại", "bg-danger", "fa-xmark-circle");
+            showToast("Không được lấy thùng hàng từ đơn nội bộ", "bg-danger", "fa-xmark-circle");
             modalElement.modal("hide");
           }
         },

@@ -2,6 +2,23 @@ $(document).ready(function () {
     let token = $('meta[name="csrf-token"]').attr("content");
     const toastLiveExample = $("#liveToast");
     const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
+
+    function showToast(message, bgColorClass, iconClass) {
+        $(".toast-body").addClass(bgColorClass);
+        $("#icon").addClass(iconClass);
+        $("#toast-msg").html(message);
+        toastBootstrap.show();
+
+        setTimeout(() => {
+            toastBootstrap.hide();
+            setTimeout(() => {
+                $(".toast-body").removeClass(bgColorClass);
+                $("#icon").removeClass(iconClass);
+                $("#toast-msg").html();
+            }, 1000);
+        }, 5000);
+    }
+
     let selectElement = $("#FK_Id_CustomerType");
     let firstOptionValue = $(selectElement).val();
     selectElement.on("change", function () {
@@ -26,7 +43,7 @@ $(document).ready(function () {
                 let secondUrl = "/orderLocals/makes/showOrder";
                 $.each(response.data, function (key, value) {
                     dataHtmls += `<tr>
-                        <td class="d-flex justify-content-center" data-id="Id_ContentSimple"
+                        <td class="text-center align-middle" data-id="Id_ContentSimple"
                             data-value="${value.Id_ContentSimple}">
                             <input type="checkbox" class="checkbox form-check-input" name="firstFormCheck"
                             id="firstFormCheck-${value.Id_ContentSimple}">
@@ -57,7 +74,7 @@ $(document).ready(function () {
                         }">
                         ${value.Count_Container}
                         </td>
-                        <td data-id="Price_Container" data-value="${
+                        <td class="text-center" data-id="Price_Container" data-value="${
                             value.Price_Container
                         }">
                             ${numberFormat(value.Price_Container)} VNĐ
@@ -107,7 +124,7 @@ $(document).ready(function () {
                                 <td class="text-center">
                                     ${formatDate(value.Date_Delivery)}
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <button type="button" class="btnShow btn btn-sm text-secondary" data-bs-toggle="modal"
                                     data-bs-target="#show-${
                                         value.Id_OrderLocal
@@ -122,28 +139,28 @@ $(document).ready(function () {
                                     aria-labelledby="#show-${
                                         value.Id_OrderLocal
                                     }Label" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
                                         <div class="modal-content">
-                                        <div class="modal-header p-2 bg-primary text-start" data-bs-theme="dark">
-                                            <h5 class="modal-title w-100 " id="show-${
+                                        <div class="modal-header" data-bs-theme="dark">
+                                            <h4 class="modal-title fw-bold text-secondary " id="show-${
                                                 value.Id_OrderLocal
                                             }Label">
                                             Thông tin chi tiết đơn hàng số ${
                                                 value.Id_OrderLocal
                                             }
-                                            </h5>
+                                            </h4>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <table class="table table-striped m-0">
-                                            <thead>
+                                            <table class="table">
+                                            <thead class="table-light">
                                                 <tr>
-                                                <th scope="col">Nguyên liệu</th>
-                                                <th scope="col">Số lượng nguyên liệu</th>
-                                                <th scope="col">Đơn vị</th>
-                                                <th scope="col">Thùng chứa</th>
-                                                <th scope="col">Số lượng thùng chứa</th>
-                                                <th scope="col">Đơn giá</th>
+                                                <th scope="col" class="py-3">Nguyên liệu</th>
+                                                <th scope="col" class="py-3 text-center">Số lượng nguyên liệu</th>
+                                                <th scope="col" class="py-3">Đơn vị</th>
+                                                <th scope="col" class="py-3">Thùng chứa</th>
+                                                <th scope="col" class="py-3 text-center">Số lượng thùng chứa</th>
+                                                <th scope="col" class="py-3 text-center">Đơn giá</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="table-simples" class="p-5"
@@ -234,25 +251,25 @@ $(document).ready(function () {
     
                             <div class="modal fade" id="show-${Id_OrderLocal}" tabindex="-1"
                                 aria-labelledby="show-${Id_OrderLocal}Label" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
+                                <div class="modal-dialog modal-lg modal-dialog-centered">
                                     <div class="modal-content">
-                                        <div class="modal-header p-2 bg-primary text-start" data-bs-theme="dark">
-                                        <h5 class="modal-title w-100 " id="exampleModalLabel">
+                                        <div class="modal-header" data-bs-theme="dark">
+                                        <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">
                                             Thông tin chi tiết đơn hàng số ${Id_OrderLocal}
-                                        </h5>
+                                        </h4>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <table class="table table-striped m-0">
-                                                <thead>
-                                                <tr>
-                                                    <th scope="col">Nguyên liệu</th>
-                                                    <th scope="col">Số lượng nguyên liệu</th>
-                                                    <th scope="col">Đơn vị</th>
-                                                    <th scope="col">Thùng chứa</th>
-                                                    <th scope="col">Số lượng thùng chứa</th>
-                                                    <th scope="col">Đơn giá</th>
-                                                </tr>
+                                            <table class="table">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th scope="col" class="py-3">Nguyên liệu</th>
+                                                        <th scope="col" class="py-3">Số lượng nguyên liệu</th>
+                                                        <th scope="col" class="py-3">Đơn vị</th>
+                                                        <th scope="col" class="py-3">Thùng chứa</th>
+                                                        <th scope="col" class="py-3">Số lượng thùng chứa</th>
+                                                        <th scope="col" class="py-3">Đơn giá</th>
+                                                    </tr>
                                                 </thead>
                                                 <tbody class="table-simples" class="p-5" data-value="${Id_OrderLocal}">
                                                 </tbody>
@@ -267,11 +284,11 @@ $(document).ready(function () {
                     // Thêm dữ liệu mới vào đầu bảng 'table-result'
                     $("#table-result").prepend(html);
 
-                    // Các tác vụ khác sau khi hiển thị thành công
-                    $(".toast-body").addClass("bg-success");
-                    $("#icon").addClass("fa-check-circle");
-                    $("#toast-msg").html("Thêm đơn sản xuất thành công");
-                    toastBootstrap.show();
+                    showToast(
+                        "Thêm đơn sản xuất thành công",
+                        "bg-success",
+                        "fa-check-circle"
+                    );
                     rowElements.each(function () {
                         rowElements.each(function () {
                             $(this)
@@ -288,10 +305,11 @@ $(document).ready(function () {
                 },
             });
         } else {
-            $(".toast-body").addClass("bg-warning");
-            $("#icon").addClass("fa-xmark-circle");
-            $("#toast-msg").html("Vui lòng chọn đơn sản xuất");
-            toastBootstrap.show();
+            showToast(
+                "Vui lòng chọn đơn sản xuất",
+                "bg-warning",
+                "fa-xmark-circle"
+            );
         }
     });
     $("#deleteBtn").on("click", function () {
@@ -326,10 +344,12 @@ $(document).ready(function () {
                         ) {
                             $(this).remove();
                         }
-                        $(".toast-body").addClass("bg-success");
-                        $("#icon").addClass("fa-check-circle");
-                        $("#toast-msg").html("Xóa đơn sản xuất thành công");
-                        toastBootstrap.show();
+
+                        showToast(
+                            "Xóa đơn sản xuất thành công",
+                            "bg-success",
+                            "fa-check-circle"
+                        );
                     });
                 },
                 error: function (xhr) {
@@ -339,10 +359,11 @@ $(document).ready(function () {
                 },
             });
         } else {
-            $(".toast-body").addClass("bg-warning");
-            $("#icon").addClass("fa-xmark-circle");
-            $("#toast-msg").html("Vui lòng chọn đơn sản xuất");
-            toastBootstrap.show();
+            showToast(
+                "Vui lòng chọn đơn sản xuất",
+                "bg-warning",
+                "fa-xmark-circle"
+            );
         }
     });
 
@@ -367,11 +388,13 @@ $(document).ready(function () {
                 $.each(response.data, function (key, value) {
                     htmls += `<tr>
                         <td>${value.Name_RawMaterial}</td>
-                        <td>${value.Count_RawMaterial}</td>
+                        <td class="text-center">${value.Count_RawMaterial}</td>
                         <td>${value.Unit}</td>
                         <td>${value.Name_ContainerType}</td>
-                        <td>${value.Count_Container}</td>
-                        <td>${numberFormat(value.Price_Container)} VNĐ </td>
+                        <td class="text-center">${value.Count_Container}</td>
+                        <td class="text-center">${numberFormat(
+                            value.Price_Container
+                        )} VNĐ </td>
                         </tr>`;
                 });
                 table.html(htmls);

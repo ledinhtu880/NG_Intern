@@ -45,7 +45,7 @@
               <li><a class="text-decoration-none text-muted" href="{{ route('stations.index') }}">Quản lý trạm</a></li>
               <li>
                 <a class="text-decoration-none text-muted" href="{{ route('productStationLines.index') }}">
-                  Quản lý dây chuyền xử lý
+                  Quản lý xử lý dây chuyền
                 </a>
               </li>
             </ul>

@@ -19,7 +19,7 @@
 <div class="row g-0 p-3">
   <div class="col-md-12">
     <div class="card border-0 shadow-sm">
-      <div class="card-body p-4">
+      <div class="card-body">
         <form method="POST" action="{{ route('customers.update', ['customer' => $customer]) }}">
           @csrf
           @method('PUT')
@@ -138,34 +138,46 @@
               @endif
             </div>
           </div>
-          <div class="d-flex justify-content-end my-4 gap-3">
-            <a href="{{ route('customers.index') }}" class="btn btn-light">Quay lại</a>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-              data-bs-target="#deleteOrder-{{ $customer->Id_Customer }}">
-              Cập nhật
-            </button>
-            <div class="modal fade" id="deleteOrder-{{ $customer->Id_Customer }}" tabindex="-1"
-              aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    Bạn có chắc chắn muốn cập nhật khách hàng này?
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-primary">Xác nhận</button>
-                  </div>
+        </form>
+      </div>
+      <div class="card-footer">
+        <div class="d-flex justify-content-end gap-3">
+          <a href="{{ route('customers.index') }}" class="btn btn-light">Quay lại</a>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#deleteOrder-{{ $customer->Id_Customer }}">
+            Cập nhật
+          </button>
+          <div class="modal fade" id="deleteOrder-{{ $customer->Id_Customer }}" tabindex="-1"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Bạn có chắc chắn muốn cập nhật khách hàng này?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                  <button type="submit" class="btn btn-primary" id="saveBtn">Xác nhận</button>
                 </div>
               </div>
             </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>
 </div>
 @endsection
+
+@push('javascript')
+<script>
+  $(document).ready(function () {
+    $("#saveBtn").on('click', function () {
+      $("#formInformation").submit();
+    })
+  })
+</script>
+@endpush

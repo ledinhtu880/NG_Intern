@@ -19,7 +19,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm">
       <div class="card-body d-flex flex-column justify-content-between h-100">
-        <form method="POST" action="{{ route('rawMaterials.store') }}">
+        <form id="formInformation" method="POST" action="{{ route('rawMaterials.store') }}">
           @csrf
           <div class="d-flex gap-2">
             <div class="form-group" style="flex: 1;">
@@ -72,13 +72,25 @@
               @endif
             </div>
           </div>
-          <div class="d-flex justify-content-end gap-3 mt-3">
-            <a href="{{ route('rawMaterials.index') }}" class="btn btn-light">Quay lại</a>
-            <button type="submit" class="btn btn-primary">Lưu</button>
-          </div>
         </form>
+      </div>
+      <div class="card-footer">
+        <div class="d-flex justify-content-end gap-3">
+          <a href="{{ route('rawMaterials.index') }}" class="btn btn-light">Quay lại</a>
+          <button type="submit" class="btn btn-primary" id="saveBtn">Lưu</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 @endsection
+
+@push('javascript')
+<script>
+  $(document).ready(function () {
+    $('#saveBtn').click(function (e) {
+      $('#formInformation').submit();
+    });
+  })
+</script>
+@endpush

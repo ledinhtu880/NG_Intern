@@ -118,11 +118,19 @@ class ProductStationLineController extends Controller
 
     public function destroy(ProductionStationLine $productStationLine)
     {
-        DetailProductionStationLine::where('FK_Id_ProdStationLine', $productStationLine->Id_ProdStationLine)->delete();
-        $productStationLine->delete();
-        return redirect()->route('productStationLines.index')->with([
-            'type' => 'success',
-            'message' => 'Xóa dây chuyền thành công'
-        ]);
+        $exists = DB::table('DispatcherOrder')->where('FK_Id_ProdStationLine', $productStationLine->Id_ProdStationLine)->exists();
+        if ($exists) {
+            return redirect()->route('productStationLines.index')->with([
+                'type' => 'warning',
+                'message' => 'Không thể xóa dây chuyền này'
+            ]);
+        } else {
+            DetailProductionStationLine::where('FK_Id_ProdStationLine', $productStationLine->Id_ProdStationLine)->delete();
+            $productStationLine->delete();
+            return redirect()->route('productStationLines.index')->with([
+                'type' => 'success',
+                'message' => 'Xóa dây chuyền thành công'
+            ]);
+        }
     }
 }

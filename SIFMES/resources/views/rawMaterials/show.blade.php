@@ -37,12 +37,10 @@
             <h6 class="h6 text-muted fw-normal m-0">{{ $material->Count }}</h6>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="d-flex justify-content-end align-items-center gap-2">
-              <a href="{{ route('rawMaterials.index') }}" class="btn btn-primary">Quay lại</a>
-            </div>
-          </div>
+      </div>
+      <div class="card-footer d-flex justify-content-end align-items-center">
+        <div class="d-flex justify-content-end align-items-center gap-2">
+          <a href="{{ route('rawMaterials.index') }}" class="btn btn-primary">Quay lại</a>
         </div>
       </div>
     </div>

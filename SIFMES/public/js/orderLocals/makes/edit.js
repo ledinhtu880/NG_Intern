@@ -3,14 +3,35 @@ $(document).ready(function () {
     let token = $('meta[name="csrf-token"]').attr("content");
     const toastLiveExample = $("#liveToast");
     const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
-    if ($("input[name='checkFlash']").val() == 1) {
-        $(".toast-body").addClass("bg-success");
-        $("#icon").addClass("fa-check-circle");
-        $("#toast-msg").html("Thêm thùng hàng thành công");
+
+    function showToast(message, bgColorClass, iconClass) {
+        $(".toast-body").addClass(bgColorClass);
+        $("#icon").addClass(iconClass);
+        $("#toast-msg").html(message);
         toastBootstrap.show();
 
-        $("input[name='checkFlash']").val(0);
+        setTimeout(() => {
+            toastBootstrap.hide();
+            setTimeout(() => {
+                $(".toast-body").removeClass(bgColorClass);
+                $("#icon").removeClass(iconClass);
+                $("#toast-msg").html();
+            }, 1000);
+        }, 5000);
     }
+
+    $("#updateBtn").on("click", function () {
+        if ($("#Count").val() <= 0) {
+            showToast(
+                "Số lượng phải lớn hơn 0",
+                "bg-warning",
+                "fa-xmark-circle"
+            );
+        } else {
+            $("#formInformation").submit();
+        }
+    });
+
     selectElement.on("change", function () {
         let id = $(this).val();
         let rowElement = $(this).closest(".js-row");
@@ -46,9 +67,6 @@ $(document).ready(function () {
 
         rowElement.find("[data-id='total']").html(formattedPrice);
     });
-    $("#updateBtn").on("click", function () {
-        $("#formInformation").submit();
-    });
     $(document).on("click", ".btnDelete", function () {
         let id = $(this).data("id");
         let modalElement = $("#deleteID-" + id); // Lấy modal tương ứng với hàng
@@ -66,10 +84,11 @@ $(document).ready(function () {
             },
             success: function (response) {
                 modalElement.on("hidden.bs.modal", function () {
-                    $(".toast-body").addClass("bg-success");
-                    $("#icon").addClass("fa-check-circle");
-                    $("#toast-msg").html("Xóa thùng hàng thành công");
-                    toastBootstrap.show();
+                    showToast(
+                        "Xóa thùng hàng thành công",
+                        "bg-success",
+                        "fa-check-circle"
+                    );
                     rowElement.remove();
                 });
                 // Đóng modal
@@ -77,6 +96,7 @@ $(document).ready(function () {
             },
         });
     });
+
     $("#storeSimpleBtn").on("click", function () {
         let rowElements = $("#table-data tr");
         let rowDataArray = [];
@@ -115,10 +135,11 @@ $(document).ready(function () {
                 },
             });
         } else {
-            $(".toast-body").addClass("bg-warning");
-            $("#icon").addClass("fa-xmark-circle");
-            $("#toast-msg").html("Vui lòng chọn đơn sản xuất");
-            toastBootstrap.show();
+            showToast(
+                "Vui lòng chọn đơn sản xuất",
+                "bg-warning",
+                "fa-xmark-circle"
+            );
         }
     });
 });

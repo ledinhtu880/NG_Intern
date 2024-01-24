@@ -134,3 +134,9 @@ textarea {
 .btn-toggle-nav > li > a:hover {
     color: rgba(83, 109, 230, 0.85) !important;
 }
+
+.btn-disabled {
+    opacity: 0.5;
+    cursor: default !important;
+    pointer-events: none;
+}

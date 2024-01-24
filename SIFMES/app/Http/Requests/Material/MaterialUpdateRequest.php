@@ -35,7 +35,7 @@ class MaterialUpdateRequest extends FormRequest
                 'regex:/^[\pL\s]+$/u',
             ],
             'Unit' => 'required',
-            'Count' => ['required', 'integer', 'min:0'],
+            'Count' => ['required', 'integer', 'min:1'],
             'FK_Id_RawMaterialType' => 'required',
         ];
     }
@@ -49,7 +49,7 @@ class MaterialUpdateRequest extends FormRequest
             'Unit.required' => 'Vui lòng nhập đơn vị',
             'Count.required' => 'Vui lòng nhập số lượng',
             'Count.integer' => 'Số lượng nguyên liệu phải là số nguyên',
-            'Count.min' => 'Số lượng nguyên liệu phải lớn hơn hoặc bằng 0',
+            'Count.min' => 'Số lượng nguyên liệu phải lớn hơn hoặc bằng 1',
             'FK_Id_RawMaterialType.required' => 'Vui lòng chọn loại nguyên liệu',
         ];
     }

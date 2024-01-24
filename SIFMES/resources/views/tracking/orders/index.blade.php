@@ -48,17 +48,55 @@
         <table class="table">
           <thead class="table-light">
             <tr>
-              <th scope="col" class="py-3">Mã đơn hàng</th>
+              <th scope="col" class="py-3 text-center">Mã đơn hàng</th>
               <th scope="col" class="py-3">Tên khách hàng</th>
               <th scope="col" class="py-3">Ngày đặt hàng</th>
               <th scope="col" class="py-3">Ngày giao hàng</th>
               <th scope="col" class="py-3">Trạng thái</th>
-              <th scope="col" class="py-3">Trạng thái sản phẩm</th>
+              <th scope="col" class="py-3 text-center">Trạng thái sản phẩm</th>
               <th scope="col" class="py-3">Kiểu hàng</th>
               <th scope="col" class="py-3">Xem</th>
             </tr>
           </thead>
-          <tbody id="table-data" class="table-group-divider text-center">
+          <tbody id="table-data">
+            @if(isset($data))
+            @foreach($data as $each)
+            @php
+            $id = $each->Id_Order;
+            $simpleOrPack = $each->SimpleOrPack;
+            @endphp
+            <tr>
+              <td class="text-center">{{ $each->Id_Order }}</td>
+              <td>{{ $each->Name_Customer }}</td>
+              <td>{{ $each->Date_Order != null ? \Carbon\Carbon::parse($each->Date_Order)->format('d/m/Y') :
+                'Chưa giao hàng' }}</td>
+              <td>{{ $each->Date_Delivery != null ? \Carbon\Carbon::parse($each->Date_Delivery)->format('d/m/Y') :
+                'Chưa giao hàng' }}</td>
+              <td>{{ $each->status }}</td>
+              <td class="text-center">
+                <div class="d-flex justify-content-center">
+                  <div class="progress w-50 position-relative" role="progressbar" aria-valuenow="{{ $each->progress }}"
+                    aria-valuemin="0" aria-valuemax="100" style="height: 20px">
+                    <div class="progress-bar bg-primary" style="width: {{ $each->progress }}%">
+                    </div>
+                    <span
+                      class="progress-text fw-bold fs-6 {{ $each->progress > 35 ? 'text-white' : 'text-primary' }}">{{
+                      $each->progress }}%</span>
+                  </div>
+                </div>
+              </td>
+              <td>{{ $each->SimpleOrPack == 1 ? 'Gói hàng' : 'Thùng hàng' }}</td>
+              @php
+              $route = $simpleOrPack == 1 ? "/tracking/orders/showPacks/{$id}" : "/tracking/orders/showSimples/{$id}";
+              @endphp
+              <td class="text-center">
+                <a href="{{ $route }}" class="btn btn-sm text-secondary btn-detail">
+                  <i class="fa-solid fa-eye"></i>
+                </a>
+              </td>
+            </tr>
+            @endforeach
+            @endif
           </tbody>
         </table>
       </div>
@@ -132,13 +170,13 @@
                 : `/tracking/orders/showSimples/${id}`;
             let progress = value.progress;
             let status = value.status;
-            html = `<tr class="text-center align-middle">
-                  <td>${id}</td>
+            html = `<tr>
+                  <td class="text-center">${id}</td>
                   <td>${value.Name_Customer}</td>
                   <td>${value.Date_Order != null ? formatDate(value.Date_Order) : 'Chưa giao hàng'}</td>
                   <td>${value.Date_Delivery != null ? formatDate(value.Date_Delivery) : 'Chưa giao hàng'}</td>
                   <td>${status}</td>
-                  <td>
+                  <td class="text-center">
                     <div class="d-flex justify-content-center">
                       <div class="progress w-50 position-relative" role="progressbar" aria-valuenow="${progress}" aria-valuemin="0"
                         aria-valuemax="100" style="height: 20px">
@@ -149,7 +187,7 @@
                     </div>
                   </td>
                   <td>${value.SimpleOrPack == 1 ? 'Gói hàng' : 'Thùng hàng'}</td>
-                  <td>
+                  <td class="text-center">
                     <a href="${route}" class="btn btn-sm text-secondary btn-detail">
                       <i class="fa-solid fa-eye"></i>
                     </a>

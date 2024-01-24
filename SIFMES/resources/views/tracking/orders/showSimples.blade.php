@@ -9,7 +9,8 @@
     <ol class="breadcrumb mb-0">
       <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
       </li>
-      <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Theo dõi đơn hàng</a>
+      <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('tracking.orders.index') }}">Theo dõi
+          đơn hàng</a>
       </li>
       <li class="breadcrumb-item active fw-medium" aria-current="page">
         Xem chi tiết
@@ -26,50 +27,50 @@
       <div class="card-body">
         <div class="row">
           <div class="col-md-4 mb-3">
-            <h6 class="card-subtitle">
+            <h6 class="card-subtitle" style="font-weight: 600;">
               Mã đơn hàng
             </h6>
-            <p class="card-text">
+            <p class="card-text text-secondary fw-normal">
               {{ $order->Id_Order }}
             </p>
           </div>
           <div class="col-md-4 mb-3">
-            <h6 class="card-subtitle">
+            <h6 class="card-subtitle" style="font-weight: 600;">
               Tên khách hàng
             </h6>
-            <p class="card-text">
+            <p class="card-text text-secondary fw-normal">
               {{ $order->customer->Name_Customer }}
             </p>
           </div>
           <div class="col-md-4 mb-3">
-            <h6 class="card-subtitle">
+            <h6 class="card-subtitle" style="font-weight: 600;">
               Ngày đặt hàng
             </h6>
-            <p class="card-text">
+            <p class="card-text text-secondary fw-normal">
               {{ $order->order_date }}
             </p>
           </div>
           <div class="col-md-4 mb-3">
-            <h6 class="card-subtitle">
+            <h6 class="card-subtitle" style="font-weight: 600;">
               Ngày giao hàng
             </h6>
-            <p class="card-text">
+            <p class="card-text text-secondary fw-normal">
               {{ $order->delivery_date }}
             </p>
           </div>
           <div class="col-md-4 mb-3">
-            <h6 class="card-subtitle">
+            <h6 class="card-subtitle" style="font-weight: 600;">
               Ngày nhận hàng
             </h6>
-            <p class="card-text">
+            <p class="card-text text-secondary fw-normal">
               {{ $order->reception_date }}
             </p>
           </div>
           <div class="col-md-4">
-            <h6 class="card-subtitle">
+            <h6 class="card-subtitle" style="font-weight: 600;">
               Ghi chú
             </h6>
-            <p class="card-text">
+            <p class="card-text text-secondary fw-normal">
               {{ $order->Note }}
             </p>
           </div>
@@ -89,7 +90,7 @@
         <table class="table">
           <thead class="table-light">
             <tr>
-              <th scope="col" class="py-3">#</th>
+              <th scope="col" class="py-3 text-center">#</th>
               <th scope="col" class="py-3">Nguyên liệu</th>
               <th scope="col" class="py-3">Đơn vị</th>
               <th scope="col" class="py-3">Thùng chứa</th>
@@ -107,7 +108,7 @@
               <td>{{ $each->Name_ContainerType }}</td>
               <td class="text-center">{{ number_format($each->Price_Container * $each->Count_Container, 0, ',', '.') . '
                 VNĐ' }}</td>
-              <td>
+              <td class="text-center">
                 @if($each->progress == 'Chưa có thông tin')
                 <p>{{ $each->progress }}</p>
                 @else

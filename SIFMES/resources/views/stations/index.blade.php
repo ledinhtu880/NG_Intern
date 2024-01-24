@@ -40,13 +40,13 @@
               <td>{{ $station->Name_Station }}</td>
               <td>{{ $station->Ip_Address }}</td>
               <td class="text-center">
-                <a href="{{ route('stations.show', $station) }}" class="btn btn-sm text-primary">
+                <a href="{{ route('stations.show', $station) }}" class="btn btn-sm text-secondary">
                   <i class="fa-solid fa-eye"></i>
                 </a>
-                <a href="{{ route('stations.edit', $station) }}" class="btn btn-sm text-primary">
+                <a href="{{ route('stations.edit', $station) }}" class="btn btn-sm text-secondary">
                   <i class="fa-solid fa-pen-to-square"></i>
                 </a>
-                <a href="" class="btn btn-sm text-primary" data-bs-toggle="modal"
+                <a href="" class="btn btn-sm text-secondary" data-bs-toggle="modal"
                   data-bs-target="#i{{ $station->Id_Station }}">
                   <i class="fa-solid fa-trash"></i>
                 </a>
@@ -63,7 +63,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <form action="{{ route('stations.destroy', ['station' => $station]) }}" method="POST">
+                        <form action="{{ route('stations.destroy', $station) }}" method="POST">
                           @csrf
                           @method('DELETE')
                           <button type="submit" class="btn btn-danger">Xóa</button>
@@ -77,10 +77,14 @@
             @endforeach
           </tbody>
         </table>
-        {{-- paginate --}}
-        <nav class="d-flex justify-content-end me-2">
+        @if ($stations->lastPage() > 1)
+        <div class="d-flex align-items-end justify-content-end">
           {{ $stations->links('pagination::bootstrap-4') }}
-        </nav>
+        </div>
+        @endif
+      </div>
+      <div class="card-footer d-flex align-items-end justify-content-end">
+        <a href="{{ route('index') }}" class="btn btn-light">Quay lại</a>
       </div>
     </div>
   </div>

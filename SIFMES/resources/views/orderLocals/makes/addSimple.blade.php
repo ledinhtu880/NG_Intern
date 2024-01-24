@@ -69,7 +69,7 @@
       </div>
       <div class="card-footer">
         <div class="d-flex align-content-center justify-content-end gap-3">
-          <a href="{{ route('orderLocals.makes.edit', $id) }}" class="btn btn-warning px-3">Quay lại</a>
+          <a href="{{ route('orderLocals.makes.edit', $id) }}" class="btn btn-light">Quay lại</a>
           <button type="submit" class="btn btn-primary" id="storeSimpleBtn">Lưu</button>
         </div>
       </div>

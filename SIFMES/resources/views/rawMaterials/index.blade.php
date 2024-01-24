@@ -41,7 +41,7 @@
               <th scope="col" class="py-3">Tên nguyên liệu</th>
               <th scope="col" class="py-3">Loại nguyên liệu</th>
               <th scope="col" class="py-3">Đơn vị</th>
-              <th scope="col" class="py-3">Số lượng</th>
+              <th scope="col" class="py-3 text-center">Số lượng</th>
               <th scope="col" class="py-3 text-center">Hành động</th>
             </tr>
           </thead>
@@ -117,7 +117,7 @@
                   <span class="badge text-bg-primary fw-normal fs-6">${materialTypeName}</span>
                 </td>
                 <td>${unit.charAt(0).toUpperCase() + unit.slice(1)}</td>
-                <td>${count}</td>
+                <td class="text-center">${count}</td>
                 <td class="text-center">
                   <a href="${showUrl}" class="btn btn-sm text-secondary">
                     <i class="fa-solid fa-eye"></i>

@@ -2,6 +2,22 @@ const toastLiveExample = $("#liveToast");
 const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
 
 $(document).ready(function () {
+    function showToast(message, bgColorClass, iconClass) {
+        $(".toast-body").addClass(bgColorClass);
+        $("#icon").addClass(iconClass);
+        $("#toast-msg").html(message);
+        toastBootstrap.show();
+
+        setTimeout(() => {
+            toastBootstrap.hide();
+            setTimeout(() => {
+                $(".toast-body").removeClass(bgColorClass);
+                $("#icon").removeClass(iconClass);
+                $("#toast-msg").html();
+            }, 1000);
+        }, 5000);
+    }
+
     let token = $('meta[name="csrf-token"]').attr("content");
     let count = $("input[name='count']").val();
     let dateOrderControl = $("input[name='Date_Order']");
@@ -162,11 +178,11 @@ $(document).ready(function () {
                         .find('[data-id="Price_Container"]')
                         .text(response.existsData.formattedPrice);
                 }
-
-                $("#icon").addClass("fa-check-circle");
-                $(".toast-body").addClass("bg-success");
-                $("#toast-msg").html("Thêm thùng hàng thành công");
-                toastBootstrap.show();
+                showToast(
+                    "Thêm thùng hàng thành công",
+                    "bg-success",
+                    "fa-check-circle"
+                );
             },
         });
     });

@@ -31,14 +31,14 @@
             <div class="row">
               <div class="col-md-12 mb-3">
                 <div class="input-group">
-                  <label class="input-group-text bg-secondary-subtle">Mã thùng hàng</label>
+                  <label class="input-group-text bg-light">Mã thùng hàng</label>
                   <input type="text" class="form-control" disabled id="Id_ContentSimple" name="Id_ContentSimple"
                     value="{{ $simple->Id_ContentSimple }}">
                 </div>
               </div>
               <div class="col-md-12 mb-3">
                 <div class="input-group">
-                  <label class="input-group-text bg-secondary-subtle">Tên thùng chứa</label>
+                  <label class="input-group-text bg-light">Tên thùng chứa</label>
                   <input type="text" class="form-control" disabled id="Name_ContainerType" name="Name_ContainerType"
                     value="{{ $simple->type->Name_ContainerType }}">
                 </div>
@@ -50,7 +50,7 @@
             <div class="row">
               <div class="col-md-12 mb-3">
                 <div class="input-group">
-                  <label class="input-group-text bg-secondary-subtle" style="width: 175px">Tên nguyên vật
+                  <label class="input-group-text bg-light" style="width: 175px">Tên nguyên vật
                     liệu</label>
                   <input type="text" class="form-control" disabled id="Name_RawMaterial" name="Name_RawMaterial"
                     value="{{ $simple->material->Name_RawMaterial }}">
@@ -59,7 +59,7 @@
               </div>
               <div class="col-md-12 mb-3">
                 <div class="input-group">
-                  <label class="input-group-text bg-secondary-subtle" style="width: 175px">Số lượng thùng
+                  <label class="input-group-text bg-light" style="width: 175px">Số lượng thùng
                     chứa</label>
                   <input type="text" class="form-control" disabled id="Count_Container" name="Count_Container"
                     value="{{ $simple->Count_Container }}">
@@ -72,7 +72,7 @@
             <div class="row">
               <div class="col-md-12 mb-3">
                 <div class="input-group">
-                  <label class="input-group-text bg-secondary-subtle" style="width: 200px;">Số lượng nguyên vật
+                  <label class="input-group-text bg-light" style="width: 200px;">Số lượng nguyên vật
                     liệu</label>
                   <input type="text" class="form-control" disabled id="Count_RawMaterial" name="Count_RawMaterial"
                     value="{{ $simple->Count_RawMaterial }}">
@@ -81,7 +81,7 @@
               </div>
               <div class="col-md-12 mb-3">
                 <div class="input-group">
-                  <label class="input-group-text bg-secondary-subtle" style="width: 200px;">Đơn giá thùng chứa</label>
+                  <label class="input-group-text bg-light" style="width: 200px;">Đơn giá thùng chứa</label>
                   <input type="text" class="form-control" disabled id="Price_Container" name="Price_Container"
                     value="{{ number_format($simple->Price_Container, 0, ',', '.') . ' VNĐ' }}">
                 </div>
@@ -104,7 +104,7 @@
           <div class="col-md-6">
             <div class="row">
               <div class="input-group">
-                <label class="input-group-text bg-secondary-subtle">Tên khách hàng</label>
+                <label class="input-group-text bg-light">Tên khách hàng</label>
                 <input type="text" class="form-control" disabled id="Name_Customer" name="Name_Customer"
                   value="{{ $simple->order->customer->Name_Customer }}">
               </div>
@@ -113,7 +113,7 @@
           <div class="col-md-6">
             <div class="row">
               <div class="input-group">
-                <label class="input-group-text bg-secondary-subtle">Mã đơn hàng</label>
+                <label class="input-group-text bg-light">Mã đơn hàng</label>
                 <input type="text" class="form-control" disabled id="Id_Order" name="Id_Order"
                   value="{{ $simple->order->Id_Order }}">
               </div>
@@ -126,7 +126,7 @@
 </div>
 <div class="row g-0 p-3">
   <div class="col-md-12">
-    <div class="row my-4">
+    <div class="row">
       <div class="col-md-4 d-flex align-items-center justify-content-center">
         <img src="" alt="Hello" class="w-50 h-50 d-none" id="img-js">
       </div>
@@ -143,13 +143,13 @@
               <div class="col-md-6">
                 <div class="row gap-2">
                   <div class="input-group">
-                    <label class="input-group-text bg-secondary-subtle" style="width: 215px">
+                    <label class="input-group-text bg-light" style="width: 215px">
                       Trạng thái hiện tại
                     </label>
                     <input type="text" class="form-control" disabled value="{{ $simple->status }}">
                   </div>
                   <div class="input-group">
-                    <label class="input-group-text bg-secondary-subtle" style="width: 215px">
+                    <label class="input-group-text bg-light" style="width: 215px">
                       Tổng thời gian lưu tại trạm
                     </label>
                     <input type="text" class="form-control" disabled value="{{ $simple->elapsedTime }}">
@@ -177,27 +177,29 @@
               </div>
             </div>
           </div>
-          <div class="card-footer p-0">
-            <table class="table table-striped table-hover m-0 py-3" id="myTable">
-              <thead>
-                <tr class="text-center align-middle">
-                  <th scope="col">Trạm</th>
-                  <th scope="col">Tên trạm</th>
-                  <th scope="col">Trạng thái</th>
-                  <th class="text-start" scope="col">Thời gian lưu tại trạm</th>
-                </tr>
-              </thead>
-              <tbody id="table-data">
-                @foreach($data as $each)
-                <tr data-id="{{ $each->PathImage }}">
-                  <td class="text-center">{{ $each->Name_Station }}</td>
-                  <td>{{ $each->Name_StationType }}</td>
-                  <td class="text-center">{{ $each->status }}</td>
-                  <td class="text-start">{{ $each->elapsedTime }}</td>
-                </tr>
-                @endforeach
-              </tbody>
-            </table>
+          <div class="card-footer">
+            <div class="table-responsive">
+              <table class="table" id="myTable">
+                <thead class="table-light">
+                  <tr>
+                    <th scope="col" class="py-3 text-truncate">Trạm</th>
+                    <th scope="col" class="py-3 text-truncate">Tên trạm</th>
+                    <th scope="col" class="py-3 text-truncate">Trạng thái</th>
+                    <th scope="col" class="py-3 text-truncate">Thời gian lưu tại trạm</th>
+                  </tr>
+                </thead>
+                <tbody id="table-data">
+                  @foreach($data as $each)
+                  <tr data-id="{{ $each->PathImage }}">
+                    <td class="text-truncate">{{ $each->Name_Station }}</td>
+                    <td class="text-truncate">{{ $each->Name_StationType }}</td>
+                    <td class="text-truncate">{{ $each->status }}</td>
+                    <td class="text-truncate">{{ $each->elapsedTime }}</td>
+                  </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
           </div>
           @endif
         </div>

@@ -34,12 +34,12 @@
         </div>
         <table class="table table-expedition mt-4">
           <thead class="table-light" id="table-heading">
-            <th scope="col" class="text-center">Chọn</th>
-            <th scope="col" class="text-center">Mã đơn hàng</th>
-            <th scope="col">Khách hàng</th>
-            <th scope="col">Kiểu hàng</th>
-            <th scope="col" class="text-center">Số lượng thùng chứa</th>
-            <th scope="col" class="text-center">Đơn giá</th>
+            <th scope="col" class="py-3 text-center">Chọn</th>
+            <th scope="col" class="py-3 text-center">Mã đơn hàng</th>
+            <th scope="col" class="py-3">Khách hàng</th>
+            <th scope="col" class="py-3">Kiểu hàng</th>
+            <th scope="col" class="py-3 text-center">Số lượng thùng chứa</th>
+            <th scope="col" class="py-3 text-center">Đơn giá</th>
           </thead>
           <tbody id="table-data">
           </tbody>
@@ -78,14 +78,14 @@
               <th scope="col" class="py-3">Kiểu thùng</th>
               <th scope="col" class="py-3">Trạng thái</th>
               <th scope="col" class="py-3 text-center">Ngày giao hàng</th>
-              <th scope="col" class="py-3 text-center">Mô tả</th>
+              <th scope="col" class="py-3 text-center"></th>
             </tr>
           </thead>
           <tbody id="table-result">
             @foreach ($data as $each)
             <tr>
-              <td class="d-flex justify-content-center">
-                <input type="checkbox" class="input-check checkbox2" value="{{ $each->Id_OrderLocal }}"
+              <td class="text-center align-middle">
+                <input type="checkbox" class="input-check form-check-input checkbox2" value="{{ $each->Id_OrderLocal }}"
                   data-id="cb{{ $each->Id_OrderLocal }}">
               </td>
               <td class="text-center">{{ $each->Id_OrderLocal }}</td>
@@ -106,7 +106,7 @@
                   <div class="modal-dialog modal-xl modal-dialog-centered">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title fw-bold text-secondary" id=" exampleModalLabel">
+                        <h5 class="modal-title fw-bold text-secondary" id="exampleModalLabel">
                           Thông tin chi tiết đơn hàng số
                           {{ $each->Id_OrderLocal }}
                         </h5>
@@ -169,6 +169,23 @@
     let token = $('meta[name="csrf-token"]').attr("content");
     const toastLiveExample = $("#liveToast");
     const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
+
+    function showToast(message, bgColorClass, iconClass) {
+      $(".toast-body").addClass(bgColorClass);
+      $("#icon").addClass(iconClass);
+      $("#toast-msg").html(message);
+      toastBootstrap.show();
+
+      setTimeout(() => {
+        toastBootstrap.hide();
+        setTimeout(() => {
+          $(".toast-body").removeClass(bgColorClass);
+          $("#icon").removeClass(iconClass);
+          $("#toast-msg").html();
+        }, 1000);
+      }, 5000);
+    }
+
     $('#kho').change(function () {
       var selectedValue = $(this).val();
       count1 = 0;
@@ -310,10 +327,11 @@
 
     $('#them').on('click', function () {
       if (count1 < 1) {
-        $(".toast-body").addClass("bg-warning");
-        $("#icon").addClass("fa-xmark-circle");
-        $("#toast-msg").html("Bạn chưa chọn hoá đơn nào để tạo đơn giao!");
-        toastBootstrap.show();
+        showToast(
+          "Bạn chưa chọn hoá đơn nào để tạo đơn giao!",
+          "bg-warning",
+          "fa-xmark-circle"
+        );
       } else {
         var kho = $('#kho option:selected').val();
         var date = $('#Date_Delivery').val();
@@ -329,10 +347,11 @@
             date: date,
           },
           success: function (response) {
-            $(".toast-body").addClass("bg-success");
-            $("#icon").addClass("fa-check-circle");
-            $("#toast-msg").html("Tạo đơn giao hàng thành công");
-            toastBootstrap.show();
+            showToast(
+              "Tạo đơn giao hàng thành công",
+              "bg-success",
+              "fa-check-circle"
+            );
             setTimeout(() => {
               window.location.reload();
             }, 1000);
@@ -343,10 +362,11 @@
 
     $('#xoa').on('click', function () {
       if (count2 < 1) {
-        $(".toast-body").addClass("bg-warning");
-        $("#icon").addClass("fa-xmark-circle");
-        $("#toast-msg").html("Bạn chưa chọn hoá đơn nào để xoá!");
-        toastBootstrap.show();
+        showToast(
+          "Bạn chưa chọn hoá đơn nào để xoá!",
+          "bg-warning",
+          "fa-xmark-circle"
+        );
       } else {
         $.ajax({
           url: '/orderLocals/expeditions/delete',
@@ -358,10 +378,11 @@
             id: id2,
           },
           success: function (response) {
-            $(".toast-body").addClass("bg-success");
-            $("#icon").addClass("fa-check-circle");
-            $("#toast-msg").html("Xoá đơn giao hàng thành công");
-            toastBootstrap.show();
+            showToast(
+              "Xoá đơn giao hàng thành công",
+              "bg-success",
+              "fa-check-circle"
+            );
             setTimeout(() => {
               window.location.reload();
             }, 1000);

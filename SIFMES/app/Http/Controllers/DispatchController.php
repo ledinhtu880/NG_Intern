@@ -151,6 +151,23 @@ class DispatchController extends Controller
                         ]);
                     }
 
+                    $contentSimples = DB::table('DetailContentSimpleOfPack')
+                        ->select('FK_Id_ContentSimple')
+                        ->whereIn('FK_Id_ContentPack', function ($query) use ($id) {
+                            $query->select('FK_Id_ContentPack')
+                                ->from('DetailContentPackOrderLocal')
+                                ->where('FK_Id_OrderLocal', $id);
+                        })
+                        ->get();
+                    foreach ($contentSimples as $item) {
+                        DB::table('ProcessContentSimple')->insert([
+                            'FK_Id_ContentSimple' => $item->FK_Id_ContentSimple,
+                            'FK_Id_Station' => 408,
+                            'FK_Id_State' => 0,
+                            'Date_Start' => $now,
+                        ]);
+                    }
+
                     DB::table('ContentPack')
                         ->join('DetailContentPackOrderLocal', 'ContentPack.Id_ContentPack', '=', 'DetailContentPackOrderLocal.FK_Id_ContentPack')
                         ->join('OrderLocal', 'DetailContentPackOrderLocal.FK_Id_OrderLocal', '=', 'OrderLocal.Id_OrderLocal')
