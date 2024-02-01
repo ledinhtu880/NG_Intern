@@ -333,6 +333,7 @@ class OrderController extends Controller
           ->where('Order.Id_Order', $id)
       )
       ->get();
+
     return view('orders.simples.edit', [
       'order' => $order,
       'customers' => $customers,
@@ -345,10 +346,10 @@ class OrderController extends Controller
   {
     if ($request->ajax()) {
       $rowData = $request->input('rowData');
+      $id = $request->input('id');
       foreach ($rowData as $row) {
-        $id = $row['Id_ContentSimple'];
         if ($row['Status'] == 0) {
-          DB::table('ContentSimple')->where('Id_ContentSimple', $id)->update([
+          DB::table('ContentSimple')->where('Id_ContentSimple', $row['Id_ContentSimple'])->update([
             'FK_Id_RawMaterial' => $row['FK_Id_RawMaterial'],
             'Count_RawMaterial' => $row['Count_RawMaterial'],
             'FK_Id_ContainerType' => $row['FK_Id_ContainerType'],
@@ -356,7 +357,29 @@ class OrderController extends Controller
             'Price_Container' => $row['Price_Container'],
           ]);
         } else if ($row['Status'] == 1) {
-          DB::table('RegisterContentSimpleAtWareHouse')->where('FK_Id_ContentSimple', $id)->update([
+          $result = DB::table('ContentSimple')
+            ->selectRaw('(ContentSimple.Count_Container - COALESCE(SUM(RegisterContentSimpleAtWareHouse.Count), 0)) as SoLuong')
+            ->join('DetailStateCellOfSimpleWareHouse', 'DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
+            ->leftJoin('RegisterContentSimpleAtWareHouse', 'ContentSimple.Id_ContentSimple', '=', 'RegisterContentSimpleAtWareHouse.FK_Id_ContentSimple')
+            ->where('ContentSimple.Id_ContentSimple', '=', $row['Id_ContentSimple'])
+            ->groupBy('Count_RawMaterial', 'Count_Container', 'Price_Container')
+            ->first();
+
+          $soLuongCu = DB::table('RegisterContentSimpleAtWareHouse')
+            ->where('FK_Id_ContentSimple', $row['Id_ContentSimple'])
+            ->where('FK_Id_Order', $id)
+            ->value('Count');
+
+          $soLuongThayDoi = (int)$row['Count_Container'] - (int)$soLuongCu;
+          if ($soLuongThayDoi == $result->SoLuong) {
+            DB::table('DetailStateCellOfSimpleWareHouse')
+              ->where('FK_Id_ContentSimple', '=', $row['Id_ContentSimple'])
+              ->update([
+                'FK_Id_ContentSimple' => null,
+                'FK_Id_StateCell' => 1,
+              ]);
+          }
+          DB::table('RegisterContentSimpleAtWareHouse')->where('FK_Id_ContentSimple', $row['Id_ContentSimple'])->update([
             'Count' => $row['Count_Container'],
           ]);
         }
@@ -478,15 +501,21 @@ class OrderController extends Controller
   {
     if ($request->ajax()) {
       $id = $request->input('id');
-      $isMake = $request->input('isMake');
-      if ($isMake == 0) {
-        DB::table('ContentSimple')->where('Id_ContentSimple', $id)->delete();
-      } else if ($isMake == 1) {
+      $isTake = $request->input('isTake');
+      $isDispatcher = false;
+
+      if ($isTake) {
         DB::table('RegisterContentSimpleAtWareHouse')->where('FK_Id_ContentSimple', $id)->delete();
+      } else {
+        $exists = DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_ContentSimple', $id)->exists();
+        if ($exists) {
+          $isDispatcher = true;
+          return response()->json($isDispatcher);
+        } else {
+          DB::table('ContentSimple')->where('Id_ContentSimple', $id)->delete();
+        }
       }
-      return response()->json([
-        'status' => 'success'
-      ]);
+      return response()->json($isDispatcher);
     }
   }
   public function getSimplesInWarehouse()
@@ -532,13 +561,11 @@ class OrderController extends Controller
     if ($request->ajax()) {
       $dataArr = $request->input('dataArr');
       $FK_Id_Order = $request->input('FK_Id_Order');
-
       foreach ($dataArr as $each) {
         $existingRecord = DB::table('RegisterContentSimpleAtWareHouse')
           ->where('FK_Id_ContentSimple', $each['id'])
           ->where('FK_Id_Order', $FK_Id_Order)
           ->first();
-
         if ($existingRecord) {
           // Cập nhật dữ liệu nếu đã tồn tại
           DB::table('RegisterContentSimpleAtWareHouse')
@@ -556,7 +583,6 @@ class OrderController extends Controller
           );
         }
       }
-
       $res = redirect()->route('orders.simples.create');
       return response()->json([
         'status' => 'success',
@@ -565,7 +591,6 @@ class OrderController extends Controller
       ]);
     }
   }
-
   public function indexPacks()
   {
     if (!Session::has("type") && !Session::has("message")) {
@@ -1043,7 +1068,7 @@ class OrderController extends Controller
   {
     if ($request->ajax()) {
       $Id_ContentPack = $request->input('idContentPack');
-      $isMake = $request->input('isMake');
+      $isTake = $request->input('isTake');
 
       $details = DetailContentSimpleOfPack::where('FK_Id_ContentPack', $Id_ContentPack)->get();
 
@@ -1097,9 +1122,9 @@ class OrderController extends Controller
     if ($request->ajax()) {
       $id = $request->input('id');
 
-      // Cập nhật bảng ContentPack
       $Id_ContentPacks = $request->input('idContentPacks');
       $Count_Packs = $request->input('countPacks');
+      $data = [];
       for ($i = 0; $i < count($Id_ContentPacks); $i++) {
         $check = DB::table('ContentPack')
           ->where('FK_Id_Order', $id)
@@ -1110,12 +1135,33 @@ class OrderController extends Controller
             'Count_Pack' => $Count_Packs[$i]
           ]);
         } else {
+          $result = DB::table('ContentPack')
+            ->selectRaw('(Count_Pack - COALESCE(SUM(RegisterContentPackAtWareHouse.Count), 0)) as SoLuong')
+            ->leftJoin('RegisterContentPackAtWareHouse', 'Id_ContentPack', '=', 'FK_Id_ContentPack')
+            ->where('Id_ContentPack', '=', $Id_ContentPacks[$i])
+            ->groupBy('Id_ContentPack', 'Count_Pack', 'Price_Pack')
+            ->first();
+
+          $soLuongCu = DB::table('RegisterContentPackAtWareHouse')
+            ->where('FK_Id_ContentPack', $Id_ContentPacks[$i])
+            ->where('FK_Id_Order', $id)
+            ->value('Count');
+
+          $soLuongThayDoi = $Count_Packs[$i] - (int)$soLuongCu;
+          if ($soLuongThayDoi == $result->SoLuong) {
+            DB::table('DetailStateCellOfPackWareHouse')
+              ->where('FK_Id_ContentPack', '=', (int)$Id_ContentPacks[$i])
+              ->update([
+                'FK_Id_ContentPack' => null,
+                'FK_Id_StateCell' => 1,
+              ]);
+          }
           DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_ContentPack', $Id_ContentPacks[$i])->update([
             'Count' => $Count_Packs[$i]
           ]);
         }
       }
-      $res = redirect()->route('orders.packs.index')->with('type', 'success')->with('message', 'Sửa thành công');
+      $res = redirect()->route('orders.packs.index')->with('type', 'success')->with('message', 'Sửa gói hàng thành công');
       return response()->json([
         'url' => $res->getTargetUrl()
       ]);

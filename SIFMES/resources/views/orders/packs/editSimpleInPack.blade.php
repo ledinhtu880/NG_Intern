@@ -106,10 +106,10 @@
       </div>
       <div class="card-footer">
         <div class="d-flex align-items-center justify-content-end gap-2">
-          <a class="btn btn-light px-4" href="{{ route('orders.packs.edit', $Id_Order) }}">
+          <a class="btn btn-light" href="{{ route('orders.packs.edit', $Id_Order) }}">
             Quay lại
           </a>
-          <button type="button" class="btn btn-primary px-4" id="saveBtn">Lưu</button>
+          <button type="button" class="btn btn-primary" id="saveBtn">Lưu</button>
         </div>
       </div>
     </div>
@@ -181,7 +181,7 @@
             });
           }
           else {
-            showToast("Thùng hàng đang trong quá trình sản xuất, không thể xóa!", "bg-warning", "fa-xmark-circle");
+            showToast("Thùng hàng đang trong quá trình sản xuất, không thể xóa!", "bg-warning", "fa-exclamation-circle");
           }
         },
         error: function (xhr) {

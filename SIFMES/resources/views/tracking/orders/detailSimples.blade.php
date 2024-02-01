@@ -24,7 +24,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">Thông tin thùng hàng</h5>
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin thùng hàng</h5>
       </div>
       <div class="card-body">
         <div class="row">
@@ -98,7 +98,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
       </div>
       <div class="card-body">
         <div class="row">
@@ -134,7 +134,7 @@
       <div class="col-md-8">
         <div class="card border-0 shadow-sm">
           <div class="card-header border-0 bg-white">
-            <h5 class="card-title m-0 fw-bold text-body-secondary">Theo dõi thông tin</h5>
+            <h4 class="card-title m-0 fw-bold text-body-secondary">Theo dõi thông tin</h5>
           </div>
           @if($simple->progress == 'Thùng hàng chưa được khởi động')
           <h2 class="text-center my-3">Thùng hàng chưa được khởi động</h2>
@@ -160,7 +160,7 @@
               <div class="col-md-6">
                 <div class="row">
                   <div class="wrapped d-flex flex-column align-items-center gap-2">
-                    <label class="nv-label fw-bold">Trạng thái sản xuất</label>
+                    <label class="nv-label fw-bold">Trạng thái dây chuyền</label>
                     <div class="d-flex justify-content-center w-100">
                       <div class="progress w-50 position-relative" role="progressbar"
                         aria-valuenow="{{ $simple->progress }}" aria-valuemin="0" aria-valuemax="100"

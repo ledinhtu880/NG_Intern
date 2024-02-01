@@ -20,7 +20,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm mb-3">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
       </div>
       <div class="card-body">
         @if(isset($inProcess))
@@ -88,7 +88,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm mb-3">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">Thông tin chi tiết</h5>
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin chi tiết</h5>
       </div>
       <div class="card-body">
         <table class="table">

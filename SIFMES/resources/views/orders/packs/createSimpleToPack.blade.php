@@ -23,7 +23,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm mb-3">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">Thông tin thùng hàng</h5>
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin thùng hàng</h5>
       </div>
       <div class="card-body border-0">
         <input type="hidden" name="FK_Id_Order" value="{{ $_GET['id'] }}">
@@ -245,6 +245,7 @@
             existingRow.find('[data-id="Count_RawMaterial"]').text(response.existsData.Count_RawMaterial);
             existingRow.find('[data-id="Count_Container"]').text(response.existsData.Count_Container);
             existingRow.find('[data-id="Price_Container"]').text(response.existsData.formattedPrice);
+            existingRow.find('[data-id="Count_Container"]').data("value", response.existsData.Count_Container);
           }
 
           showToast(
@@ -352,8 +353,8 @@
               error: function (xhr) {
                 showToast(
                   "Vui lòng thêm ít nhất 1 thùng hàng",
-                  "bg-danger",
-                  "fa-xmark-circle"
+                  "bg-warning",
+                  "fa-exclamation-circle"
                 );
                 rowElement.remove();
 
@@ -372,7 +373,7 @@
 
       }
       else {
-        showToast("Bạn chưa thêm thùng hàng nào", "bg-warning", "fa-xmark-circle");
+        showToast("Bạn chưa thêm thùng hàng nào", "bg-warning", "fa-exclamation-circle");
       }
     });
   })

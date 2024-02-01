@@ -25,7 +25,7 @@
           @method('PUT')
           <div class="d-flex gap-2">
             <div class="form-group" style="flex: 1;">
-              <label for="Name_RawMaterial" class="form-label">Tên nguyên liệu</label>
+              <label for="Name_RawMaterial" class="form-label" style="font-weight:600;">Tên nguyên liệu</label>
               <input type="text" name="Name_RawMaterial" id="Name_RawMaterial" placeholder="Nhập tên nguyên liệu thô"
                 value="{{ $material->Name_RawMaterial}}"
                 class="form-control{{ $errors->has('Name_RawMaterial') ? ' is-invalid' : '' }}">
@@ -36,7 +36,7 @@
               @endif
             </div>
             <div class="form-group" style="flex: 1;">
-              <label for="Unit" class="form-label">Đơn vị</label>
+              <label for="Unit" class="form-label" style="font-weight:600;">Đơn vị</label>
               <input type="text" name="Unit" id="Unit" placeholder="Nhập đơn vị" value="{{ $material->Unit}}"
                 class="form-control{{ $errors->has('Unit') ? ' is-invalid' : '' }}">
               @if ($errors->has('Unit'))
@@ -48,7 +48,7 @@
           </div>
           <div class="d-flex gap-2">
             <div class="form-group" style="flex: 1;">
-              <label for="Count" class="form-label">Số lượng</label>
+              <label for="Count" class="form-label" style="font-weight:600;">Số lượng</label>
               <input type="number" name="Count" id="Count" placeholder="Nhập số lượng" value="{{ $material->Count }}"
                 class="form-control{{ $errors->has('Count') ? ' is-invalid' : '' }}">
               @if ($errors->has('Count'))
@@ -58,7 +58,7 @@
               @endif
             </div>
             <div class="form-group" style="flex: 1;">
-              <label for="FK_Id_RawMaterialType" class="form-label">Loại nguyên liệu</label>
+              <label for="FK_Id_RawMaterialType" class="form-label" style="font-weight:600;">Loại nguyên liệu</label>
               <select name="FK_Id_RawMaterialType"
                 class="form-select{{ $errors->has('FK_Id_RawMaterialType') ? ' is-invalid' : '' }}">
                 @foreach($data as $each)

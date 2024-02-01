@@ -82,7 +82,7 @@ class CustomerController extends Controller
     $exists = Order::where('FK_Id_Customer', $customer->Id_Customer)->exists();
     if ($exists) {
       return redirect()->route('customers.index')->with([
-        'message' => 'Không thể xóa khách hàng này.',
+        'message' => 'Khách hàng đang có đơn hàng, không thể xóa.',
         'type' => 'warning',
       ]);
     } else {

@@ -140,3 +140,7 @@ textarea {
     cursor: default !important;
     pointer-events: none;
 }
+
+.paginate .pagination {
+    margin: 0;
+}

@@ -205,7 +205,6 @@ class TrackingController extends Controller
                 ->groupBy('FK_Id_Station')
                 ->pluck('FK_Id_Station')
                 ->toArray();
-
               $percent = (Count($stationComplete) / Count($stationArr)) * 100;
             } else if ($result->count() > 1) {
               $prodStationLines = $result->pluck('FK_Id_ProdStationLine')->unique()->toArray();
@@ -228,9 +227,11 @@ class TrackingController extends Controller
                 ->pluck('FK_Id_Station')
                 ->toArray();
 
-              $key = array_search(403, $stationComplete);
-              if ($key !== false) {
-                array_splice($stationComplete, $key, 1);
+              if (in_array(402, $stationArr) && in_array(403, $stationArr)) {
+                $stationArr = array_diff($stationArr, [403]);
+              }
+              if (in_array(402, $stationComplete) && in_array(403, $stationComplete)) {
+                $stationComplete = array_diff($stationComplete, [403]);
               }
 
               $percent = (Count($stationComplete) / Count($stationArr)) * 100;
@@ -258,29 +259,167 @@ class TrackingController extends Controller
       ]);
     }
   }
+  public function showSimples(string $id)
+  {
+    $order = Order::where('Id_Order', $id)->first();
+    $data = DB::table('ContentSimple as cs')
+      ->join('RawMaterial as rm', 'cs.FK_Id_RawMaterial', '=', 'rm.Id_RawMaterial')
+      ->join('ContainerType as ct', 'cs.FK_Id_ContainerType', '=', 'ct.Id_ContainerType')
+      ->where('cs.FK_Id_Order', '=', $id)
+      ->groupBy('cs.Id_ContentSimple', 'rm.Name_RawMaterial', 'rm.Unit', 'cs.Count_RawMaterial', 'ct.Name_ContainerType', 'cs.Count_Container', 'cs.Price_Container')
+      ->select('cs.Id_ContentSimple', 'rm.Name_RawMaterial', 'rm.Unit', 'cs.Count_RawMaterial', 'ct.Name_ContainerType', 'cs.Count_Container', 'cs.Price_Container')
+      ->where('FK_Id_RawMaterialType', '!=', 0)
+      ->union(
+        DB::table('ContentSimple')
+          ->select(
+            'Id_ContentSimple',
+            'Name_RawMaterial',
+            'Unit',
+            'Count_RawMaterial',
+            'Name_ContainerType',
+            'Count_Container',
+            'Price_Container'
+          )
+          ->join('RawMaterial', 'ContentSimple.FK_Id_RawMaterial', '=', 'RawMaterial.Id_RawMaterial')
+          ->join('ContainerType', 'ContentSimple.FK_Id_ContainerType', '=', 'ContainerType.Id_ContainerType')
+          ->join('RegisterContentSimpleAtWareHouse', 'ContentSimple.Id_ContentSimple', '=', 'RegisterContentSimpleAtWareHouse.FK_Id_ContentSimple')
+          ->join('Order', 'RegisterContentSimpleAtWareHouse.FK_Id_Order', '=', 'Order.Id_Order')
+          ->where('Order.Id_Order', $id)
+          ->where('FK_Id_RawMaterialType', '!=', 0)
+      )
+      ->get();
+    foreach ($data as $each) {
+      $isSimpleInPack = DB::table('DetailContentSimpleOfPack')->where('FK_Id_ContentSimple', $each->Id_ContentSimple)->exists();
+      if ($isSimpleInPack) {
+        $result = DB::table('ContentSimple AS cs')
+          ->join('RawMaterial as rm', 'cs.FK_Id_RawMaterial', '=', 'rm.Id_RawMaterial')
+          ->join('DetailContentSimpleOrderLocal AS dcso', 'cs.Id_ContentSimple', '=', 'dcso.FK_Id_ContentSimple')
+          ->join('DispatcherOrder AS do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
+          ->join('DetailProductionStationLine AS dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
+          ->join(DB::raw('(SELECT MAX(FK_Id_Station) AS FK_Id_Station, FK_Id_ContentSimple FROM ProcessContentSimple GROUP BY FK_Id_ContentSimple) AS pcs'), 'cs.Id_ContentSimple', '=', 'pcs.FK_Id_ContentSimple')
+          ->where('rm.FK_Id_RawMaterialType', '!=', 0)
+          ->whereIn('cs.Id_ContentSimple', function ($query) use ($each) {
+            $query->select('FK_Id_ContentSimple')
+              ->from('DetailContentSimpleOfPack')
+              ->where('FK_Id_ContentSimple', $each->Id_ContentSimple)
+              ->limit(1);
+          })
+          ->groupBy('do.FK_Id_ProdStationLine')
+          ->select('do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) AS TotalStation'))
+          ->unionAll(function ($query) use ($each) {
+            $query->select('do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) AS TotalStation'))
+              ->from('ContentPack AS cs')
+              ->join('DetailContentPackOrderLocal AS dcso', 'cs.Id_ContentPack', '=', 'dcso.FK_Id_ContentPack')
+              ->join('DispatcherOrder AS do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
+              ->join('DetailProductionStationLine AS dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
+              ->leftJoin('DetailContentSimpleOfPack AS dcsop', 'cs.Id_ContentPack', '=', 'dcsop.FK_Id_ContentPack')
+              ->leftJoin('ContentSimple AS csimple', 'dcsop.FK_Id_ContentSimple', '=', 'csimple.Id_ContentSimple')
+              ->join('RawMaterial as rm', 'csimple.FK_Id_RawMaterial', '=', 'rm.Id_RawMaterial')
+              ->whereIn('cs.Id_ContentPack', function ($subquery) use ($each) {
+                $subquery->select('FK_Id_ContentPack')
+                  ->from('DetailContentSimpleOfPack')
+                  ->where('FK_Id_ContentSimple', $each->Id_ContentSimple)
+                  ->limit(1);
+              })
+              ->where('rm.FK_Id_RawMaterialType', '!=', 0)
+              ->groupBy('do.FK_Id_ProdStationLine');
+          })
+          ->get();
+      } else {
+        $result = DB::table('ContentSimple as cs')
+          ->join('DetailContentSimpleOrderLocal as dcso', 'cs.Id_ContentSimple', '=', 'dcso.FK_Id_ContentSimple')
+          ->join('RawMaterial as rm', 'cs.FK_Id_RawMaterial', '=', 'rm.Id_RawMaterial')
+          ->join('DispatcherOrder as do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
+          ->join('DetailProductionStationLine as dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
+          ->join(DB::raw('(SELECT MAX(FK_Id_Station) AS FK_Id_Station, FK_Id_ContentSimple FROM ProcessContentSimple GROUP BY FK_Id_ContentSimple) pcs'), 'cs.Id_ContentSimple', '=', 'pcs.FK_Id_ContentSimple')
+          ->where('cs.Id_ContentSimple', '=', $each->Id_ContentSimple)
+          ->where('rm.FK_Id_RawMaterialType', '!=', 0)
+          ->groupBy('pcs.FK_Id_Station', 'do.FK_Id_ProdStationLine')
+          ->select('pcs.FK_Id_Station', 'do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) as TotalStation'))
+          ->get();
+      }
+
+      if ($result->count() == 1) {
+        $result = $result->first(); // Lấy phần tử đầu tiên nếu có nhiều hơn một kết quả
+
+        $totalStation = $result->TotalStation;
+        $countComplete = DB::table('ProcessContentSimple')
+          ->where('FK_Id_ContentSimple', $each->Id_ContentSimple)
+          ->where('FK_Id_State', 2)
+          ->whereNotNull('Date_Fin')
+          ->count();
+
+        $percent = ($countComplete / $totalStation) * 100;
+        $each->progress = (int)$percent;
+      } else if ($result->count() > 1) {
+        $prodStationLines = $result->pluck('FK_Id_ProdStationLine')->unique()->toArray();
+
+        $stationArr = DB::table('DetailProductionStationLine')
+
+          ->whereIn('FK_Id_ProdStationLine', $prodStationLines)
+          ->groupBy('FK_Id_Station')
+          ->pluck('FK_Id_Station')
+          ->toArray();
+
+        $totalStation = Count($stationArr);
+        $countComplete = DB::table('ProcessContentSimple')
+          ->where('FK_Id_ContentSimple', $each->Id_ContentSimple)
+          ->where('FK_Id_State', 2)
+          ->whereNotNull('Date_Fin')
+          ->count();
+
+        $percent = ($countComplete / $totalStation) * 100;
+        $each->progress = (int)$percent;
+      } else {
+        $each->progress = 'Chưa có thông tin';
+      }
+    }
+    return view('tracking.orders.showSimples', compact('order', 'data'));
+  }
   public function showPacks(string $id)
   {
     $order = Order::where('Id_Order', $id)->first();
     $data = DB::table('ContentPack as cp')
       ->leftJoin('DetailContentSimpleOfPack as dcsp', 'cp.Id_ContentPack', '=', 'dcsp.FK_Id_ContentPack')
+      ->join('ContentSimple as cs', 'dcsp.FK_Id_ContentSimple', '=', 'cs.Id_ContentSimple')
+      ->join('RawMaterial as rm', 'cs.FK_Id_RawMaterial', '=', 'rm.Id_RawMaterial')
       ->select(
         'cp.Id_ContentPack',
         'cp.Count_Pack',
         'cp.Price_Pack',
         DB::raw('COUNT(DISTINCT dcsp.FK_Id_ContentSimple) as TotalSimple')
       )
-      ->where('cp.FK_Id_Order', '=', $id)
+      ->where('cp.FK_Id_Order', $id)
+      ->where('rm.FK_Id_RawMaterialType', '!=', 0)
       ->groupBy('cp.Id_ContentPack', 'cp.Count_Pack', 'cp.Price_Pack')
+      ->union(
+        DB::table('ContentPack')
+          ->select(
+            'Id_ContentPack',
+            'Count_Pack',
+            'Price_Pack',
+            DB::raw('COUNT(DISTINCT FK_Id_ContentSimple) as TotalSimple')
+          )
+          ->leftJoin('DetailContentSimpleOfPack as dcsp', 'Id_ContentPack', '=', 'FK_Id_ContentPack')
+          ->join('RegisterContentPackAtWareHouse', 'ContentPack.Id_ContentPack', '=', 'RegisterContentPackAtWareHouse.FK_Id_ContentPack')
+          ->join('Order', 'RegisterContentPackAtWareHouse.FK_Id_Order', '=', 'Order.Id_Order')
+          ->join('ContentSimple as cs', 'dcsp.FK_Id_ContentSimple', '=', 'cs.Id_ContentSimple')
+          ->join('RawMaterial as rm', 'cs.FK_Id_RawMaterial', '=', 'rm.Id_RawMaterial')
+          ->groupBy('Id_ContentPack', 'Count_Pack', 'Price_Pack')
+          ->where('Order.Id_Order', $id)
+          ->where('rm.FK_Id_RawMaterialType', '!=', 0)
+      )
       ->get();
-
     foreach ($data as $each) {
       $countTotal = $each->TotalSimple;
       $completePercent = 0;
       $percent = 0;
 
       $simples = DB::table('ContentSimple')
+        ->join('RawMaterial', 'ContentSimple.FK_Id_RawMaterial', '=', 'Id_RawMaterial')
         ->join('DetailContentSimpleOfPack', 'ContentSimple.Id_ContentSimple', '=', 'DetailContentSimpleOfPack.FK_Id_ContentSimple')
         ->where('FK_Id_ContentPack', $each->Id_ContentPack)
+        ->where('FK_Id_RawMaterialType', '!=', 0)
         ->pluck('Id_ContentSimple')->toArray();
 
       $resultContentSimple = DB::table('ContentSimple as cs')
@@ -333,13 +472,21 @@ class TrackingController extends Controller
             ->pluck('FK_Id_Station')
             ->toArray();
 
-          $totalStation = count($stationArr);
           $stationComplete = DB::table('ProcessContentSimple')
             ->where('FK_Id_ContentSimple', $simple)
             ->where('FK_Id_State', 2)
             ->whereNotNull('Date_Fin')
             ->pluck('FK_Id_Station')
             ->toArray();
+
+          if (in_array(402, $stationArr) && in_array(403, $stationArr)) {
+            $stationArr = array_diff($stationArr, [403]);
+          }
+          if (in_array(402, $stationComplete) && in_array(403, $stationComplete)) {
+            $stationComplete = array_diff($stationComplete, [403]);
+          }
+          $totalStation = count($stationArr);
+
           $percent = (Count($stationComplete) / $totalStation) * 100;
         }
         $completePercent += $percent;
@@ -348,114 +495,6 @@ class TrackingController extends Controller
       $each->progress = (int)(($completePercent / $totalPercent) * 100);
     }
     return view('tracking.orders.showPacks', compact('order', 'data'));
-  }
-  public function showSimples(string $id)
-  {
-    $order = Order::where('Id_Order', $id)->first();
-    $data = DB::table('ContentSimple as cs')
-      ->join('RawMaterial as rm', 'cs.FK_Id_RawMaterial', '=', 'rm.Id_RawMaterial')
-      ->join('ContainerType as ct', 'cs.FK_Id_ContainerType', '=', 'ct.Id_ContainerType')
-      ->where('cs.FK_Id_Order', '=', $id)
-      ->groupBy('cs.Id_ContentSimple', 'rm.Name_RawMaterial', 'rm.Unit', 'cs.Count_RawMaterial', 'ct.Name_ContainerType', 'cs.Count_Container', 'cs.Price_Container')
-      ->select('cs.Id_ContentSimple', 'rm.Name_RawMaterial', 'rm.Unit', 'cs.Count_RawMaterial', 'ct.Name_ContainerType', 'cs.Count_Container', 'cs.Price_Container')
-      ->union(
-        DB::table('ContentSimple')
-          ->select(
-            'Id_ContentSimple',
-            'Name_RawMaterial',
-            'Unit',
-            'Count_RawMaterial',
-            'Name_ContainerType',
-            'Count_Container',
-            'Price_Container'
-          )
-          ->join('RawMaterial', 'ContentSimple.FK_Id_RawMaterial', '=', 'RawMaterial.Id_RawMaterial')
-          ->join('ContainerType', 'ContentSimple.FK_Id_ContainerType', '=', 'ContainerType.Id_ContainerType')
-          ->join('RegisterContentSimpleAtWareHouse', 'ContentSimple.Id_ContentSimple', '=', 'RegisterContentSimpleAtWareHouse.FK_Id_ContentSimple')
-          ->join('Order', 'RegisterContentSimpleAtWareHouse.FK_Id_Order', '=', 'Order.Id_Order')
-          ->where('Order.Id_Order', $id)
-      )
-      ->get();
-    foreach ($data as $each) {
-      $isSimpleInPack = DB::table('DetailContentSimpleOfPack')->where('FK_Id_ContentSimple', $each->Id_ContentSimple)->exists();
-      if ($isSimpleInPack) {
-        $result = DB::table('ContentSimple AS cs')
-          ->join('DetailContentSimpleOrderLocal AS dcso', 'cs.Id_ContentSimple', '=', 'dcso.FK_Id_ContentSimple')
-          ->join('DispatcherOrder AS do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
-          ->join('DetailProductionStationLine AS dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
-          ->join(DB::raw('(SELECT MAX(FK_Id_Station) AS FK_Id_Station, FK_Id_ContentSimple FROM ProcessContentSimple GROUP BY FK_Id_ContentSimple) AS pcs'), 'cs.Id_ContentSimple', '=', 'pcs.FK_Id_ContentSimple')
-          ->whereIn('cs.Id_ContentSimple', function ($query) use ($each) {
-            $query->select('FK_Id_ContentSimple')
-              ->from('DetailContentSimpleOfPack')
-              ->where('FK_Id_ContentSimple', $each->Id_ContentSimple)
-              ->limit(1);
-          })
-          ->groupBy('do.FK_Id_ProdStationLine')
-          ->select('do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) AS TotalStation'))
-          ->unionAll(function ($query) use ($each) {
-            $query->select('do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) AS TotalStation'))
-              ->from('ContentPack AS cs')
-              ->join('DetailContentPackOrderLocal AS dcso', 'cs.Id_ContentPack', '=', 'dcso.FK_Id_ContentPack')
-              ->join('DispatcherOrder AS do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
-              ->join('DetailProductionStationLine AS dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
-              ->leftJoin('DetailContentSimpleOfPack AS dcsop', 'cs.Id_ContentPack', '=', 'dcsop.FK_Id_ContentPack')
-              ->leftJoin('ContentSimple AS csimple', 'dcsop.FK_Id_ContentSimple', '=', 'csimple.Id_ContentSimple')
-              ->whereIn('cs.Id_ContentPack', function ($subquery) use ($each) {
-                $subquery->select('FK_Id_ContentPack')
-                  ->from('DetailContentSimpleOfPack')
-                  ->where('FK_Id_ContentSimple', $each->Id_ContentSimple)
-                  ->limit(1);
-              })
-              ->groupBy('do.FK_Id_ProdStationLine');
-          })
-          ->get();
-      } else {
-        $result = DB::table('ContentSimple as cs')
-          ->join('DetailContentSimpleOrderLocal as dcso', 'cs.Id_ContentSimple', '=', 'dcso.FK_Id_ContentSimple')
-          ->join('DispatcherOrder as do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
-          ->join('DetailProductionStationLine as dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
-          ->join(DB::raw('(SELECT MAX(FK_Id_Station) AS FK_Id_Station, FK_Id_ContentSimple FROM ProcessContentSimple GROUP BY FK_Id_ContentSimple) pcs'), 'cs.Id_ContentSimple', '=', 'pcs.FK_Id_ContentSimple')
-          ->where('cs.Id_ContentSimple', '=', $each->Id_ContentSimple)
-          ->groupBy('pcs.FK_Id_Station', 'do.FK_Id_ProdStationLine')
-          ->select('pcs.FK_Id_Station', 'do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) AS TotalStation'))
-          ->get();
-      }
-
-      if ($result->count() == 1) {
-        $result = $result->first(); // Lấy phần tử đầu tiên nếu có nhiều hơn một kết quả
-
-        $totalStation = $result->TotalStation;
-        $countComplete = DB::table('ProcessContentSimple')
-          ->where('FK_Id_ContentSimple', $each->Id_ContentSimple)
-          ->where('FK_Id_State', 2)
-          ->whereNotNull('Date_Fin')
-          ->count();
-
-        $percent = ($countComplete / $totalStation) * 100;
-        $each->progress = (int)$percent;
-      } else if ($result->count() > 1) {
-        $prodStationLines = $result->pluck('FK_Id_ProdStationLine')->unique()->toArray();
-
-        $stationArr = DB::table('DetailProductionStationLine')
-          ->whereIn('FK_Id_ProdStationLine', $prodStationLines)
-          ->groupBy('FK_Id_Station')
-          ->pluck('FK_Id_Station')
-          ->toArray();
-
-        $totalStation = Count($stationArr);
-        $countComplete = DB::table('ProcessContentSimple')
-          ->where('FK_Id_ContentSimple', $each->Id_ContentSimple)
-          ->where('FK_Id_State', 2)
-          ->whereNotNull('Date_Fin')
-          ->count();
-
-        $percent = ($countComplete / $totalStation) * 100;
-        $each->progress = (int)$percent;
-      } else {
-        $each->progress = 'Chưa có thông tin';
-      }
-    }
-    return view('tracking.orders.showSimples', compact('order', 'data'));
   }
   public function showDetailsSimple(string $id)
   {

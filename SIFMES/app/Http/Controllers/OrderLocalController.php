@@ -293,20 +293,27 @@ class OrderLocalController extends Controller
   {
     if ($request->ajax()) {
       $rowData = $request->input('rowData');
-      foreach ($rowData as $row) {
-        DB::table('DetailContentSimpleOrderLocal')
-          ->where('FK_Id_OrderLocal', '=', $row['Id_OrderLocal'])
-          ->delete();
-        DB::table('DispatcherOrder')
-          ->where('FK_Id_OrderLocal', '=', $row['Id_OrderLocal'])
-          ->delete();
-        DB::table('OrderLocal')
-          ->where('Id_OrderLocal', '=', $row['Id_OrderLocal'])
-          ->delete();
+      $exists = DB::table('OrderLocal')
+        ->join('DispatcherOrder', 'OrderLocal.Id_OrderLocal', '=', 'DispatcherOrder.FK_Id_OrderLocal')
+        ->whereIn('OrderLocal.Id_OrderLocal', array_column($rowData, 'Id_OrderLocal'))
+        ->select('OrderLocal.Id_OrderLocal')
+        ->exists();
+      $isDispatcher = false;
+      if ($exists) {
+        $isDispatcher = true;
+        return response()->json($isDispatcher);
+      } else {
+        $isDispatcher = false;
+        foreach ($rowData as $row) {
+          DB::table('DetailContentSimpleOrderLocal')
+            ->where('FK_Id_OrderLocal', '=', $row['Id_OrderLocal'])
+            ->delete();
+          DB::table('OrderLocal')
+            ->where('Id_OrderLocal', '=', $row['Id_OrderLocal'])
+            ->delete();
+        }
+        return response()->json($isDispatcher);
       }
-      return response()->json([
-        'status' => 'success',
-      ]);
     }
   }
   public function destroySimple(Request $request)
@@ -531,18 +538,32 @@ class OrderLocalController extends Controller
 
   public function deletePacks(Request $request)
   {
-    $Id_OrderLocals = $request->Id_OrderLocals;
+    if ($request->ajax()) {
+      $Id_OrderLocals = $request->input('Id_OrderLocals');
+      $exists = DB::table('OrderLocal')
+        ->join('DispatcherOrder', 'OrderLocal.Id_OrderLocal', '=', 'DispatcherOrder.FK_Id_OrderLocal')
+        ->whereIn('OrderLocal.Id_OrderLocal', $Id_OrderLocals)
+        ->select('OrderLocal.Id_OrderLocal')
+        ->exists();
+      $isDispatcher = false;
+      if ($exists) {
+        $isDispatcher = true;
+        return response()->json([
+          'flag' => $isDispatcher
+        ]);
+      } else {
+        foreach ($Id_OrderLocals as $Id_OrderLocal) {
+          DetailContentPackOrderLocal::where('FK_Id_OrderLocal', $Id_OrderLocal)->delete();
+          OrderLocal::find($Id_OrderLocal)->delete();
 
-    // Xóa ở bảng DetailContentPackOrderLocal
-    foreach ($Id_OrderLocals as $Id_OrderLocal) {
-      DetailContentPackOrderLocal::where('FK_Id_OrderLocal', $Id_OrderLocal)->delete();
-      // Xóa ở bảng OrderLocal
-      OrderLocal::find($Id_OrderLocal)->delete();
+          $db = OrderLocal::where('SimpleOrPack', 1)->where('MakeOrPackOrExpedition', 1)->get();
+          return $this->getAllOrderLocal([
+            'flag' => $isDispatcher,
+            'data' => $db,
+          ]);
+        }
+      }
     }
-
-    $db = OrderLocal::where('SimpleOrPack', 1)
-      ->where('MakeOrPackOrExpedition', 1)->get();
-    return $this->getAllOrderLocal($db);
   }
 
   public function showOrderLocal(Request $request)
@@ -598,7 +619,7 @@ class OrderLocalController extends Controller
                         aria-labelledby="show-$' . $orderLocal->Id_OrderLocal . 'Label" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header" data-bs-theme="dark">
+                                <div class="modal-header">
                                 <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">
                                     Thông tin chi tiết đơn hàng số ' . $orderLocal->Id_OrderLocal . '
                                 </h4>
@@ -734,7 +755,7 @@ class OrderLocalController extends Controller
       $data = DB::table('Order')
         ->join('ContentSimple', 'Order.Id_Order', '=', 'ContentSimple.FK_Id_Order')
         ->join('ProcessContentSimple', 'ProcessContentSimple.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
-        ->join('DetailStateCellOfSimpleWareHouse', 'DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
+        ->leftJoin('DetailStateCellOfSimpleWareHouse', 'DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
         ->join('Customer', 'Customer.Id_Customer', '=', 'Order.FK_Id_Customer')
         ->where('Order.SimpleOrPack', 0)
         ->where('ProcessContentSimple.FK_Id_Station', 406)
@@ -750,7 +771,7 @@ class OrderLocalController extends Controller
     } else if ($station == 409) {
       $data = DB::table('Order')->join('ContentPack', 'Order.Id_Order', '=', 'ContentPack.FK_Id_Order')
         ->join('ProcessContentPack', 'ProcessContentPack.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
-        ->join('DetailStateCellOfPackWareHouse', 'DetailStateCellOfPackWareHouse.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
+        ->leftJoin('DetailStateCellOfPackWareHouse', 'DetailStateCellOfPackWareHouse.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
         ->join('Customer', 'Customer.Id_Customer', '=', 'Order.FK_Id_Customer')
         ->where('Order.SimpleOrPack', 1)
         ->where('ProcessContentPack.FK_Id_Station', $station)
@@ -901,15 +922,30 @@ class OrderLocalController extends Controller
   }
   public function deleteOrderExpedition(Request $request)
   {
-    $ids = $request->input('id');
-    foreach ($ids as $id) {
-      $exist = DB::table('DetailContentSimpleOrderLocal')->where('Fk_Id_OrderLocal', $id)->exists();
-      if ($exist) {
-        DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();
+    if ($request->ajax()) {
+      $ids = $request->input('id');
+      $exists = DB::table('OrderLocal')
+        ->join('DispatcherOrder', 'OrderLocal.Id_OrderLocal', '=', 'DispatcherOrder.FK_Id_OrderLocal')
+        ->whereIn('OrderLocal.Id_OrderLocal', $ids)
+        ->select('OrderLocal.Id_OrderLocal')
+        ->exists();
+      $isDispatcher = false;
+      if ($exists) {
+        $isDispatcher = true;
+        return response()->json($isDispatcher);
       } else {
-        DB::table('DetailContentPackOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();
+        $isDispatcher = false;
+        foreach ($ids as $id) {
+          $isSimple = DB::table('DetailContentSimpleOrderLocal')->where('Fk_Id_OrderLocal', $id)->exists();
+          if ($isSimple) {
+            DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();
+          } else {
+            DB::table('DetailContentPackOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();
+          }
+          DB::table('OrderLocal')->where('Id_OrderLocal', $id)->delete();
+        }
+        return response()->json($isDispatcher);
       }
-      DB::table('OrderLocal')->where('Id_OrderLocal', $id)->delete();
     }
   }
   public function deleteOrderExpeditionByIndex(string $id)
@@ -920,7 +956,7 @@ class OrderLocalController extends Controller
       ->select('OrderLocal.Id_OrderLocal')
       ->exists();
     if ($exists) {
-      return redirect()->route('orderLocals.makes.index')->with([
+      return redirect()->route('orderLocals.expeditions.index')->with([
         'message' => 'Đơn hàng giao hàng đã được khởi động, không thể xóa',
         'type' => 'warning',
       ]);
@@ -932,7 +968,7 @@ class OrderLocalController extends Controller
         DB::table('DetailContentPackOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();
       }
       DB::table('OrderLocal')->where('Id_OrderLocal', $id)->delete();
-      return redirect()->route('orderLocals.makes.index')->with([
+      return redirect()->route('orderLocals.expeditions.index')->with([
         'message' => 'Xóa đơn hàng giao hàng thành công',
         'type' => 'success',
       ]);

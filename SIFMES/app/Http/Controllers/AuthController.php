@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -21,6 +22,10 @@ class AuthController extends Controller
         if ($user && Hash::check($request->password, $user->Password)) {
             Auth::login($user);
             $name = Auth::user()->Name;
+            $roles = DB::table('LinkRoleUser')
+                ->join('Role', 'FK_Id_Role', '=', 'Id_Role')
+                ->where('FK_Id_User', $user->Id_User)->select('FK_Id_Role', 'Name_Role')->get();
+            $request->session()->put('roles', $roles);
             $request->session()->put('name', $name);
             return redirect()->intended('')->with('type', 'success')
                 ->with('message', 'Đăng nhập thành công');

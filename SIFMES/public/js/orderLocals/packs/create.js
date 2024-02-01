@@ -63,7 +63,7 @@ $(document).ready(function () {
             showToast(
                 "Vui lòng chọn ít nhất 1 gói",
                 "bg-warning",
-                "fa-xmark-circle"
+                "fa-exclamation-circle"
             );
             return;
         }
@@ -101,7 +101,7 @@ $(document).ready(function () {
             showToast(
                 "Vui lòng chọn ít nhất 1 đơn đóng gói",
                 "bg-warning",
-                "fa-xmark-circle"
+                "fa-exclamation-circle"
             );
             return;
         }
@@ -113,13 +113,21 @@ $(document).ready(function () {
                 Id_OrderLocals: Id_OrderLocals,
             },
             success: function (response) {
-                $("#table-result").html(response);
-                showToast(
-                    "Vui lòng chọn ít nhất 1 đơn đóng gói",
-                    "bg-warning",
-                    "fa-xmark-circle"
-                );
-                slBox_CustomerType.change();
+                if (response.flag == true) {
+                    showToast(
+                        "Đơn hàng đã được khởi động, không thể xóa",
+                        "bg-warning",
+                        "fa-exclamation-circle"
+                    );
+                } else {
+                    showToast(
+                        "Đơn hàng đã được khởi động, không thể xóa",
+                        "bg-warning",
+                        "fa-exclamation-circle"
+                    );
+                    $("#table-result").html(response.data);
+                    slBox_CustomerType.change();
+                }
             },
         });
     });

@@ -12,7 +12,9 @@
       <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('tracking.orderlocals.index') }}">Theo
           dõi đơn hàng nội bộ</a>
       </li>
-      <li class="breadcrumb-item"><a class="text-decoration-none" href="#">Xem chi tiết</a>
+      <li class="breadcrumb-item"><a class="text-decoration-none"
+          href="{{ route('tracking.orderlocals.showSimples', $Id_OrderLocal) }}">Xem
+          chi tiết</a>
       <li class=" breadcrumb-item active fw-medium" aria-current="page">
         Thông tin thùng hàng
       </li>
@@ -23,7 +25,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">Thông tin thùng hàng</h5>
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin thùng hàng</h5>
       </div>
       <div class="card-body">
         <div class="row">
@@ -97,7 +99,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
       </div>
       <div class="card-body">
         <div class="row">
@@ -133,7 +135,7 @@
       <div class="col-md-8">
         <div class="card border-0 shadow-sm">
           <div class="card-header border-0 bg-white">
-            <h5 class="card-title m-0 fw-bold text-body-secondary">Theo dõi thông tin</h5>
+            <h4 class="card-title m-0 fw-bold text-body-secondary">Theo dõi thông tin</h5>
           </div>
           @if($simple->progress == 'Thùng hàng chưa được khởi động')
           <h2 class="text-center my-3">Thùng hàng chưa được khởi động</h2>

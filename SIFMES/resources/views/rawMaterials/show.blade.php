@@ -40,7 +40,7 @@
       </div>
       <div class="card-footer d-flex justify-content-end align-items-center">
         <div class="d-flex justify-content-end align-items-center gap-2">
-          <a href="{{ route('rawMaterials.index') }}" class="btn btn-primary">Quay lại</a>
+          <a href="{{ route('rawMaterials.index') }}" class="btn btn-light">Quay lại</a>
         </div>
       </div>
     </div>

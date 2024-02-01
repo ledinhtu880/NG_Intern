@@ -24,9 +24,9 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm mb-3">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">Chi tiết kho chứa</h5>
-        <input type="hidden" name="FK_Id_Order" value="{{ $_GET['id'] }}">
-        <input type="hidden" name="warehouse" value="406">
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Chi tiết kho chứa</h5>
+          <input type="hidden" name="FK_Id_Order" value="{{ $_GET['id'] }}">
+          <input type="hidden" name="warehouse" value="406">
       </div>
       <div class="card-body border-0">
         <div class="table-wrapper">
@@ -183,7 +183,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="modal-footer" style="height: 100px;">
+                    <div class="modal-footer">
                         <div class="d-flex align-items-stretch justify-content-between w-100">
                           <div class="input-group w-50">
                             <label class="input-group-text" for="Count">Số lượng</label>
@@ -261,12 +261,12 @@
             let soLuongLay = modalElement.find("input[name='Count']").val().trim();
             let soLuongTon = modalElement.find("td[data-id='SoLuong']").data("value");
             if (soLuongLay === "") {
-              showToast("Chưa nhập số lượng cần lấy", "bg-warning", "fa-xmark-circle");
+              showToast("Chưa nhập số lượng cần lấy", "bg-warning", "fa-exclamation-circle");
             } else if (soLuongLay <= 0) {
-              showToast("Số lượng lấy phải lớn hơn 0", "bg-warning", "fa-xmark-circle");
+              showToast("Số lượng lấy phải lớn hơn 0", "bg-warning", "fa-exclamation-circle");
             }
             else if (soLuongTon === 0) {
-              showToast("Kho đã hết thùng hàng", "bg-danger", "fa-xmark-circle");
+              showToast("Kho đã hết thùng hàng", "bg-warning", "fa-exclamation-circle");
             }
             else {
               let simple = $("tbody").find("#simple-" + id);
@@ -274,15 +274,16 @@
               cell.attr('data-value', soLuongLay);
 
               if (soLuongLay > soLuongTon) {
-                showToast("Số lượng lấy không được lớn hơn số lượng tồn", "bg-danger", "fa-xmark-circle");
-              } else {
+                showToast("Số lượng lấy không được lớn hơn số lượng tồn", "bg-warning", "fa-exclamation-circle");
+              }
+              else {
                 cell.css("background-color", "#28a475").attr("isTake", true);
                 showToast("Lấy thùng hàng thành công", "bg-success", "fa-check-circle");
                 modalElement.modal("hide");
               }
             }
           } else {
-            showToast("Không được lấy thùng hàng từ đơn nội bộ", "bg-danger", "fa-xmark-circle");
+            showToast("Chỉ lấy được thùng hàng từ đơn nội bộ", "bg-warning", "fa-exclamation-circle");
             modalElement.modal("hide");
           }
         },
@@ -308,24 +309,35 @@
         window.location.href = '/orders/simples/createSimple?id=' + FK_Id_Order;
       } else {
         $.ajax({
+          url: "/wares/freeContentSimple",
+          method: "POST",
+          dataType: "json",
+          data: {
+            dataArr: dataArr,
+            _token: token,
+          },
+          success: function (response) {
+          },
+          error: function (xhr) {
+            console.log(xhr);
+          },
+        });
+        $.ajax({
           url: "{{ route('orders.simples.getSimple') }}",
           method: "POST",
           dataType: "json",
-          contentType: 'application/json', // Thêm dòng này để xác định loại dữ liệu gửi đi là JSON
+          contentType: 'application/json',
           data: JSON.stringify({
             dataArr: dataArr,
             FK_Id_Order: FK_Id_Order,
             _token: token,
           }),
           success: function (response) {
-            // Lấy URL từ phản hồi JSON
             var redirectUrl = response.url;
 
-            // Chuyển hướng đến route "orders.simples.create"
             window.location.href = redirectUrl + '?id=' + response.id;
           },
           error: function (xhr) {
-            // Xử lý lỗi khi gửi yêu cầu Ajax
             console.log(xhr.responseText);
             alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
           },

@@ -20,7 +20,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm mb-3">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">Gói hàng</h5>
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Gói hàng</h5>
       </div>
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
@@ -71,7 +71,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm mb-3">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">Đơn đóng gói</h5>
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Đơn đóng gói</h5>
       </div>
       <div class="card-body">
         <table class="table">
@@ -82,7 +82,7 @@
               <th scope="col" class="py-3 text-center">Số lượng</th>
               <th scope="col" class="py-3">Kiểu hàng</th>
               <th scope="col" class="py-3 text-center">Ngày giao hàng</th>
-              <th scope="col" class="py-3 text-center">Mô tả</th>
+              <th scope="col" class="py-3 text-center">Hoạt động</th>
             </tr>
           </thead>
           <tbody id="table-result">
@@ -94,7 +94,7 @@
         <button type="submit" class="btn btn-primary px-3" id="deleteBtn">
           <i class="fa-solid fa-minus text-white me-2"></i>Xóa
         </button>
-        <a href="{{ route('orderLocals.packs.index') }}" class="btn btn-lg btn-light px-3 fs-6">Quay lại</a>
+        <a href="{{ route('orderLocals.packs.index') }}" class="btn btn-light">Quay lại</a>
       </div>
     </div>
   </div>

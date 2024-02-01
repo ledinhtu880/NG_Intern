@@ -19,7 +19,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm mb-3">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
       </div>
       <div class="card-body">
         <form method="POST" id="formInformation">
@@ -107,7 +107,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm mb-3">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">Thông tin gói hàng</h5>
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin gói hàng</h5>
       </div>
       <div class="card-body">
         <div class="d-flex justify-content-between">

@@ -59,9 +59,11 @@
           </button>
           <div class="collapse" id="local-collapsed">
             <ul class="btn-toggle-nav list-unstyled fw-normal d-flex flex-column gap-2">
-              <li><a class="text-decoration-none text-muted" href="{{ route('orderLocals.makes.index') }}"> Quản lý đơn
+              <li>
+                <a class="text-decoration-none text-muted" href="{{ route('orderLocals.makes.index') }}">Quản lý đơn
                   sản xuất
-                </a></li>
+                </a>
+              </li>
               <li>
                 <a class="text-decoration-none text-muted" href="{{ route('orderLocals.packs.index') }}">
                   Quản lý đơn đóng gói
@@ -113,7 +115,8 @@
             <ul class="btn-toggle-nav list-unstyled fw-normal d-flex flex-column gap-2">
               <li><a class="text-decoration-none text-muted" href="{{ route('roles.index') }}">Quản lý vai trò</a></li>
               <li>
-                <a class="text-decoration-none text-muted" href="{{ route('users.index') }}">Quản lý người dùng</a>
+                <a class="text-decoration-none text-muted" id="hello" href="{{ route('users.index') }}">Quản lý người
+                  dùng</a>
               </li>
             </ul>
           </div>

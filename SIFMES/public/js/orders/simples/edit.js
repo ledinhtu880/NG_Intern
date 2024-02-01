@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let token = $('meta[name="csrf-token"]').attr("content");
     let selectElement = $('select[name="FK_Id_RawMaterial"]');
     const toastLiveExample = $("#liveToast");
     const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
@@ -20,7 +21,6 @@ $(document).ready(function () {
     }
 
     selectElement.on("change", function () {
-        let token = $('meta[name="csrf-token"]').attr("content");
         let id = $(this).val();
         let rowElement = $(this).closest(".js-row");
         $.ajax({
@@ -56,7 +56,6 @@ $(document).ready(function () {
         rowElement.find("[data-id='total']").html(formattedPrice);
     });
     $("#saveBtn").on("click", function () {
-        let token = $('meta[name="csrf-token"]').attr("content");
         let form = $("#formInformation");
         let formData = form.serialize();
         let url = "/orders/update";
@@ -68,97 +67,120 @@ $(document).ready(function () {
             showToast(
                 "Số lượng thùng và số lượng nguyên liệu phải lớn hơn 0",
                 "bg-warning",
-                "fa-xmark-circle"
+                "fa-exclamation-circle"
             );
             modalElement.modal("hide");
         } else if (soLuongNguyenLieu <= 0) {
             showToast(
                 "Số lượng nguyên liệu phải lớn hơn 0",
                 "bg-warning",
-                "fa-xmark-circle"
+                "fa-exclamation-circle"
             );
             modalElement.modal("hide");
         } else if (soLuongThung <= 0) {
             showToast(
                 "Số lượng thùng phải lớn hơn 0",
                 "bg-warning",
-                "fa-xmark-circle"
+                "fa-exclamation-circle"
             );
             modalElement.modal("hide");
         } else {
-            $.ajax({
-                url: url,
-                type: "post",
-                data: {
-                    formData: formData,
-                    SimpleOrPack: 0,
-                    _token: token,
-                    id: id,
-                },
-                success: function (response) {
-                    let secondUrl = "/orders/simples/update";
-                    let rowDataArray = [];
-                    $(".js-row").each(function () {
-                        let row = $(this);
-                        let rowData = {};
-                        rowData.Id_ContentSimple = row.data("id");
-                        rowData.FK_Id_RawMaterial = row
-                            .find("#FK_Id_RawMaterial")
-                            .val();
-                        rowData.Count_RawMaterial = row
-                            .find("#Count_RawMaterial")
-                            .val();
-                        rowData.FK_Id_ContainerType = row
-                            .find("#FK_Id_ContainerType")
-                            .val();
-                        rowData.Count_Container = row
-                            .find("#Count_Container")
-                            .val();
-                        rowData.Status = row
-                            .find("td[data-id='Status']")
-                            .data("value");
-                        rowData.Price_Container = row
-                            .find("#Price_Container")
-                            .val();
-                        rowDataArray.push(rowData);
-                    });
-
-                    if (rowDataArray.length > 0) {
-                        $.ajax({
-                            url: secondUrl,
-                            type: "post",
-                            data: {
-                                rowData: rowDataArray,
-                                _token: token,
-                            },
-                            success: function (response) {
-                                // Điều hướng về trang chủ
-                                window.location.href = "/orders/simples";
-                            },
-                            error: function (xhr) {
-                                // Xử lý lỗi khi gửi yêu cầu Ajax
-                                console.log(xhr.responseText);
-                                alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
-                            },
-                        });
-                    } else {
-                        // Điều hướng về trang chủ
-                        window.location.href = "/orders/simples";
-                    }
-                },
-                error: function (xhr) {
-                    // Xử lý lỗi khi gửi yêu cầu Ajax
-                    console.log(xhr.responseText);
-                    alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
-                },
+            let rowDataArray = [];
+            $(".js-row").each(function () {
+                let row = $(this);
+                let rowData = {};
+                rowData.Id_ContentSimple = row.data("id");
+                rowData.FK_Id_RawMaterial = row
+                    .find("#FK_Id_RawMaterial")
+                    .val();
+                rowData.Count_RawMaterial = row
+                    .find("#Count_RawMaterial")
+                    .val();
+                rowData.FK_Id_ContainerType = row
+                    .find("#FK_Id_ContainerType")
+                    .val();
+                rowData.Count_Container = row.find("#Count_Container").val();
+                rowData.Status = row.find("td[data-id='Status']").data("value");
+                rowData.Price_Container = row.find("#Price_Container").val();
+                rowDataArray.push(rowData);
             });
+            if (rowDataArray.length > 0) {
+                $.ajax({
+                    url: "/wares/checkAmountContentSimple",
+                    type: "post",
+                    data: {
+                        rowData: rowDataArray,
+                        id: id,
+                        _token: token,
+                    },
+                    success: function (response) {
+                        if (response.flag == true) {
+                            showToast(
+                                "Số lượng thùng lấy vượt quá số lượng có sẵn trong kho",
+                                "bg-warning",
+                                "fa-exclamation-circle"
+                            );
+                        } else {
+                            $.ajax({
+                                url: url,
+                                type: "post",
+                                data: {
+                                    formData: formData,
+                                    SimpleOrPack: 0,
+                                    _token: token,
+                                    id: id,
+                                },
+                                success: function (response) {
+                                    let secondUrl = "/orders/simples/update";
+                                    $.ajax({
+                                        url: secondUrl,
+                                        type: "post",
+                                        data: {
+                                            id: id,
+                                            rowData: rowDataArray,
+                                            _token: token,
+                                        },
+                                        success: function (response) {
+                                            // Điều hướng về trang chủ
+                                            window.location.href =
+                                                "/orders/simples";
+                                        },
+                                        error: function (xhr) {
+                                            // Xử lý lỗi khi gửi yêu cầu Ajax
+                                            console.log(xhr.responseText);
+                                            alert(
+                                                "Có lỗi xảy ra. Vui lòng thử lại sau."
+                                            );
+                                        },
+                                    });
+                                },
+                                error: function (xhr) {
+                                    // Xử lý lỗi khi gửi yêu cầu Ajax
+                                    console.log(xhr.responseText);
+                                    alert(
+                                        "Có lỗi xảy ra. Vui lòng thử lại sau."
+                                    );
+                                },
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        // Xử lý lỗi khi gửi yêu cầu Ajax
+                        console.log(xhr.responseText);
+                        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                    },
+                });
+            } else {
+                // Điều hướng về trang chủ
+                window.location.href = "/orders/simples";
+            }
         }
     });
     $(document).on("click", ".btnDelete", function () {
         let id = $(this).data("id");
         let modalElement = $("#deleteID-" + id); // Lấy modal tương ứng với hàng
-        let token = $('meta[name="csrf-token"]').attr("content");
         let rowElement = $(this).closest('tr[data-id="' + id + '"]');
+        let isTake = $(rowElement).find("td[data-id='Status']").data("value");
 
         // Xóa hàng khi modal được ẩn
         $.ajax({
@@ -167,15 +189,30 @@ $(document).ready(function () {
             dataType: "json",
             data: {
                 id: id,
+                isTake: isTake,
                 _token: token,
             },
             success: function (response) {
-                modalElement.on("hidden.bs.modal", function () {
-                    rowElement.remove();
-                });
+                if (response == true) {
+                    modalElement.modal("hide");
+                    showToast(
+                        "Thùng hàng đã được khởi động, không thể xóa",
+                        "bg-warning",
+                        "fa-exclamation-circle"
+                    );
+                } else {
+                    modalElement.on("hidden.bs.modal", function () {
+                        rowElement.remove();
+                    });
 
-                // Đóng modal
-                modalElement.modal("hide");
+                    // Đóng modal
+                    modalElement.modal("hide");
+                    showToast(
+                        "Xóa thùng hàng thành công",
+                        "bg-warning",
+                        "fa-exclamation-circle"
+                    );
+                }
             },
         });
     });

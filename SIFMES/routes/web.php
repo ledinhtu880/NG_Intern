@@ -143,6 +143,12 @@ Route::middleware('checklogin')->group(function () {
     Route::post('showSimple', [WareController::class, 'showSimple'])->name('showSimple');
     Route::post('showPack', [WareController::class, 'showPack'])->name('showPack');
     Route::post('showSimpleInPack', [WareController::class, 'showSimpleInPack'])->name('showSimpleInPack');
+    Route::post('freeContentSimple', [WareController::class, 'freeContentSimple'])->name('freeContentSimple');
+    Route::post('checkAmountContentSimple', [WareController::class, 'checkAmountContentSimple'])->name('checkAmountContentSimple');
+    Route::post('disabledContentSimple', [WareController::class, 'disabledContentSimple'])->name('disabledContentSimple');
+    Route::post('freeContentPack', [WareController::class, 'freeContentPack'])->name('freeContentPack');
+    Route::post('checkAmountContentPack', [WareController::class, 'checkAmountContentPack'])->name('checkAmountContentPack');
+    Route::post('disabledContentPack', [WareController::class, 'disabledContentPack'])->name('disabledContentPack');
   });
 
   Route::post('stations/showStation', [StationController::class, 'showStationTypeById'])->name('showStationTypeById');
@@ -154,35 +160,34 @@ Route::middleware('checklogin')->group(function () {
     Route::get('', [DispatchController::class, 'index'])->name('dispatch.index');
     Route::post('getProductStation', [DispatchController::class, 'getProductStation']);
     Route::post('getProductStationByRaw', [DispatchController::class, 'getProductStationByRaw']);
-    Route::post('getOrderlocalsByRawType', [DispatchController::class, 'getOrderlocalsByRawType']);
+    Route::post('showOrderByRawType', [DispatchController::class, 'showOrderByRawType']);
+    Route::post('showOrderByItemType', [DispatchController::class, 'showOrderByItemType']);
     Route::post('getStatus', [DispatchController::class, 'getStatus']);
     Route::post('store', [DispatchController::class, 'store']);
     Route::post('show', [DispatchController::class, 'show']);
   });
 
   Route::group(['prefix' => 'tracking', 'as' => 'tracking.'], function () {
-
     Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
       Route::get('', [TrackingController::class, 'index'])->name('index');
       Route::post('ShowOrderByDate', [TrackingController::class, 'ShowOrderByDate'])->name('ShowOrderByDate');
-      Route::get('/showPacks/{id}', [TrackingController::class, 'showPacks'])->name('showPacks');
-      Route::get('/showSimples/{id}', [TrackingController::class, 'showSimples'])->name('showSimples');
-      Route::get('/showDetailsSimple/{id}', [TrackingController::class, 'showDetailsSimple'])->name('showDetailsSimple');
+      Route::get('showPacks/{id}', [TrackingController::class, 'showPacks'])->name('showPacks');
+      Route::get('showSimples/{id}', [TrackingController::class, 'showSimples'])->name('showSimples');
+      Route::get('showDetailsSimple/{id}', [TrackingController::class, 'showDetailsSimple'])->name('showDetailsSimple');
     });
 
     Route::group(['prefix' => 'customers', 'as' => 'customers.'], function () {
       Route::get('', [InforCustomerController::class, 'index'])->name('index');
-      Route::post('', [InforCustomerController::class, 'getInforCustomer']);
-      Route::get('detailSimples/{Id_Order}', [InforCustomerController::class, 'detailSimples'])->name('detailSimples');
-      Route::get('detailPacks/{Id_Order}', [InforCustomerController::class, 'detailPacks'])->name('detailPacks');
-      Route::post('detailSimpleOfPack', [InforCustomerController::class, 'detailSimpleOfPack'])->name('detailSimpleOfPack');
+      Route::post('getInformation', [InforCustomerController::class, 'getInformation'])->name('getInformation');
+      Route::get('showPacks/{id}', [InforCustomerController::class, 'showPacks'])->name('showPacks');
+      Route::get('showSimples/{id}', [InforCustomerController::class, 'showSimples'])->name('showSimples');
     });
 
     Route::group(['prefix' => 'orderlocals', 'as' => 'orderlocals.'], function () {
       Route::get('', [InfoOrderLocalController::class, 'index'])->name('index');
       Route::post('', [InfoOrderLocalController::class, 'getInfoOrderLocal']);
-      Route::get('detailSimples/{Id_OrderLocal}', [InfoOrderLocalController::class, 'detailSimples']);
-      Route::get('detailPacks/{Id_OrderLocal}', [InfoOrderLocalController::class, 'detailPacks']);
+      Route::get('showSimples/{id}', [InfoOrderLocalController::class, 'showSimples'])->name('showSimples');
+      Route::get('showPacks/{id}', [InfoOrderLocalController::class, 'showPacks'])->name('showPacks');;
       Route::post('detailSimpleOfPack', [InfoOrderLocalController::class, 'detailSimpleOfPack'])->name('detailSimpleOfPack');
       Route::get('/showDetailsSimple/{id}', [InfoOrderLocalController::class, 'showDetailsSimple'])->name('showDetailsSimple');
     });

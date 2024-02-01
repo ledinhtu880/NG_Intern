@@ -25,7 +25,7 @@ $(document).ready(function () {
             showToast(
                 "Số lượng phải lớn hơn 0",
                 "bg-warning",
-                "fa-xmark-circle"
+                "fa-exclamation-circle"
             );
         } else {
             $("#formInformation").submit();
@@ -138,7 +138,7 @@ $(document).ready(function () {
             showToast(
                 "Vui lòng chọn đơn sản xuất",
                 "bg-warning",
-                "fa-xmark-circle"
+                "fa-exclamation-circle"
             );
         }
     });

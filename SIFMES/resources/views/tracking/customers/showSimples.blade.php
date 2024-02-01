@@ -5,16 +5,14 @@
 @section('content')
 <div class="row g-0 p-3">
   <div class="d-flex justify-content-between align-items-center">
-    <h4 class="h4 m-0 fw-bold text-body-secondary">Thông tin chi tiết thùng hàng</h4>
+    <h4 class="h4 m-0 fw-bold text-body-secondary">Thông tin gói hàng</h4>
     <ol class="breadcrumb mb-0">
       <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
       </li>
-      <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('tracking.orders.index') }}">Theo dõi
-          đơn hàng</a>
+      <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('tracking.customers.index') }}">Theo
+          dõi khách hàng</a>
       </li>
-      <li class="breadcrumb-item active fw-medium" aria-current="page">
-        Xem chi tiết
-      </li>
+      <li class="breadcrumb-item active fw-medium" aria-current="page">Thông tin thùng hàng</li>
     </ol>
   </div>
 </div>
@@ -81,6 +79,7 @@
 </div>
 <div class="row g-0 p-3">
   <div class="col-md-12">
+
     <div class="card border-0 shadow-sm">
       <div class="card-header border-0 bg-white">
         <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin thùng hàng</h5>
@@ -135,7 +134,7 @@
         </table>
       </div>
       <div class="card-footer d-flex align-items-center justify-content-end mt-3">
-        <a href="{{ route('tracking.orders.index') }}" class="btn btn-light">
+        <a href="{{ route('tracking.customers.index') }}" class="btn btn-light">
           Quay lại
         </a>
       </div>

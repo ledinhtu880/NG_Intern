@@ -17,257 +17,443 @@ use Exception;
 class InfoOrderLocalController extends Controller
 {
 
-    public function index()
-    {
-        return view('tracking.orderlocals.index');
+  public function index()
+  {
+    return view('tracking.orderlocals.index');
+  }
+  public function getInfoOrderLocal(Request $request)
+  {
+    $typeOrderLocal = $request->input('typeOrderLocal');
+    $data = DB::table('OrderLocal')->where('MakeOrPackOrExpedition', $typeOrderLocal)->get();
+    return response()->json($data);
+  }
+  public function showSimples(string $id)
+  {
+    session()->forget('MakeOrPackOrExpedition');
+    $order = OrderLocal::find($id);
+    $data = DB::table('ContentSimple as cs')
+      ->join('RawMaterial as rm', 'cs.FK_Id_RawMaterial', '=', 'rm.Id_RawMaterial')
+      ->join('ContainerType as ct', 'cs.FK_Id_ContainerType', '=', 'ct.Id_ContainerType')
+      ->join('DetailContentSimpleOrderLocal as dcpol', 'dcpol.FK_Id_ContentSimple', '=', 'cs.Id_ContentSimple')
+      ->where('dcpol.FK_Id_OrderLocal', '=', $id)
+      ->groupBy('cs.Id_ContentSimple', 'rm.Name_RawMaterial', 'rm.Unit', 'cs.Count_RawMaterial', 'ct.Name_ContainerType', 'cs.Count_Container', 'cs.Price_Container')
+      ->select('cs.Id_ContentSimple', 'rm.Name_RawMaterial', 'rm.Unit', 'cs.Count_RawMaterial', 'ct.Name_ContainerType', 'cs.Count_Container', 'cs.Price_Container')
+      ->get();
+    session(['MakeOrPackOrExpedition' => $order->MakeOrPackOrExpedition]);
+    foreach ($data as $each) {
+      if ($order->MakeOrPackOrExpedition == 0) {
+        $result = DB::table('ContentSimple as cs')
+          ->join('DetailContentSimpleOrderLocal as dcso', 'cs.Id_ContentSimple', '=', 'dcso.FK_Id_ContentSimple')
+          ->join('DispatcherOrder as do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
+          ->join('DetailProductionStationLine as dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
+          ->join(DB::raw('(SELECT MAX(FK_Id_Station) AS FK_Id_Station, FK_Id_ContentSimple
+                    FROM ProcessContentSimple WHERE FK_Id_Station <= 406
+                    GROUP BY FK_Id_ContentSimple) pcs'), 'cs.Id_ContentSimple', '=', 'pcs.FK_Id_ContentSimple')
+          ->where('cs.Id_ContentSimple', '=', $each->Id_ContentSimple)
+          ->whereIn('do.FK_Id_ProdStationLine', function ($query) {
+            $query->select('Id_ProdStationLine')
+              ->from('ProductionStationLine')
+              ->where('FK_Id_OrderType', '=', 0);
+          })
+          ->groupBy('pcs.FK_Id_Station', 'do.FK_Id_ProdStationLine')
+          ->select('pcs.FK_Id_Station', 'do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) as TotalStation'))
+          ->get();
+      } else if ($order->MakeOrPackOrExpedition == 2) {
+        $result = DB::table('ContentSimple as cs')
+          ->join('DetailContentSimpleOrderLocal as dcso', 'cs.Id_ContentSimple', '=', 'dcso.FK_Id_ContentSimple')
+          ->join('DispatcherOrder as do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
+          ->join('DetailProductionStationLine as dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
+          ->join(DB::raw('(SELECT MAX(FK_Id_Station) AS FK_Id_Station, FK_Id_ContentSimple
+                    FROM ProcessContentSimple WHERE FK_Id_Station >= 406 AND FK_Id_Station <= 407
+                    GROUP BY FK_Id_ContentSimple) pcs'), 'cs.Id_ContentSimple', '=', 'pcs.FK_Id_ContentSimple')
+          ->where('cs.Id_ContentSimple', '=', $each->Id_ContentSimple)
+          ->whereIn('do.FK_Id_ProdStationLine', function ($query) {
+            $query->select('Id_ProdStationLine')
+              ->from('ProductionStationLine')
+              ->where('FK_Id_OrderType', '=', 1);
+          })
+          ->groupBy('pcs.FK_Id_Station', 'do.FK_Id_ProdStationLine')
+          ->select('pcs.FK_Id_Station', 'do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) as TotalStation'))
+          ->get();
+      }
+
+      if ($result->count() == 1) {
+        $result = $result->first(); // Lấy phần tử đầu tiên nếu có nhiều hơn một kết quả
+
+        $totalStation = $result->TotalStation;
+        if ($order->MakeOrPackOrExpedition == 0) {
+          $countComplete = DB::table('ProcessContentSimple')
+            ->where('FK_Id_ContentSimple', $each->Id_ContentSimple)
+            ->where('FK_Id_State', 2)
+            ->where('FK_Id_Station', '<=', 406)
+            ->whereNotNull('Date_Fin')
+            ->count();
+        } else if ($order->MakeOrPackOrExpedition == 2) {
+          $countComplete = DB::table('ProcessContentSimple')
+            ->where('FK_Id_ContentSimple', $each->Id_ContentSimple)
+            ->where('FK_Id_State', 2)
+            ->where('FK_Id_Station', '>=', 406)
+            ->where('FK_Id_Station', '<=', 407)
+            ->whereNotNull('Date_Fin')
+            ->count();
+        }
+
+        $percent = ($countComplete / $totalStation) * 100;
+        $each->result = $result;
+        $each->totalStation = $totalStation;
+        $each->countComplete = $countComplete;
+        $each->percent = $percent;
+        $each->progress = (int)$percent;
+      } else {
+        $each->progress = 'Chưa có thông tin';
+      }
     }
-    public function getInfoOrderLocal(Request $request)
-    {
-        $Type_orderlocal = $request->input('Type_orderlocal');
-        $orderlocals = DB::table('OrderLocal')->where('MakeOrPackOrExpedition', $Type_orderlocal)->get();
-        $percents = [];
-        $infor = [
-            'orderlocals' => $orderlocals,
-            'percents' => $percents
-        ];
-        return response()->json($infor);
-    }
-    public function detailSimples(string $id)
-    {
-        $contentSimples = DB::table('DetailContentSimpleOrderLocal as DL')->join('ContentSimple as C', 'DL.FK_Id_ContentSimple', '=', 'C.Id_ContentSimple')->join('RawMaterial as R', 'R.Id_RawMaterial', '=', 'C.FK_Id_RawMaterial')->join('ContainerType as CT', 'CT.Id_ContainerType', '=', 'C.FK_Id_ContainerType')->where('DL.FK_Id_OrderLocal', $id)->get();
-        $station = $this->getStationPercentByContentSimple($contentSimples);
-        return view(
-            'tracking.orderlocals.ShowDetailSimples',
-            [
-                'data' => $contentSimples,
-                'station_start' => $station['station_start'],
-                'station_end' => $station['station_end'],
-                'station_currents' => $station['station_currents']
-            ]
-        );
-    }
-    public function detailPacks(string $id)
-    {
-        $contentPacks = DB::table('DetailContentSimpleOrderLocal as DL')
-            ->join('ContentSimple as C', 'DL.FK_Id_ContentSimple', '=', 'C.Id_ContentSimple')
-            ->join('DetailContentSimpleOfPack as DP', 'DP.FK_Id_ContentSimple', '=', 'C.Id_ContentSimple')
-            ->join('ContentPack as CP', 'CP.Id_ContentPack', '=', 'DP.FK_Id_ContentPack')
-            ->where('DL.FK_Id_OrderLocal', $id)
-            ->select('CP.*')
-            ->distinct()
+    return view('tracking.orderlocals.showSimples', compact('order', 'data'));
+  }
+  public function showPacks(string $id)
+  {
+    session()->forget('MakeOrPackOrExpedition');
+    $order = OrderLocal::find($id);
+    if ($order->MakeOrPackOrExpedition == 0) {
+      $data = DB::table('ContentSimple as cs')
+        ->join('RawMaterial as rm', 'cs.FK_Id_RawMaterial', '=', 'rm.Id_RawMaterial')
+        ->join('ContainerType as ct', 'cs.FK_Id_ContainerType', '=', 'ct.Id_ContainerType')
+        ->join('DetailContentSimpleOrderLocal as dcpol', 'dcpol.FK_Id_ContentSimple', '=', 'cs.Id_ContentSimple')
+        ->where('dcpol.FK_Id_OrderLocal', '=', $id)
+        ->groupBy('cs.Id_ContentSimple', 'rm.Name_RawMaterial', 'rm.Unit', 'cs.Count_RawMaterial', 'ct.Name_ContainerType', 'cs.Count_Container', 'cs.Price_Container')
+        ->select('cs.Id_ContentSimple', 'rm.Name_RawMaterial', 'rm.Unit', 'cs.Count_RawMaterial', 'ct.Name_ContainerType', 'cs.Count_Container', 'cs.Price_Container')
+        ->get();
+      foreach ($data as $each) {
+        if ($order->MakeOrPackOrExpedition == 0) {
+          $result = DB::table('ContentSimple as cs')
+            ->join('DetailContentSimpleOrderLocal as dcso', 'cs.Id_ContentSimple', '=', 'dcso.FK_Id_ContentSimple')
+            ->join('DispatcherOrder as do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
+            ->join('DetailProductionStationLine as dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
+            ->join(DB::raw('(SELECT MAX(FK_Id_Station) AS FK_Id_Station, FK_Id_ContentSimple
+                        FROM ProcessContentSimple WHERE FK_Id_Station <= 406
+                        GROUP BY FK_Id_ContentSimple) pcs'), 'cs.Id_ContentSimple', '=', 'pcs.FK_Id_ContentSimple')
+            ->where('cs.Id_ContentSimple', '=', $each->Id_ContentSimple)
+            ->whereIn('do.FK_Id_ProdStationLine', function ($query) {
+              $query->select('Id_ProdStationLine')
+                ->from('ProductionStationLine')
+                ->where('FK_Id_OrderType', '=', 0);
+            })
+            ->groupBy('pcs.FK_Id_Station', 'do.FK_Id_ProdStationLine')
+            ->select('pcs.FK_Id_Station', 'do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) as TotalStation'))
             ->get();
-        $percents = [];
-        foreach ($contentPacks as $contentPack) {
-            $Id_ContentSimples = DetailContentSimpleOfPack::where('FK_Id_ContentPack', $contentPack->Id_ContentPack)->pluck('FK_Id_ContentSimple')->toArray();
-            $ContentSimples = [];
-            foreach ($Id_ContentSimples as $Id_ContentSimple) {
-                $ContentSimples[] = ContentSimple::find($Id_ContentSimple);
-            }
-            $percents[] = $this->percentSimpleOrPack($ContentSimples);
+        } else if ($order->MakeOrPackOrExpedition == 2) {
+          $result = DB::table('ContentSimple as cs')
+            ->join('DetailContentSimpleOrderLocal as dcso', 'cs.Id_ContentSimple', '=', 'dcso.FK_Id_ContentSimple')
+            ->join('DispatcherOrder as do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
+            ->join('DetailProductionStationLine as dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
+            ->join(DB::raw('(SELECT MAX(FK_Id_Station) AS FK_Id_Station, FK_Id_ContentSimple
+                        FROM ProcessContentSimple WHERE FK_Id_Station >= 406 AND FK_Id_Station <= 407
+                        GROUP BY FK_Id_ContentSimple) pcs'), 'cs.Id_ContentSimple', '=', 'pcs.FK_Id_ContentSimple')
+            ->where('cs.Id_ContentSimple', '=', $each->Id_ContentSimple)
+            ->whereIn('do.FK_Id_ProdStationLine', function ($query) {
+              $query->select('Id_ProdStationLine')
+                ->from('ProductionStationLine')
+                ->where('FK_Id_OrderType', '=', 1);
+            })
+            ->groupBy('pcs.FK_Id_Station', 'do.FK_Id_ProdStationLine')
+            ->select('pcs.FK_Id_Station', 'do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) as TotalStation'))
+            ->get();
         }
-        return view(
-            'tracking.orderlocals.ShowDetailPacks',
-            compact('contentPacks', 'percents')
-        );
-    }
-    private function getStationPercentByContentSimple($contentSimples)
-    {
-        $stations = [];
-        $FK_Id_Orderlocals = [];
-        $station_start = 0;
-        $station_end = 0;
-        try {
-            // Lấy ra trạm đầu và trạm cuối cùng của 1 thùng và số lượng trạm
-            $FK_Id_Orderlocals = DetailContentSimpleOrderLocal::join('ProcessContentSimple as pcs', 'pcs.FK_Id_ContentSimple', 'DetailContentSimpleOrderLocal.FK_Id_ContentSimple')
-                ->where('pcs.FK_Id_ContentSimple', $contentSimples[0]->Id_ContentSimple)
-                ->groupBy('DetailContentSimpleOrderLocal.FK_Id_OrderLocal')
-                ->pluck('DetailContentSimpleOrderLocal.FK_Id_OrderLocal')->toArray();
-            $stations = DetailProductionStationLine::join('DispatcherOrder as do', 'do.FK_Id_ProdStationLine', 'DetailProductionStationLine.FK_Id_ProdStationLine')
-                ->whereIn('do.FK_Id_OrderLocal', $FK_Id_Orderlocals)
-                ->pluck('FK_Id_Station')->toArray();
-            $lenStations = count($stations);
 
-            if (count($stations) > 0) {
-                $station_start = $stations[0];
-                $station_end = $stations[count($stations) - 1];
-            }
-            $station_cur = [];
-            foreach ($contentSimples as $contentSimple) {
-                $Id_ContentSimple = $contentSimple->Id_ContentSimple;
-                $station_cur[] = ProcessContentSimple::where('FK_Id_ContentSimple', $Id_ContentSimple)
-                    ->select('FK_Id_Station', 'FK_Id_State')->get()->toArray();
-            }
+        if ($result->count() == 1) {
+          $result = $result->first(); // Lấy phần tử đầu tiên nếu có nhiều hơn một kết quả
 
-            for ($i = 0; $i < count($station_cur); $i++) {
-                usort($station_cur[$i], function ($a, $b) {
-                    return $a['FK_Id_Station'] - $b['FK_Id_Station'];
-                });
-            }
+          $totalStation = $result->TotalStation;
+          $countComplete = DB::table('ProcessContentSimple')
+            ->where('FK_Id_ContentSimple', $each->Id_ContentSimple)
+            ->where('FK_Id_State', 2)
+            ->where('FK_Id_Station', '<=', 406)
+            ->whereNotNull('Date_Fin')
+            ->count();
 
-            $station_currents = [];
-            foreach ($station_cur as $station) {
-                if (count($station) > 0 && $station[count($station) - 1]['FK_Id_State'] == 0) {
-                    $station_currents[] = $station[count($station) - 1]['FK_Id_Station'] - 1;;
-                } else if (count($station) > 0 && $station[count($station) - 1]['FK_Id_State'] == 2) {
-                    $station_currents[] = $station[count($station) - 1]['FK_Id_Station'];
-                }
-            }
-
-            // Tính phần trăm hoàn thành
-            foreach ($station_currents as &$station_current) {
-                $count = 0;
-                foreach ($stations as $station) {
-                    if ($station_current >= $station) {
-                        $count++;
-                    }
-                }
-                $station_current = round($count / $lenStations * 100, 2);
-            }
-            return [
-                'station_start' => $station_start,
-                'station_end' => $station_end,
-                'station_currents' => $station_currents
-            ];
-        } catch (Exception $e) {
-            return [
-                'station_start' => $station_start,
-                'station_end' => $station_end,
-                'station_currents' => -1
-            ];
+          $percent = ($countComplete / $totalStation) * 100;
+          $each->result = $result;
+          $each->totalStation = $totalStation;
+          $each->countComplete = $countComplete;
+          $each->percent = $percent;
+          $each->progress = (int)$percent;
+        } else {
+          $each->progress = 'Chưa có thông tin';
         }
-    }
-    private function percentSimpleOrPack($ContentSimples)
-    {
-        $station = $this->getStationPercentByContentSimple($ContentSimples);
+      }
+      return view('tracking.orderlocals.showPacks', compact('order', 'data'));
+    } else {
+      $data = DB::table('ContentPack as cp')
+        ->leftJoin('DetailContentSimpleOfPack as dcsp', 'cp.Id_ContentPack', '=', 'dcsp.FK_Id_ContentPack')
+        ->join('DetailContentSimpleOrderLocal as dcsol', 'dcsol.FK_Id_ContentSimple', '=', 'dcsp.FK_Id_ContentSimple')
+        ->join('DetailContentPackOrderLocal as dcpol', 'dcpol.FK_Id_ContentPack', '=', 'cp.Id_ContentPack')
+        ->select(
+          'cp.Id_ContentPack',
+          'cp.Count_Pack',
+          'cp.Price_Pack',
+          DB::raw('COUNT(DISTINCT dcsp.FK_Id_ContentSimple) as TotalSimple')
+        )
+        ->where('dcpol.FK_Id_OrderLocal', '=', $id)
+        ->groupBy('cp.Id_ContentPack', 'cp.Count_Pack', 'cp.Price_Pack')
+        ->get();
+
+      foreach ($data as $each) {
+        $countTotal = $each->TotalSimple;
+        $completePercent = 0;
         $percent = 0;
-        if ($station['station_currents'] != -1) {
-            $count_station_currents = count($station['station_currents']);
-            if ($count_station_currents > 0) {
-                $summ = 0;
-                foreach ($station['station_currents'] as $station_current) {
-                    $summ += $station_current;
-                }
-                $percent = round($summ / ($count_station_currents * 100), 2);
-            }
-        }
-        return $percent;
-    }
-    public function detailSimpleOfPack(Request $request)
-    {
-        $Id_ContentPack = $request->id_ContentPack;
-        $Id_ContentSimples = DetailContentSimpleOfPack::where('FK_Id_ContentPack', $Id_ContentPack)->pluck('FK_Id_ContentSimple')->toArray();
-        // $contentSimples_json = [];
-        $ContentSimples = [];
 
-        foreach ($Id_ContentSimples as $Id_ContentSimple) {
-            $ContentSimples[] = ContentSimple::find($Id_ContentSimple);
-        }
+        $simples = DB::table('ContentSimple')
+          ->join('RawMaterial', 'ContentSimple.FK_Id_RawMaterial', '=', 'Id_RawMaterial')
+          ->join('DetailContentSimpleOfPack', 'ContentSimple.Id_ContentSimple', '=', 'DetailContentSimpleOfPack.FK_Id_ContentSimple')
+          ->where('FK_Id_ContentPack', $each->Id_ContentPack)
+          ->where('FK_Id_RawMaterialType', '!=', 0)
+          ->pluck('Id_ContentSimple')->toArray();
 
-        $station = $this->getStationPercentByContentSimple($ContentSimples);
-
-        $htmls = '';
-        for ($i = 0; $i < count($ContentSimples); $i++) {
-            $htmls .= '
-                <tr>
-                    <td class="align-middle">' . $ContentSimples[$i]->Id_ContentSimple . '</td>
-                    <td class="align-middle">' . $ContentSimples[$i]->material->Name_RawMaterial . '</td>
-                    <td class="align-middle">' . $ContentSimples[$i]->material->Unit . '</td>
-                    <td class="align-middle">' . $ContentSimples[$i]->type->Name_ContainerType . '</td>
-                    <td class="align-middle">' . number_format($ContentSimples[$i]->Price_Container, ($ContentSimples[$i]->Price_Container == (int)$ContentSimples[$i]->Price_Container) ? 0 : 2, ',', '.') . ' VNĐ' . '</td>
-                    <td class="align-middle">
-                        <div class="d-flex justify-content-center">
-                            <div class="progress w-50 position-relative" role="progressbar" aria-valuenow="' . $station['station_currents'][$i] . '"
-                                aria-valuemin="0" aria-valuemax="100" style="height: 20px">
-                                <div class="progress-bar bg-primary" style="width: ' . $station['station_currents'][$i] . '%">
-                                </div>
-                                <span class="progress-text fw-bold fs-6';
-            if ($station['station_currents'][$i] < 50) {
-                $htmls .= ' text-primary';
-            } else {
-                $htmls .= ' text-white';
-            }
-            $htmls .= '">' . $station['station_currents'][$i] . '%
-                                </span>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            ';
-        }
-
-        return $htmls;
-    }
-    public function showDetailsSimple(string $id)
-    {
-        $simple = ContentSimple::find($id);
-        $FK_Id_ProdStationLine = DB::table('DispatcherOrder as do')
-            ->join('OrderLocal as ol', 'do.FK_Id_OrderLocal', '=', 'ol.Id_OrderLocal')
-            ->join('DetailContentSimpleOrderLocal as dsol', 'ol.Id_OrderLocal', '=', 'dsol.FK_Id_OrderLocal')
-            ->where('dsol.FK_Id_ContentSimple', '=', $id)
-            ->value('do.FK_Id_ProdStationLine');
-
-        $data = DB::table('Station as s')
-            ->select('st.PathImage', 's.Id_Station', 's.Name_Station', 'st.Name_StationType')
-            ->join('StationType as st', 's.FK_Id_StationType', '=', 'st.Id_StationType')
-            ->join('DetailProductionStationLine as dpsl', 's.Id_Station', '=', 'dpsl.FK_Id_Station')
-            ->join('DispatcherOrder as do', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
-            ->where('do.FK_Id_ProdStationLine', '=', $FK_Id_ProdStationLine)
-            ->groupBy('st.PathImage', 's.Id_Station', 's.Name_Station', 'st.Name_StationType')
-            ->orderBy('s.Id_Station')
+        if ($order->MakeOrPackOrExpedition == 0) {
+          $result = DB::table('ContentSimple as cs')
+            ->join('DetailContentSimpleOrderLocal as dcso', 'cs.Id_ContentSimple', '=', 'dcso.FK_Id_ContentSimple')
+            ->join('DispatcherOrder as do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
+            ->join('DetailProductionStationLine as dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
+            ->join(DB::raw('(SELECT MAX(FK_Id_Station) AS FK_Id_Station, FK_Id_ContentSimple FROM ProcessContentSimple
+                    WHERE FK_Id_Station <= 406 GROUP BY FK_Id_ContentSimple) pcs'), 'cs.Id_ContentSimple', '=', 'pcs.FK_Id_ContentSimple')
+            ->whereIn('cs.Id_ContentSimple', function ($query) use ($each) {
+              $query->select(DB::raw('FK_Id_ContentSimple'))
+                ->from('DetailContentSimpleOfPack')
+                ->where('FK_Id_ContentPack', $each->Id_ContentPack);
+            })
+            ->groupBy('do.FK_Id_ProdStationLine')
+            ->select('do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) as TotalStation'))
             ->get();
+        } else if ($order->MakeOrPackOrExpedition == 1) {
+          $result = DB::table('ContentPack as cs')
+            ->join('DetailContentPackOrderLocal as dcso', 'cs.Id_ContentPack', '=', 'dcso.FK_Id_ContentPack')
+            ->join('DispatcherOrder as do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
+            ->join('DetailProductionStationLine as dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
+            ->leftJoin('DetailContentSimpleOfPack as dcsop', 'cs.Id_ContentPack', '=', 'dcsop.FK_Id_ContentPack')
+            ->leftJoin('ContentSimple as csimple', 'dcsop.FK_Id_ContentSimple', '=', 'csimple.Id_ContentSimple')
+            ->where('cs.Id_ContentPack', $each->Id_ContentPack)
+            ->groupBy('do.FK_Id_ProdStationLine')
+            ->select('do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) as TotalStation'))
+            ->get();
+        } else if ($order->MakeOrPackOrExpedition == 2) {
+          if ($order->SimpleOrPack == 0) {
+            $resultContentSimple = DB::table('ContentSimple as cs')
+              ->join('DetailContentSimpleOrderLocal as dcso', 'cs.Id_ContentSimple', '=', 'dcso.FK_Id_ContentSimple')
+              ->join('DispatcherOrder as do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
+              ->join('DetailProductionStationLine as dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
+              ->join(DB::raw('(SELECT MAX(FK_Id_Station) AS FK_Id_Station, FK_Id_ContentSimple FROM ProcessContentSimple 
+                    WHERE FK_Id_Station >= 406 AND FK_Id_Station <= 407
+                    GROUP BY FK_Id_ContentSimple) pcs'), 'cs.Id_ContentSimple', '=', 'pcs.FK_Id_ContentSimple')
+              ->whereIn('cs.Id_ContentSimple', function ($query) use ($each) {
+                $query->select(DB::raw('FK_Id_ContentSimple'))
+                  ->from('DetailContentSimpleOfPack')
+                  ->where('FK_Id_ContentPack', $each->Id_ContentPack);
+              })
+              ->groupBy('do.FK_Id_ProdStationLine')
+              ->select('do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) as TotalStation'));
+          } else {
+            $resultContentSimple = DB::table('ContentSimple as cs')
+              ->join('DetailContentSimpleOrderLocal as dcso', 'cs.Id_ContentSimple', '=', 'dcso.FK_Id_ContentSimple')
+              ->join('DispatcherOrder as do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
+              ->join('DetailProductionStationLine as dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
+              ->join(DB::raw('(SELECT MAX(FK_Id_Station) AS FK_Id_Station, FK_Id_ContentSimple FROM ProcessContentSimple 
+                    WHERE FK_Id_Station >= 409 AND FK_Id_Station <= 412
+                    GROUP BY FK_Id_ContentSimple) pcs'), 'cs.Id_ContentSimple', '=', 'pcs.FK_Id_ContentSimple')
+              ->whereIn('cs.Id_ContentSimple', function ($query) use ($each) {
+                $query->select(DB::raw('FK_Id_ContentSimple'))
+                  ->from('DetailContentSimpleOfPack')
+                  ->where('FK_Id_ContentPack', $each->Id_ContentPack);
+              })
+              ->groupBy('do.FK_Id_ProdStationLine')
+              ->select('do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) as TotalStation'));
+          }
+          $resultContentPack = DB::table('ContentPack as cs')
+            ->join('DetailContentPackOrderLocal as dcso', 'cs.Id_ContentPack', '=', 'dcso.FK_Id_ContentPack')
+            ->join('DispatcherOrder as do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
+            ->join('DetailProductionStationLine as dpsl', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
+            ->leftJoin('DetailContentSimpleOfPack as dcsop', 'cs.Id_ContentPack', '=', 'dcsop.FK_Id_ContentPack')
+            ->leftJoin('ContentSimple as csimple', 'dcsop.FK_Id_ContentSimple', '=', 'csimple.Id_ContentSimple')
+            ->where('cs.Id_ContentPack', $each->Id_ContentPack)
+            ->groupBy('do.FK_Id_ProdStationLine')
+            ->select('do.FK_Id_ProdStationLine', DB::raw('COUNT(DISTINCT dpsl.FK_Id_Station) as TotalStation'));
 
-        $result = DB::table('ProcessContentSimple')
-            ->select('FK_Id_Station', 'Date_Fin', DB::raw("CONCAT(
+          $result = $resultContentSimple->unionAll($resultContentPack)->get();
+        }
+        foreach ($simples as $simple) {
+          $prodStationLine = $result->first()->FK_Id_ProdStationLine;
+          $stationArr = DB::table('DetailProductionStationLine')
+            ->where('FK_Id_ProdStationLine', $prodStationLine)
+            ->groupBy('FK_Id_Station')
+            ->pluck('FK_Id_Station')
+            ->toArray();
+
+          $totalStation = count($stationArr);
+          if ($order->MakeOrPackOrExpedition == 0) {
+            $stationComplete = DB::table('ProcessContentSimple')
+              ->where('FK_Id_ContentSimple', $simple)
+              ->where('FK_Id_State', 2)
+              ->where('FK_Id_Station', '>=', 401)
+              ->where('FK_Id_Station', '<=', 406)
+              ->whereNotNull('Date_Fin')
+              ->pluck('FK_Id_Station')
+              ->toArray();
+          } else if ($order->MakeOrPackOrExpedition == 1) {
+            $stationComplete = DB::table('ProcessContentSimple')
+              ->where('FK_Id_ContentSimple', $simple)
+              ->where('FK_Id_State', 2)
+              ->where('FK_Id_Station', '>=', 406)
+              ->where('FK_Id_Station', '<=', 409)
+              ->whereNotNull('Date_Fin')
+              ->pluck('FK_Id_Station')
+              ->toArray();
+          } else if ($order->MakeOrPackOrExpedition == 2) {
+            if ($order->SimpleOrPack == 0) {
+              $stationComplete = DB::table('ProcessContentSimple')
+                ->where('FK_Id_ContentSimple', $simple)
+                ->where('FK_Id_State', 2)
+                ->where('FK_Id_Station', '>=', 406)
+                ->where('FK_Id_Station', '<=', 407)
+                ->whereNotNull('Date_Fin')
+                ->pluck('FK_Id_Station')
+                ->toArray();
+            } else {
+              $stationComplete = DB::table('ProcessContentSimple')
+                ->where('FK_Id_ContentSimple', $simple)
+                ->where('FK_Id_State', 2)
+                ->where('FK_Id_Station', '>=', 409)
+                ->where('FK_Id_Station', '<=', 412)
+                ->whereNotNull('Date_Fin')
+                ->pluck('FK_Id_Station')
+                ->toArray();
+            }
+          }
+          $percent = (Count($stationComplete) / $totalStation) * 100;
+          $completePercent += $percent;
+        }
+        $totalPercent = $countTotal * 100;
+        $each->progress = (int)(($completePercent / $totalPercent) * 100);
+      }
+      return view('tracking.orderlocals.showPacks', compact('order', 'data'));
+    }
+  }
+  public function showDetailsSimple(string $id)
+  {
+    $simple = ContentSimple::find($id);
+    $MakeOrPackOrExpedition = session('MakeOrPackOrExpedition');
+    $Id_OrderLocal = DB::table('OrderLocal')
+      ->join('DetailContentSimpleOrderLocal', 'Id_OrderLocal', '=', 'FK_Id_OrderLocal')
+      ->where('FK_Id_ContentSimple', $id)
+      ->where('MakeOrPackOrExpedition', $MakeOrPackOrExpedition)
+      ->value('Id_OrderLocal');
+    if ($MakeOrPackOrExpedition == 0) {
+      $FK_Id_ProdStationLine = DB::table('DispatcherOrder as do')
+        ->join('OrderLocal as ol', 'do.FK_Id_OrderLocal', '=', 'ol.Id_OrderLocal')
+        ->join('DetailContentSimpleOrderLocal as dsol', 'ol.Id_OrderLocal', '=', 'dsol.FK_Id_OrderLocal')
+        ->where('dsol.FK_Id_ContentSimple', '=', $id)
+        ->whereIn('do.FK_Id_ProdStationLine', function ($query) {
+          $query->select('Id_ProdStationLine')
+            ->from('ProductionStationLine')
+            ->where('FK_Id_OrderType', '=', 0);
+        })
+        ->value('do.FK_Id_ProdStationLine');
+      $result = DB::table('ProcessContentSimple')
+        ->select('FK_Id_Station', 'Date_Fin', DB::raw("CONCAT(
                     FLOOR(DATEDIFF(second, Date_Start, Date_Fin) / 3600), N' giờ, ',
                     FLOOR((DATEDIFF(second, Date_Start, Date_Fin) % 3600) / 60), N' phút, ',
                     (DATEDIFF(second, Date_Start, Date_Fin) % 60), N' giây') as elapsedTime"))
-            ->where('FK_Id_ContentSimple', '=', $id)
-            ->orderBy('FK_Id_Station')
-            ->get();
+        ->where('FK_Id_ContentSimple', '=', $id)
+        ->where('FK_Id_Station', '<=', 406)
+        ->orderBy('FK_Id_Station')
+        ->get();
+    } else if ($MakeOrPackOrExpedition == 2) {
+      $FK_Id_ProdStationLine = DB::table('DispatcherOrder as do')
+        ->join('OrderLocal as ol', 'do.FK_Id_OrderLocal', '=', 'ol.Id_OrderLocal')
+        ->join('DetailContentSimpleOrderLocal as dsol', 'ol.Id_OrderLocal', '=', 'dsol.FK_Id_OrderLocal')
+        ->where('dsol.FK_Id_ContentSimple', '=', $id)
+        ->whereIn('do.FK_Id_ProdStationLine', function ($query) {
+          $query->select('Id_ProdStationLine')
+            ->from('ProductionStationLine')
+            ->where('FK_Id_OrderType', '=', 1);
+        })
+        ->value('do.FK_Id_ProdStationLine');
+      $result = DB::table('ProcessContentSimple')
+        ->select('FK_Id_Station', 'Date_Fin', DB::raw("CONCAT(
+                    FLOOR(DATEDIFF(second, Date_Start, Date_Fin) / 3600), N' giờ, ',
+                    FLOOR((DATEDIFF(second, Date_Start, Date_Fin) % 3600) / 60), N' phút, ',
+                    (DATEDIFF(second, Date_Start, Date_Fin) % 60), N' giây') as elapsedTime"))
+        ->where('FK_Id_ContentSimple', '=', $id)
+        ->where('FK_Id_Station', '>=', 406)
+        ->where('FK_Id_Station', '<=', 407)
+        ->orderBy('FK_Id_Station')
+        ->get();
+    }
+    $data = DB::table('Station as s')
+      ->select('st.PathImage', 's.Id_Station', 's.Name_Station', 'st.Name_StationType')
+      ->join('StationType as st', 's.FK_Id_StationType', '=', 'st.Id_StationType')
+      ->join('DetailProductionStationLine as dpsl', 's.Id_Station', '=', 'dpsl.FK_Id_Station')
+      ->join('DispatcherOrder as do', 'do.FK_Id_ProdStationLine', '=', 'dpsl.FK_Id_ProdStationLine')
+      ->where('do.FK_Id_ProdStationLine', '=', $FK_Id_ProdStationLine)
+      ->groupBy('st.PathImage', 's.Id_Station', 's.Name_Station', 'st.Name_StationType')
+      ->orderBy('s.Id_Station')
+      ->get();
 
-        $countComplete = 0;
+    $countComplete = 0;
 
-        foreach ($data as $each) {
-            $found = false;
-            foreach ($result as $processSimple) {
-                if ($each->Id_Station == $processSimple->FK_Id_Station) {
-                    if ($processSimple->Date_Fin == null) {
-                        $each->status = 'Chưa hoàn thành';
-                        $each->elapsedTime = 'Chưa hoàn thành';
-                    } else {
-                        $each->elapsedTime = $processSimple->elapsedTime;
-                        $each->status = 'Hoàn thành';
-                        $countComplete++;
-                    }
+    foreach ($data as $each) {
+      $found = false;
+      foreach ($result as $processSimple) {
+        if ($each->Id_Station == $processSimple->FK_Id_Station) {
+          if ($processSimple->Date_Fin == null) {
+            $each->status = 'Chưa hoàn thành';
+            $each->elapsedTime = 'Chưa hoàn thành';
+          } else {
+            $each->elapsedTime = $processSimple->elapsedTime;
+            $each->status = 'Hoàn thành';
+            $countComplete++;
+          }
 
-                    $found = true;
-                    break;
-                }
-            }
-
-            if (!$found) {
-                $each->status = 'Chưa hoàn thành';
-                $each->elapsedTime = 'Chưa hoàn thành';
-            }
+          $found = true;
+          break;
         }
+      }
 
-        if (count($data) == 0) {
-            $simple->progress = 'Thùng hàng chưa được khởi động';
-        } else {
-            $percent = ($countComplete / count($data)) * 100;
-            $simple->progress = (int) $percent;
-            $totalTime = DB::table('ProcessContentSimple')
-                ->select(DB::raw("CONCAT(
+      if (!$found) {
+        $each->status = 'Chưa hoàn thành';
+        $each->elapsedTime = 'Chưa hoàn thành';
+      }
+    }
+
+    if (count($data) == 0) {
+      $simple->progress = 'Thùng hàng chưa được khởi động';
+    } else {
+      $percent = ($countComplete / count($data)) * 100;
+      $simple->progress = (int) $percent;
+      if ($MakeOrPackOrExpedition == 0) {
+        $totalTime = DB::table('ProcessContentSimple')
+          ->select(DB::raw("CONCAT(
                                 FLOOR(SUM(DATEDIFF(second, Date_Start, Date_Fin)) / 3600), N' giờ, ',
                                 FLOOR((SUM(DATEDIFF(second, Date_Start, Date_Fin)) % 3600) / 60), N' phút, ',
                                 (SUM(DATEDIFF(second, Date_Start, Date_Fin)) % 60), N' giây') as elapsedTime"))
-                ->where('FK_Id_ContentSimple', $id)
-                ->havingRaw('SUM(DATEDIFF(second, Date_Start, Date_Fin)) IS NOT NULL')
-                ->first();
-            $simple->elapsedTime = $totalTime->elapsedTime;
-        }
-
-        $simple->progress == 100 ? $simple->status = 'Hoàn thành' : $simple->status = 'Chưa hoàn thành';
-        return view('tracking.orderlocals.detailSimples', compact('simple', 'data'));
+          ->where('FK_Id_ContentSimple', $id)
+          ->where('FK_Id_Station', '<=', 406)
+          ->havingRaw('SUM(DATEDIFF(second, Date_Start, Date_Fin)) IS NOT NULL')
+          ->first();
+      } else if ($MakeOrPackOrExpedition == 2) {
+        $totalTime = DB::table('ProcessContentSimple')
+          ->select(DB::raw("CONCAT(
+                                FLOOR(SUM(DATEDIFF(second, Date_Start, Date_Fin)) / 3600), N' giờ, ',
+                                FLOOR((SUM(DATEDIFF(second, Date_Start, Date_Fin)) % 3600) / 60), N' phút, ',
+                                (SUM(DATEDIFF(second, Date_Start, Date_Fin)) % 60), N' giây') as elapsedTime"))
+          ->where('FK_Id_ContentSimple', $id)
+          ->where('FK_Id_Station', '>=', 406)
+          ->where('FK_Id_Station', '<=', 407)
+          ->havingRaw('SUM(DATEDIFF(second, Date_Start, Date_Fin)) IS NOT NULL')
+          ->first();
+      }
+      $totalTime == null ? $simple->elapsedTime = 0 : $simple->elapsedTime = $totalTime->elapsedTime;
     }
+
+    $simple->progress == 100 ? $simple->status = 'Hoàn thành' : $simple->status = 'Chưa hoàn thành';
+    return view('tracking.orderlocals.detailSimples', compact('simple', 'data', 'Id_OrderLocal'));
+  }
 }

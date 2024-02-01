@@ -19,7 +19,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm mb-3">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
       </div>
       <div class="card-body">
         <div class="row">
@@ -88,7 +88,7 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm mb-3">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">Thông tin chi tiết</h5>
+        <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin chi tiết</h5>
       </div>
       <div class="card-body">
         <table class="table">
@@ -124,7 +124,7 @@
         </table>
       </div>
       <div class="card-footer d-flex align-items-center justify-content-end">
-        <a href="{{ route('orderLocals.makes.index') }}" class="btn btn-lg btn-light px-3 fs-6">Quay lại</a>
+        <a href="{{ route('orderLocals.makes.index') }}" class="btn btn-light">Quay lại</a>
       </div>
     </div>
   </div>

@@ -19,13 +19,13 @@
   <div class="col-md-12">
     <div class="card border-0 shadow-sm">
       <div class="card-header border-0 bg-white">
-        <h5 class="card-title m-0 fw-bold text-body-secondary">
+        <h4 class="card-title m-0 fw-bold text-body-secondary">
           @if (isset($user))
           Sửa người dùng
           @else
           Thêm người dùng mới
           @endif
-        </h5>
+          </h5>
       </div>
       <div class="card-body">
         <form
@@ -65,53 +65,6 @@
             </div>
             @endif
           </div>
-          <!-- <div class="mb-3">
-            <div class="input-group">
-              <label for="curPassword" class="input-group-text d-flex align-items-center gap-1">
-                <i class="fa-solid fa-circle-user text-primary"></i>
-                Mật khẩu hiện tại
-              </label>
-              <input type="text" class="form-control{{ $errors->has('curPassword') ? ' is-invalid' : '' }}"
-                id="curPassword" name="curPassword" placeholder="Nhập mật khẩu hiện tại"
-                value="{{ old('curPassword') }}">
-            </div>
-            @if ($errors->has('curPassword'))
-            <div class="text-danger">
-              {{ $errors->first('curPassword') }}
-            </div>
-            @endif
-          </div>
-          <div class="mb-3">
-            <div class="input-group">
-              <label for="newPassword" class="input-group-text d-flex align-items-center gap-1">
-                <i class="fa-solid fa-circle-user text-primary"></i>
-                Mật khẩu mới
-              </label>
-              <input type="text" class="form-control{{ $errors->has('newPassword') ? ' is-invalid' : '' }}"
-                id="newPassword" name="newPassword" placeholder="Nhập mật khẩu mới" value="{{ old('newPassword') }}">
-            </div>
-            @if ($errors->has('newPassword'))
-            <div class="text-danger">
-              {{ $errors->first('newPassword') }}
-            </div>
-            @endif
-          </div>
-          <div class="mb-3">
-            <div class="input-group">
-              <label for="confirmPassword" class="input-group-text d-flex align-items-center gap-1">
-                <i class="fa-solid fa-circle-user text-primary"></i>
-                Xác nhận mật khẩu
-              </label>
-              <input type="text" class="form-control{{ $errors->has('confirmPassword') ? ' is-invalid' : '' }}"
-                id="confirmPassword" name="confirmPassword" placeholder="Xác nhận mật khẩu"
-                value="{{ old('confirmPassword') }}">
-            </div>
-            @if ($errors->has('confirmPassword'))
-            <div class="text-danger">
-              {{ $errors->first('confirmPassword') }}
-            </div>
-            @endif
-          </div> -->
           <div class="d-flex justify-content-end gap-3">
             <a href="{{ route('users.index') }}" class="btn btn-light">
               Quay lại

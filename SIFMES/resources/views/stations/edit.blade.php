@@ -23,7 +23,7 @@
           @csrf
           <div class="d-flex gap-3">
             <div class="form-group" style="flex: 1;">
-              <label for="Id_Station" class="form-label">Mã trạm</label>
+              <label for="Id_Station" class="form-label" style="font-weight:600;">Mã trạm</label>
               <input type="text" name="Id_Station" id="Id_Station" placeholder="Nhập mã trạm"
                 class="form-control{{ $errors->has('Id_Station') ? ' is-invalid' : '' }}"
                 value="{{ $station->Id_Station }}" readonly>
@@ -35,7 +35,7 @@
             </div>
             @method('PUT')
             <div class="form-group" style="flex: 1;">
-              <label for="Name_Station" class="form-label">Tên trạm</label>
+              <label for="Name_Station" class="form-label" style="font-weight:600;">Tên trạm</label>
               <input type="text" name="Name_Station" id="Name_Station" placeholder="Nhập tên trạm"
                 class="form-control{{ $errors->has('Name_Station') ? ' is-invalid' : '' }}"
                 value="{{ $station->Name_Station }}">
@@ -47,7 +47,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="Ip_Address" class="form-label">Địa chỉ IP</label>
+            <label for="Ip_Address" class="form-label" style="font-weight:600;">Địa chỉ IP</label>
             <input type="text" name="Ip_Address" id="Ip_Address" placeholder="Nhập địa chỉ IP"
               class="form-control{{ $errors->has('Ip_Address') ? ' is-invalid' : '' }}"
               value="{{ $station->Ip_Address }}">
@@ -58,7 +58,7 @@
             @endif
           </div>
           <div class="form-group">
-            <label for="FK_Id_StationType" class="form-label">Loại trạm</label>
+            <label for="FK_Id_StationType" class="form-label" style="font-weight:600;">Loại trạm</label>
             <select name="FK_Id_StationType" id="FK_Id_StationType"
               class="form-select{{ $errors->has('FK_Id_StationType') ? ' is-invalid' : '' }}">
               @foreach ($data as $each)

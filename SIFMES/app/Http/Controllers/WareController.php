@@ -179,4 +179,177 @@ class WareController extends Controller
       ]);
     }
   }
+  public function freeContentSimple(Request $request)
+  {
+    if ($request->ajax()) {
+      $dataArr = $request->input('dataArr');
+
+      foreach ($dataArr as $each) {
+        $result = DB::table('ContentSimple')
+          ->selectRaw('(ContentSimple.Count_Container - COALESCE(SUM(RegisterContentSimpleAtWareHouse.Count), 0)) as SoLuong')
+          ->join('DetailStateCellOfSimpleWareHouse', 'DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
+          ->leftJoin('RegisterContentSimpleAtWareHouse', 'ContentSimple.Id_ContentSimple', '=', 'RegisterContentSimpleAtWareHouse.FK_Id_ContentSimple')
+          ->where('ContentSimple.Id_ContentSimple', '=', $each['id'])
+          ->groupBy('Count_RawMaterial', 'Count_Container', 'Price_Container')
+          ->first();
+
+        if ($each['Count'] == $result->SoLuong) {
+          DB::table('DetailStateCellOfSimpleWareHouse')
+            ->where('FK_Id_ContentSimple', '=', $each['id'])
+            ->update([
+              'FK_Id_ContentSimple' => null,
+              'FK_Id_StateCell' => 1,
+            ]);
+        }
+        return response()->json([
+          'status' => 'success',
+        ]);
+      }
+    }
+  }
+  public function checkAmountContentSimple(Request $request)
+  {
+    if ($request->ajax()) {
+      $rowData = $request->input('rowData');
+      $id = $request->input('id');
+
+      $data = [];
+      foreach ($rowData as $row) {
+        if ($row['Status'] == 1) {
+          $result = DB::table('ContentSimple')
+            ->selectRaw('(ContentSimple.Count_Container - COALESCE(SUM(RegisterContentSimpleAtWareHouse.Count), 0)) as SoLuong')
+            ->join('DetailStateCellOfSimpleWareHouse', 'DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
+            ->leftJoin('RegisterContentSimpleAtWareHouse', 'ContentSimple.Id_ContentSimple', '=', 'RegisterContentSimpleAtWareHouse.FK_Id_ContentSimple')
+            ->where('ContentSimple.Id_ContentSimple', '=', $row['Id_ContentSimple'])
+            ->groupBy('Count_RawMaterial', 'Count_Container', 'Price_Container')
+            ->first();
+
+          $soLuongCu = DB::table('RegisterContentSimpleAtWareHouse')
+            ->where('FK_Id_ContentSimple', $row['Id_ContentSimple'])
+            ->where('FK_Id_Order', $id)
+            ->value('Count');
+
+          if ((int)$soLuongCu < (int)$row['Count_Container']) {
+            $soLuongThayDoi = (int)$row['Count_Container'] - (int)$soLuongCu;
+            if ($soLuongThayDoi > $result->SoLuong) {
+              $result->id = $row['Id_ContentSimple'];
+              $data[] = $result;
+            }
+          }
+        }
+      }
+      if (Count($data) > 0) {
+        return response()->json([
+          'flag' => 1,
+          'data' => $data,
+        ]);
+      } else {
+        return response()->json([
+          'flag' => 0,
+        ]);
+      }
+    }
+  }
+  public function disabledContentSimple(Request $request)
+  {
+    if ($request->ajax()) {
+      $id = $request->input('id');
+      $flag = 1;
+      $exists = DB::table('DetailStateCellOfSimpleWareHouse')->where('FK_Id_ContentSimple', $id)->exists();
+      if ($exists) {
+        return response()->json($flag);
+      } else {
+        $flag = 0;
+        return response()->json($flag);
+      }
+    }
+  }
+  public function freeContentPack(Request $request)
+  {
+    if ($request->ajax()) {
+      $dataArr = $request->input('dataArr');
+
+      foreach ($dataArr as $each) {
+        $result = DB::table('ContentPack')
+          ->selectRaw('(Count_Pack - COALESCE(SUM(RegisterContentPackAtWareHouse.Count), 0)) as SoLuong')
+          ->leftJoin('RegisterContentPackAtWareHouse', 'Id_ContentPack', '=', 'FK_Id_ContentPack')
+          ->where('Id_ContentPack', '=', $each['id'])
+          ->groupBy('Id_ContentPack', 'Count_Pack', 'Price_Pack')
+          ->first();
+
+        if ($each['Count'] == $result->SoLuong) {
+          DB::table('DetailStateCellOfPackWareHouse')
+            ->where('FK_Id_ContentPack', '=', $each['id'])
+            ->update([
+              'FK_Id_ContentPack' => null,
+              'FK_Id_StateCell' => 1,
+            ]);
+        }
+        return response()->json([
+          'status' => 'success',
+        ]);
+      }
+    }
+  }
+  public function checkAmountContentPack(Request $request)
+  {
+    if ($request->ajax()) {
+      $id = $request->input('id');
+      $data = [];
+      $Id_ContentPacks = $request->input('idContentPacks');
+      $Count_Packs = $request->input('countPacks');
+      for ($i = 0; $i < count($Id_ContentPacks); $i++) {
+        $check = DB::table('ContentPack')
+          ->where('FK_Id_Order', $id)
+          ->where('Id_ContentPack', $Id_ContentPacks[$i])
+          ->exists();
+        if (!$check) {
+          $result = DB::table('ContentPack')
+            ->selectRaw('(Count_Pack - COALESCE(SUM(RegisterContentPackAtWareHouse.Count), 0)) as SoLuong')
+            ->leftJoin('RegisterContentPackAtWareHouse', 'Id_ContentPack', '=', 'FK_Id_ContentPack')
+            ->where('Id_ContentPack', '=', $Id_ContentPacks[$i])
+            ->groupBy('Id_ContentPack', 'Count_Pack', 'Price_Pack')
+            ->first();
+
+          $soLuongCu = DB::table('RegisterContentPackAtWareHouse')
+            ->where('FK_Id_ContentPack', $Id_ContentPacks[$i])
+            ->where('FK_Id_Order', $id)
+            ->value('Count');
+
+          if ((int)$soLuongCu < (int)$Count_Packs[$i]) {
+            $soLuongThayDoi = (int)$Count_Packs[$i] - (int)$soLuongCu;
+            if ($soLuongThayDoi > $result->SoLuong) {
+              $result->id = $Id_ContentPacks;
+              $data[] = $result;
+            }
+          }
+        }
+      }
+
+      if (Count($data) > 0) {
+        return response()->json([
+          'flag' => 1,
+          'data' => $data,
+        ]);
+      } else {
+        return response()->json([
+          'flag' => 0,
+        ]);
+      }
+    }
+  }
+  public function disabledContentPack(Request $request)
+  {
+    if ($request->ajax()) {
+      $id = $request->input('id');
+      $flag = 1;
+      $exists = DB::table('DetailStateCellOfPackWareHouse')->where('FK_Id_ContentPack', $id)->exists();
+      if ($exists) {
+        return response()->json($flag);
+      } else {
+        $flag = 0;
+        return response()->json($flag);
+      }
+    }
+  }
 }
