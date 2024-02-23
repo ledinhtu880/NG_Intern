@@ -94,76 +94,147 @@
                 <div class="card-body">
                     <table class="table">
                         <thead class="table-light">
-                            <tr>
-                                <th scope="col" class="py-3 text-center">#</th>
-                                <th scope="col" class="py-3">Nguyên liệu</th>
-                                <th scope="col" class="py-3 text-center">Số lượng nguyên liệu</th>
-                                <th scope="col" class="py-3">Đơn vị</th>
-                                <th scope="col" class="py-3">Thùng chứa</th>
-                                <th scope="col" class="py-3 text-center">Số lượng thùng chứa</th>
-                                <th scope="col" class="py-3 text-center">Đơn giá thùng chứa</th>
-                                <th scope="col" class="py-3 text-center">Thành tiền</th>
-                                @if (!isset($inProcess))
+                            @if ($orderLocal->SimpleOrPack == 0)
+                                <tr>
+                                    <th scope="col" class="py-3 text-center">#</th>
+                                    <th scope="col" class="py-3">Nguyên liệu</th>
+                                    <th scope="col" class="py-3 text-center">Số lượng nguyên liệu</th>
+                                    <th scope="col" class="py-3">Đơn vị</th>
+                                    <th scope="col" class="py-3">Thùng chứa</th>
+                                    <th scope="col" class="py-3 text-center">Số lượng thùng chứa</th>
+                                    <th scope="col" class="py-3 text-center">Đơn giá thùng chứa</th>
+                                    <th scope="col" class="py-3 text-center">Thành tiền</th>
+                                </tr>
+                            @else
+                                <tr>
+                                    <th scope="col" class="py-3 text-center">#</th>
+                                    <th scope="col" class="py-3 text-center">Số lượng</th>
+                                    <th scope="col" class="py-3 text-center">Đơn giá</th>
                                     <th scope="col" class="py-3 text-center"></th>
-                                @endif
-                            </tr>
+                                </tr>
+                            @endif
                         </thead>
                         <tbody id="table-data">
-                            @foreach ($data as $each)
-                                <tr data-id="{{ $each->Id_ContentSimple }}">
-                                    <th scope="row" class="text-center text-body-secondary">
-                                        {{ $each->Id_ContentSimple }}</th>
-                                    <td>{{ $each->Name_RawMaterial }}</td>
-                                    <td class="text-center">{{ $each->Count_RawMaterial }}</td>
-                                    <td class="text-center">{{ $each->Unit }}</td>
-                                    <td class="text-center">{{ $each->Name_ContainerType }}</td>
-                                    <td class="text-center">{{ $each->Count_Container }}</td>
-                                    <td class="text-center">
-                                        {{ number_format($each->Price_Container, 0, '', '') }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ number_format($each->Price_Container * $each->Count_Container, 0, ',', '.') . ' VNĐ' }}
-                                    </td>
-                                    @if (!isset($inProcess))
+                            @if ($orderLocal->SimpleOrPack == 0)
+                                @foreach ($data as $each)
+                                    <tr data-id="{{ $each->Id_ContentSimple }}">
+                                        <th scope="row" class="text-center text-body-secondary">
+                                            {{ $each->Id_ContentSimple }}</th>
+                                        <td>{{ $each->Name_RawMaterial }}</td>
+                                        <td class="text-center">{{ $each->Count_RawMaterial }}</td>
+                                        <td class="text-center">{{ $each->Unit }}</td>
+                                        <td class="text-center">{{ $each->Name_ContainerType }}</td>
+                                        <td class="text-center">{{ $each->Count_Container }}</td>
                                         <td class="text-center">
-                                            <button type="button" class="btn btn-sm text-secondary"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteID-{{ $each->Id_ContentSimple }}">
-                                                <i class="fa-solid fa-trash"></i>
+                                            {{ number_format($each->Price_Container, 0, '', '') }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ number_format($each->Price_Container * $each->Count_Container, 0, ',', '.') . ' VNĐ' }}
+                                        </td>
+                                        @if (!isset($inProcess))
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm text-secondary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deleteID-{{ $each->Id_ContentSimple }}">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                                <div class="modal fade" id="deleteID-{{ $each->Id_ContentSimple }}"
+                                                    tabindex="-1" aria-labelledby="exampleModalLabel"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title fw-bold text-secondary"
+                                                                    id="exampleModalLabel">Xác nhận
+                                                                    </h1>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Bạn có chắc chắn muốn xóa thùng hàng này
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Hủy</button>
+                                                                <button type="button" class="btn btn-danger btnDelete"
+                                                                    data-id="{{ $each->Id_ContentSimple }}">Xóa</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        @endif
+                                    </tr>
+                                @endforeach
+                            @else
+                                @foreach ($data as $each)
+                                    <tr>
+                                        <th scope="row" class="text-center">{{ $each->Id_ContentPack }}</th>
+                                        <td class="text-center">{{ $each->Count_Pack }} gói</td>
+                                        <td class="text-center">
+                                            {{ number_format($each->Price_Pack, 0, ',', '.') . ' VNĐ' }}
+                                        </td>
+                                        <td class="text-center">
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-sm text-secondary btn-detail"
+                                                data-bs-toggle="modal" data-id="{{ $each->Id_ContentPack }}"
+                                                data-bs-target="#i{{ $each->Id_ContentPack }}">
+                                                <i class="fa-solid fa-eye"></i>
                                             </button>
-                                            <div class="modal fade" id="deleteID-{{ $each->Id_ContentSimple }}"
-                                                tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
+
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="i{{ $each->Id_ContentPack }}"
+                                                data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg modal-dialog-centered">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận
-                                                            </h1>
+                                                            <h4 class="modal-title fw-bold text-secondary"
+                                                                id="istaticBackdropLabel">Chi tiết gói hàng
+                                                            </h4>
                                                             <button type="button" class="btn-close"
                                                                 data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            Bạn có chắc chắn muốn xóa thùng hàng này
+                                                            <table class="table">
+                                                                <thead class="table-light">
+                                                                    <tr>
+                                                                        <th class="py-3" scope="col">Nguyên liệu</th>
+                                                                        <th class="py-3" scope="col">Số lượng nguyên
+                                                                            liệu
+                                                                        </th>
+                                                                        <th class="py-3" scope="col">Đơn vị</th>
+                                                                        <th class="py-3" scope="col">Thùng chứa</th>
+                                                                        <th class="py-3" scope="col">Số lượng thùng
+                                                                            chứa
+                                                                        </th>
+                                                                        <th class="py-3" scope="col">Đơn giá</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody class="body-table">
+                                                                </tbody>
+                                                            </table>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Hủy</button>
-                                                            <button type="button" class="btn btn-danger btnDelete"
-                                                                data-id="{{ $each->Id_ContentSimple }}">Xóa</button>
+                                                            <button type="button" class="btn btn-light"
+                                                                data-bs-dismiss="modal">Đóng</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
-                                    @endif
-                                </tr>
-                            @endforeach
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>
                 <div class="card-footer d-flex align-items-center justify-content-end gap-3">
                     <a href="{{ route('orderLocals.expeditions.index') }}" class="btn btn-light">Quay lại</a>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#deleteOrder-{{ $orderLocal->Id_OrderLocal }}">
+                        data-bs-target="#deleteOrder-{{ $orderLocal->Id_OrderLocal }}"
+                        {{ isset($inProcess) ? 'disabled' : '' }}>
                         Lưu
                     </button>
                     <div class="modal fade" id="deleteOrder-{{ $orderLocal->Id_OrderLocal }}" tabindex="-1"
@@ -171,9 +242,10 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                    <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận
+                                        </h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     Bạn có chắc chắn muốn cập nhật đơn giao hàng này?
@@ -205,24 +277,27 @@
 
 @push('javascript')
     <script type="text/javascript">
-        (document).ready(function() {
+        $(document).ready(function() {
             const toastLiveExample = $('#liveToast');
             const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
 
+            let currentBgColorClass, currentIconClass;
+
+            toastLiveExample.on('hidden.bs.toast', function() {
+                $(".toast-body").removeClass(currentBgColorClass);
+                $("#icon").removeClass(currentIconClass);
+                $("#toast-msg").html('');
+            });
+
             function showToast(message, bgColorClass, iconClass) {
+                // Lưu trữ giá trị của tham số trong biến toàn cục
+                currentBgColorClass = bgColorClass;
+                currentIconClass = iconClass;
+
                 $(".toast-body").addClass(bgColorClass);
                 $("#icon").addClass(iconClass);
                 $("#toast-msg").html(message);
                 toastBootstrap.show();
-
-                setTimeout(() => {
-                    toastBootstrap.hide();
-                    setTimeout(() => {
-                        $(".toast-body").removeClass(bgColorClass);
-                        $("#icon").removeClass(iconClass);
-                        $("#toast-msg").html();
-                    }, 1000);
-                }, 5000);
             }
 
             $("#updateBtn").on("click", function() {
@@ -235,6 +310,23 @@
                 } else {
                     $("#formInformation").submit();
                 }
+            });
+
+            $(".btn-detail").on('click', function() {
+                let id_ContentPack = $(this).data('id');
+
+                $.ajax({
+                    url: '/orders/packs/showPacksDetails',
+                    type: 'POST',
+                    data: {
+                        _token: $("meta[name='csrf-token']").attr('content'),
+                        id_ContentPack: id_ContentPack
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $(".body-table").html(response);
+                    }
+                });
             });
         });
     </script>

@@ -50,8 +50,8 @@ namespace NganGiang.Views
                     if (flag)
                     {
                         MessageBox.Show("Xử lý thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        loadData();
                     }
+                    loadData();
                 }
             }
             else

@@ -10,7 +10,7 @@ namespace NganGiang.Libs
 {
     internal class DataProvider
     {
-        public static string strConnection = @"Data Source=MSI;Initial Catalog=SIFMES;User ID=tus;Password=6451389tu";
+        public static string strConnection = @"Data Source=MSI;Initial Catalog=SIFMES;Integrated Security=True;";
         private static DataProvider instance;
         internal static DataProvider Instance
         {

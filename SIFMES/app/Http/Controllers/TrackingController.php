@@ -355,7 +355,6 @@ class TrackingController extends Controller
         $prodStationLines = $result->pluck('FK_Id_ProdStationLine')->unique()->toArray();
 
         $stationArr = DB::table('DetailProductionStationLine')
-
           ->whereIn('FK_Id_ProdStationLine', $prodStationLines)
           ->groupBy('FK_Id_Station')
           ->pluck('FK_Id_Station')
@@ -366,9 +365,14 @@ class TrackingController extends Controller
           ->where('FK_Id_ContentSimple', $each->Id_ContentSimple)
           ->where('FK_Id_State', 2)
           ->whereNotNull('Date_Fin')
-          ->count();
+          ->pluck('FK_Id_Station')
+          ->toArray();
 
-        $percent = ($countComplete / $totalStation) * 100;
+        $percent = (Count($countComplete) / $totalStation) * 100;
+        $each->result = $result;
+        $each->prodStationLines = $prodStationLines;
+        $each->stationArr = $stationArr;
+        $each->countComplete = $countComplete;
         $each->progress = (int)$percent;
       } else {
         $each->progress = 'Chưa có thông tin';
@@ -499,12 +503,51 @@ class TrackingController extends Controller
   public function showDetailsSimple(string $id)
   {
     $simple = ContentSimple::find($id);
-    $prodStationLines = DB::table('DispatcherOrder as do')
-      ->join('OrderLocal as ol', 'do.FK_Id_OrderLocal', '=', 'ol.Id_OrderLocal')
-      ->join('DetailContentSimpleOrderLocal as dsol', 'ol.Id_OrderLocal', '=', 'dsol.FK_Id_OrderLocal')
-      ->where('dsol.FK_Id_ContentSimple', '=', $id)
-      ->pluck('do.FK_Id_ProdStationLine')
-      ->toArray();
+    $isSimpleInPack = DB::table('DetailContentSimpleOfPack')->where('FK_Id_ContentSimple', $id)->exists();
+    if ($isSimpleInPack) {
+      $result = DB::table('ContentSimple AS cs')
+        ->join('RawMaterial as rm', 'cs.FK_Id_RawMaterial', '=', 'rm.Id_RawMaterial')
+        ->join('DetailContentSimpleOrderLocal AS dcso', 'cs.Id_ContentSimple', '=', 'dcso.FK_Id_ContentSimple')
+        ->join('DispatcherOrder AS do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
+        ->where('rm.FK_Id_RawMaterialType', '!=', 0)
+        ->whereIn('cs.Id_ContentSimple', function ($query) use ($id) {
+          $query->select('FK_Id_ContentSimple')
+            ->from('DetailContentSimpleOfPack')
+            ->where('FK_Id_ContentSimple', $id)
+            ->limit(1);
+        })
+        ->groupBy('do.FK_Id_ProdStationLine')
+        ->select('do.FK_Id_ProdStationLine')
+        ->unionAll(function ($query) use ($id) {
+          $query->select('do.FK_Id_ProdStationLine')
+            ->from('ContentPack AS cp')
+            ->join('DetailContentPackOrderLocal AS dcso', 'cp.Id_ContentPack', '=', 'dcso.FK_Id_ContentPack')
+            ->join('DispatcherOrder AS do', 'dcso.FK_Id_OrderLocal', '=', 'do.FK_Id_OrderLocal')
+            ->leftJoin('DetailContentSimpleOfPack AS dcsop', 'cp.Id_ContentPack', '=', 'dcsop.FK_Id_ContentPack')
+            ->leftJoin('ContentSimple AS csimple', 'dcsop.FK_Id_ContentSimple', '=', 'csimple.Id_ContentSimple')
+            ->join('RawMaterial as rm', 'csimple.FK_Id_RawMaterial', '=', 'rm.Id_RawMaterial')
+            ->whereIn('cp.Id_ContentPack', function ($subquery) use ($id) {
+              $subquery->select('FK_Id_ContentPack')
+                ->from('DetailContentSimpleOfPack')
+                ->where('FK_Id_ContentSimple', $id)
+                ->limit(1);
+            })
+            ->where('rm.FK_Id_RawMaterialType', '!=', 0)
+            ->groupBy('do.FK_Id_ProdStationLine');
+        })
+        ->get();
+      $prodStationLines = [];
+      foreach ($result as $each) {
+        $prodStationLines[] = $each->FK_Id_ProdStationLine;
+      }
+    } else {
+      $prodStationLines = DB::table('DispatcherOrder as do')
+        ->join('OrderLocal as ol', 'do.FK_Id_OrderLocal', '=', 'ol.Id_OrderLocal')
+        ->join('DetailContentSimpleOrderLocal as dsol', 'ol.Id_OrderLocal', '=', 'dsol.FK_Id_OrderLocal')
+        ->where('dsol.FK_Id_ContentSimple', '=', $id)
+        ->pluck('do.FK_Id_ProdStationLine')
+        ->toArray();
+    }
 
     $data = DB::table('Station as s')
       ->select('st.PathImage', 's.Id_Station', 's.Name_Station', 'st.Name_StationType')

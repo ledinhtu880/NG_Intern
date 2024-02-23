@@ -2,20 +2,23 @@ const toastLiveExample = $("#liveToast");
 const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
 
 $(document).ready(function () {
+  let currentBgColorClass, currentIconClass;
+
+  toastLiveExample.on('hidden.bs.toast', function () {
+    $(".toast-body").removeClass(currentBgColorClass);
+    $("#icon").removeClass(currentIconClass);
+    $("#toast-msg").html('');
+  });
+
   function showToast(message, bgColorClass, iconClass) {
+    // Lưu trữ giá trị của tham số trong biến toàn cục
+    currentBgColorClass = bgColorClass;
+    currentIconClass = iconClass;
+
     $(".toast-body").addClass(bgColorClass);
     $("#icon").addClass(iconClass);
     $("#toast-msg").html(message);
     toastBootstrap.show();
-
-    setTimeout(() => {
-      toastBootstrap.hide();
-      setTimeout(() => {
-        $(".toast-body").removeClass(bgColorClass);
-        $("#icon").removeClass(iconClass);
-        $("#toast-msg").html();
-      }, 1000);
-    }, 5000);
   }
 
   let token = $('meta[name="csrf-token"]').attr("content");
@@ -39,33 +42,37 @@ $(document).ready(function () {
   validateDate(receptionDateControl, dateOrderControl);
   validateDate(receptionDateControl, deliveryDateControl);
 
+  let isProcessing = false;
+  let clickCount = 0;
   $("#redirectBtn").on("click", function () {
-    if (count == 0) {
-      count++;
-      $.ajax({
-        url: "/orders/store",
-        type: "post",
-        data: {
-          formData: $("#formInformation").serialize(),
-          _token: token,
-        },
-        success: function (response) {
-          window.location.href =
-            "/orders/simples/getSimplesInWarehouse?id=" +
-            response.id;
-        },
-        error: function (xhr) {
-          // Xử lý lỗi khi gửi yêu cầu Ajax
-          console.log(xhr.responseText);
-          alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
-        },
-      });
-    } else if (count == 1) {
-      let urlParams = new URLSearchParams(window.location.search);
-      let id = urlParams.get("id");
-      window.location.href =
-        "/orders/simples/getSimplesInWarehouse?id=" + id;
+    if (isProcessing || clickCount >= 1) {
+      return;
     }
+    isProcessing = true;
+    clickCount++;
+
+    // Thực hiện yêu cầu Ajax
+    $.ajax({
+      url: "/orders/store",
+      type: "post",
+      data: {
+        formData: $("#formInformation").serialize(),
+        _token: token,
+      },
+      success: function (response) {
+        // Xử lý thành công
+        window.location.href =
+          "/orders/simples/getSimplesInWarehouse?id=" + response.id;
+      },
+      error: function (xhr) {
+        // Xử lý lỗi khi gửi yêu cầu Ajax
+        console.log(xhr.responseText);
+        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+      },
+      complete: function () {
+        isProcessing = false;
+      },
+    });
   });
   $("#formProduct").on("submit", function (event) {
     event.preventDefault();
@@ -137,7 +144,7 @@ $(document).ready(function () {
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận</h1>
+                                    <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">

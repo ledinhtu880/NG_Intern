@@ -82,16 +82,16 @@
                     </div>
                     <div class="d-flex justify-content-end">
                         <button class="btn btn-primary d-none" id="saveBtn" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal" style="background-color: #2b4c72">Lưu</button>
+                            data-bs-target="#exampleModal">Lưu</button>
                         <!-- Modal -->
                         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                             aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+                                        <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         Bạn chắc chắn muốn khởi tạo kho này?
@@ -100,7 +100,7 @@
                                         <button type="button" class="btn btn-secondary"
                                             data-bs-dismiss="modal">Hủy</button>
                                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                                            id="confirmBtn" style="background-color: #2b4c72">Xác nhận</button>
+                                            id="confirmBtn">Xác nhận</button>
                                     </div>
                                 </div>
                             </div>
@@ -132,20 +132,23 @@
             const toastLiveExample = $("#liveToast");
             const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
 
+            let currentBgColorClass, currentIconClass;
+
+            toastLiveExample.on('hidden.bs.toast', function() {
+                $(".toast-body").removeClass(currentBgColorClass);
+                $("#icon").removeClass(currentIconClass);
+                $("#toast-msg").html('');
+            });
+
             function showToast(message, bgColorClass, iconClass) {
+                // Lưu trữ giá trị của tham số trong biến toàn cục
+                currentBgColorClass = bgColorClass;
+                currentIconClass = iconClass;
+
                 $(".toast-body").addClass(bgColorClass);
                 $("#icon").addClass(iconClass);
                 $("#toast-msg").html(message);
                 toastBootstrap.show();
-
-                setTimeout(() => {
-                    toastBootstrap.hide();
-                    setTimeout(() => {
-                        $(".toast-body").removeClass(bgColorClass);
-                        $("#icon").removeClass(iconClass);
-                        $("#toast-msg").html();
-                    }, 1000);
-                }, 5000);
             }
 
             let token = $('meta[name="csrf-token"]').attr("content");
@@ -168,7 +171,9 @@
                         newCol.attr("data-row", +i);
                         newCol.attr("id", "cell" + count);
                         newCol.attr("data-status", 1);
-                        var info = $('<p class="text-end position-absolute top-0 end-0 bg-transparent p-0"></p>');
+                        var info = $(
+                            '<p class="text-end position-absolute top-0 end-0 p-0 bg-transparent" style="font-size: 0.75rem"></p>'
+                        );
                         info.text(i + '.' + j);
                         newCol.append(info);
                         newCol.css("background-color", "#ffffff");
@@ -210,7 +215,7 @@
                                     newCol.attr("data-row", +i);
                                     newCol.attr("id", "cell" + count)
                                     var info = $(
-                                        '<p class="text-end position-absolute top-0 end-0 bg-transparent p-0"></p>'
+                                        '<p class="text-end position-absolute top-0 end-0 p-0 bg-transparent" style="font-size: 0.75rem"></p>'
                                     );
                                     info.text(i + '.' + j);
                                     newCol.append(info);
@@ -245,10 +250,10 @@
                                                         aria-labelledby="#show-${details[i - 1].FK_Id_ContentSimple}Label" aria-hidden="true">
                                                     <div class="modal-dialog modal-xl">
                                                       <div class="modal-content">
-                                                        <div class="modal-header p-2 bg-primary-color text-start">
-                                                          <h5 class="modal-title w-100" id="show-${details[i - 1].FK_Id_ContentSimple}Label">
-                                                          Thông tin chi tiết đơn hàng số ${details[i - 1].FK_Id_ContentSimple}
-                                                          </h5>
+                                                        <div class="modal-header">
+                                                          <h4 class="modal-title fw-bold text-secondary" id="show-${details[i - 1].FK_Id_ContentSimple}Label">
+                                                          Thông tin chi tiết thùng hàng số ${details[i - 1].FK_Id_ContentSimple}
+                                                          </h4>
                                                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
@@ -298,9 +303,9 @@
                                           <div class="modal-dialog modal-xl">
                                             <div class="modal-content">
                                               <div class="modal-header>
-                                                <h1 class="modal-title fs-5" id="show-${details[i - 1].FK_Id_ContentPack}Label">
+                                                <h4 class="modal-title fw-bold text-secondary" id="show-${details[i - 1].FK_Id_ContentPack}Label">
                                                 Thông tin chi tiết gói hàng số ${details[i - 1].FK_Id_ContentPack}
-                                                </h1>
+                                                </h4>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                               </div>
                                               <div class="modal-body">

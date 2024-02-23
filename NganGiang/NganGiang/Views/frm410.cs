@@ -52,12 +52,12 @@ namespace NganGiang.Views
                     if (result)
                     {
                         MessageBox.Show("Quấn màng thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        this.LoadData();
                     }
                     else
                     {
-                        MessageBox.Show(message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(message, "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                    this.LoadData();
                 }
             }
             else

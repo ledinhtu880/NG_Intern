@@ -15,7 +15,7 @@ namespace NganGiang.Services.Process
         {
             try
             {
-                string query = "SELECT FK_Id_OrderLocal as id_orderlocal, Id_ContentSimple as id_simple, Name_RawMaterial as name_raw, RawMaterial.Count as quantity, \r\n\t\tUnit as unit, Count_RawMaterial * Count_Container as quantity_order, Name_State as status, ProcessContentSimple.Date_Start as date_start, SimpleOrPack as type_simple FROM ProcessContentSimple \r\nINNER JOIN ContentSimple on Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple\r\nINNER JOIN DetailContentSimpleOrderLocal on Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple\r\nINNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial\r\nINNER JOIN [State] on Id_State = FK_Id_State\r\nINNER JOIN OrderLocal on FK_Id_OrderLocal = Id_OrderLocal\r\nWHERE FK_Id_Station = 401 and FK_Id_State = 0 order by id_orderlocal asc, id_simple asc, date_start desc";
+                string query = "SELECT FK_Id_OrderLocal as id_orderlocal, Id_ContentSimple as id_simple, Name_RawMaterial as name_raw, RawMaterial.Count as quantity, \r\n\t\tUnit as unit, Count_RawMaterial * Count_Container as quantity_order, Name_State as status, ProcessContentSimple.Date_Start as date_start, SimpleOrPack as type_simple FROM ProcessContentSimple \r\nINNER JOIN ContentSimple on Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple\r\nINNER JOIN DetailContentSimpleOrderLocal on Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple\r\nINNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial\r\nINNER JOIN [State] on Id_State = FK_Id_State\r\nINNER JOIN OrderLocal on FK_Id_OrderLocal = Id_OrderLocal\r\nWHERE FK_Id_Station = 401 and FK_Id_State = 0 AND OrderLocal.MakeOrPackOrExpedition = 0 order by id_orderlocal asc, id_simple asc, date_start desc";
                 DataTable dt = DataProvider.Instance.ExecuteQuery(query);
 
                 dgv.AutoGenerateColumns = false;
@@ -225,11 +225,11 @@ namespace NganGiang.Services.Process
                 };
                 DataProvider.Instance.ExecuteNonQuery(query, parameters);
 
-                query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_Fin = '{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")}' where FK_Id_ContentSimple = {id_simple_content}";
+                query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_Fin = '{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}' where FK_Id_ContentSimple = {id_simple_content}";
                 DataProvider.Instance.ExecuteNonQuery(query);
 
                 int station = FindNextStation(id_simple_content);
-                query = $"insert into ProcessContentSimple(FK_Id_ContentSimple, FK_Id_Station, FK_Id_State, Date_Start) values({id_simple_content}, {station}, 0, '{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")}')";
+                query = $"insert into ProcessContentSimple(FK_Id_ContentSimple, FK_Id_Station, FK_Id_State, Date_Start) values({id_simple_content}, {station}, 0, '{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}')";
                 DataProvider.Instance.ExecuteNonQuery(query);
             }
             catch (SqlException e)

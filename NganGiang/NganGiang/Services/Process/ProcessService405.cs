@@ -152,7 +152,7 @@ namespace NganGiang.Services.Process
                 string query = $"Update ContentSimple set CoverHatProvided = 1 where Id_ContentSimple = {id_simple_content}";
                 DataProvider.Instance.ExecuteNonQuery(query);
 
-                var date = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_Fin = '{date}' where FK_Id_ContentSimple = {id_simple_content} and FK_Id_Station = 405";
                 DataProvider.Instance.ExecuteNonQuery(query);
 

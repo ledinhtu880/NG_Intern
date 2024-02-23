@@ -201,10 +201,10 @@ class WareController extends Controller
               'FK_Id_StateCell' => 1,
             ]);
         }
-        return response()->json([
-          'status' => 'success',
-        ]);
       }
+      return response()->json([
+        'status' => 'success',
+      ]);
     }
   }
   public function checkAmountContentSimple(Request $request)
@@ -285,10 +285,10 @@ class WareController extends Controller
               'FK_Id_StateCell' => 1,
             ]);
         }
-        return response()->json([
-          'status' => 'success',
-        ]);
       }
+      return response()->json([
+        'status' => 'success',
+      ]);
     }
   }
   public function checkAmountContentPack(Request $request)

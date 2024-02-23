@@ -28,12 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frm409));
             panelDGV = new Panel();
             dgv409 = new DataGridView();
@@ -41,8 +41,8 @@
             btnProcess = new Button();
             panelWarehouse = new Panel();
             groupBox1 = new GroupBox();
-            lbHeader = new Label();
             dgvWare = new DataGridView();
+            lbHeader = new Label();
             panelDGV.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv409).BeginInit();
             panelWarehouse.SuspendLayout();
@@ -54,10 +54,10 @@
             // 
             panelDGV.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panelDGV.Controls.Add(dgv409);
-            panelDGV.Location = new Point(15, 75);
-            panelDGV.Margin = new Padding(6);
+            panelDGV.Location = new Point(19, 94);
+            panelDGV.Margin = new Padding(8, 8, 8, 8);
             panelDGV.Name = "panelDGV";
-            panelDGV.Size = new Size(1312, 379);
+            panelDGV.Size = new Size(1640, 474);
             panelDGV.TabIndex = 13;
             // 
             // dgv409
@@ -70,42 +70,42 @@
             dgv409.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgv409.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells;
             dgv409.BackgroundColor = SystemColors.ControlLightLight;
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.BackColor = SystemColors.Control;
-            dataGridViewCellStyle7.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.False;
-            dgv409.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
+            dgv409.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgv409.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv409.Columns.AddRange(new DataGridViewColumn[] { Column1 });
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle8.BackColor = SystemColors.Window;
-            dataGridViewCellStyle8.Font = new Font("Segoe UI", 10F);
-            dataGridViewCellStyle8.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
-            dgv409.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 10F);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgv409.DefaultCellStyle = dataGridViewCellStyle2;
             dgv409.Dock = DockStyle.Fill;
             dgv409.Location = new Point(0, 0);
-            dgv409.Margin = new Padding(6);
+            dgv409.Margin = new Padding(8, 8, 8, 8);
             dgv409.MultiSelect = false;
             dgv409.Name = "dgv409";
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle9.BackColor = SystemColors.Control;
-            dataGridViewCellStyle9.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle9.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.False;
-            dgv409.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
+            dgv409.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dgv409.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgv409.RowsDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgv409.RowsDefaultCellStyle = dataGridViewCellStyle4;
             dgv409.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv409.Size = new Size(1312, 379);
+            dgv409.Size = new Size(1640, 474);
             dgv409.TabIndex = 4;
             dgv409.CellContentClick += dgv409_CellContentClick;
             dgv409.CellFormatting += dgv409_CellFormatting;
@@ -125,10 +125,10 @@
             btnProcess.BackColor = Color.FromArgb(43, 76, 114);
             btnProcess.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             btnProcess.ForeColor = SystemColors.Control;
-            btnProcess.Location = new Point(1040, 785);
-            btnProcess.Margin = new Padding(6);
+            btnProcess.Location = new Point(1300, 950);
+            btnProcess.Margin = new Padding(8, 8, 8, 8);
             btnProcess.Name = "btnProcess";
-            btnProcess.Size = new Size(290, 65);
+            btnProcess.Size = new Size(362, 81);
             btnProcess.TabIndex = 14;
             btnProcess.Text = "Lưu gói hàng vào kho";
             btnProcess.UseVisualStyleBackColor = false;
@@ -138,9 +138,10 @@
             // 
             panelWarehouse.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             panelWarehouse.Controls.Add(groupBox1);
-            panelWarehouse.Location = new Point(15, 466);
+            panelWarehouse.Location = new Point(19, 582);
+            panelWarehouse.Margin = new Padding(4, 4, 4, 4);
             panelWarehouse.Name = "panelWarehouse";
-            panelWarehouse.Size = new Size(1315, 310);
+            panelWarehouse.Size = new Size(1644, 388);
             panelWarehouse.TabIndex = 0;
             // 
             // groupBox1
@@ -149,69 +150,74 @@
             groupBox1.Dock = DockStyle.Fill;
             groupBox1.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox1.Location = new Point(0, 0);
+            groupBox1.Margin = new Padding(4, 4, 4, 4);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(1315, 310);
+            groupBox1.Padding = new Padding(4, 4, 4, 4);
+            groupBox1.Size = new Size(1644, 388);
             groupBox1.TabIndex = 15;
             groupBox1.TabStop = false;
             groupBox1.Text = "Các gói hàng trong kho (Click để xem chi tiết)";
-            // 
-            // lbHeader
-            // 
-            lbHeader.BackColor = Color.FromArgb(43, 76, 114);
-            lbHeader.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            lbHeader.ForeColor = SystemColors.Control;
-            lbHeader.Location = new Point(15, 9);
-            lbHeader.Margin = new Padding(6, 0, 6, 0);
-            lbHeader.Name = "lbHeader";
-            lbHeader.Size = new Size(270, 56);
-            lbHeader.TabIndex = 20;
-            lbHeader.Text = "Xử lý tại trạm 409";
-            lbHeader.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // dgvWare
             // 
             dgvWare.AllowUserToAddRows = false;
             dgvWare.AllowUserToDeleteRows = false;
             dgvWare.BackgroundColor = Color.White;
-            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle11.BackColor = SystemColors.Control;
-            dataGridViewCellStyle11.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle11.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle11.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = DataGridViewTriState.True;
-            dgvWare.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.BackColor = SystemColors.Control;
+            dataGridViewCellStyle5.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
+            dgvWare.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             dgvWare.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle12.BackColor = SystemColors.Window;
-            dataGridViewCellStyle12.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle12.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle12.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle12.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle12.WrapMode = DataGridViewTriState.True;
-            dgvWare.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle6.BackColor = SystemColors.Window;
+            dataGridViewCellStyle6.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dgvWare.DefaultCellStyle = dataGridViewCellStyle6;
             dgvWare.Dock = DockStyle.Fill;
-            dgvWare.Location = new Point(3, 30);
+            dgvWare.Location = new Point(4, 36);
+            dgvWare.Margin = new Padding(4, 4, 4, 4);
             dgvWare.MultiSelect = false;
             dgvWare.Name = "dgvWare";
             dgvWare.RowHeadersVisible = false;
             dgvWare.RowHeadersWidth = 51;
             dgvWare.SelectionMode = DataGridViewSelectionMode.CellSelect;
-            dgvWare.Size = new Size(1309, 277);
+            dgvWare.Size = new Size(1636, 348);
             dgvWare.TabIndex = 1;
+            dgvWare.CellContentClick += dgvWare_CellContentClick;
+            // 
+            // lbHeader
+            // 
+            lbHeader.BackColor = Color.FromArgb(43, 76, 114);
+            lbHeader.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lbHeader.ForeColor = SystemColors.Control;
+            lbHeader.Location = new Point(19, 11);
+            lbHeader.Margin = new Padding(8, 0, 8, 0);
+            lbHeader.Name = "lbHeader";
+            lbHeader.Size = new Size(338, 70);
+            lbHeader.TabIndex = 20;
+            lbHeader.Text = "Xử lý tại trạm 409";
+            lbHeader.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // frm409
             // 
             AcceptButton = btnProcess;
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
-            ClientSize = new Size(1345, 865);
+            ClientSize = new Size(1681, 1050);
             Controls.Add(lbHeader);
             Controls.Add(panelWarehouse);
             Controls.Add(panelDGV);
             Controls.Add(btnProcess);
             Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(4, 4, 4, 4);
             Name = "frm409";
             Text = "Trạm 409";
             WindowState = FormWindowState.Maximized;

@@ -95,7 +95,9 @@ class OrderController extends Controller
     $data = Order::join('Customer', 'Id_Customer', '=', 'FK_Id_Customer')
       ->join('CustomerType', 'Id', '=', 'FK_Id_CustomerType')
       ->select('Order.*', 'CustomerType.Name')
-      ->where('SimpleOrPack', 0)->paginate(5);
+      ->where('SimpleOrPack', 0)
+      ->orderBy('Id_Order')
+      ->paginate(5);
 
     return view('orders.simples.index', compact('data'));
   }
@@ -176,7 +178,12 @@ class OrderController extends Controller
     $containers = ContainerType::get();
     $materials = RawMaterial::get();
     if (isset($_GET['id'])) {
-      $id = $_GET['id'];
+      if ($_GET['id'] == 'null') {
+        $maxID = DB::table('ContentSimple')->max('Id_ContentSimple');
+        $id = ($maxID === null) ? 1 : $maxID + 1;
+      } else {
+        $id = $_GET['id'];
+      }
       $information = DB::table('Order')
         ->select('FK_Id_Customer', 'Date_Order', 'Date_Delivery', 'Date_Reception', 'Note')
         ->where('Id_Order', $id)
@@ -256,6 +263,23 @@ class OrderController extends Controller
         'status' => 'success',
         'id' => $id
       ]);
+    }
+  }
+  public function updateSimplesWhenSave(Request $request)
+  {
+    if ($request->ajax()) {
+      $formData = $request->input('formData');
+      parse_str($formData, $formDataArray);
+      $lastOrderId = DB::table('Order')->max('Id_Order');
+      DB::table('Order')->where('Id_Order', $lastOrderId)->update([
+        'FK_Id_Customer' => $formDataArray['FK_Id_Customer'],
+        'Date_Order' => $formDataArray['Date_Order'],
+        'Date_Delivery' => $formDataArray['Date_Delivery'],
+        'Date_Reception' => $formDataArray['Date_Reception'],
+        'Note' => $formDataArray['Note'],
+        'SimpleOrPack' => $formDataArray['SimpleOrPack'],
+      ]);
+      return response()->json($formDataArray);
     }
   }
   public function storeSimples(Request $request)
@@ -561,6 +585,10 @@ class OrderController extends Controller
     if ($request->ajax()) {
       $dataArr = $request->input('dataArr');
       $FK_Id_Order = $request->input('FK_Id_Order');
+      if ($FK_Id_Order == 'null') {
+        $maxID = DB::table('ContentSimple')->max('Id_ContentSimple');
+        $FK_Id_Order = ($maxID === null) ? 1 : $maxID + 1;
+      }
       foreach ($dataArr as $each) {
         $existingRecord = DB::table('RegisterContentSimpleAtWareHouse')
           ->where('FK_Id_ContentSimple', $each['id'])
@@ -571,7 +599,7 @@ class OrderController extends Controller
           DB::table('RegisterContentSimpleAtWareHouse')
             ->where('FK_Id_ContentSimple', $each['id'])
             ->where('FK_Id_Order', $FK_Id_Order)
-            ->update(['Count' => $existingRecord->Count + $each['Count']]);
+            ->update(['Count' => (int)$existingRecord->Count + (int)$each['Count']]);
         } else {
           // Chèn dữ liệu mới nếu chưa tồn tại
           DB::table('RegisterContentSimpleAtWareHouse')->insert(
@@ -591,6 +619,7 @@ class OrderController extends Controller
       ]);
     }
   }
+  // cho de chat GPT cai...
   public function indexPacks()
   {
     if (!Session::has("type") && !Session::has("message")) {
@@ -616,6 +645,7 @@ class OrderController extends Controller
     $data = Order::join('Customer', 'Id_Customer', '=', 'FK_Id_Customer')
       ->join('CustomerType', 'Id', '=', 'FK_Id_CustomerType')
       ->select('Order.*', 'CustomerType.Name')
+      ->orderBy('Id_Order')
       ->where('SimpleOrPack', 1)->paginate(5);
     return view('orders.packs.index', compact('data'));
   }
@@ -1072,7 +1102,7 @@ class OrderController extends Controller
 
       $details = DetailContentSimpleOfPack::where('FK_Id_ContentPack', $Id_ContentPack)->get();
 
-      if ($isMake == 1) {
+      if ($isTake == 1) {
         DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_ContentPack', $Id_ContentPack)->delete();
       } else {
         // Xóa các bản ghi ở bảng DetailContentSimpleOfPack có liên quan tới ContentPack 

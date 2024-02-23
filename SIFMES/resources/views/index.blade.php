@@ -103,7 +103,7 @@
             const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
             toastBootstrap.show();
 
-            let role = [];
+            /* let role = [];
             $('.roles input').each(function() {
                 role.push($(this).val());
             })
@@ -141,7 +141,7 @@
                         'Bạn không có quyền truy cập vào chức năng này');
                     toastBootstrap.show();
                 }
-            })
+            }) */
         })
     </script>
 @endpush

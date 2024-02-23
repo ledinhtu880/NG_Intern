@@ -17,15 +17,6 @@ textarea {
     width: 100%;
 }
 
-/* Ẩn thanh cuộn dọc */
-.table-wrapper::-webkit-scrollbar {
-    width: 0.5em;
-    background-color: transparent;
-}
-
-.table-wrapper::-webkit-scrollbar-thumb {
-    background-color: transparent;
-}
 .square-cell {
     width: 100px;
     height: 100px;
@@ -33,7 +24,7 @@ textarea {
     vertical-align: middle;
 }
 .table-wrapper .table > tr > td {
-    border: 1px solid rgb(13, 110, 253) !important;
+    border: 1px solid #6c757d !important;
 }
 .table-wrapper .table td > .small {
     position: absolute;

@@ -59,7 +59,7 @@ namespace NganGiang.Services.Process
             ProcessContentSimple processContentSimple = new ProcessContentSimple();
             processContentSimple.FK_Id_ContentSimple = Convert.ToDecimal(Id_ContentSimple);
             processContentSimple.FK_Id_State = 2;
-            processContentSimple.Date_Fin = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            processContentSimple.Date_Fin = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             string query = "UPDATE ProcessContentSimple SET FK_Id_State = " + processContentSimple.FK_Id_State +
                            ", Date_Fin = '" + processContentSimple.Date_Fin +
@@ -84,7 +84,7 @@ namespace NganGiang.Services.Process
             processContentSimple.FK_Id_ContentSimple = Convert.ToDecimal(Id_ContentSimple);
             processContentSimple.FK_Id_Station = 405;
             processContentSimple.FK_Id_State = 0;
-            processContentSimple.Date_Start = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            processContentSimple.Date_Start = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string query = "INSERT INTO ProcessContentSimple(FK_Id_ContentSimple, FK_Id_Station, FK_Id_State, Date_Start) " +
                            "VALUES(" + processContentSimple.FK_Id_ContentSimple +
                            ", " + processContentSimple.FK_Id_Station +

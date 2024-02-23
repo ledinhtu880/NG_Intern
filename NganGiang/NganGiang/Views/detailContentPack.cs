@@ -25,16 +25,17 @@ namespace NganGiang.Views
         private void detailContentPack408_Load(object sender, EventArgs e)
         {
             lbHeader.Text = "Thông tin chi tiết gói hàng số " + this.Id_ContentPack;
-            string query = $"select FK_ID_ContentPack as [Mã gói hàng], Id_ContentSimple as [Mã thùng hàng], " +
+            string query = $"select dcsop.FK_ID_ContentPack as [Mã gói hàng], Id_ContentSimple as [Mã thùng hàng], " +
                 $"Name_RawMaterial as [Tên nguyên liệu thô], Count_RawMaterial as [Số lượng nguyên liệu], " +
-                $"Name_ContainerType as [Loại thùng chứa], Count_Container as [Số lượng thùng chứa], " +
-                $"CASE WHEN DH.FK_Id_ContentSimple IS NULL THEN N'Chưa có' ELSE N'Đã có' END AS [Trạng thái thùng hàng]" +
-                $"from ContentSimple " +
-                $"inner join DetailContentSimpleOfPack on Id_ContentSimple = FK_Id_ContentSimple " +
+                $"Name_ContainerType as [Loại thùng chứa], " +
+                $"(Count_Container - COALESCE(SUM(rcsawh.Count), 0)) as [Số lượng thùng chứa] from ContentSimple " +
+                $"inner join DetailContentSimpleOfPack dcsop on Id_ContentSimple = dcsop.FK_Id_ContentSimple " +
                 $"inner join RawMaterial on Id_RawMaterial = FK_Id_RawMaterial " +
                 $"inner join ContainerType on Id_ContainerType = FK_Id_ContainerType " +
                 $"left join DetailStateCellOfSimpleWareHouse DH on Id_ContentSimple = DH.FK_Id_ContentSimple " +
-                $"where FK_Id_ContentPack = {Id_ContentPack}";
+                $"left join RegisterContentPackAtWareHouse rcsawh on dcsop.FK_Id_ContentPack = rcsawh.FK_Id_ContentPack " +
+                $"where dcsop.FK_Id_ContentPack = {Id_ContentPack} " +
+                $"group by dcsop.FK_ID_ContentPack, Id_ContentSimple, Name_RawMaterial, Count_RawMaterial, Name_ContainerType, Count_Container, DH.FK_Id_ContentSimple";
             dgvDetailContentPack.DataSource = DataProvider.Instance.ExecuteQuery(query);
         }
 

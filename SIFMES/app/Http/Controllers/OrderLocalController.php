@@ -858,24 +858,36 @@ class OrderLocalController extends Controller
       ->select('OrderLocal.Id_OrderLocal')
       ->exists();
     $orderLocal = DB::table('OrderLocal')->where('MakeOrPackOrExpedition', 2)->where('Id_OrderLocal', $id)->first();
-    $data = DB::table('ContentSimple')
-      ->select(
-        'Id_ContentSimple',
-        'FK_Id_RawMaterial',
-        'Name_RawMaterial',
-        'Count_RawMaterial',
-        'Unit',
-        'FK_Id_ContainerType',
-        'Name_ContainerType',
-        'Count_Container',
-        'Price_Container',
-        'FK_Id_RawMaterialType'
-      )
-      ->join('RawMaterial', 'Id_RawMaterial', '=', 'FK_Id_RawMaterial')
-      ->join('ContainerType', 'Id_ContainerType', '=', 'FK_Id_ContainerType')
-      ->join('DetailContentSimpleOrderLocal', 'ContentSimple.Id_ContentSimple', '=', 'DetailContentSimpleOrderLocal.FK_Id_ContentSimple')
-      ->where('FK_Id_OrderLocal', '=', $id)
-      ->get();
+    if ($orderLocal->SimpleOrPack == 0) {
+      $data = DB::table('ContentSimple')
+        ->select(
+          'Id_ContentSimple',
+          'FK_Id_RawMaterial',
+          'Name_RawMaterial',
+          'Count_RawMaterial',
+          'Unit',
+          'FK_Id_ContainerType',
+          'Name_ContainerType',
+          'Count_Container',
+          'Price_Container',
+          'FK_Id_RawMaterialType'
+        )
+        ->join('RawMaterial', 'Id_RawMaterial', '=', 'FK_Id_RawMaterial')
+        ->join('ContainerType', 'Id_ContainerType', '=', 'FK_Id_ContainerType')
+        ->join('DetailContentSimpleOrderLocal', 'ContentSimple.Id_ContentSimple', '=', 'DetailContentSimpleOrderLocal.FK_Id_ContentSimple')
+        ->where('FK_Id_OrderLocal', '=', $id)
+        ->get();
+    } else {
+      $data = DB::table('ContentPack')
+        ->select(
+          'ContentPack.Id_ContentPack',
+          'Count_Pack',
+          'Price_Pack'
+        )
+        ->join('DetailContentPackOrderLocal', 'Id_ContentPack', '=', 'FK_Id_ContentPack')
+        ->where('FK_Id_OrderLocal', '=', $id)
+        ->get();
+    }
     if ($exists) {
       $inProcess = 1;
       return view('orderLocals.expeditions.edit', compact('orderLocal', 'data', 'inProcess'));

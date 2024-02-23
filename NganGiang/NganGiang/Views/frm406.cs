@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NganGiang.Models;
 
 namespace NganGiang.Views
 {
@@ -45,23 +46,23 @@ namespace NganGiang.Views
             }
 
             DataTable dt = controller.getLocationMatrix();
-            int[] Id_ContentSimples = new int[dt.Rows.Count];
-            int[] Count_Containers = new int[dt.Rows.Count];
-            int[] ro = new int[dt.Rows.Count];
-            int[] co = new int[dt.Rows.Count];
             points = new Point[dt.Rows.Count];
+            List<DetailStateCellOfSimpleWareHouse> matrixCurr = new List<DetailStateCellOfSimpleWareHouse>();
 
             if (dt.Rows.Count > 0)
             {
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
-                    ro[i] = Int32.Parse(dt.Rows[i]["Rowi"].ToString());
-                    co[i] = Int32.Parse(dt.Rows[i]["Colj"].ToString());
-                    Id_ContentSimples[i] = Int32.Parse(dt.Rows[i]["Id_ContentSimple"].ToString());
-                    Count_Containers[i] = Int32.Parse(dt.Rows[i]["SoLuong"].ToString());
+                    DetailStateCellOfSimpleWareHouse detail = new DetailStateCellOfSimpleWareHouse();
+                    detail.Rowi = Int32.Parse(dt.Rows[i]["Rowi"].ToString());
+                    detail.Colj = Int32.Parse(dt.Rows[i]["Colj"].ToString());
+                    detail.FK_Id_ContentSimple = Decimal.Parse(dt.Rows[i]["Id_ContentSimple"].ToString());
+                    detail.Count_Container = Int32.Parse(dt.Rows[i]["SoLuong"].ToString());
+                    matrixCurr.Add(detail);
                 }
             }
             dgv_ware.RowTemplate.Height = 150;
+            matrixCurr.Sort();
 
             for (int i = 0; i <= col; i++)
             {
@@ -92,19 +93,12 @@ namespace NganGiang.Views
                 for (int c = 1; c <= col; c++)
                 {
                     // c bắt đầu từ 1
-                    if (r <= ro.Length && c <= co.Length && ro.Length > 0 && co.Length > 0)
+                    try
                     {
-                        if (ro.Length - 1 >= r && co.Length >= c && ro[r] == r + 1 && co[c - 1] == c)
+                        if (matrixCurr[count].Colj == c && matrixCurr[count].Rowi == r + 1)
                         {
-                            /*DataGridViewImageCell imageCell = new DataGridViewImageCell();
-                            string imgPath = Path.Combine("..", "..", "..", "Resources", "eye-solid.png"); // Thay đổi đường dẫn tới hình ảnh của bạn
-                            imageCell.Value = Image.FromFile(imgPath);
-                            dgv_ware["Column" + c.ToString(), r] = imageCell;
-                            dgv_ware["Column" + c.ToString(), r].ReadOnly = false;
-                            points[count] = new Point(c, r);
-                            count++;*/
                             DataGridViewButtonCell buttonCell = new DataGridViewButtonCell();
-                            buttonCell.Value = $"Thùng số {Id_ContentSimples[count]}\nSố lượng {Count_Containers[count]}";
+                            buttonCell.Value = $"Thùng số {matrixCurr[count].FK_Id_ContentSimple}\nSố lượng {matrixCurr[count].Count_Container}";
                             dgv_ware["Column" + c.ToString(), r].ReadOnly = false;
                             points[count] = new Point(c, r);
                             count++;
@@ -116,7 +110,7 @@ namespace NganGiang.Views
                             dgv_ware["Column" + c.ToString(), r].ReadOnly = true;
                         }
                     }
-                    else
+                    catch (Exception)
                     {
                         dgv_ware["Column" + c.ToString(), r].Value = "Trống";
                         dgv_ware["Column" + c.ToString(), r].ReadOnly = true;
@@ -155,8 +149,8 @@ namespace NganGiang.Views
                     if (controller.processClickStorage(Id_ContentSimples))
                     {
                         MessageBox.Show("Lưu kho thùng hàng thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        updateDGV();
                     }
+                    updateDGV();
                 }
             }
             else
@@ -199,4 +193,5 @@ namespace NganGiang.Views
             e.Column.SortMode = DataGridViewColumnSortMode.NotSortable;
         }
     }
+
 }

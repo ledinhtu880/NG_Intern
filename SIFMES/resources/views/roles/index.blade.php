@@ -80,9 +80,9 @@
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                    <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     Bạn chắc chắn muốn đăng ký vai trò cho người dùng này?
@@ -100,40 +100,35 @@
             </div>
         </div>
     </div>
-    <div class="toast-container rounded position-fixed bottom-0 end-0 p-3">
-        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-body d-flex align-items-center justify-content-between">
-                <div class="d-flex justify-content-center align-items-center gap-2">
-                    <i id="icon" class="fas text-light fs-5"></i>
-                    <h6 id="toast-msg" class="h6 text-white m-0"></h6>
+    @if (session('message') && session('type'))
+        <div class=" toast-container rounded position-fixed bottom-0 end-0 p-3">
+            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-body bg-{{ session('type') }} d-flex align-items-center justify-content-between">
+                    <div class=" d-flex justify-content-center align-items-center gap-2">
+                        @if (session('type') == 'success')
+                            <i class="fas fa-check-circle text-light fs-5"></i>
+                        @elseif(session('type') == 'danger' || session('type') == 'warning')
+                            <i class="fas fa-xmark-circle text-light fs-5"></i>
+                        @elseif(session('type') == 'info' || session('type') == 'secondary')
+                            <i class="fas fa-info-circle text-light fs-5"></i>
+                        @endif
+                        <h6 class="h6 text-white m-0">{{ session('message') }}</h6>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
                 </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"
-                    aria-label="Close"></button>
             </div>
         </div>
-    </div>
+    @endif
 
 @endsection
 @push('javascript')
     <script>
         $(document).ready(function() {
-            const toastLiveExample = $("#liveToast");
+            const toastLiveExample = $('#liveToast');
+            if (toastLiveExample.length > 0 ) {
             const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
-
-            function showToast(message, bgColorClass, iconClass) {
-                $(".toast-body").addClass(bgColorClass);
-                $("#icon").addClass(iconClass);
-                $("#toast-msg").html(message);
-                toastBootstrap.show();
-
-                setTimeout(() => {
-                    toastBootstrap.hide();
-                    setTimeout(() => {
-                        $(".toast-body").removeClass(bgColorClass);
-                        $("#icon").removeClass(iconClass);
-                        $("#toast-msg").html();
-                    }, 1000);
-                }, 5000);
+            toastBootstrap.show();
             }
 
             var role_id = [];
@@ -196,15 +191,10 @@
                         user_id: user_id,
                     },
                     success: function(response) {
-                        showToast(
-                            "Đăng ký vai trò thành công!",
-                            "bg-wsuccessarning",
-                            "fa-check-circle"
-                        );
-
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 700);
+                        window.location.href = response.url;
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
                     }
                 });
             });

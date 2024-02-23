@@ -58,7 +58,7 @@
                 <div class="card-body px-5 pb-5">
                     <h4 class="text-center">SỐ HÀNG VÀ CỘT CỦA KHO</h4>
                     <div class="table-wrapper">
-                        <table class="table table-bordered border-secondary-subtle">
+                        <table class="table table-bordered border-secondary">
                             <tr class="d-none">
                                 <td class="square-cell">1</td>
                                 <td class="square-cell">1</td>
@@ -114,7 +114,9 @@
                                 newCol.attr("data-row", +i);
                                 newCol.attr("id", "cell" + count)
                                 //newCol.text("Row " + i + ", Col " + j);
-                                var info = $('<p class="text-end position-absolute top-0 end-0"></p>');
+                                var info = $(
+                                    '<p class="text-end position-absolute top-0 end-0 p-0 bg-transparent" style="font-size: 0.75rem"></p>'
+                                );
                                 info.text(i + '.' + j);
                                 newCol.append(info);
                                 newRow.append(newCol);
@@ -149,9 +151,9 @@
                 <div class="modal-dialog modal-xl">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h1 class="modal-title fs-5" id="show-${details[i - 1].FK_Id_ContentSimple}Label">
+                      <h4 class="modal-title fw-bold text-secondary" id="show-${details[i - 1].FK_Id_ContentSimple}Label">
                       Thông tin chi tiết đơn hàng số ${details[i - 1].FK_Id_ContentSimple}
-                      </h1>
+                      </h4>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -200,7 +202,7 @@
                     aria-labelledby="#show-${details[i - 1].FK_Id_ContentPack}Label" aria-hidden="true">
                 <div class="modal-dialog modal-xl">
                   <div class="modal-content">
-                    <div class="modal-header p-2 bg-primary-color text-start" data-bs-theme="dark">
+                    <div class="modal-header" data-bs-theme="dark">
                       <h5 class="modal-title w-100" id="show-${details[i - 1].FK_Id_ContentPack}Label">
                       Thông tin chi tiết gói hàng số ${details[i - 1].FK_Id_ContentPack}
                       </h5>
@@ -276,7 +278,7 @@
                                     newCol.attr("id", "cell" + count)
                                     //newCol.text("Row " + i + ", Col " + j);
                                     var info = $(
-                                        '<p class="text-end position-absolute top-0 end-0 bg-transparent"></p>'
+                                        '<p class="text-end position-absolute top-0 end-0 p-0 bg-transparent" style="font-size: 0.75rem"></p>'
                                     );
                                     info.text(i + '.' + j);
                                     newCol.append(info);
@@ -311,9 +313,9 @@
                     aria-labelledby="#show-${details[i - 1].FK_Id_ContentSimple}Label" aria-hidden="true">
                 <div class="modal-dialog modal-xl">
                   <div class="modal-content">
-                    <div class="modal-header p-2 bg-primary-color text-start">
+                    <div class="modal-header">
                       <h5 class="modal-title w-100" id="show-${details[i - 1].FK_Id_ContentSimple}Label">
-                      Thông tin chi tiết đơn hàng số ${details[i - 1].FK_Id_ContentSimple}
+                      Thông tin chi tiết thùng hàng số ${details[i - 1].FK_Id_ContentSimple}
                       </h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -363,7 +365,7 @@
                     aria-labelledby="#show-${details[i - 1].FK_Id_ContentPack}Label" aria-hidden="true">
                 <div class="modal-dialog modal-xl">
                   <div class="modal-content">
-                    <div class="modal-header p-2 bg-primary-color text-start" data-bs-theme="dark">
+                    <div class="modal-header" data-bs-theme="dark">
                       <h5 class="modal-title w-100" id="show-${details[i - 1].FK_Id_ContentPack}Label">
                       Thông tin chi tiết gói hàng số ${details[i - 1].FK_Id_ContentPack}
                       </h5>

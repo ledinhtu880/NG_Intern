@@ -16,7 +16,7 @@ namespace NganGiang.Services.Process
     {
         public DataTable ShowContentPack()
         {
-            string query = @"SELECT FK_Id_OrderLocal AS [Mã đơn hàng], Id_ContentPack AS [Mã gói hàng],
+            string query = @"SELECT DISTINCT FK_Id_OrderLocal AS [Mã đơn hàng], Id_ContentPack AS [Mã gói hàng],
             CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Kiểu hàng], 
             Name_State AS [Trạng thái], CONVERT(DATE, ProcessContentPack.Date_Start) AS [Ngày bắt đầu]
             FROM ProcessContentPack
@@ -84,7 +84,8 @@ namespace NganGiang.Services.Process
                 $"FROM ContentSimple " +
                 $"INNER JOIN DetailContentSimpleOfPack ON Id_ContentSimple = FK_Id_ContentSimple " +
                 $"INNER JOIN DetailContentPackOrderLocal ON DetailContentPackOrderLocal.FK_Id_ContentPack = DetailContentSimpleOfPack.FK_Id_ContentPack " +
-                $"WHERE DetailContentPackOrderLocal.FK_Id_ContentPack = {id} " +
+                $"INNER JOIN RawMaterial on ContentSimple.FK_Id_RawMaterial = RawMaterial.Id_RawMaterial " +
+                $"WHERE DetailContentPackOrderLocal.FK_Id_ContentPack = {id} AND RawMaterial.FK_Id_RawMaterialType <> 0" +
                 $"GROUP BY Id_ContentSimple";
 
             List<int> idContentSimpleList = new List<int>();

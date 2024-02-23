@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmLogin));
             panelHeader = new Panel();
+            btnRedirect = new Button();
             pictureBox1 = new PictureBox();
             panelFooter = new Panel();
             lbFooter = new Label();
@@ -50,12 +51,28 @@
             // panelHeader
             // 
             panelHeader.BackColor = SystemColors.Window;
+            panelHeader.Controls.Add(btnRedirect);
             panelHeader.Controls.Add(pictureBox1);
             panelHeader.Dock = DockStyle.Top;
             panelHeader.Location = new Point(0, 0);
             panelHeader.Name = "panelHeader";
             panelHeader.Size = new Size(493, 105);
             panelHeader.TabIndex = 4;
+            // 
+            // btnRedirect
+            // 
+            btnRedirect.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnRedirect.AutoSize = true;
+            btnRedirect.BackColor = Color.FromArgb(43, 76, 114);
+            btnRedirect.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            btnRedirect.ForeColor = SystemColors.ControlLightLight;
+            btnRedirect.Location = new Point(209, 42);
+            btnRedirect.Name = "btnRedirect";
+            btnRedirect.Size = new Size(228, 38);
+            btnRedirect.TabIndex = 4;
+            btnRedirect.Text = "Nhận diện khuôn mặt";
+            btnRedirect.UseVisualStyleBackColor = false;
+            btnRedirect.Click += btnRedirect_Click;
             // 
             // pictureBox1
             // 
@@ -182,6 +199,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Đăng nhập";
             panelHeader.ResumeLayout(false);
+            panelHeader.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panelFooter.ResumeLayout(false);
             panelFooter.PerformLayout();
@@ -204,5 +222,6 @@
         private TextBox txtPassword;
         private Label lbPassword;
         private Button btnLogIn;
+        private Button btnRedirect;
     }
 }

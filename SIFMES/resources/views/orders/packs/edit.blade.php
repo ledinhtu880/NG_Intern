@@ -152,10 +152,12 @@
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Xác
+                                                                <h4 class="modal-title fw-bold text-secondary"
+                                                                    id="exampleModalLabel">Xác
                                                                     nhận</h1>
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    <button type="button"
+                                                                        class="btn-close"data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
                                                                 Bạn có chắc chắn về việc sản phẩm này
@@ -231,20 +233,23 @@
             const toastLiveExample = $("#liveToast");
             const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
 
+            let currentBgColorClass, currentIconClass;
+
+            toastLiveExample.on('hidden.bs.toast', function() {
+                $(".toast-body").removeClass(currentBgColorClass);
+                $("#icon").removeClass(currentIconClass);
+                $("#toast-msg").html('');
+            });
+
             function showToast(message, bgColorClass, iconClass) {
+                // Lưu trữ giá trị của tham số trong biến toàn cục
+                currentBgColorClass = bgColorClass;
+                currentIconClass = iconClass;
+
                 $(".toast-body").addClass(bgColorClass);
                 $("#icon").addClass(iconClass);
                 $("#toast-msg").html(message);
                 toastBootstrap.show();
-
-                setTimeout(() => {
-                    toastBootstrap.hide();
-                    setTimeout(() => {
-                        $(".toast-body").removeClass(bgColorClass);
-                        $("#icon").removeClass(iconClass);
-                        $("#toast-msg").html();
-                    }, 1000);
-                }, 5000);
             }
 
             $(".js-row").each(function(index, element) {

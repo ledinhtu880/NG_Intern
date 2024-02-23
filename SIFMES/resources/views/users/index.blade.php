@@ -35,10 +35,11 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận
-                                                </h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                                <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác
+                                                    nhận
+                                                    </h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
                                                 Bạn có chắc chắn muốn xóa những người dùng đã chọn ?
@@ -93,11 +94,12 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Vai trò của
+                                                        <h4 class="modal-title fw-bold text-secondary"
+                                                            id="exampleModalLabel">Vai trò của
                                                             người dùng {{ $user->Name }}
-                                                        </h1>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
+                                                            </h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <table class="table m-0">
@@ -132,10 +134,11 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận
-                                                        </h1>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
+                                                        <h4 class="modal-title fw-bold text-secondary"
+                                                            id="exampleModalLabel">Xác nhận
+                                                            </h1>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         Bạn có chắc chắn muốn xóa người dùng
@@ -232,12 +235,10 @@
                         } else {
                             modalElement.find('#table-roles').html('');
                             response.forEach((role) => {
-                                modalElement.find('#table-roles').append(`
-                <tr>
-                  <td class="text-center">${role.Id_Role}</td>
-                  <td>${role.Name_Role}</td>
-                </tr>
-              `);
+                                modalElement.find('#table-roles').append(`<tr>
+                                                                            <td class="text-center">${role.Id_Role}</td>
+                                                                            <td>${role.Name_Role}</td>
+                                                                          </tr>`);
                             });
                         }
                     },
@@ -248,20 +249,23 @@
                 const toastElement = $("#toastMessage");
                 const toastBs = new bootstrap.Toast(toastElement.get(0));
 
+                let currentBgColorClass, currentIconClass;
+
+                toastElement.on('hidden.bs.toast', function() {
+                    $(".toast-body").removeClass(currentBgColorClass);
+                    $("#icon").removeClass(currentIconClass);
+                    $("#toast-msg").html('');
+                });
+
                 function showToast(message, bgColorClass, iconClass) {
+                    // Lưu trữ giá trị của tham số trong biến toàn cục
+                    currentBgColorClass = bgColorClass;
+                    currentIconClass = iconClass;
+
                     $(".toast-body").addClass(bgColorClass);
                     $("#icon").addClass(iconClass);
                     $("#toast-msg").html(message);
                     toastBs.show();
-
-                    setTimeout(() => {
-                        toastBs.hide();
-                        setTimeout(() => {
-                            $(".toast-body").removeClass(bgColorClass);
-                            $("#icon").removeClass(iconClass);
-                            $("#toast-msg").html();
-                        }, 1000);
-                    }, 5000);
                 }
 
                 let modalElement = $("#deleteUser");
@@ -353,7 +357,7 @@
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Vai trò của người dùng ${each.Name}
+                        <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Vai trò của người dùng ${each.Name}
                         </h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
@@ -388,7 +392,7 @@
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận
+                        <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận
                         </h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>

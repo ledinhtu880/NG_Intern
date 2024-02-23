@@ -106,7 +106,9 @@
                                 newCol.attr("data-col", +j);
                                 newCol.attr("data-row", +i);
                                 newCol.attr("id", "cell" + count)
-                                var info = $('<p class="text-end position-absolute top-0 end-0"></p>');
+                                var info = $(
+                                    '<p class="text-end position-absolute top-0 end-0 p-0 bg-transparent" style="font-size: 0.75rem"></p>'
+                                );
                                 info.text(i + '.' + j);
                                 newCol.append(info);
                                 newRow.append(newCol);
@@ -140,7 +142,7 @@
                     aria-labelledby="#show-${details[i - 1].FK_Id_ContentPack}Label" aria-hidden="true">
                 <div class="modal-dialog modal-xl">
                   <div class="modal-content">
-                    <div class="modal-header w-100">
+                    <div class="modal-header">
                       <h5 class="modal-title fw-bold text-secondary" id="show-${details[i - 1].FK_Id_ContentPack}Label">
                       Thông tin chi tiết gói hàng số ${details[i - 1].FK_Id_ContentPack}
                       </h5>
@@ -182,14 +184,22 @@
                 }
             });
 
+            let currentBgColorClass, currentIconClass;
+
+            toastLiveExample.on('hidden.bs.toast', function() {
+                $(".toast-body").removeClass(currentBgColorClass);
+                $("#icon").removeClass(currentIconClass);
+                $("#toast-msg").html('');
+            });
+
             function showToast(message, bgColorClass, iconClass) {
+                // Lưu trữ giá trị của tham số trong biến toàn cục
+                currentBgColorClass = bgColorClass;
+                currentIconClass = iconClass;
+
                 $(".toast-body").addClass(bgColorClass);
                 $("#icon").addClass(iconClass);
                 $("#toast-msg").html(message);
-                setTimeout(() => {
-                    $(".toast-body").removeClass(bgColorClass);
-                    $("#icon").removeClass(iconClass);
-                }, 5000);
                 toastBootstrap.show();
             }
             $(document).on("click", ".btnTake", function() {

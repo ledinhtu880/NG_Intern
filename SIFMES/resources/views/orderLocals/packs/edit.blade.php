@@ -209,7 +209,8 @@
                 <div class="card-footer d-flex align-items-center justify-content-end gap-3">
                     <a href="{{ route('orderLocals.packs.index') }}" class="btn btn-light">Quay lại</a>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#deleteOrder-{{ $orderLocal->Id_OrderLocal }}">
+                        data-bs-target="#deleteOrder-{{ $orderLocal->Id_OrderLocal }}"
+                        {{ isset($inProcess) ? 'disabled' : '' }}>
                         Lưu
                     </button>
                     <div class="modal fade" id="deleteOrder-{{ $orderLocal->Id_OrderLocal }}" tabindex="-1"
@@ -217,9 +218,9 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Xác nhận</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                    <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     Bạn có chắc chắn muốn cập nhật đơn gói hàng này?
@@ -258,20 +259,23 @@
             const toastLiveExample = $("#liveToast");
             const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
 
+            let currentBgColorClass, currentIconClass;
+
+            toastLiveExample.on('hidden.bs.toast', function() {
+                $(".toast-body").removeClass(currentBgColorClass);
+                $("#icon").removeClass(currentIconClass);
+                $("#toast-msg").html('');
+            });
+
             function showToast(message, bgColorClass, iconClass) {
+                // Lưu trữ giá trị của tham số trong biến toàn cục
+                currentBgColorClass = bgColorClass;
+                currentIconClass = iconClass;
+
                 $(".toast-body").addClass(bgColorClass);
                 $("#icon").addClass(iconClass);
                 $("#toast-msg").html(message);
                 toastBootstrap.show();
-
-                setTimeout(() => {
-                    toastBootstrap.hide();
-                    setTimeout(() => {
-                        $(".toast-body").removeClass(bgColorClass);
-                        $("#icon").removeClass(iconClass);
-                        $("#toast-msg").html();
-                    }, 1000);
-                }, 5000);
             }
 
             $(document).on("click", ".btnShow", function() {

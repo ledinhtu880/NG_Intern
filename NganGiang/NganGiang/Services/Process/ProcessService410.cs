@@ -167,7 +167,7 @@ namespace NganGiang.Services.Process
             {
                 if (this.getTotalCountInRegister(processContentPack, out message) != this.getTotalCountInWareHouse(processContentPack, out message))
                 {
-                    message = "Số lượng thùng hàng trong kho không đủ";
+                    message = "Số lượng gói hàng trong kho vẫn còn dư";
                     return false;
                 }
             }
@@ -180,7 +180,7 @@ namespace NganGiang.Services.Process
             int rowAffected = DataProvider.Instance.ExecuteNonQuery(query);
             if (rowAffected <= 0)
             {
-                message = "Cập nhật DetailStateCellOfPackWareHouse thất bại";
+                message = "Cập nhật thất bại";
                 return false;
             }
 
@@ -238,7 +238,7 @@ namespace NganGiang.Services.Process
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi lấy số lượng thùng chứa của thùng hàng.\n" + ex.Message);
+                MessageBox.Show("Lỗi khi lấy số lượng thùng chứa của gói hàng.\n" + ex.Message);
                 return -1;
             }
         }

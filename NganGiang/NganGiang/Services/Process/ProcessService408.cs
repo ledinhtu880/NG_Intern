@@ -13,6 +13,7 @@ using NganGiang.Models;
 using NganGiang.Libs;
 using System.Windows.Controls.Primitives;
 using Org.BouncyCastle.Asn1.Ocsp;
+using System.Windows.Navigation;
 
 namespace NganGiang.Services.Process
 {
@@ -31,39 +32,14 @@ namespace NganGiang.Services.Process
                 INNER JOIN OrderLocal ON FK_Id_OrderLocal = Id_OrderLocal
             WHERE ProcessContentPack.FK_Id_Station = 408 AND FK_Id_State = 0 AND
             HaveEilmPE = 0 AND ProcessContentPack.FK_Id_ContentPack NOT IN (
-                SELECT DCS.FK_Id_ContentPack FROM DetailContentSimpleOfPack DCS
-                INNER JOIN ContentSimple CS ON DCS.FK_Id_ContentSimple = CS.Id_ContentSimple
-                WHERE CS.ContainerProvided <> 1 OR CS.PedestalProvided <> 1 OR CS.RFIDProvided <> 1
-                OR CS.RawMaterialProvided <> 1 OR CS.CoverHatProvided <> 1) 
+            SELECT DCS.FK_Id_ContentPack FROM DetailContentSimpleOfPack DCS
+            INNER JOIN ContentSimple CS ON DCS.FK_Id_ContentSimple = CS.Id_ContentSimple
+            WHERE (CS.ContainerProvided <> 1 OR CS.PedestalProvided <> 1 OR CS.RFIDProvided <> 1
+            OR CS.RawMaterialProvided <> 1 OR CS.CoverHatProvided <> 1) AND NOT (CS.FK_Id_RawMaterial IN (0, 1, 2)))
             GROUP BY FK_Id_OrderLocal, ProcessContentPack.FK_Id_ContentPack, SimpleOrPack, Name_State, ProcessContentPack.Date_Start";
             return DataProvider.Instance.ExecuteQuery(query);
         }
-        public int GetTotalCountInRegister(int id)
-        {
-            try
-            {
-                string query = $"SELECT SUM(COUNT) as SoLuong FROM RegisterContentSimpleAtWareHouse " +
-                    $"WHERE FK_Id_ContentSimple IN " +
-                    $"(SELECT DCS.FK_Id_ContentSimple FROM DetailContentSimpleOfPack DCS WHERE DCS.FK_Id_ContentPack = {id})";
 
-                DataTable result = DataProvider.Instance.ExecuteQuery(query);
-
-                if (result.Rows[0]["SoLuong"] != DBNull.Value)
-                {
-                    int totalCount = Convert.ToInt32(result.Rows[0]["SoLuong"]);
-                    return totalCount;
-                }
-                else
-                {
-                    return -1; // Hoặc giá trị tùy ý để chỉ ra rằng kết quả truy vấn là NULL
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi lấy trạm tiếp theo.\n" + ex.Message);
-                return -1;
-            }
-        }
         public int checkCustomer(int id)
         {
             try
@@ -95,13 +71,40 @@ namespace NganGiang.Services.Process
                 return -1;
             }
         }
+        public int GetTotalCountInRegister(int id)
+        {
+            try
+            {
+                string query = $"SELECT SUM(COUNT) as SoLuong FROM RegisterContentSimpleAtWareHouse " +
+                    $"WHERE FK_Id_ContentSimple IN " +
+                    $"(SELECT DCS.FK_Id_ContentSimple FROM DetailContentSimpleOfPack DCS WHERE DCS.FK_Id_ContentPack = {id})";
+
+                DataTable result = DataProvider.Instance.ExecuteQuery(query);
+
+                if (result.Rows[0]["SoLuong"] != DBNull.Value)
+                {
+                    int totalCount = Convert.ToInt32(result.Rows[0]["SoLuong"]);
+                    return totalCount;
+                }
+                else
+                {
+                    return -1; // Hoặc giá trị tùy ý để chỉ ra rằng kết quả truy vấn là NULL
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lấy trạm tiếp theo.\n" + ex.Message);
+                return -1;
+            }
+        }
         public int GetTotalCountInWarehouse(int id)
         {
             try
             {
                 string query = $"Select SUM(Count_Container) as SoLuong from ContentSimple " +
+                    $"inner join RawMaterial as rm on FK_Id_RawMaterial = rm.Id_RawMaterial " +
                     $"where Id_ContentSimple in (SELECT DCS.FK_Id_ContentSimple FROM DetailContentSimpleOfPack DCS " +
-                    $"WHERE DCS.FK_Id_ContentPack = ${id})";
+                    $"WHERE DCS.FK_Id_ContentPack = ${id}) and rm.FK_Id_RawMaterialType <> 0";
 
                 DataTable result = DataProvider.Instance.ExecuteQuery(query);
 
@@ -123,25 +126,11 @@ namespace NganGiang.Services.Process
                 return -1;
             }
         }
-        public bool UpdateWarehouse(int id)
+        public bool CheckWarehouse(int id)
         {
             try
             {
-                int totalCountInRegister = GetTotalCountInRegister(id);
-                int totalCountInWarehouse = GetTotalCountInWarehouse(id);
-                if (totalCountInRegister == totalCountInWarehouse)
-                {
-                    string query = $"UPDATE DetailStateCellOfSimpleWareHouse SET FK_Id_StateCell = 1, " +
-                        $"FK_Id_ContentSimple = NULL WHERE FK_Id_ContentSimple IN " +
-                        $"(SELECT DCS.FK_Id_ContentSimple FROM DetailContentSimpleOfPack DCS " +
-                        $"WHERE DCS.FK_Id_ContentPack = {id})";
-                    DataProvider.Instance.ExecuteNonQuery(query);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return GetTotalCountInRegister(id) == GetTotalCountInWarehouse(id) ? true : false;
             }
             catch (SqlException ex)
             {
@@ -149,18 +138,37 @@ namespace NganGiang.Services.Process
                 return false;
             }
         }
+        public void FreeContentSimple(int id)
+        {
+            try
+            {
+                string query = $"UPDATE DetailStateCellOfSimpleWareHouse SET FK_Id_StateCell = 1, " +
+                    $"FK_Id_ContentSimple = NULL WHERE FK_Id_ContentSimple IN " +
+                    $"(SELECT DCS.FK_Id_ContentSimple FROM DetailContentSimpleOfPack DCS " +
+                    $"WHERE DCS.FK_Id_ContentPack = {id})";
+                DataProvider.Instance.ExecuteNonQuery(query);
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         public void UpdateProcessContentPack(int id)
         {
             try
             {
-                string query = $"UPDATE ProcessContentPack SET FK_Id_State = 2, Date_Fin = " +
-                $"'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}' WHERE ProcessContentPack.FK_Id_ContentPack = {id} AND FK_Id_Station = 408";
-                DataProvider.Instance.ExecuteNonQuery(query);
+                string query = "UPDATE ProcessContentPack SET FK_Id_State = 2, Date_Fin = @Date_Fin WHERE FK_Id_ContentPack = @FK_Id_ContentPack AND FK_Id_Station = 408";
+                SqlParameter[] updateParameters = new SqlParameter[]
+                {
+                    new SqlParameter("@Date_Fin", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                    new SqlParameter("@FK_Id_ContentPack", id)
+                };
+                DataProvider.Instance.ExecuteNonQuery(query, updateParameters);
 
                 query = "INSERT INTO ProcessContentPack (FK_Id_ContentPack, FK_Id_Station, FK_Id_State, Date_Start) " +
                 "VALUES (@FK_Id_ContentPack, @FK_Id_Station, @FK_Id_State, @Date_Start)";
 
-                SqlParameter[] parameters = new SqlParameter[]
+                SqlParameter[] insertParameters = new SqlParameter[]
                 {
                     new SqlParameter("@FK_Id_ContentPack", id),
                     new SqlParameter("@FK_Id_Station", 409),
@@ -168,7 +176,7 @@ namespace NganGiang.Services.Process
                     new SqlParameter("@Date_Start", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
                 };
 
-                DataProvider.Instance.ExecuteNonQuery(query, parameters);
+                DataProvider.Instance.ExecuteNonQuery(query, insertParameters);
             }
             catch (SqlException ex)
             {
@@ -181,7 +189,8 @@ namespace NganGiang.Services.Process
                 $"FROM ContentSimple " +
                 $"INNER JOIN DetailContentSimpleOfPack ON Id_ContentSimple = FK_Id_ContentSimple " +
                 $"INNER JOIN DetailContentPackOrderLocal ON DetailContentPackOrderLocal.FK_Id_ContentPack = DetailContentSimpleOfPack.FK_Id_ContentPack " +
-                $"WHERE DetailContentPackOrderLocal.FK_Id_ContentPack = {id} " +
+                $"INNER JOIN RawMaterial on ContentSimple.FK_Id_RawMaterial = RawMaterial.Id_RawMaterial " +
+                $"WHERE DetailContentPackOrderLocal.FK_Id_ContentPack = {id} AND RawMaterial.FK_Id_RawMaterialType <> 0" +
                 $"GROUP BY Id_ContentSimple";
 
             List<int> idContentSimpleList = new List<int>();

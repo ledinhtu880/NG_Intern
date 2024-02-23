@@ -69,12 +69,12 @@ namespace NganGiang.Views
                     if (result)
                     {
                         MessageBox.Show("Cấp mã thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        this.LoadData();
                     }
                     else
                     {
                         MessageBox.Show(message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                    this.LoadData();
                 }
             }
             else

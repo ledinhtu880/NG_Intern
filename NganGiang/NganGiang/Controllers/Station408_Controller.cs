@@ -28,7 +28,7 @@ namespace NganGiang.Controllers
             {
                 if (Service.checkCustomer(id) == 1)
                 {
-                    if (Service.UpdateWarehouse(id))
+                    if (Service.CheckWarehouse(id))
                     {
                         Service.UpdateProcessContentSimple(id);
                         Service.UpdateProcessContentPack(id);
@@ -36,11 +36,12 @@ namespace NganGiang.Controllers
                     else
                     {
                         isSuccess = false;
-                        MessageBox.Show($"Số lượng thùng chứa trong kho 406 vẫn còn dư.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"Số lượng thùng chứa trong kho 406 của gói số {id} vẫn còn dư.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 else
                 {
+                    Service.FreeContentSimple(id);
                     Service.UpdateProcessContentSimple(id);
                     Service.UpdateProcessContentPack(id);
                 }

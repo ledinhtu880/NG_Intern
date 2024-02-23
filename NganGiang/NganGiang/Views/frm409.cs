@@ -1,5 +1,6 @@
 ﻿using FontAwesome.Sharp;
 using NganGiang.Controllers;
+using NganGiang.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -55,20 +56,19 @@ namespace NganGiang.Views
             }
 
             DataTable dt = packController.getMatrix();
-            int[] Id_PackContents = new int[dt.Rows.Count];
-            int[] Count_Containers = new int[dt.Rows.Count];
-            int[] ro = new int[dt.Rows.Count];
-            int[] co = new int[dt.Rows.Count];
             points = new Point[dt.Rows.Count];
+            List<DetailStateCellOfPackWareHouse> matrixCurr = new List<DetailStateCellOfPackWareHouse>();
 
             if (dt.Rows.Count > 0)
             {
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
-                    ro[i] = Int32.Parse(dt.Rows[i]["Rowi"].ToString());
-                    co[i] = Int32.Parse(dt.Rows[i]["Colj"].ToString());
-                    Id_PackContents[i] = Int32.Parse(dt.Rows[i]["Id_ContentPack"].ToString());
-                    Count_Containers[i] = Int32.Parse(dt.Rows[i]["SoLuong"].ToString());
+                    DetailStateCellOfPackWareHouse detail = new DetailStateCellOfPackWareHouse();
+                    detail.Rowi = Int32.Parse(dt.Rows[i]["Rowi"].ToString());
+                    detail.Colj = Int32.Parse(dt.Rows[i]["Colj"].ToString());
+                    detail.FK_Id_ContentPack = Decimal.Parse(dt.Rows[i]["Id_ContentPack"].ToString());
+                    detail.Count_Container = Int32.Parse(dt.Rows[i]["SoLuong"].ToString());
+                    matrixCurr.Add(detail);
                 }
             }
             dgvWare.RowTemplate.Height = 150;
@@ -102,12 +102,12 @@ namespace NganGiang.Views
                 for (int c = 1; c <= col; c++)
                 {
                     // c bắt đầu từ 1
-                    if (r <= ro.Length && c <= co.Length && ro.Length > 0 && co.Length > 0)
+                    try
                     {
-                        if (ro.Length - 1 >= r && co.Length >= c && ro[r] == r + 1 && co[c - 1] == c)
+                        if (matrixCurr[count].Rowi == r + 1 && matrixCurr[count].Colj == c)
                         {
                             DataGridViewButtonCell buttonCell = new DataGridViewButtonCell();
-                            buttonCell.Value = $"Gói hàng số {Id_PackContents[count]}\nSố lượng {Count_Containers[count]}";
+                            buttonCell.Value = $"Gói hàng số {matrixCurr[count].FK_Id_ContentPack}\nSố lượng {matrixCurr[count].Count_Container}";
                             dgvWare["Column" + c.ToString(), r].ReadOnly = false;
                             points[count] = new Point(c, r);
                             count++;
@@ -119,7 +119,7 @@ namespace NganGiang.Views
                             dgvWare["Column" + c.ToString(), r].ReadOnly = true;
                         }
                     }
-                    else
+                    catch (Exception)
                     {
                         dgvWare["Column" + c.ToString(), r].Value = "Trống";
                         dgvWare["Column" + c.ToString(), r].ReadOnly = true;
@@ -148,12 +148,16 @@ namespace NganGiang.Views
                         {
                             flag = true;
                         }
+                        else
+                        {
+                            flag = false;
+                        }
                     }
                     if (flag)
                     {
                         MessageBox.Show("Xử lý thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        loadData();
                     }
+                    loadData();
                 }
             }
             else
@@ -163,26 +167,13 @@ namespace NganGiang.Views
         }
         private void dgv409_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            DataTable dt = packController.getMatrix();
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && dgv409[e.ColumnIndex, e.RowIndex] is DataGridViewButtonCell)
+            if (e.RowIndex >= 0 && e.ColumnIndex == dgv409.Columns["XemChiTietColumn"].Index)
             {
-                Point pos = new Point(e.ColumnIndex, e.RowIndex);
-                int row = pos.Y + 1;
-                int col = pos.X;
-                foreach (DataRow r in dt.Rows)
-                {
-                    if (Int32.Parse(r["Rowi"].ToString()) == row && Int32.Parse(r["Colj"].ToString()) == col)
-                    {
+                string id = dgv409.Rows[e.RowIndex].Cells["Mã gói hàng"].Value.ToString();
 
-                        string id = dgv409.Rows[e.RowIndex].Cells["Id_ContentPack"].Value.ToString();
-
-                        detailContentPack detailForm = new detailContentPack();
-                        detailForm.SetContentPackID(id);
-                        detailForm.Show();
-                        return;
-                    }
-                }
-                return;
+                detailContentPack detailForm = new detailContentPack();
+                detailForm.SetContentPackID(id);
+                detailForm.Show();
             }
         }
         private void dgv409_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -195,6 +186,29 @@ namespace NganGiang.Views
                     Image image = Image.FromFile(imagePath);
                     e.Value = image;
                 }
+            }
+        }
+
+        private void dgvWare_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            DataTable dt = packController.getMatrix();
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && dgvWare[e.ColumnIndex, e.RowIndex] is DataGridViewButtonCell)
+            {
+                Point pos = new Point(e.ColumnIndex, e.RowIndex);
+                int row = pos.Y + 1;
+                int col = pos.X;
+                foreach (DataRow r in dt.Rows)
+                {
+                    if (Int32.Parse(r["Rowi"].ToString()) == row && Int32.Parse(r["Colj"].ToString()) == col)
+                    {
+                        string id = r["Id_ContentPack"].ToString();
+                        detailContentPack detailForm = new detailContentPack();
+                        detailForm.SetContentPackID(id);
+                        detailForm.Show();
+                        return;
+                    }
+                }
+                return;
             }
         }
     }

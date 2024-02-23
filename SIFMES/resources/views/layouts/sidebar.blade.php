@@ -75,7 +75,7 @@
                 </a>
               </li>
               <li>
-                <a class="text-decoration-none text-muted" href="{{ route('dispatch.index') }}">
+                <a class="text-decoration-none text-muted" href="{{ route('dispatchs.index') }}">
                   Khởi động đơn hàng
                 </a>
               </li>

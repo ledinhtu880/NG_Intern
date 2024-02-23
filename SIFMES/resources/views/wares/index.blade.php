@@ -1,9 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Quản lý kho thùng')
-
-@push('css')
-@endpush
+@section('title', 'Quản lý kho chứa')
 
 @section('content')
     <div class="row g-0 p-3">

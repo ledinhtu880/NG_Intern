@@ -67,7 +67,7 @@ class CustomerController extends Controller
 
     if ($customer->wasChanged()) {
       return redirect()->route('customers.index')->with([
-        'message' => 'Sửa thông tin khách hàng thành công',
+        'message' => 'Sửa khách hàng thành công',
         'type' => 'success'
       ]);
     } else {

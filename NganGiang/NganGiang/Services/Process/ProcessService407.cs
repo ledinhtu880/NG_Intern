@@ -208,7 +208,7 @@ namespace NganGiang.Services.Process
                 };
                 DataProvider.Instance.ExecuteNonQuery(query, parameters);
 
-                query = $"Update ProcessContentSimple set FK_Id_State = 1 where FK_Id_ContentSimple = {id_simple_content} AND  where FK_Id_Station = 407";
+                query = $"Update ProcessContentSimple set FK_Id_State = 1 where FK_Id_ContentSimple = {id_simple_content} AND FK_Id_Station = 407";
                 DataProvider.Instance.ExecuteNonQuery(query);
             }
             catch (SqlException e)
@@ -221,7 +221,7 @@ namespace NganGiang.Services.Process
         {
             try
             {
-                var date = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 string query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentSimple = {id_simple_content} and FK_Id_Station = 407";
                 DataProvider.Instance.ExecuteNonQuery(query);
 
@@ -276,7 +276,7 @@ namespace NganGiang.Services.Process
         {
             try
             {
-                var date = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 string query = $"Update ProcessContentPack set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentPack = {id_simple_content} and FK_Id_Station = 407";
                 DataProvider.Instance.ExecuteNonQuery(query);
 
@@ -303,7 +303,7 @@ namespace NganGiang.Services.Process
         {
             try
             {
-                var date = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 string query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentSimple = {id_simple_content} and FK_Id_Station = 407";
                 DataProvider.Instance.ExecuteNonQuery(query);
 

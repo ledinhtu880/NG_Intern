@@ -37,11 +37,10 @@ namespace NganGiang.Controllers
                 contentPack.Id_ContentPack = Id_ContentPack;
                 if (!process.processAt410(contentPack, out message))
                 {
-                    message += "\nXảy ra lỗi khi xử lý Id_ContentPack = " + Id_ContentPack;
+                    message += "\nXảy ra lỗi khi xử lý gói hàng số = " + Id_ContentPack;
                     return false;
                 }
             }
-
             return true;
         }
     }

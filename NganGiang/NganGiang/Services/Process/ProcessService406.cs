@@ -39,13 +39,16 @@ namespace NganGiang.Services.Process
         public DataTable getInforOrderByIdContentSimple(ContentSimple contentSimple)
         {
             // Lấy ra thông tin đơn hàng theo Id_ContentSimple
-            string query = $"SELECT  Name_RawMaterial as N'Nguyên liệu', Count_RawMaterial as N'Số lượng nguyên liệu', " +
-                $"Unit as N'Đơn vị', Name_ContainerType as N'Thùng chứa', " +
-                $"Count_Container as N'Số lượng thùng chứa', format(Price_Container, '##,###.## VNĐ') as N'Đơn giá' " +
-                $"FROM ContentSimple " +
-                $"INNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial " +
-                $"INNER JOIN ContainerType on FK_Id_ContainerType = Id_ContainerType " +
-                $"WHERE Id_ContentSimple = {contentSimple.Id_ContentSimple}";
+            string query = $@"SELECT  Name_RawMaterial as N'Nguyên liệu', Count_RawMaterial as N'Số lượng nguyên liệu',
+                Unit as N'Đơn vị', Name_ContainerType as N'Thùng chứa',
+                (Count_Container - COALESCE(SUM(RegisterContentSimpleAtWareHouse.Count), 0)) as N'Số lượng thùng chứa', 
+                format(Price_Container, '##,###.## VNĐ') as N'Đơn giá'
+                FROM ContentSimple
+                LEFT JOIN RegisterContentSimpleAtWareHouse ON Id_ContentSimple = FK_Id_ContentSimple 
+                INNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial
+                INNER JOIN ContainerType on FK_Id_ContainerType = Id_ContainerType
+                WHERE Id_ContentSimple = {contentSimple.Id_ContentSimple}
+                GROUP BY Name_RawMaterial, Count_RawMaterial, Unit, Name_ContainerType, Count_Container, Price_Container";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             return dt;
         }
@@ -59,7 +62,7 @@ namespace NganGiang.Services.Process
                 message = "";
                 processContentSimple.FK_Id_State = 2;
                 processContentSimple.FK_Id_Station = 406;
-                processContentSimple.Date_Fin = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                processContentSimple.Date_Fin = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
                 string query = @"UPDATE ProcessContentSimple SET " +
                 "FK_Id_State = '" + processContentSimple.FK_Id_State + "'" +
@@ -190,7 +193,7 @@ namespace NganGiang.Services.Process
             List<decimal> Id_ContentSimples = this.getIdContentSimplesByDetailContentSimpleOrderLocal(orderLocal);
             message = "";
 
-            orderLocal.Date_Fin = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            orderLocal.Date_Fin = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             if (this.checkStation406AndSate2(Id_ContentSimples))
             {
@@ -228,7 +231,7 @@ namespace NganGiang.Services.Process
             message = "";
             Order order = new Order();
             order.Id_Order = this.getIdOrderByContentSimple(process);
-            order.Date_Delivery = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            order.Date_Delivery = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string query = $"SELECT Id_ContentSimple\r\nFROM ContentSimple\r\nWHERE FK_Id_Order = {order.Id_Order}";
             List<decimal> Id_ContentSimples = new List<decimal>();
             SqlDataReader reader = DataProvider.Instance.ExecuteReader(query);

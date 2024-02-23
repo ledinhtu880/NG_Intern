@@ -26,11 +26,14 @@ namespace NganGiang.Views
         {
             packController.Show(dgv408);
             // Vòng lặp qua các cột trong DataGridView và tắt sắp xếp
-            DataGridViewImageColumn btnColumn = new DataGridViewImageColumn ();
-            btnColumn.HeaderText = "Xem chi tiết";
-            btnColumn.Name = "XemChiTietColumn";
 
-            dgv408.Columns.Add(btnColumn);
+            if (!dgv408.Columns.Contains("XemChiTietColumn"))
+            {
+                DataGridViewImageColumn btnColumn = new DataGridViewImageColumn();
+                btnColumn.HeaderText = "Xem chi tiết";
+                btnColumn.Name = "XemChiTietColumn";
+                dgv408.Columns.Add(btnColumn);
+            }
 
             foreach (DataGridViewColumn column in dgv408.Columns)
             {
@@ -52,7 +55,7 @@ namespace NganGiang.Views
                 {
                     Image image = Image.FromFile(imagePath);
                     e.Value = image;
-                } 
+                }
             }
         }
 
@@ -70,12 +73,11 @@ namespace NganGiang.Views
 
         private void btnProcess_Click(object sender, EventArgs e)
         {
-            listContentPack.Clear();
             foreach (DataGridViewRow rows in dgv408.Rows)
             {
                 if (Convert.ToBoolean(rows.Cells[0].Value) == true)
                 {
-                    listContentPack.Add(Convert.ToInt32(rows.Cells[2].Value));
+                    listContentPack.Add(Convert.ToInt32(rows.Cells["Mã gói hàng"].Value.ToString()));
                 }
             }
             if (listContentPack.Count > 0)
@@ -89,15 +91,24 @@ namespace NganGiang.Views
                         {
                             flag = true;
                         }
+                        else
+                        {
+                            flag = false;
+                            break;
+                        }
                     }
                     if (flag)
                     {
                         MessageBox.Show("Xử lý thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        loadData();
                     }
+                    else
+                    {
+                        listContentPack.Clear();
+                    }
+                    loadData();
                 }
-                }
-                else
+            }
+            else
             {
                 MessageBox.Show("Bạn chưa chọn nội dung sản xuất!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }

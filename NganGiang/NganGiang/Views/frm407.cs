@@ -84,8 +84,8 @@ namespace NganGiang.Views
                     if (flag)
                     {
                         MessageBox.Show("Dán nhãn thùng và xuất phiếu giao thành công!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        LoadData();
                     }
+                    LoadData();
                 }
             }
             else
