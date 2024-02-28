@@ -30,6 +30,5 @@
                 MessageBox.Show("Không thể xóa thư mục temp: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
     }
 }

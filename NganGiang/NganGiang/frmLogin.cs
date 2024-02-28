@@ -30,29 +30,40 @@ namespace NganGiang
         {
             string username = txtUsername.Text;
             string password = txtPassword.Text;
-            if (authController.CheckLogin(username, password))
+            if (String.IsNullOrEmpty(username))
             {
-                int Id_User = -1;
-                string name = String.Empty;
-
-                string query = $"select Id_User, Name from [User] where username = '{username}'";
-                SqlDataReader reader = DataProvider.Instance.ExecuteReader(query);
-                if (reader.Read())
-                {
-                    Id_User = reader.GetInt16(0);
-                    name = reader.GetString(1);
-                }
-
-                txtUsername.Clear();
-                txtPassword.Clear();
-                frmMain newFrm = new frmMain(Id_User, name, username);
-                newFrm.LogOut += NewFrm_LogOut;
-                this.Hide();
-                newFrm.Show();
+                MessageBox.Show("Bạn phải điền tên đăng nhập", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (String.IsNullOrEmpty(password))
+            {
+                MessageBox.Show("Bạn phải điền mật khẩu", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
-                MessageBox.Show("Sai tên tài khoản hoặc mật khẩu", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (authController.CheckLogin(username, password))
+                {
+                    int Id_User = -1;
+                    string name = String.Empty;
+
+                    string query = $"select Id_User, Name from [User] where username = '{username}'";
+                    SqlDataReader reader = DataProvider.Instance.ExecuteReader(query);
+                    if (reader.Read())
+                    {
+                        Id_User = reader.GetInt16(0);
+                        name = reader.GetString(1);
+                    }
+
+                    txtUsername.Clear();
+                    txtPassword.Clear();
+                    frmMain newFrm = new frmMain(Id_User, name, username);
+                    newFrm.LogOut += NewFrm_LogOut;
+                    this.Hide();
+                    newFrm.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Sai tên tài khoản hoặc mật khẩu", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

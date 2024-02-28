@@ -52,5 +52,8 @@
     <Compile Update="Views\frmTrain.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Views\frmWrongIdentification.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

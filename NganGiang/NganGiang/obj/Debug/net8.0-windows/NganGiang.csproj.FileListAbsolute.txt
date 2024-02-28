@@ -256,3 +256,4 @@ D:\Workspace\NganGiang\NganGiang\bin\Debug\net8.0-windows\AForge.dll
 D:\Workspace\NganGiang\NganGiang\bin\Debug\net8.0-windows\AForge.Video.dll
 D:\Workspace\NganGiang\NganGiang\bin\Debug\net8.0-windows\AForge.Video.DirectShow.dll
 D:\Workspace\NganGiang\NganGiang\obj\Debug\net8.0-windows\NganGiang.Views.frmTrain.resources
+D:\Workspace\NganGiang\NganGiang\obj\Debug\net8.0-windows\NganGiang.Views.frmWrongIdentification.resources
