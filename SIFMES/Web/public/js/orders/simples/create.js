@@ -2,19 +2,24 @@ const toastLiveExample = $("#liveToast");
 const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
 
 $(document).ready(function () {
-  let currentBgColorClass, currentIconClass;
-
   toastLiveExample.on('hidden.bs.toast', function () {
-    $(".toast-body").removeClass(currentBgColorClass);
-    $("#icon").removeClass(currentIconClass);
+    // Lấy giá trị của thuộc tính data-bg-color-class và data-icon-class
+    var bgColorClass = $(".toast-body").data("bg-color-class");
+    var iconClass = $("#icon").data("icon-class");
+
+    // Xóa các lớp CSS từ toast
+    $(".toast-body").removeClass(bgColorClass);
+    $("#icon").removeClass(iconClass);
+
+    // Xóa nội dung của toast
     $("#toast-msg").html('');
   });
 
   function showToast(message, bgColorClass, iconClass) {
-    // Lưu trữ giá trị của tham số trong biến toàn cục
-    currentBgColorClass = bgColorClass;
-    currentIconClass = iconClass;
+    $(".toast-body").data("bg-color-class", bgColorClass);
+    $("#icon").data("icon-class", iconClass);
 
+    // Thêm các lớp CSS mới cho toast
     $(".toast-body").addClass(bgColorClass);
     $("#icon").addClass(iconClass);
     $("#toast-msg").html(message);

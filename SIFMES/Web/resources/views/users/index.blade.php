@@ -247,23 +247,24 @@
                 const toastElement = $("#toastMessage");
                 const toastBs = new bootstrap.Toast(toastElement.get(0));
 
-                let currentBgColorClass, currentIconClass;
+                toastLiveExample.on('hidden.bs.toast', function() {
+                    var bgColorClass = $(".toast-body").data("bg-color-class");
+                    var iconClass = $("#icon").data("icon-class");
 
-                toastElement.on('hidden.bs.toast', function() {
-                    $(".toast-body").removeClass(currentBgColorClass);
-                    $("#icon").removeClass(currentIconClass);
+                    $(".toast-body").removeClass(bgColorClass);
+                    $("#icon").removeClass(iconClass);
+
                     $("#toast-msg").html('');
                 });
 
                 function showToast(message, bgColorClass, iconClass) {
-                    // Lưu trữ giá trị của tham số trong biến toàn cục
-                    currentBgColorClass = bgColorClass;
-                    currentIconClass = iconClass;
+                    $(".toast-body").data("bg-color-class", bgColorClass);
+                    $("#icon").data("icon-class", iconClass);
 
                     $(".toast-body").addClass(bgColorClass);
                     $("#icon").addClass(iconClass);
                     $("#toast-msg").html(message);
-                    toastBs.show();
+                    toastBootstrap.show();
                 }
 
                 let modalElement = $("#deleteUser");

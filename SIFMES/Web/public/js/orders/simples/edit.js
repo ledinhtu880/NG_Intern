@@ -4,8 +4,6 @@ $(document).ready(function () {
   const toastLiveExample = $("#liveToast");
   const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
 
-  let currentBgColorClass, currentIconClass;
-
   toastLiveExample.on('hidden.bs.toast', function () {
     $(".toast-body").removeClass(currentBgColorClass);
     $("#icon").removeClass(currentIconClass);

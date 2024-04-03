@@ -306,18 +306,19 @@
             const toastLiveExample = $('#liveToast');
             const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
 
-            let currentBgColorClass, currentIconClass;
-
             toastLiveExample.on('hidden.bs.toast', function() {
-                $(".toast-body").removeClass(currentBgColorClass);
-                $("#icon").removeClass(currentIconClass);
+                var bgColorClass = $(".toast-body").data("bg-color-class");
+                var iconClass = $("#icon").data("icon-class");
+
+                $(".toast-body").removeClass(bgColorClass);
+                $("#icon").removeClass(iconClass);
+
                 $("#toast-msg").html('');
             });
 
             function showToast(message, bgColorClass, iconClass) {
-                // Lưu trữ giá trị của tham số trong biến toàn cục
-                currentBgColorClass = bgColorClass;
-                currentIconClass = iconClass;
+                $(".toast-body").data("bg-color-class", bgColorClass);
+                $("#icon").data("icon-class", iconClass);
 
                 $(".toast-body").addClass(bgColorClass);
                 $("#icon").addClass(iconClass);
