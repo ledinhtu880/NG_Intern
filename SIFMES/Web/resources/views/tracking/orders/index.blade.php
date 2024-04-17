@@ -4,23 +4,25 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Theo dõi đơn hàng</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Theo dõi đơn hàng</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Theo dõi đơn hàng</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">
+            Theo dõi đơn hàng
+        </h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header border-0 bg-white">
-                    <div class="row py-3">
+            <div class="card py-3 gap-3">
+                <div class="card-header px-3 py-0 border-0 bg-transparent">
+                    <div class="row">
                         <div class="col-md-5">
                             <div class="input-group">
-                                <label class="input-group-text bg-secondary-subtle" for="After_DateOrder">Ngày đặt hàng (Từ
+                                <label class="input-group-text bg-body-tertiary" for="After_DateOrder">Ngày đặt hàng (Từ
                                     ngày)</label>
                                 <input type="date" class="form-control" name="After_DateOrder" id="After_DateOrder"
                                     value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
@@ -29,7 +31,7 @@
                         </div>
                         <div class="col-md-5">
                             <div class="input-group">
-                                <label class="input-group-text bg-secondary-subtle" for="Before_DateOrder">Ngày đặt hàng
+                                <label class="input-group-text bg-body-tertiary" for="Before_DateOrder">Ngày đặt hàng
                                     (Đến
                                     ngày)</label>
                                 <input type="date" class="form-control" name="Before_DateOrder" id="Before_DateOrder"
@@ -39,24 +41,24 @@
                             <span class="form-message text-danger"></span>
                         </div>
                         <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary px-3" id="searchBtn">
-                                <i class="fa-solid fa-search text-white me-2"></i>Tìm kiếm
+                            <button type="submit" class="btn btn-outline" id="searchBtn">
+                                <i class="fa-solid fa-search me-2"></i>Tìm kiếm
                             </button>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col" class="py-3 text-center">Mã đơn hàng</th>
-                                <th scope="col" class="py-3">Tên khách hàng</th>
-                                <th scope="col" class="py-3">Ngày đặt hàng</th>
-                                <th scope="col" class="py-3">Ngày giao hàng</th>
-                                <th scope="col" class="py-3">Trạng thái</th>
-                                <th scope="col" class="py-3 text-center">Trạng thái sản phẩm</th>
-                                <th scope="col" class="py-3">Kiểu hàng</th>
-                                <th scope="col" class="py-3">Xem</th>
+                <div class="card-body p-0">
+                    <table class="table table-borderless table-hover m-0">
+                        <thead class="table-heading">
+                            <tr class="align-middle">
+                                <th scope="col" class="py-2 text-center">#</th>
+                                <th scope="col" class="py-2">Tên khách hàng</th>
+                                <th scope="col" class="py-2">Ngày đặt hàng</th>
+                                <th scope="col" class="py-2">Ngày giao hàng</th>
+                                <th scope="col" class="py-2">Trạng thái</th>
+                                <th scope="col" class="py-2 text-center">Trạng thái sản phẩm</th>
+                                <th scope="col" class="py-2">Kiểu hàng</th>
+                                <th scope="col" class="py-2"></th>
                             </tr>
                         </thead>
                         <tbody id="table-data">
@@ -66,10 +68,13 @@
                                         $id = $each->Id_Order;
                                         $simpleOrPack = $each->SimpleOrPack;
                                     @endphp
-                                    <tr>
-                                        <td class="text-center">{{ $each->Id_Order }}</td>
+                                    <tr class="align-middle">
+                                        <th scope="row" class="text-center text-body-secondary">
+                                            {{ $each->Id_Order }}
+                                        </th>
                                         <td>{{ $each->Name_Customer }}</td>
-                                        <td>{{ $each->Date_Order != null ? \Carbon\Carbon::parse($each->Date_Order)->format('d/m/Y') : 'Chưa giao hàng' }}
+                                        <td>
+                                            {{ $each->Date_Order != null ? \Carbon\Carbon::parse($each->Date_Order)->format('d/m/Y') : 'Chưa giao hàng' }}
                                         </td>
                                         <td>{{ $each->Date_Delivery != null
                                             ? \Carbon\Carbon::parse($each->Date_Delivery)->format('d/m/Y')
@@ -78,23 +83,27 @@
                                         <td>{{ $each->status }}</td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center">
-                                                <div class="progress w-50 position-relative" role="progressbar"
-                                                    aria-valuenow="{{ $each->progress }}" aria-valuemin="0"
-                                                    aria-valuemax="100" style="height: 20px">
-                                                    <div class="progress-bar bg-primary"
-                                                        style="width: {{ $each->progress }}%">
-                                                    </div>
+                                                <div class="progress h-100 position-relative">
                                                     <span
-                                                        class="progress-text fw-bold fs-6 {{ $each->progress > 35 ? 'text-white' : 'text-primary' }}">{{ $each->progress }}%</span>
+                                                        class="progress-bar-value fs-6 fw-bold">{{ $each->progress }}%</span>
+                                                    <div class="progress-bar" role="progressbar"
+                                                        aria-valuenow="{{ $each->progress }}" aria-valuemin="0"
+                                                        aria-valuemax="100" style="width: {{ $each->progress }}%;">
+                                                        <span
+                                                            class="progress-bar-value fs-6 fw-bold">{{ $each->progress }}%</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>{{ $each->SimpleOrPack == 1 ? 'Gói hàng' : 'Thùng hàng' }}</td>
                                         @php
-                                            $route = $simpleOrPack == 1 ? "/tracking/orders/showPacks/{$id}" : "/tracking/orders/showSimples/{$id}";
+                                            $route =
+                                                $simpleOrPack == 1
+                                                    ? "/tracking/orders/showPacks/{$id}"
+                                                    : "/tracking/orders/showSimples/{$id}";
                                         @endphp
                                         <td class="text-center">
-                                            <a href="{{ $route }}" class="btn btn-sm text-secondary btn-detail">
+                                            <a href="{{ $route }}" class="btn btn-sm btn-outline btn-detail">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
                                         </td>
@@ -107,7 +116,6 @@
             </div>
         </div>
     </div>
-
     @if (session('message') && session('type'))
         <div class="toast-container rounded position-fixed bottom-0 end-0 p-3">
             <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -163,7 +171,6 @@
                         _token: token,
                     },
                     success: function(response) {
-                        console.log(response);
                         let table = $("#table-data");
                         table.html("");
                         $.each(response.data, function(key, value) {
@@ -174,29 +181,32 @@
                                 `/tracking/orders/showSimples/${id}`;
                             let progress = value.progress;
                             let status = value.status;
-                            html = `<tr>
-                  <td class="text-center">${id}</td>
-                  <td>${value.Name_Customer}</td>
-                  <td>${value.Date_Order != null ? formatDate(value.Date_Order) : 'Chưa giao hàng'}</td>
-                  <td>${value.Date_Delivery != null ? formatDate(value.Date_Delivery) : 'Chưa giao hàng'}</td>
-                  <td>${status}</td>
-                  <td class="text-center">
-                    <div class="d-flex justify-content-center">
-                      <div class="progress w-50 position-relative" role="progressbar" aria-valuenow="${progress}" aria-valuemin="0"
-                        aria-valuemax="100" style="height: 20px">
-                        <div class="progress-bar bg-primary" style="width: ${progress}%">
-                        </div>
-                        <span class="progress-text fw-bold fs-6 ${progress > 35 ? 'text-white' : 'text-primary'}">${progress}%</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td>${value.SimpleOrPack == 1 ? 'Gói hàng' : 'Thùng hàng'}</td>
-                  <td class="text-center">
-                    <a href="${route}" class="btn btn-sm text-secondary btn-detail">
-                      <i class="fa-solid fa-eye"></i>
-                    </a>
-                  </td>
-                </tr>`;
+                            html = `<tr class="align-middle">
+                                        <td class="text-center">${id}</td>
+                                        <td>${value.Name_Customer}</td>
+                                        <td>${value.Date_Order != null ? formatDate(value.Date_Order) : 'Chưa giao hàng'}</td>
+                                        <td>${value.Date_Delivery != null ? formatDate(value.Date_Delivery) : 'Chưa giao hàng'}</td>
+                                        <td>${status}</td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center">
+                                                <div class="progress h-100 position-relative">
+                                                    <span class="progress-bar-value fs-6 fw-bold">${progress}%</span>
+                                                    <div class="progress-bar" role="progressbar"
+                                                        aria-valuenow="${progress}" aria-valuemin="0"
+                                                        aria-valuemax="100" style="width: ${progress}%;">
+                                                        <span
+                                                            class="progress-bar-value fs-6 fw-bold">${progress}%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>${value.SimpleOrPack == 1 ? 'Gói hàng' : 'Thùng hàng'}</td>
+                                        <td class="text-center">
+                                            <a href="${route}" class="btn btn-sm btn-outline btn-detail">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>`;
                             table.append(html);
                         });
                     },

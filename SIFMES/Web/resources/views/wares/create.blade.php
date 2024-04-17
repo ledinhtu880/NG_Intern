@@ -4,30 +4,30 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Thêm kho chứa</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('wares.index') }}">Quản lý kho chứa</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Thêm</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('wares.index') }}">Quản lý kho chứa</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Thêm</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">
+            Thêm kho chứa
+        </h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Cấu hình kho chứa</h4>
-                </div>
+            <div class="card">
                 <div class="card-body">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Cấu hình kho chứa</h5>
                     <form action="" method="POST">
                         @csrf
                         <div class="row">
                             <div class="col-md-4">
-                                <div class="input-group mb-3">
+                                <div class="input-group">
                                     <label class="input-group-text" for="warehouse">Kho chứa</label>
                                     <select class="form-select" name="FK_Id_Station" id="warehouse">
                                         @foreach ($stations as $each)
@@ -37,14 +37,14 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="input-group mb-3">
+                                <div class="input-group">
                                     <span class="input-group-text">Nhập số hàng</span>
                                     <input type="number" class="form-control" min="1" maxlength="3" id="colNumber"
                                         name="colNumber">
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="input-group mb-3">
+                                <div class="input-group">
                                     <span class="input-group-text">Nhập số cột</span>
                                     <input type="number" class="form-control" min="1" id="rowNumber" maxlength="3"
                                         name="rowNumber">
@@ -59,26 +59,26 @@
                     </form>
                 </div>
             </div>
-            <div class="card my-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Chi tiết kho chứa</h4>
-                </div>
-                <div class="card-body px-5">
-                    <div class="table-wrapper">
-                        <table class="table table-bordered border-secondary-subtle">
-                            <tr class="d-none">
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                            </tr>
-                        </table>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Chi tiết kho chứa</h5>
+                    <div class="px-1">
+                        <div class="table-wrapper">
+                            <table class="table table-bordered border-secondary-subtle">
+                                <tr class="d-none">
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                     <div class="d-flex justify-content-end">
                         <button class="btn btn-primary d-none" id="saveBtn" data-bs-toggle="modal"
@@ -89,7 +89,7 @@
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận</h1>
+                                        <h4 class="modal-title" id="exampleModalLabel">Xác nhận</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                     </div>
@@ -225,13 +225,13 @@
 
                                 $('.table').append(newRow);
                             }
-                            for (var i = 1; i <= col * row; i++) {
+                            for (let i = 1; i <= col * row; i++) {
                                 if (details[i - 1].FK_Id_StateCell == "1") {
                                     $('#cell' + i).css("background-color", "#ffffff");
                                     $('#cell' + i).attr("data-status", 1);
                                     $('#cell' + i).append($('<p class="small">Trống</p>'));
                                 } else if (details[i - 1].FK_Id_StateCell == "0") {
-                                    $('#cell' + i).css("background-color", "#dbd6d6");
+                                    $('#cell' + i).css("background-color", "#d9d3c4");
                                     $('#cell' + i).attr("data-status", 0)
                                     $('#cell' + i).append($('<p class="small">Không thể sử dụng</p>'));
                                 } else if (details[i - 1].FK_Id_StateCell == "2") {
@@ -252,7 +252,7 @@
                                                     <div class="modal-dialog modal-xl">
                                                       <div class="modal-content">
                                                         <div class="modal-header">
-                                                          <h4 class="modal-title fw-bold text-secondary" id="show-${details[i - 1].FK_Id_ContentSimple}Label">
+                                                          <h4 class="modal-title" id="show-${details[i - 1].FK_Id_ContentSimple}Label">
                                                           Thông tin chi tiết thùng hàng số ${details[i - 1].FK_Id_ContentSimple}
                                                           </h4>
                                                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -261,7 +261,7 @@
                                                           <div class="table-responsive">
                                                             <table class="table table-striped m-0">
                                                               <thead>
-                                                                <tr>
+                                                                <tr class="align-middle">
                                                                   <th scope="col" style="width: 110px;">Nguyên liệu</th>
                                                                   <th scope="col" style="width: 200px;">Số lượng nguyên liệu</th>
                                                                   <th scope="col" style="width: 110px;">Đơn vị</th>
@@ -304,7 +304,7 @@
                                           <div class="modal-dialog modal-xl">
                                             <div class="modal-content">
                                               <div class="modal-header>
-                                                <h4 class="modal-title fw-bold text-secondary" id="show-${details[i - 1].FK_Id_ContentPack}Label">
+                                                <h4 class="modal-title" id="show-${details[i - 1].FK_Id_ContentPack}Label">
                                                 Thông tin chi tiết gói hàng số ${details[i - 1].FK_Id_ContentPack}
                                                 </h4>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -312,7 +312,7 @@
                                               <div class="modal-body">
                                                 <table class="table table-striped m-0">
                                                   <thead>
-                                                    <tr>
+                                                    <tr class="align-middle">
                                                       <th class="text-center" scope="col">Tổng số lượng trong kho</th>
                                                       <th class="text-center" scope="col">Đơn giá gói hàng</th>
                                                       <th class="text-center" scope="col">Xem chi tiết</th>
@@ -499,7 +499,7 @@
                         });
                         let htmls = "";
                         $.each(response, function(key, value) {
-                            htmls += `<tr>
+                            htmls += `<tr class="align-middle">
                         <td class="text-center">${value.Name_RawMaterial}</td>
                         <td class="text-center">${value.Count_RawMaterial}</td>
                         <td class="text-center">${value.Unit}</td>
@@ -538,7 +538,7 @@
                         });
                         let htmls = "";
                         let data = response;
-                        htmls += `<tr>
+                        htmls += `<tr class="align-middle">
                       <td class="text-center" data-id="SoLuong" data-value="${data.SoLuong}">${data.SoLuong}</td>
                       <td class="text-center">${numberFormat(data.Price_Pack)} VNĐ</td>
                       <td class="text-center">

@@ -4,25 +4,25 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Tạo đơn thùng hàng</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('orders.simples.index') }}">Quản lý đơn thùng hàng</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Thêm</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('orders.simples.index') }}">Quản lý đơn thùng hàng</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Thêm</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">
+            Tạo đơn thùng hàng
+        </h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
-                </div>
+            <div class="card">
                 <div class="card-body border-0">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin chung</h5>
                     <form method="POST" id="formInformation">
                         @csrf
                         <input type="hidden" name="count" value="{{ isset($count) ? 1 : 0 }}">
@@ -31,10 +31,8 @@
                             <div class="col-md-4">
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
-                                        <div class="input-group">
-                                            <label class="input-group-text bg-secondary-subtle" for="FK_Id_Customer"
-                                                style="width: 140px;">Khách
-                                                hàng</label>
+                                        <div class="form-group">
+                                            <label for="FK_Id_Customer" class="form-label">Khách hàng</label>
                                             <select class="form-select selectValidate" id="FK_Id_Customer"
                                                 name="FK_Id_Customer">
                                                 @foreach ($customers as $each)
@@ -55,10 +53,9 @@
                                         </div>
                                         <span class="form-message text-danger"></span>
                                     </div>
-                                    <div class="col-md-12">
-                                        <div class="input-group">
-                                            <label class="input-group-text bg-secondary-subtle" style="width: 140px;">Ngày
-                                                đặt hàng</label>
+                                    <div class="col-md-12 mt-3">
+                                        <div class="form-group">
+                                            <label for="Date_Order" class="form-label">Ngày đặt hàng</label>
                                             <input type="date" class="form-control" id="Date_Order" name="Date_Order"
                                                 {{ isset($information) ? 'readonly' : '' }}
                                                 value="{{ isset($information)
@@ -72,10 +69,8 @@
                             <div class="col-md-4">
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
-                                        <div class="input-group">
-                                            <label class="input-group-text bg-secondary-subtle" style="width: 140px;">
-                                                Ngày giao hàng
-                                            </label>
+                                        <div class="form-group">
+                                            <label for="Date_Delivery" class="form-label">Ngày giao hàng</label>
                                             <input type="date" class="form-control" id="Date_Delivery"
                                                 name="Date_Delivery" {{ isset($information) ? 'readonly' : '' }}
                                                 value="{{ isset($information)
@@ -84,11 +79,9 @@
                                         </div>
                                         <span class="form-message text-danger"></span>
                                     </div>
-                                    <div class="col-md-12 mb-3">
-                                        <div class="input-group">
-                                            <label class="input-group-text bg-secondary-subtle" style="width: 140px;">
-                                                Ngày nhận hàng
-                                            </label>
+                                    <div class="col-md-12 mt-3">
+                                        <div class="form-group">
+                                            <label for="Date_Reception" class="form-label">Ngày nhận hàng</label>
                                             <input type="date" class="form-control" id="Date_Reception"
                                                 name="Date_Reception" {{ isset($information) ? 'readonly' : '' }}
                                                 value="{{ isset($information)
@@ -100,16 +93,16 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-secondary-subtle">Ghi chú</span>
-                                    <textarea class="form-control" style="height: 91px;" aria-label="Notes" name="Note"
-                                        {{ isset($information) ? 'readonly' : '' }} rows="5">{{ isset($information) ? $information->Note : '' }}</textarea>
+                                <div class="form-group">
+                                    <label for="Note" class="form-label">Ghi chú</label>
+                                    <textarea class="form-control" aria-label="Notes" name="Note" {{ isset($information) ? 'readonly' : '' }}
+                                        rows="5">{{ isset($information) ? $information->Note : '' }}</textarea>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
-                <div class="card-footer border-0 bg-white">
+                <div class="card-footer pt-0 border-0 bg-transparent">
                     <button type="submit" class="btn btn-primary px-5" id="redirectBtn">
                         <i class="fa-solid fa-warehouse me-2"></i> Lấy thùng hàng từ trong kho
                     </button>
@@ -119,11 +112,9 @@
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin thùng hàng cần sản xuất mới</h5>
-                </div>
+            <div class="card">
                 <div class="card-body border-0">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin thùng hàng cần sản xuất mới</h5>
                     <form method="POST" id="formProduct">
                         @csrf
                         <div class="row">
@@ -188,21 +179,23 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary px-5">
-                            <i class="fa-solid fa-plus text-white"></i>
-                            Thêm sản phẩm
-                        </button>
+                        <div class="py-2">
+                            <button type="submit" class="btn btn-primary px-5">
+                                <i class="fa-solid fa-plus text-white"></i>
+                                Thêm sản phẩm
+                            </button>
+                        </div>
                     </form>
-                    <table class="table mt-4">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="text-center py-3" scope="col">Nguyên liệu</th>
-                                <th class="text-center py-3" scope="col">Số lượng nguyên liệu</th>
-                                <th class="text-center py-3" scope="col">Đơn vị</th>
-                                <th class="text-center py-3" scope="col">Thùng chứa</th>
-                                <th class="text-center py-3" scope="col">Số lượng thùng chứa</th>
-                                <th class="text-center py-3" scope="col">Trạng thái</th>
-                                <th class="text-center py-3" scope="col">Đơn giá</th>
+                    <table class="table table-borderless table-hover m-0">
+                        <thead class="table-heading">
+                            <tr class="align-middle text-center">
+                                <th class="py-2" scope="col">Nguyên liệu</th>
+                                <th class="py-2" scope="col">Số lượng nguyên liệu</th>
+                                <th class="py-2" scope="col">Đơn vị</th>
+                                <th class="py-2" scope="col">Thùng chứa</th>
+                                <th class="py-2" scope="col">Số lượng thùng chứa</th>
+                                <th class="py-2" scope="col">Trạng thái</th>
+                                <th class="py-2" scope="col">Đơn giá</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -236,8 +229,7 @@
                                             {{ number_format($each->Price_Container, 0, ',', '.') . ' VNĐ' }}
                                         </td>
                                         <td class="text-center">
-                                            <button type="button" class="btn btn-sm text-secondary"
-                                                data-bs-toggle="modal"
+                                            <button type="button" class="btn btn-sm btn-outline" data-bs-toggle="modal"
                                                 data-bs-target="#deleteID-{{ $each->Id_ContentSimple }}">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
@@ -246,20 +238,23 @@
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h4 class="modal-title fw-bold text-secondary"
-                                                                id="exampleModalLabel">Xác nhận
+                                                            <h4 class="modal-title" id="exampleModalLabel">Xác nhận
                                                                 </h1>
                                                                 <button type="button" class="btn-close"
                                                                     data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            Bạn có chắc chắn về việc sản phẩm này
+                                                            <p class="m-0">Bạn chắc chắn muốn xóa thùng hàng này?</p>
+                                                            <p class="m-0">
+                                                                Việc này sẽ xóa thùng hàng vĩnh viễn. <br>
+                                                                Hãy chắc chắn trước khi tiếp tục.
+                                                            </p>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary"
                                                                 data-bs-dismiss="modal">Hủy</button>
                                                             <button type="button" class="btn btn-danger btnDelete"
-                                                                data-id="{{ $each->Id_ContentSimple }}">Xóa</button>
+                                                                data-id="{{ $each->Id_ContentSimple }}">Xác nhận</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -271,9 +266,9 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-end gap-3">
-                        <button class="btn btn-light" id="backBtn">Quay lại</button>
+                        <button class="btn btn-secondary" id="backBtn">Quay lại</button>
                         <a href="{{ route('orders.simples.index') }}" class="btn btn-primary" id="saveBtn">Lưu</a>
                     </div>
                 </div>

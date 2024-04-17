@@ -151,7 +151,6 @@ $(document).on("click", ".btnShow", function () {
       id_OrderLocal: id_OrderLocal,
     },
     success: function (response) {
-      console.log(response);
       $(".table-simples").html(response);
     },
   });

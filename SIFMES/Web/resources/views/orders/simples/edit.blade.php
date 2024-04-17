@@ -4,24 +4,22 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Thông tin đơn thùng hàng</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('orders.simples.index') }}">Quản lý thùng hàng</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Sửa</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('orders.simples.index') }}">Quản lý thùng hàng</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Sửa</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">Thông tin đơn thùng hàng</h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
-                </div>
-                <div class="card-body">
+            <div class="card">
+                <div class="card-body p-3">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin chung</h5>
                     <form method="POST" id="formInformation">
                         @csrf
                         <input type="hidden" name="Id_Order" value="{{ $order->Id_Order }}">
@@ -29,10 +27,8 @@
                             <div class="col-md-4">
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
-                                        <div class="input-group">
-                                            <label class="input-group-text bg-secondary-subtle" for="FK_Id_Customer"
-                                                style="width: 130px;">Khách
-                                                hàng</label>
+                                        <div class="form-group">
+                                            <label for="FK_Id_Customer" class="form-label">Khách hàng</label>
                                             <select class="form-select selectValidate" id="FK_Id_Customer"
                                                 name="FK_Id_Customer">
                                                 @foreach ($customers as $each)
@@ -48,10 +44,9 @@
                                         </div>
                                         <span class="form-message text-danger"></span>
                                     </div>
-                                    <div class="col-md-12">
-                                        <div class="input-group">
-                                            <label class="input-group-text bg-secondary-subtle" style="width: 130px;">Ngày
-                                                đặt hàng</label>
+                                    <div class="col-md-12 mt-3">
+                                        <div class="form-group">
+                                            <label for="Date_Order" class="form-label">Ngày đặt hàng</label>
                                             <input type="date" class="form-control" id="Date_Order" name="Date_Order"
                                                 value="{{ \Carbon\Carbon::parse($order->Date_Order)->format('Y-m-d') }}">
                                         </div>
@@ -62,21 +57,17 @@
                             <div class="col-md-4">
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
-                                        <div class="input-group">
-                                            <label class="input-group-text bg-secondary-subtle" style="width: 135px;">
-                                                Ngày giao hàng
-                                            </label>
+                                        <div class="form-group">
+                                            <label for="Date_Delivery" class="form-label">Ngày giao hàng</label>
                                             <input type="date" class="form-control" id="Date_Delivery"
                                                 name="Date_Delivery"
                                                 value="{{ \Carbon\Carbon::parse($order->Date_Delivery)->format('Y-m-d') }}">
                                         </div>
                                         <span class="form-message text-danger"></span>
                                     </div>
-                                    <div class="col-md-12 mb-3">
-                                        <div class="input-group">
-                                            <label class="input-group-text bg-secondary-subtle" style="width: 135px;">
-                                                Ngày nhận hàng
-                                            </label>
+                                    <div class="col-md-12 mt-3">
+                                        <div class="form-group">
+                                            <label for="Date_Reception" class="form-label">Ngày nhận hàng</label>
                                             <input type="date" class="form-control" id="Date_Reception"
                                                 name="Date_Reception"
                                                 value="{{ \Carbon\Carbon::parse($order->Date_Reception)->format('Y-m-d') }}">
@@ -86,9 +77,9 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-secondary-subtle">Ghi chú</span>
-                                    <textarea class="form-control" style="height: 91px;" aria-label="Notes" name="Note" rows="5">{{ $order->Note }}</textarea>
+                                <div class="form-group">
+                                    <label for="Note" class="form-label">Ghi chú</label>
+                                    <textarea class="form-control" aria-label="Notes" name="Note" rows="5">{{ $order->Note }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -99,30 +90,28 @@
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin thùng hàng</h5>
-                </div>
-                <div class="card-body border-0">
+            <div class="card">
+                <div class="card-body p-3">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin thùng hàng</h5>
                     <div class="wrapper w-100 overflow-x-auto">
                         <div class="table-responsive">
-                            <table class="table">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th scope="col" class="py-3 text-truncate">Nguyên liệu</th>
-                                        <th scope="col" class="py-3 text-truncate">Số lượng nguyên liệu</th>
-                                        <th scope="col" class="py-3 text-truncate">Đơn vị</th>
-                                        <th scope="col" class="py-3 text-truncate">Thùng chứa</th>
-                                        <th scope="col" class="py-3 text-truncate">Số lượng thùng chứa</th>
-                                        <th scope="col" class="py-3 text-truncate">Đơn giá thùng chứa</th>
-                                        <th scope="col" class="py-3 text-truncate">Thành tiền</th>
-                                        <th scope="col" class="py-3 text-truncate">Trạng thái</th>
-                                        <th scope="col" class="py-3 text-truncate text-center">Hành động</th>
+                            <table class="table table-borderless m-0">
+                                <thead class="table-heading">
+                                    <tr class="align-middle">
+                                        <th scope="col" class="py-2 text-truncate">Nguyên liệu</th>
+                                        <th scope="col" class="py-2 text-truncate">Số lượng nguyên liệu</th>
+                                        <th scope="col" class="py-2 text-truncate">Đơn vị</th>
+                                        <th scope="col" class="py-2 text-truncate">Thùng chứa</th>
+                                        <th scope="col" class="py-2 text-truncate">Số lượng thùng chứa</th>
+                                        <th scope="col" class="py-2 text-truncate">Đơn giá thùng chứa</th>
+                                        <th scope="col" class="py-2 text-truncate">Thành tiền</th>
+                                        <th scope="col" class="py-2 text-truncate">Trạng thái</th>
+                                        <th scope="col" class="py-2 text-truncate text-center">Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-data">
                                     @foreach ($data as $each)
-                                        <tr class="js-row" data-id="{{ $each->Id_ContentSimple }}">
+                                        <tr class="js-row align-middle" data-id="{{ $each->Id_ContentSimple }}">
                                             <td>
                                                 <select class="form-select selectValidate" style="width: 150px"
                                                     id="FK_Id_RawMaterial" name="FK_Id_RawMaterial">
@@ -178,7 +167,7 @@
                                                 {{ $each->Status }}
                                             </td>
                                             <td class="text-center align-middle">
-                                                <button type="button" class="btn btn-sm text-secondary"
+                                                <button type="button" class="btn btn-sm btn-outline"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#deleteID-{{ $each->Id_ContentSimple }}">
                                                     <i class="fa-solid fa-trash"></i>
@@ -189,21 +178,26 @@
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h4 class="modal-title fw-bold text-secondary"
-                                                                    id="exampleModalLabel">Xác
+                                                                <h4 class="modal-title" id="exampleModalLabel">Xác
                                                                     nhận</h1>
                                                                     <button type="button" class="btn-close"
                                                                         data-bs-dismiss="modal"
                                                                         aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                Bạn có chắc chắn muốn xóa thùng hàng này
+                                                                <p class="m-0">Bạn chắc chắn muốn xóa thùng hàng này?
+                                                                </p>
+                                                                <p class="m-0">
+                                                                    Việc này sẽ xóa thùng hàng vĩnh viễn. <br>
+                                                                    Hãy chắc chắn trước khi tiếp tục.
+                                                                </p>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal">Hủy</button>
                                                                 <button type="button" class="btn btn-danger btnDelete"
-                                                                    data-id="{{ $each->Id_ContentSimple }}">Xóa</button>
+                                                                    data-id="{{ $each->Id_ContentSimple }}">Xác
+                                                                    nhận</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -217,27 +211,30 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer d-flex align-items-center justify-content-end gap-3">
-                    <a href="{{ route('orders.simples.index') }}" class="btn btn-light">Quay lại</a>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#deleteOrder-{{ $order->Id_Order }}">
-                        Lưu
-                    </button>
-                    <div class="modal fade" id="deleteOrder-{{ $order->Id_Order }}" tabindex="-1"
-                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    Bạn có chắc chắn muốn cập nhật đơn thùng hàng này?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="submit" class="btn btn-primary" id="saveBtn">Xác nhận</button>
+                <div class="card-footer pt-0 border-0 bg-transparent">
+                    <div class="d-flex align-items-center justify-content-end gap-3">
+                        <a href="{{ route('orders.simples.index') }}" class="btn btn-secondary">Quay lại</a>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#deleteOrder-{{ $order->Id_Order }}">
+                            Lưu
+                        </button>
+                        <div class="modal fade" id="deleteOrder-{{ $order->Id_Order }}" tabindex="-1"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="exampleModalLabel">Xác nhận</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Bạn có chắc chắn muốn cập nhật đơn thùng hàng này?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Hủy</button>
+                                        <button type="submit" class="btn btn-primary" id="saveBtn">Xác nhận</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

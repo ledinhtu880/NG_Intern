@@ -1125,7 +1125,7 @@ class OrderController extends Controller
 
     for ($i = 0; $i < count($ContentSimples); $i++) {
       $htmls .= '
-                <tr>
+                <tr class="align-middle>
                     <td>' . $ContentSimples[$i]->material->Name_RawMaterial . '</td>
                     <td>' . $ContentSimples[$i]->Count_RawMaterial . '</td>
                     <td>' . $ContentSimples[$i]->material->Unit . '</td>

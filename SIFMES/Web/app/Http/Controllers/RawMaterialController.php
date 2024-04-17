@@ -47,11 +47,6 @@ class RawMaterialController extends Controller
             'message' => 'Nguyên liệu thô được tạo thành công'
         ]);
     }
-    public function show(string $id)
-    {
-        $material = RawMaterial::where('Id_RawMaterial', $id)->first();
-        return view('rawMaterials.show', compact('material'));
-    }
     public function edit(string $id)
     {
         $material = RawMaterial::where('Id_RawMaterial', $id)->first();

@@ -4,24 +4,22 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Thông tin đơn gói hàng</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('orders.packs.index') }}">Quản lý đơn gói hàng</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Sửa</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('orders.packs.index') }}">Quản lý đơn gói hàng</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Sửa</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">Sửa đơn gói hàng</h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
-                </div>
+            <div class="card">
                 <div class="card-body">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin chung</h5>
                     <input type="hidden" name="Id_Order" value="{{ $order->Id_Order }}">
                     <form method="POST" id="formInformation">
                         @csrf
@@ -29,10 +27,8 @@
                             <div class="col-md-4">
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
-                                        <div class="input-group">
-                                            <label class="input-group-text bg-secondary-subtle" for="FK_Id_Customer"
-                                                style="width: 130px;">Khách
-                                                hàng</label>
+                                        <div class="form-group">
+                                            <label for="FK_Id_Customer" class="form-label">Khách hàng</label>
                                             <select class="form-select selectValidate" id="FK_Id_Customer"
                                                 name="FK_Id_Customer">
                                                 @foreach ($customers as $each)
@@ -44,10 +40,9 @@
                                         </div>
                                         <span class="form-message text-danger"></span>
                                     </div>
-                                    <div class="col-md-12">
-                                        <div class="input-group">
-                                            <label class="input-group-text bg-secondary-subtle" style="width: 130px;">Ngày
-                                                đặt hàng</label>
+                                    <div class="col-md-12 mt-3">
+                                        <div class="form-group">
+                                            <label for="Date_Order" class="form-label">Ngày đặt hàng</label>
                                             <input type="date" class="form-control" id="Date_Order" name="Date_Order"
                                                 value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Order)->format('Y-m-d') : \Carbon\Carbon::parse($order->Date_Order)->format('Y-m-d') }}">
                                         </div>
@@ -58,21 +53,17 @@
                             <div class="col-md-4">
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
-                                        <div class="input-group">
-                                            <label class="input-group-text bg-secondary-subtle" style="width: 135px;">
-                                                Ngày giao hàng
-                                            </label>
+                                        <div class="form-group">
+                                            <label for="Date_Delivery" class="form-label">Ngày giao hàng</label>
                                             <input type="date" class="form-control" id="Date_Delivery"
                                                 name="Date_Delivery"
                                                 value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Delivery)->format('Y-m-d') : \Carbon\Carbon::parse($order->Date_Delivery)->format('Y-m-d') }}">
                                         </div>
                                         <span class="form-message text-danger"></span>
                                     </div>
-                                    <div class="col-md-12 mb-3">
-                                        <div class="input-group">
-                                            <label class="input-group-text bg-secondary-subtle" style="width: 135px;">
-                                                Ngày nhận hàng
-                                            </label>
+                                    <div class="col-md-12 mt-3">
+                                        <div class="form-group">
+                                            <label for="Date_Reception" class="form-label">Ngày nhận hàng</label>
                                             <input type="date" class="form-control" id="Date_Reception"
                                                 name="Date_Reception"
                                                 value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Reception)->format('Y-m-d') : \Carbon\Carbon::parse($order->Date_Reception)->format('Y-m-d') }}">
@@ -82,9 +73,9 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-secondary-subtle">Ghi chú</span>
-                                    <textarea class="form-control" id="Note" style="height: 91px;" aria-label="Notes" name="Note" rows="5">{{ isset($information) ? $information->Note : $order->Note }}</textarea>
+                                <div class="form-group">
+                                    <label for="Note" class="form-label">Ghi chú</label>
+                                    <textarea class="form-control" aria-label="Notes" name="Note" rows="5">{{ $order->Note }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -95,14 +86,12 @@
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin gói hàng</h5>
-                </div>
+            <div class="card">
                 <div class="card-body">
-                    <table class="table mt-4">
-                        <thead class="table-light">
-                            <tr>
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin gói hàng</h5>
+                    <table class="table m-0">
+                        <thead class="table-heading">
+                            <tr class="align-middle">
                                 <th scope="col" class="text-center">#</th>
                                 <th scope="col" style="width: 200px;">Số lượng</th>
                                 <th scope="col" class="text-center">Đơn giá</th>
@@ -113,7 +102,7 @@
                         <tbody id="table-data">
                             @if (isset($contentPack))
                                 @foreach ($contentPack as $each)
-                                    <tr class="js-row" data-id="{{ $each->Id_ContentPack }}">
+                                    <tr class="js-row align-middle" data-id="{{ $each->Id_ContentPack }}">
                                         <form method="POST">
                                             <td class="text-center align-middle ">
                                                 <span class="Id_ContentPack">
@@ -129,19 +118,18 @@
                                             <td class="text-center align-middle">
                                                 {{ number_format($each->Price_Pack, 0, ',', '.') . ' VNĐ' }}
                                             </td>
-                                            <td class="text-center" data-id="Status"
+                                            <td class="text-center align-middle" data-id="Status"
                                                 data-value="{{ $each->Status == 'Sản xuất mới' ? 0 : 1 }}">
-                                                <span
-                                                    class="badge text-bg-primary fw-normal fs-6">{{ $each->Status }}</span>
+                                                <span class="badge badge-main fw-normal fs-6">{{ $each->Status }}</span>
                                             </td>
                                             <td class="text-center align-middle ">
                                                 @if ($each->Status == 'Sản xuất mới')
                                                     <a href="{{ route('orders.packs.editSimpleInPack', ['id' => $each->Id_ContentPack]) }}"
-                                                        class="btn btn-sm text-secondary">
+                                                        class="btn btn-sm btn-outline">
                                                         <i class="fa-solid fa-pen-to-square"></i>
                                                     </a>
                                                 @endif
-                                                <button type="button" class="btn btn-sm text-secondary"
+                                                <button type="button" class="btn btn-sm btn-outline"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#deleteID-{{ $each->Id_ContentPack }}">
                                                     <i class="fa-solid fa-trash"></i>
@@ -152,21 +140,26 @@
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h4 class="modal-title fw-bold text-secondary"
-                                                                    id="exampleModalLabel">Xác
+                                                                <h4 class="modal-title" id="exampleModalLabel">Xác
                                                                     nhận</h1>
                                                                     <button type="button"
                                                                         class="btn-close"data-bs-dismiss="modal"
                                                                         aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                Bạn có chắc chắn về việc sản phẩm này
+                                                                <p class="m-0">Bạn chắc chắn muốn xóa gói hàng này?
+                                                                </p>
+                                                                <p class="m-0">
+                                                                    Việc này sẽ xóa gói hàng vĩnh viễn. <br>
+                                                                    Hãy chắc chắn trước khi tiếp tục.
+                                                                </p>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal">Hủy</button>
                                                                 <button type="button" class="btn btn-danger deletePack"
-                                                                    data-id="{{ $each->Id_ContentPack }}">Xóa</button>
+                                                                    data-id="{{ $each->Id_ContentPack }}">Xác
+                                                                    nhận</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -179,9 +172,8 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-end gap-3">
-                        <a href="{{ route('orders.packs.index') }}" class="btn btn-light">Quay lại</a>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#deleteOrder-{{ $order->Id_Order }}">
                             Lưu
@@ -191,7 +183,7 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận
+                                        <h5 class="modal-title fw-bold" id="exampleModalLabel">Xác nhận
                                         </h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
@@ -200,7 +192,8 @@
                                         Bạn có chắc chắn muốn cập nhật đơn gói hàng này?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Hủy</button>
                                         <button type="submit" class="btn btn-primary" id="saveBtn">Xác nhận</button>
                                     </div>
                                 </div>

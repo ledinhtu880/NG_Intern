@@ -34,14 +34,10 @@ class CustomerController extends Controller
     $customer->Id_Customer = $idMax;
     $customer->fill($request->all());
     $customer->save();
-    return redirect()->route('customers.show', ['customer' => $idMax])->with([
+    return redirect()->route('customers.index')->with([
       'type' => 'success',
       'message' => 'Thêm người dùng thành công'
     ]);
-  }
-  public function show(string $customer_id)
-  {
-    return view('customers.show', ['customer' => Customer::find($customer_id)]);
   }
   public function edit(Customer $customer)
   {

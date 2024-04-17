@@ -7,27 +7,30 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Sửa dây chuyền xử lý đơn hàng</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('productStationLines.index') }}">Quản lý dây chuyền xử lý
-                        đơn
-                        hàng</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Sửa</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('productStationLines.index') }}">Quản lý dây chuyền xử lý
+                    đơn
+                    hàng</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Sửa</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">
+            Sửa dây chuyền xử lý đơn hàng
+        </h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm">
+            <div class="card gap-3">
                 <div class="card-body">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin chung</h5>
                     <form method="POST">
                         @csrf
                         <div class="form-group">
-                            <label for="Name_ProdStationLine" class="form-label" style="font-weight:600;">Tên dây
+                            <label for="Name_ProdStationLine" class="form-label">Tên dây
                                 chuyền</label>
                             <input type="text" name="Name_ProdStationLine" id="Name_ProdStationLine"
                                 placeholder="Nhập tên dây chuyền" class="form-control"
@@ -35,14 +38,14 @@
                             <span class="text-danger" id="err_nameProdStationLine"></span>
                         </div>
                         <div class="form-group">
-                            <label for="Description" class="form-label" style="font-weight:600;">Mô tả</label>
+                            <label for="Description" class="form-label">Mô tả</label>
                             <textarea name="Description" id="Description" placeholder="Nhập mô tả" class="form-control">{{ $productStationLine->Description }}</textarea>
                             <span class="text-danger">
                                 {{ $errors->first('Description') }}
                             </span>
                         </div>
                         <div class="form-group">
-                            <label for="FK_Id_OrderType" class="form-label" style="font-weight:600;">Chọn kiểu đơn
+                            <label for="FK_Id_OrderType" class="form-label">Chọn kiểu đơn
                                 hàng</label>
                             <select name="FK_Id_OrderType" id="FK_Id_OrderType" class="form-control ">
                                 @foreach ($orderTypes as $orderType)
@@ -55,7 +58,7 @@
                         </div>
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label for="Station_Start" class="form-label" style="font-weight:600;">Chọn trạm bắt
+                                <label for="Station_Start" class="form-label">Chọn trạm bắt
                                     đầu</label>
                                 <select name="Station_Start" id="Station_Start" class="form-control">
                                     <option value="401">SIF-401</option>
@@ -67,7 +70,7 @@
                                 </span>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="Station_End" class="form-label" style="font-weight:600;">Chọn trạm kết
+                                <label for="Station_End" class="form-label">Chọn trạm kết
                                     thúc</label>
                                 <select name="Station_End" id="Station_End" class="form-control">
                                     <option value="406">SIF-406</option>
@@ -150,9 +153,9 @@
                         </div>
                     </form>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex justify-content-end gap-3">
-                        <a href="{{ route('productStationLines.index') }}" class="btn btn-light">Quay lại</a>
+                        <a href="{{ route('productStationLines.index') }}" class="btn btn-secondary">Quay lại</a>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#deleteOrder-{{ $productStationLine->Id_ProdStationLine }}">
                             Cập nhật
@@ -162,7 +165,7 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận
+                                        <h4 class="modal-title" id="exampleModalLabel">Xác nhận
                                             </h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
@@ -171,7 +174,8 @@
                                         Bạn có chắc chắn muốn cập nhật dây chuyền này?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Hủy</button>
                                         <button type="submit" class="btn btn-primary" id="btn_edit">Xác nhận</button>
                                     </div>
                                 </div>

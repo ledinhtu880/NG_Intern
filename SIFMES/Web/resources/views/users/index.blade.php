@@ -4,29 +4,31 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Quản lý người dùng</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Quản lý người dùng</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Quản lý người dùng</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">
+            Quản lý người dùng
+        </h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
+            <div class="card py-3 gap-3">
+                <div class="card-header px-3 py-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
-                            <a href="{{ route('users.create') }}" class="btn btn-danger rounded-1">
-                                <i class="fa-solid fa-plus text-white me-3 fs-6"></i>
+                            <a href="{{ route('users.create') }}" class="btn btn-main">
+                                <i class="fa-solid fa-plus text-white me-1 fs-6"></i>
                                 <span>Thêm người dùng</span>
                             </a>
                         </div>
                         <div class="d-flex justify-content-end align-items-center gap-3">
                             <div>
-                                <button type="button" class="btn text-secondary" data-bs-toggle="modal"
+                                <button type="button" class="btn btn-outline" data-bs-toggle="modal"
                                     data-bs-target="#deleteUser">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
@@ -35,7 +37,7 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác
+                                                <h4 class="modal-title" id="exampleModalLabel">Xác
                                                     nhận
                                                     </h1>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -47,7 +49,8 @@
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Hủy</button>
-                                                <button type="button" id="btnDelete" class="btn btn-danger">Xóa</button>
+                                                <button type="button" id="btnDelete" class="btn btn-danger">Xác
+                                                    nhận</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -60,30 +63,33 @@
                             </div>
                         </div>
                     </div>
-                    <table class="table mt-4">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col" class="py-3 text-center">Chọn</th>
-                                <th scope="col" class="py-3 text-center">#</th>
-                                <th scope="col" class="py-3">Tên người dùng</th>
-                                <th scope="col" class="py-3">Tài khoản</th>
-                                <th scope="col" class="py-3 text-center">Vai trò</th>
-                                <th scope="col" class="py-3 text-center">Hoạt động</th>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-borderless table-hover m-0">
+                        <thead class="table-heading">
+                            <tr class="align-middle">
+                                <th scope="col" class="py-2 text-center">Chọn</th>
+                                <th scope="col" class="py-2 text-center">#</th>
+                                <th scope="col" class="py-2">Tên người dùng</th>
+                                <th scope="col" class="py-2">Tài khoản</th>
+                                <th scope="col" class="py-2 text-center">Vai trò</th>
+                                <th scope="col" class="py-2 text-center">Hoạt động</th>
                             </tr>
                         </thead>
                         <tbody id="table-data">
                             @foreach ($users as $user)
-                                <tr>
+                                <tr class="align-middle">
                                     <td class="text-center" data-id="Id_User" data-value="{{ $user->Id_User }}">
                                         <input type="checkbox" class="form-check-input" data-id="{{ $user->Id_User }}">
                                     </td>
-                                    <td class="text-center">{{ $user->Id_User }}</td>
+                                    <th scope="row" class="text-center text-body-secondary">
+                                        {{ $user->Id_User }}
+                                    </th>
                                     <td>{{ $user->Name }}</td>
                                     <td>{{ $user->UserName }}</td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-sm text-secondary btnShow"
-                                            data-bs-toggle="modal" data-bs-target="#role-{{ $user->Id_User }}"
-                                            data-id="{{ $user->Id_User }}">
+                                        <button type="button" class="btn btn-sm btn-outline btnShow" data-bs-toggle="modal"
+                                            data-bs-target="#role-{{ $user->Id_User }}" data-id="{{ $user->Id_User }}">
                                             <i class="fa-solid fa-eye"></i>
                                         </button>
 
@@ -92,23 +98,26 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h4 class="modal-title fw-bold text-secondary"
-                                                            id="exampleModalLabel">Vai trò của
+                                                        <h4 class="modal-title" id="exampleModalLabel">Vai trò của
                                                             người dùng {{ $user->Name }}
                                                             </h1>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                 aria-label="Close"></button>
                                                     </div>
-                                                    <div class="modal-body">
-                                                        <table class="table m-0">
-                                                            <thead class="table-light">
-                                                                <tr>
-                                                                    <th scope="col" class="py-3 text-center">#</th>
-                                                                    <th scope="col" class="py-3">Tên vai trò</th>
-                                                            </thead>
-                                                            <tbody id="table-roles">
-                                                            </tbody>
-                                                        </table>
+                                                    <div class="modal-body overflow-y-auto" style="height: 250px">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-hover m-0">
+                                                                <thead class="table-heading">
+                                                                    <tr class="align-middle">
+                                                                        <th scope="col" class="text-start py-2">Tên vai
+                                                                            trò
+                                                                        </th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="table-roles">
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
@@ -120,10 +129,10 @@
                                     </td>
                                     <td class="text-center">
                                         <a href="{{ route('users.edit', compact('user')) }}"
-                                            class="btn btn-sm text-secondary btn_edit">
+                                            class="btn btn-sm btn-outline btn_edit">
                                             <i class="fa-solid fa-pencil"></i>
                                         </a>
-                                        <button type="button" class="btn btn-sm text-secondary" data-bs-toggle="modal"
+                                        <button type="button" class="btn btn-sm btn-outline" data-bs-toggle="modal"
                                             data-bs-target="#i{{ $user->Id_User }}">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
@@ -132,15 +141,18 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h4 class="modal-title fw-bold text-secondary"
-                                                            id="exampleModalLabel">Xác nhận
+                                                        <h4 class="modal-title" id="exampleModalLabel">Xác nhận
                                                             </h1>
                                                             <button type="button" class="btn-close"
                                                                 data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        Bạn có chắc chắn muốn xóa người dùng
                                                         {{ $user->Name }}?
+                                                        <p class="m-0">Bạn chắc chắn muốn xóa người dùng này?</p>
+                                                        <p class="m-0">
+                                                            Việc này sẽ xóa người dùng vĩnh viễn. <br>
+                                                            Hãy chắc chắn trước khi tiếp tục.
+                                                        </p>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
@@ -149,7 +161,8 @@
                                                             method="POST">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger">Xóa</button>
+                                                            <button type="submit" class="btn btn-danger">Xác
+                                                                nhận</button>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -161,14 +174,13 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <nav>
-                        @if ($users->lastPage() > 1)
-                            {{ $users->links('pagination::bootstrap-4') }}
-                        @endif
-                    </nav>
-                    <a href="{{ route('index') }}" class="btn btn-light">Quay lại</a>
-                </div>
+                @if ($users->lastPage() > 1)
+                    <div class="card-footer pt-0 border-0 bg-transparent">
+                        <nav>
+                            {{ $users->links('pagination::bootstrap-5') }}
+                        </nav>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -233,9 +245,8 @@
                         } else {
                             modalElement.find('#table-roles').html('');
                             response.forEach((role) => {
-                                modalElement.find('#table-roles').append(`<tr>
-                                                                            <td class="text-center">${role.Id_Role}</td>
-                                                                            <td>${role.Name_Role}</td>
+                                modalElement.find('#table-roles').append(`<tr class="align-middle">
+                                                                            <td class="text-start">${role.Name_Role}</td>
                                                                           </tr>`);
                             });
                         }
@@ -339,80 +350,84 @@
                         table.html('');
                         let html = '';
                         response.forEach((each) => {
-                            html = `<tr>
-              <td class="text-center" data-id="Id_User" data-value="${each.Id_User}">
-                <input type="checkbox" class="form-check-input" data-id="${each.Id_User}">
-              </td>
-              <td class="text-center">${each.Id_User}</td>
-              <td>${each.Name}</td>
-              <td>${each.UserName}</td>
-              <td class="text-center">
-                <button type="button" class="btn btn-sm text-secondary btnShow" data-bs-toggle="modal"
-                  data-bs-target="#role-${each.Id_User}" data-id="${each.Id_User}">
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-
-                <div class="modal fade" id="role-${each.Id_User}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                  aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Vai trò của người dùng ${each.Name}
-                        </h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        <table class="table m-0">
-                          <thead class="table-light">
-                            <tr>
-                              <th scope="col" class="py-3 text-center">#</th>
-                              <th scope="col" class="py-3">Tên vai trò</th>
-                          </thead>
-                          <tbody id="table-roles">
-                          </tbody>
-                        </table>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-              <td class="text-center">
-                <a href="/users/${each.Id_User}/edit" class="btn btn-sm text-secondary btn_edit">
-                  <i class="fa-solid fa-pencil"></i>
-                </a>
-                <button type="button" class="btn btn-sm text-secondary" data-bs-toggle="modal"
-                  data-bs-target="#i${each.Id_User}">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-                <div class="modal fade" id="i${each.Id_User}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                  aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận
-                        </h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        Bạn có chắc chắn muốn xóa người dùng
-                        ${each.Name}?
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <form action="/users/${each.Id_User}" method="POST">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" class="btn btn-danger">Xóa</button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>`
+                            html = `<tr class="align-middle">
+                                        <td class="text-center" data-id="Id_User" data-value="${each.Id_User}">
+                                            <input type="checkbox" class="form-check-input" data-id="${each.Id_User}">
+                                        </td>
+                                        <td class="text-center">${each.Id_User}</td>
+                                        <td>${each.Name}</td>
+                                        <td>${each.UserName}</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-outline btnShow" data-bs-toggle="modal"
+                                            data-bs-target="#role-${each.Id_User}" data-id="${each.Id_User}">
+                                            <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                            <div class="modal fade" id="role-${each.Id_User}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                            aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title" id="exampleModalLabel">Vai trò của người dùng ${each.Name}
+                                                            </h4>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body overflow-y-auto" style="height: 250px">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-hover m-0">
+                                                                    <thead class="table-heading">
+                                                                        <tr class="align-middle">
+                                                                            <th scope="col" class="text-start py-2">Tên vai trò</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="table-roles">
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="/users/${each.Id_User}/edit" class="btn btn-sm btn-outline btn_edit">
+                                                <i class="fa-solid fa-pencil"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline" data-bs-toggle="modal"
+                                            data-bs-target="#i${each.Id_User}">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                            <div class="modal fade" id="i${each.Id_User}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                            aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title" id="exampleModalLabel">Xác nhận
+                                                            </h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p class="m-0">Bạn chắc chắn muốn xóa người dùng này?</p>
+                                                            <p class="m-0">
+                                                                Việc này sẽ xóa người dùng vĩnh viễn. <br>
+                                                                Hãy chắc chắn trước khi tiếp tục.
+                                                            </p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                            <form action="/users/${each.Id_User}" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger">Xác nhận</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>`
                             table.append(html);
                         })
                     },

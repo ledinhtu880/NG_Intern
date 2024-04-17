@@ -4,26 +4,29 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Thêm trạm</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('stations.index') }}">Quản lý trạm</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Thêm</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('stations.index') }}">Quản lý trạm</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Thêm</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">
+            Thêm trạm
+        </h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
+            <div class="card">
+                <div class="card-body p-3">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin chung</h5>
                     <form id="formInformation" method="POST" action="{{ route('stations.store') }}">
                         @csrf
-                        <div class="d-flex gap-2">
-                            <div class="form-group" style="flex: 1;">
-                                <label for="Id_Station" class="form-label" style="font-weight: 600;">Mã trạm</label>
+                        <div class="d-flex gap-2 mb-3">
+                            <div class="form-group flex-fill">
+                                <label for="Id_Station" class="form-label">Mã trạm</label>
                                 <input type="text" name="Id_Station" id="Id_Station" placeholder="Nhập mã trạm"
                                     class="form-control{{ $errors->has('Id_Station') ? ' is-invalid' : '' }}"
                                     value="{{ old('Id_Station') }}">
@@ -33,8 +36,8 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="form-group" style="flex: 1;">
-                                <label for="Name_Station" class="form-label" style="font-weight: 600;">Tên trạm</label>
+                            <div class="form-group flex-fill">
+                                <label for="Name_Station" class="form-label">Tên trạm</label>
                                 <input type="text" name="Name_Station" id="Name_Station" placeholder="Nhập tên trạm"
                                     class="form-control{{ $errors->has('Name_Station') ? ' is-invalid' : '' }}"
                                     value="{{ old('Name_Station') }}">
@@ -45,8 +48,8 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="Ip_Address" class="form-label" style="font-weight: 600;">Địa chỉ IP</label>
+                        <div class="form-group mb-3">
+                            <label for="Ip_Address" class="form-label">Địa chỉ IP</label>
                             <input type="text" name="Ip_Address" id="Ip_Address" placeholder="Nhập địa chỉ IP"
                                 class="form-control{{ $errors->has('Ip_Address') ? ' is-invalid' : '' }}"
                                 value="{{ old('Ip_Address') }}">
@@ -57,7 +60,7 @@
                             @endif
                         </div>
                         <div class="form-group">
-                            <label for="FK_Id_StationType" class="form-label" style="font-weight: 600;">Loại trạm</label>
+                            <label for="FK_Id_StationType" class="form-label">Loại trạm</label>
                             <select name="FK_Id_StationType"
                                 class="form-select{{ $errors->has('FK_Id_StationType') ? ' is-invalid' : '' }}">
                                 <option value="">Chọn loại trạm</option>
@@ -73,23 +76,23 @@
                         </div>
                     </form>
                 </div>
-                <div class="card-footer">
-                    <div class="d-flex justify-content-end gap-3">
-                        <a href="{{ route('stations.index') }}" class="btn btn-light">Quay lại</a>
-                        <button type="submit" class="btn btn-primary" id="saveBtn">Tạo</button>
+
+                <div class="card-footer pt-0 border-0 bg-transparent">
+                    <div class="d-flex justify-content-end align-items-center gap-3">
+                        <a href="{{ route('stations.index') }}" class="btn btn-secondary">Quay lại</a>
+                        <button type="submit" class="btn btn-primary" id="saveBtn">Lưu</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-@endsection
+    @endsection
 
-@push('javascript')
-    <script>
-        $(document).ready(function() {
-            $('#saveBtn').click(function() {
-                $('#formInformation').submit();
-            });
-        })
-    </script>
-@endpush
+    @push('javascript')
+        <script>
+            $(document).ready(function() {
+                $('#saveBtn').click(function() {
+                    $('#formInformation').submit();
+                });
+            })
+        </script>
+    @endpush

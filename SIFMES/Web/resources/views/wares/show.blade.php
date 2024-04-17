@@ -1,31 +1,31 @@
 @extends('layouts.master')
 
-@section('title', 'Chi tiết kho thùng')
+@section('title', 'Chi tiết kho chứa')
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Chi tiết kho chứa</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('wares.index') }}">Quản lý kho chứa</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Xem chi tiết</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('wares.index') }}">Quản lý kho chứa</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Xem chi tiết</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">
+            Chi tiết kho chứa
+        </h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Cấu hình kho chứa</h4>
-                </div>
+            <div class="card">
                 <div class="card-body">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Cấu hình kho chứa</h5>
                     <div class="row">
                         <div class="col-8">
-                            <div class="input-group mb-3">
+                            <div class="input-group">
                                 <label class="input-group-text" for="ware">Kho chứa</label>
                                 <select class="form-select" id="ware">
                                     @foreach ($stations as $each)
@@ -35,14 +35,14 @@
                             </div>
                         </div>
                         <div class="col-2">
-                            <div class="input-group mb-3">
+                            <div class="input-group">
                                 <span class="input-group-text">Số hàng</span>
                                 <input type="number" class="form-control" min="1" id="rowNumber" name="rowNumber"
                                     readonly>
                             </div>
                         </div>
                         <div class="col-2">
-                            <div class="input-group mb-3">
+                            <div class="input-group">
                                 <span class="input-group-text">Số cột</span>
                                 <input type="number" class="form-control" min="1" id="colNumber" name="colNumber"
                                     readonly>
@@ -51,27 +51,26 @@
                     </div>
                 </div>
             </div>
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Chi tiết kho chứa</h4>
-                </div>
-                <div class="card-body px-5 pb-5">
-                    <h4 class="text-center">SỐ HÀNG VÀ CỘT CỦA KHO</h4>
-                    <div class="table-wrapper">
-                        <table class="table table-bordered border-secondary">
-                            <tr class="d-none">
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                                <td class="square-cell">1</td>
-                            </tr>
-                        </table>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Chi tiết kho chứa</h5>
+                    <div class="px-1">
+                        <div class="table-wrapper">
+                            <table class="table table-bordered border-secondary-subtle">
+                                <tr class="d-none">
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                    <td class="square-cell">1</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -124,7 +123,7 @@
 
                             $('.table').append(newRow);
                         }
-                        for (var i = 1; i <= col * row; i++) {
+                        for (let i = 1; i <= col * row; i++) {
                             if (details[i - 1].FK_Id_StateCell == "1") {
                                 $('#cell' + i).css("background-color", "#ffffff");
                                 $('#cell' + i).attr("data-status", 1);
@@ -139,52 +138,52 @@
                                     $('#cell' + i).attr("data-status", 0)
                                     $('#cell' + i).append(
                                         $(`<p class="small text-truncate" data-id="${details[i - 1].FK_Id_ContentSimple}"
-                      id="simple-${details[i - 1].FK_Id_ContentSimple}">Thùng hàng <br> số ${details[i - 1].FK_Id_ContentSimple} <br>
-                      <button type="button" class="btn btn-sm btn-outline-secondary btnShowSimple" data-bs-toggle="modal"
-                      data-bs-target="#show-${details[i - 1].FK_Id_ContentSimple}"
-                      data-id="${details[i - 1].FK_Id_ContentSimple}">
-                      <i class="fa-solid fa-eye"></i>
-                  </button> </p>`));
+                                              id="simple-${details[i - 1].FK_Id_ContentSimple}">Thùng hàng <br> số ${details[i - 1].FK_Id_ContentSimple} <br>
+                                              <button type="button" class="btn btn-sm btn-outline-secondary btnShowSimple" data-bs-toggle="modal"
+                                              data-bs-target="#show-${details[i - 1].FK_Id_ContentSimple}"
+                                              data-id="${details[i - 1].FK_Id_ContentSimple}">
+                                              <i class="fa-solid fa-eye"></i>
+                                              </button> </p>`));
                                     let modals = `
-              <div class="modal fade bg-transparent" id="show-${details[i - 1].FK_Id_ContentSimple}" tabindex="-1"
-                    aria-labelledby="#show-${details[i - 1].FK_Id_ContentSimple}Label" aria-hidden="true">
-                <div class="modal-dialog modal-xl">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h4 class="modal-title fw-bold text-secondary" id="show-${details[i - 1].FK_Id_ContentSimple}Label">
-                      Thông tin chi tiết đơn hàng số ${details[i - 1].FK_Id_ContentSimple}
-                      </h4>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="table-responsive">
-                        <table class="table table-striped m-0">
-                          <thead>
-                            <tr>
-                              <th scope="col" style="width: 110px;">Nguyên liệu</th>
-                              <th scope="col" style="width: 200px;">Số lượng nguyên liệu</th>
-                              <th scope="col" style="width: 110px;">Đơn vị</th>
-                              <th scope="col" style="width: 110px;">Thùng chứa</th>
-                              <th scope="col" style="width: 200px;">Tổng số lượng trong kho</th>
-                              <th scope="col" style="width: 200px;">Số lượng khả dụng</th>
-                              <th scope="col" style="width: 110px;">Đơn giá</th>
-                            </tr>
-                          </thead>
-                          <tbody class="table-simples" data-value="${details[i - 1].FK_Id_ContentSimple}">
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="d-flex align-items-stretch justify-content-end">
-                          <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                          </div>
-                        </div>
-                    </div>
-                  </div>
-                </div>
-              </div>`
+                                                  <div class="modal fade bg-transparent" id="show-${details[i - 1].FK_Id_ContentSimple}" tabindex="-1"
+                                                        aria-labelledby="#show-${details[i - 1].FK_Id_ContentSimple}Label" aria-hidden="true">
+                                                    <div class="modal-dialog modal-xl">
+                                                      <div class="modal-content">
+                                                        <div class="modal-header">
+                                                          <h4 class="modal-title" id="show-${details[i - 1].FK_Id_ContentSimple}Label">
+                                                          Thông tin chi tiết đơn hàng số ${details[i - 1].FK_Id_ContentSimple}
+                                                          </h4>
+                                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                          <div class="table-responsive">
+                                                            <table class="table table-striped m-0">
+                                                              <thead>
+                                                                <tr class="align-middle">
+                                                                  <th scope="col" style="width: 110px;">Nguyên liệu</th>
+                                                                  <th scope="col" style="width: 200px;">Số lượng nguyên liệu</th>
+                                                                  <th scope="col" style="width: 110px;">Đơn vị</th>
+                                                                  <th scope="col" style="width: 110px;">Thùng chứa</th>
+                                                                  <th scope="col" style="width: 200px;">Tổng số lượng trong kho</th>
+                                                                  <th scope="col" style="width: 200px;">Số lượng khả dụng</th>
+                                                                  <th scope="col" style="width: 110px;">Đơn giá</th>
+                                                                </tr>
+                                                              </thead>
+                                                              <tbody class="table-simples" data-value="${details[i - 1].FK_Id_ContentSimple}">
+                                                              </tbody>
+                                                            </table>
+                                                          </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <div class="d-flex align-items-stretch justify-content-end">
+                                                              <div class="d-flex gap-2">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                              </div>
+                                                            </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>`
                                     $('#cell' + i).append(modals);
                                 } else {
                                     $('#cell' + i).css("background-color", "#A6BFF7");
@@ -211,7 +210,7 @@
                     <div class="modal-body">
                       <table class="table table-striped m-0">
                         <thead>
-                          <tr>
+                          <tr class="align-middle">
                             <th class="text-center" scope="col">Tổng số lượng trong kho</th>
                             <th class="text-center" scope="col">Đơn giá gói hàng</th>
                             <th class="text-center" scope="col">Xem chi tiết</th>
@@ -323,7 +322,7 @@
                       <div class="table-responsive">
                         <table class="table table-striped m-0">
                           <thead>
-                            <tr>
+                            <tr class="align-middle">
                               <th scope="col" style="width: 110px;">Nguyên liệu</th>
                               <th scope="col" style="width: 200px;">Số lượng nguyên liệu</th>
                               <th scope="col" style="width: 110px;">Đơn vị</th>
@@ -374,7 +373,7 @@
                     <div class="modal-body">
                       <table class="table table-striped m-0">
                         <thead>
-                          <tr>
+                          <tr class="align-middle">
                             <th class="text-center" scope="col">Tổng số lượng trong kho</th>
                             <th class="text-center" scope="col">Đơn giá gói hàng</th>
                             <th class="text-center" scope="col">Xem chi tiết</th>
@@ -444,7 +443,7 @@
                         });
                         let htmls = "";
                         $.each(response, function(key, value) {
-                            htmls += `<tr>
+                            htmls += `<tr class="align-middle">
                         <td class="text-center">${value.Name_RawMaterial}</td>
                         <td class="text-center">${value.Count_RawMaterial}</td>
                         <td class="text-center">${value.Unit}</td>
@@ -485,7 +484,7 @@
                         });
                         let htmls = "";
                         $.each(response, function(key, value) {
-                            htmls += `<tr>
+                            htmls += `<tr class="align-middle">
                         <td class="text-center">${value.Name_RawMaterial}</td>
                         <td class="text-center">${value.Count_RawMaterial}</td>
                         <td class="text-center">${value.Unit}</td>
@@ -524,11 +523,11 @@
                         });
                         let htmls = "";
                         let data = response;
-                        htmls += `<tr>
+                        htmls += `<tr class="align-middle">
                       <td class="text-center" data-id="SoLuong" data-value="${data.SoLuong}">${data.SoLuong}</td>
                       <td class="text-center">${numberFormat(data.Price_Pack)} VNĐ</td>
                       <td class="text-center">
-                        <button class="btn btn-sm text-secondary btnDetail" data-bs-target="#showDetails-${data.Id_ContentPack}" 
+                        <button class="btn btn-sm btn-outline btnDetail" data-bs-target="#showDetails-${data.Id_ContentPack}" 
                         data-id="${data.Id_ContentPack}" data-bs-toggle="modal">
                           <i class="fa-solid fa-eye"></i>
                         </button>
@@ -542,7 +541,7 @@
                 <div class="modal-dialog modal-xl modal-dialog-centered">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title fw-bold text-secondary" id="show-${data.Id_ContentPack}Label">
+                      <h5 class="modal-title fw-bold" id="show-${data.Id_ContentPack}Label">
                       Thông tin các thùng hàng của gói hàng số ${data.Id_ContentPack}
                       </h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -550,15 +549,15 @@
                     <div class="modal-body">
                       <div class="wrapper w-100 overflow-x-auto">
                         <div class="table-responsive">
-                          <table class="table">
-                            <thead class="table-light">
-                              <tr>
-                                <th class="py-3" scope="col">Tên nguyên liệu</th>
-                                <th class="py-3" scope="col">Số lượng nguyên liệu</th>
-                                <th class="py-3" scope="col">Đơn vị</th>
-                                <th class="py-3" scope="col">Thùng chứa</th>
-                                <th class="py-3" scope="col">Số lượng thùng chứa</th>
-                                <th class="py-3" scope="col">Đơn giá</th>
+                          <table class="table table-borderless table-hover m-0">
+                            <thead class="table-heading">
+                              <tr class="align-middle">
+                                <th class="py-2" scope="col">Tên nguyên liệu</th>
+                                <th class="py-2" scope="col">Số lượng nguyên liệu</th>
+                                <th class="py-2" scope="col">Đơn vị</th>
+                                <th class="py-2" scope="col">Thùng chứa</th>
+                                <th class="py-2" scope="col">Số lượng thùng chứa</th>
+                                <th class="py-2" scope="col">Đơn giá</th>
                               </tr>
                             </thead>
                             <tbody id="table-packs-${data.Id_ContentPack}" class="p-5">
@@ -569,7 +568,7 @@
                     </div>
                     <div class="modal-footer">
                       <div class="d-flex align-items-center justify-content-end w-100">
-                        <button type="button" class="btn btn-light" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
                       data-bs-target="#show-${data.Id_ContentPack}">
                         Quay lại
                         </button>
@@ -601,7 +600,7 @@
                     success: function(response) {
                         htmls = "";
                         $.each(response.data, function(key, value) {
-                            htmls += `<tr>
+                            htmls += `<tr class="align-middle">
                         <td class="text-center">${value.Name_RawMaterial}</td>
                         <td class="text-center">${value.Count_RawMaterial}</td>
                         <td class="text-center">${value.Unit}</td>

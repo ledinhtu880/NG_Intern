@@ -141,16 +141,13 @@ $(document).ready(function () {
     // trạm 4 có 4 option là 406 và 407
     if (station_end.val() == 407 && $(this).val() == station_end.val()) {
       // Trạm 4 = 407 = trạm cuối
-      // console.log('this is 407 end');
       hideStation(station_group.eq(3));
     } else {
       // Trạm 4 = 406 != trạm cuối
       if ($(this).val() == 406) {
-        // console.log('this is 406 not end');
         showStation(station_group.eq(3));
         if (station_end.val() == 407) {
           disabledStation(station_select.eq(3));
-          // console.log('1');
           unDisabledStation(station_select.eq(2));
         } else if (station_end.val() == 409) {
           station_select.eq(3).val(407);
@@ -161,14 +158,11 @@ $(document).ready(function () {
           showStation(station_group.eq(5));
           disabledStation(station_select.eq(4));
           disabledStation(station_select.eq(5));
-          // console.log('2');
         } else {
-          // console.log('3');
           unDisabledStation(station_select.eq(2));
           unDisabledStation(station_select.eq(3));
         }
       } else {
-        // console.log('this is 407 not end')
         // Trạm 4 = 407 != trạm cuối
         if (station_end.val() == 409) {
           // trạm 4 = 407, trạm cuối = 409
@@ -178,10 +172,8 @@ $(document).ready(function () {
           disabledStation(station_select.eq(4));
 
           hideStation(station_group.eq(5));
-          // console.log('1');
         } else {
           // trạm 4 = 407, trạm cuối = 412
-          // console.log('2');
           station_select.eq(3).val(408);
           disabledStation(station_select.eq(3));
 
@@ -206,14 +198,11 @@ $(document).ready(function () {
   station_select.eq(3).on("change", function () {
     if ($(this).val() == 407) {
       // Trạm 5 = 407
-      // console.log('Trạm 5 407');
       if (station_end.val() == 407) {
         // Trạm 5 = trạm cuối
-        // console.log('1');
         disabledStation($(this));
       } else if (station_end.val() == 412) {
         // Trạm 5 khác trạm cuối (408)
-        // console.log('2');
         station_select.eq(4).val(408);
         showStation(station_group.eq(5));
         unDisabledStation(station_select.eq(5));
@@ -222,21 +211,17 @@ $(document).ready(function () {
         hideStation($(".station-select:eq(5) > option[value='411']"));
       } else {
         // trạm cuối = 409
-        // console.log(3);
         station_select.eq(4).val(408);
         showStation(station_group.eq(5));
       }
     } else {
       // Trạm 5 = 408
-      // console.log('Trạm 5 408');
       if (station_end.val() == 409) {
         // Trạm cuối = 409
         station_select.eq(4).val(409);
         hideStation(station_group.eq(5));
-        // console.log('1');
       } else {
         // Trạm cuối = 412
-        // console.log('2');
         station_select.eq(4).val(409);
         station_select.eq(5).val(410);
         station_select.eq(6).val(411);
@@ -255,7 +240,6 @@ $(document).ready(function () {
       // Trạm 6 = 409
       if (station_end.val() == 409) {
         // Trạm 6 = 409 và trạm cuối == 409
-        // console.log('Trạm 6 end 409')
       } else {
         // Trạm 6 = 409 và trạm cuối != 409
         station_select.eq(5).val(410);
@@ -275,10 +259,8 @@ $(document).ready(function () {
     if ($(this).val() == 409) {
       if (station_end.val() == 409) {
         // Trạm 7 = 409, là trạm cuối
-        // console.log('trạm 7 = 409, trạm cuối');
       } else {
         // Trạm 7 = 409, không phải trạm cuối
-        // console.log('trạm 7 = 409, không phải trạm cuối');
         station_select.eq(6).val(410);
         station_select.eq(7).val(411);
         showStation(station_group.eq(8));

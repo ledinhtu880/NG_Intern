@@ -4,23 +4,24 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Quản lý nguyên liệu thô</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Quản lý nguyên liệu thô</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Quản lý nguyên liệu thô</li>
+        </ol>
     </div>
-    <div class="row g-0 p-3 pt-0">
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">
+            Quản lý nguyên liệu thô
+        </h4>
+    </div>
+    <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <a href="{{ route('rawMaterials.create') }}" class="btn btn-danger rounded-1">
-                            <i class="fa-solid fa-plus text-white me-3 fs-6"></i>
+            <div class="card py-3 gap-3">
+                <div class="card-header px-3 py-0 border-0 bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ route('rawMaterials.create') }}" class="btn btn-main">
+                            <i class="fa-solid fa-plus text-white me-1 fs-6"></i>
                             <span>Thêm nguyên liệu thô</span>
                         </a>
                         <div class="d-flex align-items-center">
@@ -34,23 +35,22 @@
                             </select>
                         </div>
                     </div>
-                    <table class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col" class="py-3 text-center">#</th>
-                                <th scope="col" class="py-3">Tên nguyên liệu</th>
-                                <th scope="col" class="py-3">Loại nguyên liệu</th>
-                                <th scope="col" class="py-3">Đơn vị</th>
-                                <th scope="col" class="py-3 text-center">Số lượng</th>
-                                <th scope="col" class="py-3 text-center">Hành động</th>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-borderless table-hover m-0">
+                        <thead class="table-heading">
+                            <tr class="align-middle">
+                                <th scope="col" class="py-2 text-center">#</th>
+                                <th scope="col" class="py-2">Tên nguyên liệu</th>
+                                <th scope="col" class="py-2">Loại nguyên liệu</th>
+                                <th scope="col" class="py-2">Đơn vị</th>
+                                <th scope="col" class="py-2 text-center">Số lượng</th>
+                                <th scope="col" class="py-2 text-center">Hành động</th>
                             </tr>
                         </thead>
                         <tbody id="table-data">
                         </tbody>
                     </table>
-                </div>
-                <div class="card-footer d-flex align-items-center justify-content-end">
-                    <a href="{{ route('index') }}" class="btn btn-light">Quay lại</a>
                 </div>
             </div>
         </div>
@@ -105,8 +105,6 @@
                         let materialTypeName = value.Name_RawMaterialType;
                         let unit = value.Unit;
                         let count = value.count;
-                        let showUrl = "{{ route('rawMaterials.show', ':id') }}".replace(':id',
-                            id);
                         let editUrl = "{{ route('rawMaterials.edit', ':id') }}".replace(':id',
                             id);
                         let deleteModalId = "deleteModal-" + id;
@@ -114,47 +112,48 @@
                             ':id', id);
 
                         let htmls =
-                            `<tr>
-                <th scope="row" class="text-center text-body-secondary">${id}</th>
-                <td>${materialName}</td>
-                <td>
-                  <span class="badge text-bg-primary fw-normal fs-6">${materialTypeName}</span>
-                </td>
-                <td>${unit.charAt(0).toUpperCase() + unit.slice(1)}</td>
-                <td class="text-center">${count}</td>
-                <td class="text-center">
-                  <a href="${showUrl}" class="btn btn-sm text-secondary">
-                    <i class="fa-solid fa-eye"></i>
-                  </a>
-                  <a href="${editUrl}" class="btn btn-sm text-secondary">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                  </a>
-                  <button type="button" class="btn btn-sm text-secondary" data-bs-toggle="modal" data-bs-target="#${deleteModalId}">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
-                  <div class="modal fade" id="${deleteModalId}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận</h1>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          Bạn có chắc chắn về việc xóa nguyên liệu thô này?
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
-                          <form action="${deleteUrl}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Xóa</button>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>`;
+                            `<tr class="align-middle">
+                                <th scope="row" class="text-center text-body-secondary">${id}</th>
+                                    <td>${materialName}</td>
+                                    <td class="align-middle">
+                                        <span class="badge badge-main fw-normal fs-6">${materialTypeName}</span>
+                                    </td>
+                                    <td>${unit.charAt(0).toUpperCase() + unit.slice(1)}</td>
+                                    <td class="text-center">${count}</td>
+                                    <td class="text-center align-middle">
+                                    <a href="${editUrl}" class="btn btn-sm btn-outline">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline" data-bs-toggle="modal" data-bs-target="#${deleteModalId}">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                    <div class="modal fade" id="${deleteModalId}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title" id="exampleModalLabel">Xác nhận</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p class="m-0">Bạn chắc chắn muốn xóa nguyên liệu thô này?</p>
+                                                        <p class="m-0">
+                                                            Việc này sẽ xóa nguyên liệu thô vĩnh viễn. <br>
+                                                            Hãy chắc chắn trước khi tiếp tục.
+                                                        </p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                    <form action="${deleteUrl}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger">Xác nhận</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>`;
                         $("#table-data").append(htmls);
                     });
                 }

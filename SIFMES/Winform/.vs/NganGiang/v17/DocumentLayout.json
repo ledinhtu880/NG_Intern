@@ -1,22 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Workspace\\SIFMES\\Winform\\",
+  "WorkspaceRootPath": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\sifmes\\winform\\ngangiang\\views\\detailcontentsimple.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\detailcontentsimple.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\sifmes\\winform\\ngangiang\\libs\\dataprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\libs\\dataprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|D:\\Workspace\\SIFMES\\Winform\\ngangiang\\views\\frmpermission.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\frmpermission.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|D:\\Workspace\\SIFMES\\Winform\\ngangiang\\services\\process\\permissionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\services\\process\\permissionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -47,50 +35,15 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "detailContentSimple.cs [Design]",
-              "DocumentMoniker": "D:\\Workspace\\SIFMES\\Winform\\NganGiang\\Views\\detailContentSimple.cs",
-              "RelativeDocumentMoniker": "NganGiang\\Views\\detailContentSimple.cs",
-              "ToolTip": "D:\\Workspace\\SIFMES\\Winform\\NganGiang\\Views\\detailContentSimple.cs [Design]",
-              "RelativeToolTip": "NganGiang\\Views\\detailContentSimple.cs [Design]",
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Program.cs",
+              "RelativeDocumentMoniker": "NganGiang\\Program.cs",
+              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Program.cs",
+              "RelativeToolTip": "NganGiang\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAfAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-30T04:17:50.581Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DataProvider.cs",
-              "DocumentMoniker": "D:\\Workspace\\SIFMES\\Winform\\NganGiang\\Libs\\DataProvider.cs",
-              "RelativeDocumentMoniker": "NganGiang\\Libs\\DataProvider.cs",
-              "ToolTip": "D:\\Workspace\\SIFMES\\Winform\\NganGiang\\Libs\\DataProvider.cs",
-              "RelativeToolTip": "NganGiang\\Libs\\DataProvider.cs",
-              "ViewState": "AQIAABAAAAAAAAAAAAAgwCEAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-27T02:37:51.804Z",
+              "WhenOpened": "2024-04-15T04:25:33.251Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "frmPermission.cs [Design]",
-              "DocumentMoniker": "D:\\Workspace\\SIFMES\\Winform\\NganGiang\\Views\\frmPermission.cs",
-              "RelativeDocumentMoniker": "NganGiang\\Views\\frmPermission.cs",
-              "ToolTip": "D:\\Workspace\\SIFMES\\Winform\\NganGiang\\Views\\frmPermission.cs [Design]",
-              "RelativeToolTip": "NganGiang\\Views\\frmPermission.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-16T10:33:58.919Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "PermissionService.cs",
-              "DocumentMoniker": "D:\\Workspace\\SIFMES\\Winform\\NganGiang\\Services\\Process\\PermissionService.cs",
-              "RelativeDocumentMoniker": "NganGiang\\Services\\Process\\PermissionService.cs",
-              "ToolTip": "D:\\Workspace\\SIFMES\\Winform\\NganGiang\\Services\\Process\\PermissionService.cs",
-              "RelativeToolTip": "NganGiang\\Services\\Process\\PermissionService.cs",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAAABAAAABFAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-16T09:35:00.78Z"
             }
           ]
         }

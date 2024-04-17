@@ -19,7 +19,7 @@ class OrderLocalController extends Controller
   {
     if (!Session::has("type") && !Session::has("message")) {
       Session::flash('type', 'info');
-      Session::flash('message', 'Quản lý đơn sản xuất và giao hàng');
+      Session::flash('message', 'Quản lý đơn sản xuất');
     }
 
     $data = OrderLocal::where('MakeOrPackOrExpedition', '0')->paginate(5);
@@ -408,18 +408,16 @@ class OrderLocalController extends Controller
     $htmls = '';
     foreach ($query as $item) {
       $htmls .=
-        '
-          <tr>
-        <td class="text-center">
-            <input type="checkbox" class="form-check-input checkbox-add">
-        </td>
-        <td class="text-center Id_ContentPack">' . $item->Id_ContentPack . '</td>
-        <td class="text-center">' . $item->Id_Order . '</td>
-        <td>' . $item->Name_Customer . '</td>
-        <td class="text-center">' . $item->Count_Pack . '</td>
-        <td class="text-center">' . $this->numberFormat($item->Price_Pack) . ' VNĐ' .
-        '</td>
-          </tr>
+        '<tr class="align-middle">
+            <td class="text-center">
+                <input type="checkbox" class="form-check-input checkbox-add">
+            </td>
+            <td class="text-center Id_ContentPack">' . $item->Id_ContentPack . '</td>
+            <td class="text-center">' . $item->Id_Order . '</td>
+            <td>' . $item->Name_Customer . '</td>
+            <td class="text-center">' . $item->Count_Pack . '</td>
+            <td class="text-center">' . $this->numberFormat($item->Price_Pack) . ' VNĐ' . '</td>
+        </tr>
           ';
     }
 
@@ -501,7 +499,7 @@ class OrderLocalController extends Controller
       $htmls = '';
       foreach ($res as $contentSimple) {
         $htmls .= '
-                <tr>
+                <tr class="align-middle>
                     <td>
                         ' . $contentSimple->Name_RawMaterial . '
                     </td>
@@ -594,23 +592,16 @@ class OrderLocalController extends Controller
 
   private function getOrderLocal($orderLocal)
   {
-    $htmls = '
-            <tr>
+    $htmls = '<tr class="align-middle>
                 <td class="align-middle text-center">
                     <input type="checkbox" class="form-check-input check-remove">
                 </td>
-                <td class="text-center Id_OrderLocal">
-                ' . $orderLocal->Id_OrderLocal . ' 
-                </td>
-                <td class="text-center">
-                ' . $orderLocal->Count . '
-                </td>
+                <td class="text-center Id_OrderLocal">' . $orderLocal->Id_OrderLocal . '</td>
+                <td class="text-center">' . $orderLocal->Count . '</td>
                 <td>Gói hàng</td>
+                <td class="text-center">' . \Carbon\Carbon::parse($orderLocal->Date_Delivery)->format('d/m/Y') . '</td>
                 <td class="text-center">
-                ' . \Carbon\Carbon::parse($orderLocal->Date_Delivery)->format('d/m/Y') . '
-                </td>
-                <td class="text-center">
-                    <button type="button" class="btnShow btn btn-sm text-secondary" data-bs-toggle="modal"
+                    <button type="button" class="btnShow btn btn-sm btn-outline" data-bs-toggle="modal"
                         data-bs-target="#show-' . $orderLocal->Id_OrderLocal . '"
                         data-id="' . $orderLocal->Id_OrderLocal . '">
                         <i class="fa-solid fa-eye"></i>
@@ -620,21 +611,21 @@ class OrderLocalController extends Controller
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">
+                                <h4 class="modal-title" id="exampleModalLabel">
                                     Thông tin chi tiết đơn hàng số ' . $orderLocal->Id_OrderLocal . '
                                 </h4>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <table class="table">
-                                        <thead class="table-light">
-                                          <tr>
-                                              <th class="py-3" scope="col">Nguyên liệu</th>
-                                              <th class="py-3" scope="col">Số lượng nguyên liệu</th>
-                                              <th class="py-3" scope="col">Đơn vị</th>
-                                              <th class="py-3" scope="col">Thùng chứa</th>
-                                              <th class="py-3" scope="col">Số lượng thùng chứa</th>
-                                              <th class="py-3" scope="col">Đơn giá</th>
+                                    <table class="table table-borderless table-hover m-0">
+                                        <thead class="table-heading">
+                                          <tr class="align-middle>
+                                              <th class="py-2" scope="col">Nguyên liệu</th>
+                                              <th class="py-2" scope="col">Số lượng nguyên liệu</th>
+                                              <th class="py-2" scope="col">Đơn vị</th>
+                                              <th class="py-2" scope="col">Thùng chứa</th>
+                                              <th class="py-2" scope="col">Số lượng thùng chứa</th>
+                                              <th class="py-2" scope="col">Đơn giá</th>
                                           </tr>
                                         </thead>
                                         <tbody class="table-simples" data-value="${Id_OrderLocal}">
@@ -642,7 +633,7 @@ class OrderLocalController extends Controller
                                     </table>
                                 </div>
                                 <div class="modal-footer">
-                                  <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                                 </div>
                             </div>
                         </div>

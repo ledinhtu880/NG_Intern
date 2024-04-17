@@ -142,22 +142,27 @@ $(document).ready(function () {
                             ${value.formattedPrice}
                         </td>
                         <td class="text-center">
-                            <button type="button" class="btn btn-sm text-secondary" data-bs-toggle="modal" data-bs-target="#deleteID-${id}">
+                            <button type="button" class="btn btn-sm btn-outline" data-bs-toggle="modal" data-bs-target="#deleteID-${id}">
                             <i class="fa-solid fa-trash"></i>
                             </button>
                             <div class="modal fade" id="deleteID-${id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                 <div class="modal-header">
-                                    <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận</h1>
+                                    <h4 class="modal-title" id="exampleModalLabel">Xác nhận</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    Bạn có chắc chắn về việc sản phẩm này
+                                  <p class="m-0">Bạn chắc chắn muốn xóa thùng hàng này?</p>
+
+                                  <p class="m-0">
+                                      Việc này sẽ xóa thùng hàng vĩnh viễn. <br>
+                                      Hãy chắc chắn trước khi tiếp tục.
+                                  </p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="button" class="btn btn-danger btnDelete" data-id="${id}">Xóa</button>
+                                    <button type="button" class="btn btn-danger btnDelete" data-id="${id}">Xác nhận</button>
                                 </div>
                                 </div>
                             </div>
@@ -169,7 +174,6 @@ $(document).ready(function () {
           // Xóa dữ liệu đã nhập/chọn trong form
           form[0].reset();
         } else if (response.exists == 1) {
-          console.log(response);
           let existingRow = $(
             `#table-data tr[data-id="${response.existsData.Id_ContentSimple}"]`
           );

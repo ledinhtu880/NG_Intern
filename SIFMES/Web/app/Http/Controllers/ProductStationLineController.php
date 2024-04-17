@@ -56,7 +56,7 @@ class ProductStationLineController extends Controller
             ]);
         }
 
-        $redirectResponse = redirect()->route('productStationLines.show', ['productStationLine' => $Id_ProdStationLine])->with([
+        $redirectResponse = redirect()->route('productStationLines.index')->with([
             'type' => 'success',
             'message' => 'Thêm dây chuyền mới thành công',
         ]);
@@ -66,10 +66,6 @@ class ProductStationLineController extends Controller
             'url' => $redirectResponse->getTargetUrl(),
             'status' => 200
         ]);
-    }
-    public function show(ProductionStationLine $productStationLine)
-    {
-        return view('productStationLines.show', ['detailProductionStationLines' => $productStationLine->detailProductionStationLines, 'productStationLine' => $productStationLine]);
     }
 
     public function edit(ProductionStationLine $productStationLine)
@@ -106,7 +102,7 @@ class ProductStationLineController extends Controller
                 'FK_Id_ProdStationLine' => $productStationLine_id,
             ]);
         }
-        $redirectResponse = redirect()->route('productStationLines.show', ['productStationLine' => $productStationLine_id])->with([
+        $redirectResponse = redirect()->route('productStationLines.index')->with([
             'type' => 'success',
             'message' => 'Sửa dây chuyền thành công',
         ]);

@@ -4,30 +4,31 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Sửa thông tin khách hàng</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('customers.index') }}">Quản lý khách hàng</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Sửa</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('customers.index') }}">Quản lý khách hàng</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Sửa</li>
+        </ol>
     </div>
-
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">
+            Sửa thông tin khách hàng
+        </h4>
+    </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
+            <div class="card">
+                <div class="card-body p-3">
                     <form method="POST" action="{{ route('customers.update', ['customer' => $customer]) }}"
                         id="formInformation">
                         @csrf
                         @method('PUT')
+                        <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin cá nhân</h5>
                         <div class="d-flex gap-2">
-                            <div class="form-group" style="flex: 1">
-                                <label for="Name_Customer" class="form-label" style="font-weight: 600;">Tên khách
-                                    hàng</label>
+                            <div class="form-group flex-fill mb-3">
+                                <label for="Name_Customer" class="form-label">Tên khách hàng</label>
                                 <input type="text" name="Name_Customer" id="Name_Customer"
                                     placeholder="Nhập tên người dùng"
                                     class="form-control{{ $errors->has('Name_Customer') ? ' is-invalid' : '' }}"
@@ -38,8 +39,8 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="form-group" style="flex: 1">
-                                <label for="Name_Contact" class="form-label" style="font-weight: 600;">Tên liên hệ</label>
+                            <div class="form-group flex-fill mb-3">
+                                <label for="Name_Contact" class="form-label">Tên liên hệ</label>
                                 <input type="text" name="Name_Contact" id="Name_Contact" placeholder="Nhập tên liên hệ"
                                     class="form-control{{ $errors->has('Name_Contact') ? ' is-invalid' : '' }}"
                                     value="{{ $customer->Name_Contact }}">
@@ -50,42 +51,45 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="Email" class="form-label" style="font-weight: 600;">Email</label>
-                            <input type="text" name="Email" id="Email" placeholder="Nhập email"
-                                class="form-control{{ $errors->has('Email') ? ' is-invalid' : '' }}"
-                                value="{{ $customer->Email }}">
-                            @if ($errors->has('Email'))
-                                <span class="text-danger">
-                                    {{ $errors->first('Email') }}
-                                </span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <label for="Phone" class="form-label" style="font-weight: 600;">Phone</label>
-                            <input type="text" name="Phone" id="Phone" placeholder="Nhập số điện thoại"
-                                class="form-control{{ $errors->has('Phone') ? ' is-invalid' : '' }}"
-                                value="{{ $customer->Phone }}">
-                            @if ($errors->has('Phone'))
-                                <span class="text-danger">
-                                    {{ $errors->first('Phone') }}
-                                </span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <label for="Address" class="form-label" style="font-weight: 600;">Địa chỉ</label>
-                            <input type="text" name="Address" id="Address" placeholder="Nhập địa chỉ"
-                                class="form-control{{ $errors->has('Address') ? ' is-invalid' : '' }}"
-                                value="{{ $customer->Address }}">
-                            @if ($errors->has('Address'))
-                                <span class="text-danger">
-                                    {{ $errors->first('Address') }}
-                                </span>
-                            @endif
+                        <h5 class="h5 fw-bold border-bottom pb-2 my-3">Thông tin liên lạc</h5>
+                        <div class="d-flex gap-2">
+                            <div class="form-group flex-fill mb-3">
+                                <label for="Email" class="form-label">Email</label>
+                                <input type="text" name="Email" id="Email" placeholder="Nhập email"
+                                    class="form-control{{ $errors->has('Email') ? ' is-invalid' : '' }}"
+                                    value="{{ $customer->Email }}">
+                                @if ($errors->has('Email'))
+                                    <span class="text-danger">
+                                        {{ $errors->first('Email') }}
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="form-group flex-fill mb-3">
+                                <label for="Phone" class="form-label">Phone</label>
+                                <input type="text" name="Phone" id="Phone" placeholder="Nhập số điện thoại"
+                                    class="form-control{{ $errors->has('Phone') ? ' is-invalid' : '' }}"
+                                    value="{{ $customer->Phone }}">
+                                @if ($errors->has('Phone'))
+                                    <span class="text-danger">
+                                        {{ $errors->first('Phone') }}
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                         <div class="d-flex gap-2">
-                            <div class="form-group" style="flex: 1">
-                                <label for="Zipcode" class="form-label" style="font-weight: 600;">Zipcode</label>
+                            <div class="form-group flex-fill mb-3">
+                                <label for="Address" class="form-label">Địa chỉ</label>
+                                <input type="text" name="Address" id="Address" placeholder="Nhập địa chỉ"
+                                    class="form-control{{ $errors->has('Address') ? ' is-invalid' : '' }}"
+                                    value="{{ $customer->Address }}">
+                                @if ($errors->has('Address'))
+                                    <span class="text-danger">
+                                        {{ $errors->first('Address') }}
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="form-group flex-fill mb-3">
+                                <label for="Zipcode" class="form-label">Zipcode</label>
                                 <input type="number" name="Zipcode" id="zipcode" placeholder="Nhập zipcode"
                                     class="form-control{{ $errors->has('Zipcode') ? ' is-invalid' : '' }}"
                                     value="{{ $customer->ZipCode }}">
@@ -95,8 +99,10 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="form-group" style="flex: 1">
-                                <label for="Time_Reception" class="form-label" style="font-weight: 600;">Thời gian tiếp
+                        </div>
+                        <div class="d-flex gap-2">
+                            <div class="form-group flex-fill">
+                                <label for="Time_Reception" class="form-label">Thời gian tiếp
                                     nhận</label>
                                 <input type="date" name="Time_Reception" id="Time_Reception"
                                     class="form-control{{ $errors->has('Time_Reception') ? ' is-invalid' : '' }}"
@@ -107,10 +113,8 @@
                                     </span>
                                 @endif
                             </div>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <div class="form-group" style="flex: 1">
-                                <label for="FK_Id_Mode_Transport" class="form-label" style="font-weight: 600;">Phương
+                            <div class="form-group flex-fill">
+                                <label for="FK_Id_Mode_Transport" class="form-label">Phương
                                     thức vận
                                     chuyển</label>
                                 <select name="FK_Id_Mode_Transport"
@@ -128,8 +132,8 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="form-group" style="flex: 1">
-                                <label for="FK_Id_CustomerType" class="form-label" style="font-weight: 600;">Chọn kiểu
+                            <div class="form-group flex-fill">
+                                <label for="FK_Id_CustomerType" class="form-label">Chọn kiểu
                                     khách
                                     hàng</label>
                                 <select name="FK_Id_CustomerType"
@@ -150,9 +154,9 @@
                         </div>
                     </form>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex justify-content-end gap-3">
-                        <a href="{{ route('customers.index') }}" class="btn btn-light">Quay lại</a>
+                        <a href="{{ route('customers.index') }}" class="btn btn-secondary">Quay lại</a>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#deleteOrder-{{ $customer->Id_Customer }}">
                             Cập nhật
@@ -162,7 +166,7 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận
+                                        <h4 class="modal-title fw-bold" id="exampleModalLabel">Xác nhận
                                             </h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
@@ -171,7 +175,8 @@
                                         Bạn có chắc chắn muốn cập nhật khách hàng này?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Hủy</button>
                                         <button type="submit" class="btn btn-primary" id="saveBtn">Xác nhận</button>
                                     </div>
                                 </div>

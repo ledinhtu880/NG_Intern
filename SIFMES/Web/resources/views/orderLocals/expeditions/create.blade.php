@@ -4,26 +4,24 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Tạo đơn giao hàng</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('orderLocals.makes.index') }}">Quản lý đơn giao hàng</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Thêm</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('orderLocals.expeditions.index') }}">Quản lý đơn giao hàng</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Thêm</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">Tạo đơn giao hàng</h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Danh sách đơn hàng</h4>
-                </div>
+            <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Danh sách đơn hàng</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="input-group" style="width: 200px;">
                             <label class="input-group-text bg-secondary-subtle" for="Kho">Kho</label>
                             <select name="kho" id="kho" class="form-select">
@@ -32,20 +30,20 @@
                             </select>
                         </div>
                     </div>
-                    <table class="table table-expedition mt-4">
-                        <thead class="table-light" id="table-heading">
-                            <th scope="col" class="py-3 text-center">Chọn</th>
-                            <th scope="col" class="py-3 text-center">Mã đơn hàng</th>
-                            <th scope="col" class="py-3">Khách hàng</th>
-                            <th scope="col" class="py-3">Kiểu hàng</th>
-                            <th scope="col" class="py-3 text-center">Số lượng thùng chứa</th>
-                            <th scope="col" class="py-3 text-center">Đơn giá</th>
+                    <table class="table table-borderless table-hover m-0 table-expedition">
+                        <thead class="table-heading">
+                            <th scope="col" class="py-2 text-center">Chọn</th>
+                            <th scope="col" class="py-2 text-center">Mã đơn hàng</th>
+                            <th scope="col" class="py-2">Khách hàng</th>
+                            <th scope="col" class="py-2">Kiểu hàng</th>
+                            <th scope="col" class="py-2 text-center">Số lượng thùng chứa</th>
+                            <th scope="col" class="py-2 text-center">Đơn giá</th>
                         </thead>
                         <tbody id="table-data">
                         </tbody>
                     </table>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-content-center justify-content-between">
                         <button type="submit" class="btn btn-primary px-3" id="them">
                             <i class="fa-solid fa-plus text-white me-2"></i>Thêm
@@ -64,51 +62,47 @@
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Đơn giao hàng</h4>
-                </div>
+            <div class="card">
                 <div class="card-body">
-                    <table class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col" class="py-3 text-center">Chọn</th>
-                                <th scope="col" class="py-3 text-center">Mã đơn hàng</th>
-                                <th scope="col" class="py-3 text-center">Số lượng</th>
-                                <th scope="col" class="py-3">Kiểu thùng</th>
-                                <th scope="col" class="py-3">Trạng thái</th>
-                                <th scope="col" class="py-3 text-center">Ngày giao hàng</th>
-                                <th scope="col" class="py-3 text-center"></th>
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Đơn giao hàng</h5>
+                    <table class="table table-borderless table-hover m-0">
+                        <thead class="table-heading">
+                            <tr class="align-middle">
+                                <th scope="col" class="py-2 text-center">Chọn</th>
+                                <th scope="col" class="py-2 text-center">Mã đơn hàng</th>
+                                <th scope="col" class="py-2 text-center">Số lượng</th>
+                                <th scope="col" class="py-2">Kiểu thùng</th>
+                                <th scope="col" class="py-2">Trạng thái</th>
+                                <th scope="col" class="py-2 text-center">Ngày giao hàng</th>
+                                <th scope="col" class="py-2 text-center"></th>
                             </tr>
                         </thead>
                         <tbody id="table-result">
                             @foreach ($data as $each)
-                                <tr>
-                                    <td class="text-center align-middle">
+                                <tr class="align-middle">
+                                    <td class="text-center">
                                         <input type="checkbox" class="input-check form-check-input checkbox2"
                                             value="{{ $each->Id_OrderLocal }}" data-id="cb{{ $each->Id_OrderLocal }}">
                                     </td>
                                     <td class="text-center">{{ $each->Id_OrderLocal }}</td>
                                     <td class="text-center">{{ $each->Count }}</td>
                                     <td>
-                                        <span class="badge text-bg-primary fw-normal fs-6">{{ $each->type }}</span>
+                                        <span class="badge badge-main fw-normal fs-6">{{ $each->type }}</span>
                                     </td>
                                     <td>{{ $each->status }}</td>
                                     <td class="text-center">{{ $each->deliveryDate }}</td>
                                     <td class="text-center">
-                                        <button type="button" class="btnShow btn btn-sm text-secondary"
-                                            data-bs-toggle="modal" data-bs-target="#show-{{ $each->Id_OrderLocal }}"
+                                        <button type="button" class="btnShow btn btn-sm btn-outline" data-bs-toggle="modal"
+                                            data-bs-target="#show-{{ $each->Id_OrderLocal }}"
                                             data-id="{{ $each->Id_OrderLocal }}">
                                             <i class="fa-solid fa-eye"></i>
                                         </button>
-
                                         <div class="modal fade" id="show-{{ $each->Id_OrderLocal }}" tabindex="-1"
                                             aria-labelledby="show-{{ $each->Id_OrderLocal }}Label" aria-hidden="true">
                                             <div class="modal-dialog modal-xl modal-dialog-centered">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title fw-bold text-secondary"
-                                                            id="exampleModalLabel">
+                                                        <h5 class="modal-title fw-bold" id="exampleModalLabel">
                                                             Thông tin chi tiết đơn hàng số
                                                             {{ $each->Id_OrderLocal }}
                                                         </h5>
@@ -116,9 +110,10 @@
                                                             aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <table class="table table-details table-striped m-0">
-                                                            <thead>
-                                                                <tr>
+                                                        <table
+                                                            class="table table-hover table-borderless table-details m-0">
+                                                            <thead class="table-heading">
+                                                                <tr class="align-middle">
                                                                     <th class="text-center" scope="col">Nguyên liệu
                                                                     </th>
                                                                     <th class="text-center" scope="col">Số lượng nguyên
@@ -144,12 +139,14 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <button class="btn btn-primary px-3" id="xoa">
-                        <i class="fa-solid fa-minus text-white me-2"></i>Xóa
-                    </button>
-                    <div class="d-flex align-items-center justify-content-end">
-                        <a href="{{ route('orderLocals.expeditions.index') }}" class="btn btn-light">Quay lại</a>
+                <div class="card-footer pt-0 border-0 bg-transparent">
+                    <div class="d-flex align-content-center justify-content-between">
+                        <button class="btn btn-primary px-3" id="xoa">
+                            <i class="fa-solid fa-minus text-white me-2"></i>Xóa
+                        </button>
+                        <div class="d-flex align-items-center justify-content-end">
+                            <a href="{{ route('orderLocals.expeditions.index') }}" class="btn btn-secondary">Quay lại</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -221,21 +218,20 @@
                                 } else if (element['FK_Id_ContainerType'] == 1) {
                                     type_container = "Hộp tròn";
                                 }
-
                                 let html =
-                                    `<tr>
-                  <td class="text-center align-middle">
-                      <input class="form-check-input checkbox1" type="checkbox" value="${element['Id_ContentSimple']}" 
-                      id="cb${element['Id_ContentSimple']}" data-id="${element['Id_ContentPack']}">
-                  </td>
-                  <td class="text-center">${element['Id_Order']}</td>
-                  <td>${element['Name_Customer']}</td>
-                  <td>
-                      ${type_container}
-                  </td>
-                  <td class="text-center">${element['Count_Container']}</td>
-                  <td class="text-center">${numberFormat(element['Price_Container'])} VNĐ</td>
-              </tr>`;
+                                    `<tr class="text-center align-middle">
+                                        <td>
+                                            <input class="form-check-input checkbox1" type="checkbox" value="${element['Id_ContentSimple']}" 
+                                            id="cb${element['Id_ContentSimple']}" data-id="${element['Id_ContentPack']}">
+                                        </td>
+                                        <td>${element['Id_Order']}</td>
+                                        <td>${element['Name_Customer']}</td>
+                                        <td>
+                                            ${type_container}
+                                        </td>
+                                        <td>${element['Count_Container']}</td>
+                                        <td class="text-center">${numberFormat(element['Price_Container'])} VNĐ</td>
+                                    </tr>`;
                                 $('.table-expedition tbody').append(html);
                             } else if (selectedValue == 409) {
                                 let simpleOrPack = '';
@@ -244,16 +240,16 @@
                                 } else if (element['SimpleOrPack'] == 1) {
                                     simpleOrPack = "Gói hàng";
                                 }
-                                let html = `<tr>
-              <td class="text-center align-middle">
-                  <input class="form-check-input checkbox1" type="checkbox" value="${element['Id_ContentPack']}" id="cb${element['Id_ContentPack']}" data-id="${element['Id_ContentPack']}">
-              </td>
-              <td class="text-center">${element['Id_Order']}</td>
-              <td>${element['Name_Customer']}</td>
-              <td>${simpleOrPack}</td>
-              <td class="text-center">${element['Count_Pack']}</td>
-              <td class="text-center">${numberFormat(element['Price_Pack'])} VNĐ</td>
-          </tr>`;
+                                let html = `<tr class="align-middle">
+                                                <td class="text-center">
+                                                    <input class="form-check-input checkbox1" type="checkbox" value="${element['Id_ContentPack']}" id="cb${element['Id_ContentPack']}" data-id="${element['Id_ContentPack']}">
+                                                </td>
+                                                <td class="text-center">${element['Id_Order']}</td>
+                                                <td>${element['Name_Customer']}</td>
+                                                <td>${simpleOrPack}</td>
+                                                <td class="text-center">${element['Count_Pack']}</td>
+                                                <td class="text-center">${numberFormat(element['Price_Pack'])} VNĐ</td>
+                                            </tr>`;
                                 $('.table-expedition tbody').append(html);
                             }
                         }
@@ -317,17 +313,16 @@
                                 type_container = "Hộp tròn";
                             }
 
-                            let html = `<tr class="text-center">
-                          <td>${element['Name_RawMaterial']}</td>
-                          <td>${Number(element['Count_RawMaterial']).toLocaleString()}</td>
-                          <td>${element['Unit']}</td>
-                          <td>
-                              ${type_container}
-                          </td>
-                          <td>${element['Count_Container']}</td>
-                          <td>${Number(element['Price_Container'])} VNĐ</td>
-                      </tr>`;
-
+                            let html = `<tr class="text-center align-middle">
+                                        <td>${element['Name_RawMaterial']}</td>
+                                        <td>${Number(element['Count_RawMaterial']).toLocaleString()}</td>
+                                        <td>${element['Unit']}</td>
+                                        <td>
+                                            ${type_container}
+                                        </td>
+                                        <td>${element['Count_Container']}</td>
+                                        <td>${Number(element['Price_Container'])} VNĐ</td>
+                                    </tr>`;
                             $('.table-details').append(html);
                         }
                     },

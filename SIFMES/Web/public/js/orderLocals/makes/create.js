@@ -51,7 +51,7 @@ $(document).ready(function () {
         let dataHtmls = "";
         let secondUrl = "/orderLocals/makes/showOrder";
         $.each(response.data, function (key, value) {
-          dataHtmls += `<tr>
+          dataHtmls += `<tr class="align-middle">
                         <td class="text-center align-middle" data-id="Id_ContentSimple"
                             data-value="${value.Id_ContentSimple}">
                             <input type="checkbox" class="checkbox form-check-input" name="firstFormCheck"
@@ -93,63 +93,63 @@ $(document).ready(function () {
             let resultHtmls = "";
             $.each(response.orders, function (key, value) {
               resultHtmls += `
-                                <tr>
-                                <td class="text-center align-middle">
-                                    <div class="d-flex justify-content-center align-items-center">
-                                    <input type="checkbox" class="checkbox form-check-input" name="secondFormCheck"
-                                        id="secondFormCheck-${value.Id_OrderLocal}">
-                                    </div>
-                                </td>
-                                <td class="text-center" data-id="Id_OrderLocal" data-value="${value.Id_OrderLocal}"
-                                >
-                                    ${value.Id_OrderLocal}
-                                </td>
-                                <td class="text-center">
-                                    ${value.Count} thùng
-                                </td>
-                                <td>
-                                    ${value.SimpleOrPack == 1 ? "Gói hàng" : "Thùng hàng"}
-                                </td>
-                                <td class="text-center">
-                                    ${formatDate(value.Date_Delivery)}
-                                </td>
-                                <td class="text-center">
-                                    <button type="button" class="btnShow btn btn-sm text-secondary" data-bs-toggle="modal"
-                                    data-bs-target="#show-${value.Id_OrderLocal}"
-                                    data-id="${value.Id_OrderLocal}">
-                                    <i class="fa-solid fa-eye"></i>
-                                    </button>
-                                    <div class="modal fade" id="show-${value.Id_OrderLocal}" tabindex="-1"
-                                    aria-labelledby="#show-${value.Id_OrderLocal}Label" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                                        <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title fw-bold text-secondary " id="show-${value.Id_OrderLocal}Label">
-                                            Thông tin chi tiết đơn hàng số ${value.Id_OrderLocal}
-                                            </h4>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <table class="table">
-                                            <thead class="table-light">
-                                                <tr>
-                                                <th scope="col" class="py-3">Nguyên liệu</th>
-                                                <th scope="col" class="py-3 text-center">Số lượng nguyên liệu</th>
-                                                <th scope="col" class="py-3">Đơn vị</th>
-                                                <th scope="col" class="py-3">Thùng chứa</th>
-                                                <th scope="col" class="py-3 text-center">Số lượng thùng chứa</th>
-                                                <th scope="col" class="py-3 text-center">Đơn giá</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="table-simples" class="p-5"
-                                                data-value="${value.Id_OrderLocal}">
-                                            </tbody>
-                                            </table>
-                                        </div>
-                                        </div>
-                                    </div>
-                                    </div>
-                                </td>
+                                <tr class="align-middle text-center">
+                                  <td>
+                                      <div class="d-flex justify-content-center align-items-center">
+                                      <input type="checkbox" class="checkbox form-check-input" name="secondFormCheck"
+                                          id="secondFormCheck-${value.Id_OrderLocal}">
+                                      </div>
+                                  </td>
+                                  <td data-id="Id_OrderLocal" data-value="${value.Id_OrderLocal}"
+                                  >
+                                      ${value.Id_OrderLocal}
+                                  </td>
+                                  <td>
+                                      ${value.Count} thùng
+                                  </td>
+                                  <td>
+                                      ${value.SimpleOrPack == 1 ? "Gói hàng" : "Thùng hàng"}
+                                  </td>
+                                  <td>
+                                      ${formatDate(value.Date_Delivery)}
+                                  </td>
+                                  <td>
+                                      <button type="button" class="btnShow btn btn-sm btn-outline" data-bs-toggle="modal"
+                                      data-bs-target="#show-${value.Id_OrderLocal}"
+                                      data-id="${value.Id_OrderLocal}">
+                                      <i class="fa-solid fa-eye"></i>
+                                      </button>
+                                      <div class="modal fade" id="show-${value.Id_OrderLocal}" tabindex="-1"
+                                      aria-labelledby="#show-${value.Id_OrderLocal}Label" aria-hidden="true">
+                                      <div class="modal-dialog modal-lg modal-dialog-centered">
+                                          <div class="modal-content">
+                                          <div class="modal-header">
+                                              <h4 class="modal-title fw-bold " id="show-${value.Id_OrderLocal}Label">
+                                              Thông tin chi tiết đơn hàng số ${value.Id_OrderLocal}
+                                              </h4>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                          </div>
+                                          <div class="modal-body">
+                                              <table class="table table-borderless table-hover m-0">
+                                              <thead class="table-heading">
+                                                  <tr class="align-middle">
+                                                    <th scope="col" class="py-2">Nguyên liệu</th>
+                                                    <th scope="col" class="py-2 text-center">Số lượng nguyên liệu</th>
+                                                    <th scope="col" class="py-2">Đơn vị</th>
+                                                    <th scope="col" class="py-2">Thùng chứa</th>
+                                                    <th scope="col" class="py-2 text-center">Số lượng thùng chứa</th>
+                                                    <th scope="col" class="py-2 text-center">Đơn giá</th>
+                                                  </tr>
+                                              </thead>
+                                              <tbody class="table-simples" class="p-5"
+                                                  data-value="${value.Id_OrderLocal}">
+                                              </tbody>
+                                              </table>
+                                          </div>
+                                          </div>
+                                      </div>
+                                      </div>
+                                  </td>
                                 </tr>
                                 @endforeach
                                 `;
@@ -203,11 +203,11 @@ $(document).ready(function () {
 
           // Tạo chuỗi HTML cho dữ liệu mới
           let html = `
-                    <tr>
-                        <td class="align-middle">
-                        <div class="d-flex justify-content-center align-items-center">
-                            <input type="checkbox" class="checkbox form-check-input" name="secondFormCheck" id="secondFormCheck-${Id_OrderLocal}">
-                        </div>
+                    <tr class="align-middle">
+                        <td>
+                          <div class="d-flex justify-content-center align-items-center">
+                              <input type="checkbox" class="checkbox form-check-input" name="secondFormCheck" id="secondFormCheck-${Id_OrderLocal}">
+                          </div>
                         </td>
                         <td data-id="Id_OrderLocal" data-value="${Id_OrderLocal}">${Id_OrderLocal}</td>
                         <td>${Count}</td>
@@ -225,21 +225,21 @@ $(document).ready(function () {
                                 <div class="modal-dialog modal-lg modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                        <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">
+                                        <h4 class="modal-title" id="exampleModalLabel">
                                             Thông tin chi tiết đơn hàng số ${Id_OrderLocal}
                                         </h4>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <table class="table">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th scope="col" class="py-3">Nguyên liệu</th>
-                                                        <th scope="col" class="py-3">Số lượng nguyên liệu</th>
-                                                        <th scope="col" class="py-3">Đơn vị</th>
-                                                        <th scope="col" class="py-3">Thùng chứa</th>
-                                                        <th scope="col" class="py-3">Số lượng thùng chứa</th>
-                                                        <th scope="col" class="py-3">Đơn giá</th>
+                                            <table class="table table-borderless table-hover m-0">
+                                                <thead class="table-heading">
+                                                    <tr class="align-middle">
+                                                        <th scope="col" class="py-2">Nguyên liệu</th>
+                                                        <th scope="col" class="py-2">Số lượng nguyên liệu</th>
+                                                        <th scope="col" class="py-2">Đơn vị</th>
+                                                        <th scope="col" class="py-2">Thùng chứa</th>
+                                                        <th scope="col" class="py-2">Số lượng thùng chứa</th>
+                                                        <th scope="col" class="py-2">Đơn giá</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="table-simples" class="p-5" data-value="${Id_OrderLocal}">
@@ -365,7 +365,7 @@ $(document).ready(function () {
         });
         let htmls = "";
         $.each(response.data, function (key, value) {
-          htmls += `<tr>
+          htmls += `<tr class="align-middle">
                         <td>${value.Name_RawMaterial}</td>
                         <td class="text-center">${value.Count_RawMaterial}</td>
                         <td>${value.Unit}</td>

@@ -4,26 +4,23 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Sửa đơn giao hàng</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('orderLocals.expeditions.index') }}">Quản lý đơn giao
-                        hàng</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Sửa</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('orderLocals.expeditions.index') }}">Quản lý đơn giao hàng</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Sửa</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">Sửa đơn giao hàng</h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin chung</h5>
-                </div>
+            <div class="card">
                 <div class="card-body">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin chung</h5>
                     @if (isset($inProcess))
                         <div class="alert alert-danger" role="alert">
                             <i class="fas fa-exclamation-circle me-2"></i>
@@ -84,33 +81,33 @@
             </div>
         </div>
     </div>
-
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin chi tiết</h5>
-                </div>
+            <div class="card">
                 <div class="card-body">
-                    <table class="table">
-                        <thead class="table-light">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin chi tiết</h5>
+                    <table class="table table-borderless table-hover m-0">
+                        <thead class="table-heading">
                             @if ($orderLocal->SimpleOrPack == 0)
-                                <tr>
-                                    <th scope="col" class="py-3 text-center">#</th>
-                                    <th scope="col" class="py-3">Nguyên liệu</th>
-                                    <th scope="col" class="py-3 text-center">Số lượng nguyên liệu</th>
-                                    <th scope="col" class="py-3">Đơn vị</th>
-                                    <th scope="col" class="py-3">Thùng chứa</th>
-                                    <th scope="col" class="py-3 text-center">Số lượng thùng chứa</th>
-                                    <th scope="col" class="py-3 text-center">Đơn giá thùng chứa</th>
-                                    <th scope="col" class="py-3 text-center">Thành tiền</th>
+                                <tr class="align-middle">
+                                    <th scope="col" class="py-2 text-center">#</th>
+                                    <th scope="col" class="py-2">Nguyên liệu</th>
+                                    <th scope="col" class="py-2 text-center">Số lượng nguyên liệu</th>
+                                    <th scope="col" class="py-2">Đơn vị</th>
+                                    <th scope="col" class="py-2">Thùng chứa</th>
+                                    <th scope="col" class="py-2 text-center">Số lượng thùng chứa</th>
+                                    <th scope="col" class="py-2 text-center">Đơn giá thùng chứa</th>
+                                    <th scope="col" class="py-2 text-center">Thành tiền</th>
+                                    @if (!isset($inProcess))
+                                        <th scope="col" class="py-2 text-center"></th>
+                                    @endif
                                 </tr>
                             @else
-                                <tr>
-                                    <th scope="col" class="py-3 text-center">#</th>
-                                    <th scope="col" class="py-3 text-center">Số lượng</th>
-                                    <th scope="col" class="py-3 text-center">Đơn giá</th>
-                                    <th scope="col" class="py-3 text-center"></th>
+                                <tr class="align-middle">
+                                    <th scope="col" class="py-2 text-center">#</th>
+                                    <th scope="col" class="py-2 text-center">Số lượng</th>
+                                    <th scope="col" class="py-2 text-center">Đơn giá</th>
+                                    <th scope="col" class="py-2 text-center"></th>
                                 </tr>
                             @endif
                         </thead>
@@ -133,7 +130,7 @@
                                         </td>
                                         @if (!isset($inProcess))
                                             <td class="text-center">
-                                                <button type="button" class="btn btn-sm text-secondary"
+                                                <button type="button" class="btn btn-sm btn-outline"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#deleteID-{{ $each->Id_ContentSimple }}">
                                                     <i class="fa-solid fa-trash"></i>
@@ -144,21 +141,26 @@
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h4 class="modal-title fw-bold text-secondary"
-                                                                    id="exampleModalLabel">Xác nhận
+                                                                <h4 class="modal-title" id="exampleModalLabel">Xác nhận
                                                                     </h1>
                                                                     <button type="button" class="btn-close"
                                                                         data-bs-dismiss="modal"
                                                                         aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                Bạn có chắc chắn muốn xóa thùng hàng này
+                                                                <p class="m-0">Bạn chắc chắn muốn xóa thùng hàng này?
+                                                                </p>
+                                                                <p class="m-0">
+                                                                    Việc này sẽ xóa thùng hàng vĩnh viễn. <br>
+                                                                    Hãy chắc chắn trước khi tiếp tục.
+                                                                </p>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-bs-dismiss="modal">Hủy</button>
                                                                 <button type="button" class="btn btn-danger btnDelete"
-                                                                    data-id="{{ $each->Id_ContentSimple }}">Xóa</button>
+                                                                    data-id="{{ $each->Id_ContentSimple }}">Xác
+                                                                    nhận</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -169,7 +171,7 @@
                                 @endforeach
                             @else
                                 @foreach ($data as $each)
-                                    <tr>
+                                    <tr class="align-middle">
                                         <th scope="row" class="text-center">{{ $each->Id_ContentPack }}</th>
                                         <td class="text-center">{{ $each->Count_Pack }} gói</td>
                                         <td class="text-center">
@@ -177,7 +179,7 @@
                                         </td>
                                         <td class="text-center">
                                             <!-- Button trigger modal -->
-                                            <button type="button" class="btn btn-sm text-secondary btn-detail"
+                                            <button type="button" class="btn btn-sm btn-outline btn-detail"
                                                 data-bs-toggle="modal" data-id="{{ $each->Id_ContentPack }}"
                                                 data-bs-target="#i{{ $each->Id_ContentPack }}">
                                                 <i class="fa-solid fa-eye"></i>
@@ -190,26 +192,26 @@
                                                 <div class="modal-dialog modal-lg modal-dialog-centered">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h4 class="modal-title fw-bold text-secondary"
-                                                                id="istaticBackdropLabel">Chi tiết gói hàng
+                                                            <h4 class="modal-title" id="istaticBackdropLabel">Chi tiết gói
+                                                                hàng
                                                             </h4>
                                                             <button type="button" class="btn-close"
                                                                 data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <table class="table">
-                                                                <thead class="table-light">
-                                                                    <tr>
-                                                                        <th class="py-3" scope="col">Nguyên liệu</th>
-                                                                        <th class="py-3" scope="col">Số lượng nguyên
+                                                            <table class="table table-borderless table-hover m-0">
+                                                                <thead class="table-heading">
+                                                                    <tr class="align-middle">
+                                                                        <th class="py-2" scope="col">Nguyên liệu</th>
+                                                                        <th class="py-2" scope="col">Số lượng nguyên
                                                                             liệu
                                                                         </th>
-                                                                        <th class="py-3" scope="col">Đơn vị</th>
-                                                                        <th class="py-3" scope="col">Thùng chứa</th>
-                                                                        <th class="py-3" scope="col">Số lượng thùng
+                                                                        <th class="py-2" scope="col">Đơn vị</th>
+                                                                        <th class="py-2" scope="col">Thùng chứa</th>
+                                                                        <th class="py-2" scope="col">Số lượng thùng
                                                                             chứa
                                                                         </th>
-                                                                        <th class="py-3" scope="col">Đơn giá</th>
+                                                                        <th class="py-2" scope="col">Đơn giá</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody class="body-table">
@@ -217,7 +219,7 @@
                                                             </table>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-light"
+                                                            <button type="button" class="btn btn-secondary"
                                                                 data-bs-dismiss="modal">Đóng</button>
                                                         </div>
                                                     </div>
@@ -230,29 +232,32 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="card-footer d-flex align-items-center justify-content-end gap-3">
-                    <a href="{{ route('orderLocals.expeditions.index') }}" class="btn btn-light">Quay lại</a>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#deleteOrder-{{ $orderLocal->Id_OrderLocal }}"
-                        {{ isset($inProcess) ? 'disabled' : '' }}>
-                        Lưu
-                    </button>
-                    <div class="modal fade" id="deleteOrder-{{ $orderLocal->Id_OrderLocal }}" tabindex="-1"
-                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận
-                                        </h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    Bạn có chắc chắn muốn cập nhật đơn giao hàng này?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="submit" class="btn btn-primary" id="updateBtn">Xác nhận</button>
+                <div class="card-footer pt-0 border-0 bg-transparent">
+                    <div class="d-flex align-items-center justify-content-end gap-3">
+                        <a href="{{ route('orderLocals.expeditions.index') }}" class="btn btn-secondary">Quay lại</a>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#deleteOrder-{{ $orderLocal->Id_OrderLocal }}"
+                            {{ isset($inProcess) ? 'disabled' : '' }}>
+                            Lưu
+                        </button>
+                        <div class="modal fade" id="deleteOrder-{{ $orderLocal->Id_OrderLocal }}" tabindex="-1"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="exampleModalLabel">Xác nhận
+                                            </h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Bạn có chắc chắn muốn cập nhật đơn giao hàng này?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Hủy</button>
+                                        <button type="submit" class="btn btn-primary" id="updateBtn">Xác nhận</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -324,7 +329,6 @@
                         id_ContentPack: id_ContentPack
                     },
                     success: function(response) {
-                        console.log(response);
                         $(".body-table").html(response);
                     }
                 });

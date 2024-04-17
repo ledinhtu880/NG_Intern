@@ -11,25 +11,25 @@
 @endpush
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Quản lý vai trò</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Quản lý vai trò</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Quản lý vai trò</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">
+            Quản lý vai trò
+        </h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">
-                        <i class="fa-solid fa-person-circle-check me-2"></i>
-                        Đăng ký vai trò
-                        </h5>
-                </div>
+            <div class="card">
                 <div class="card-body">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">
+                        <i class="fa-solid fa-person-circle-check me-2"></i>
+                        <span>Đăng ký vai trò</span>
+                    </h5>
                     <div class="row">
                         <div class="input-group mb-3">
                             <label class="input-group-text" for="users">Người dùng</label>
@@ -46,12 +46,13 @@
                     <div class="card">
                         <div class="card-body">
                             @foreach ($type_role as $key => $item)
-                                <div class="border border-dark border-start-0 border-end-0">
-                                    <p class="d-inline-flex">
-                                    <div data-bs-toggle="collapse" style="cursor: pointer !important;"
-                                        data-bs-target="#collapseRole{{ $key }}">
-                                        {{ $item }}</div>
-                                    </p>
+                                <div class="role-item">
+                                    <div class="p-3 px-0">
+                                        <span data-bs-toggle="collapse" style="cursor: pointer !important;"
+                                            data-bs-target="#collapseRole{{ $key }}">
+                                            {{ $item }}
+                                        </span>
+                                    </div>
                                     <ul class="list-group collapse cursor-pointer" id="collapseRole{{ $key }}"
                                         data-bs-parent="#accordion">
                                         @foreach ($roles as $role)
@@ -64,33 +65,35 @@
                                                 </li>
                                             @endif
                                         @endforeach
-                                        <div class="mb-3"></div>
                                     </ul>
                                 </div>
                             @endforeach
                         </div>
                     </div>
                 </div>
-                <div class="card-footer">
-                    <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#modalstart"
-                        id="btnSave">Lưu
-                        lại</button>
-                    <div class="modal fade" id="modalstart" tabindex="-1" aria-labelledby="exampleModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    Bạn chắc chắn muốn đăng ký vai trò cho người dùng này?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                                    <button type="button" class="btn btn-primary btn-primary" data-bs-dismiss="modal"
-                                        id="confirm">Xác nhận</button>
+                <div class="card-footer pt-0 border-0 bg-transparent">
+                    <div class="d-flex align-items-center justify-content-end">
+                        <button class="btn btn-outline float-end" data-bs-toggle="modal" data-bs-target="#modalstart"
+                            id="btnSave">Lưu
+                            lại</button>
+                        <div class="modal fade" id="modalstart" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="exampleModalLabel">Xác nhận</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Bạn chắc chắn muốn đăng ký vai trò cho người dùng này?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Đóng</button>
+                                        <button type="button" class="btn btn-primary btn-primary" data-bs-dismiss="modal"
+                                            id="confirm">Xác nhận</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

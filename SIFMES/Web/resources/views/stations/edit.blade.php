@@ -4,26 +4,27 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Sửa thông tin trạm</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('stations.index') }}">Quản lý trạm</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Sửa</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('stations.index') }}">Quản lý trạm</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Sửa</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">Sửa thông tin trạm</h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm">
+            <div class="card">
                 <div class="card-body">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin chung</h5>
                     <form id="formInformation" method="POST" action="{{ route('stations.update', compact('station')) }}">
                         @csrf
                         <div class="d-flex gap-3">
-                            <div class="form-group" style="flex: 1;">
-                                <label for="Id_Station" class="form-label" style="font-weight:600;">Mã trạm</label>
+                            <div class="form-group mb-3" style="flex: 1">
+                                <label for="Id_Station" class="form-label">Mã trạm</label>
                                 <input type="text" name="Id_Station" id="Id_Station" placeholder="Nhập mã trạm"
                                     class="form-control{{ $errors->has('Id_Station') ? ' is-invalid' : '' }}"
                                     value="{{ $station->Id_Station }}" readonly>
@@ -34,8 +35,8 @@
                                 @endif
                             </div>
                             @method('PUT')
-                            <div class="form-group" style="flex: 1;">
-                                <label for="Name_Station" class="form-label" style="font-weight:600;">Tên trạm</label>
+                            <div class="form-group mb-3" style="flex: 1">
+                                <label for="Name_Station" class="form-label">Tên trạm</label>
                                 <input type="text" name="Name_Station" id="Name_Station" placeholder="Nhập tên trạm"
                                     class="form-control{{ $errors->has('Name_Station') ? ' is-invalid' : '' }}"
                                     value="{{ $station->Name_Station }}">
@@ -47,7 +48,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="Ip_Address" class="form-label" style="font-weight:600;">Địa chỉ IP</label>
+                            <label for="Ip_Address" class="form-label">Địa chỉ IP</label>
                             <input type="text" name="Ip_Address" id="Ip_Address" placeholder="Nhập địa chỉ IP"
                                 class="form-control{{ $errors->has('Ip_Address') ? ' is-invalid' : '' }}"
                                 value="{{ $station->Ip_Address }}">
@@ -58,7 +59,7 @@
                             @endif
                         </div>
                         <div class="form-group">
-                            <label for="FK_Id_StationType" class="form-label" style="font-weight:600;">Loại trạm</label>
+                            <label for="FK_Id_StationType" class="form-label">Loại trạm</label>
                             <select name="FK_Id_StationType" id="FK_Id_StationType"
                                 class="form-select{{ $errors->has('FK_Id_StationType') ? ' is-invalid' : '' }}">
                                 @foreach ($data as $each)
@@ -81,9 +82,9 @@
                         </div>
                     </form>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex justify-content-end gap-3">
-                        <a href="{{ route('stations.index') }}" class="btn btn-light">Quay lại</a>
+                        <a href="{{ route('stations.index') }}" class="btn btn-secondary">Quay lại</a>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#deleteOrder-{{ $station->Id_Station }}">
                             Cập nhật
@@ -93,7 +94,7 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận</h1>
+                                        <h4 class="modal-title" id="exampleModalLabel">Xác nhận</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                     </div>
@@ -101,7 +102,8 @@
                                         Bạn có chắc chắn muốn cập nhật trạm này?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Hủy</button>
                                         <button type="submit" class="btn btn-primary" id="saveBtn">Xác nhận</button>
                                     </div>
                                 </div>

@@ -48,10 +48,6 @@ class CustomerRequest extends FormRequest
         'required',
         'numeric'
       ],
-      'Time_Reception' => [
-        'required',
-        'date'
-      ],
       'FK_Id_Mode_Transport' => [
         'required'
       ],
@@ -74,8 +70,6 @@ class CustomerRequest extends FormRequest
       'Phone.regex' => 'Không đúng định dạng',
       'Phone.unique' => 'Số điện thoại đã tồn tại',
       'Name_Contact.required' => 'Vui lòng nhập tên liên hệ',
-      'Time_Reception.required' => 'Vui lòng chọn thời gian nhận',
-      'Time_Reception.date' => 'Thời gian nhận theo định dạng: tháng/ngày/năm',
       'Address.required' => 'Vui lòng nhập địa chỉ',
       'Zipcode.required' => 'Vui lòng nhập zipcode',
       'Zipcode.numeric' => 'Zipcode phải là số',

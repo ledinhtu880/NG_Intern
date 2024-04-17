@@ -1,33 +1,35 @@
 @extends('layouts.master')
 
-@section('title', 'Danh sách gói hàng')
+@section('title', 'Danh sách gói hàng trong kho')
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Danh sách gói hàng tại kho 409</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('orders.packs.index') }}">Quản lý đơn gói hàng</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="/orders/packs/create?id={{ $_GET['id'] }}">Thêm</a>
-                </li>
-                <li class=" breadcrumb-item active fw-medium" aria-current="page">Danh sách gói hàng tại kho 409</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('orders.packs.index') }}">Quản lý đơn gói hàng</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="/orders/packs/create?id={{ $_GET['id'] }}">Thêm</a>
+            </li>
+            <li class=" breadcrumb-item active fw-medium" aria-current="page">Danh sách gói hàng tại kho 409</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">
+            Danh sách gói hàng tại kho 409
+        </h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Chi tiết kho chứa</h5>
-                        <input type="hidden" name="FK_Id_Order" value="{{ $_GET['id'] }}">
-                        <input type="hidden" name="warehouse" value="409">
+            <div class="card">
+                <div class="card-header border-0 bg-transparent">
+                    <h5 class="h5 fw-bold border-bottom pb-2 m-0">Chi tiết kho chứa</h5>
+                    <input type="hidden" name="FK_Id_Order" value="{{ $_GET['id'] }}">
+                    <input type="hidden" name="warehouse" value="409">
                 </div>
-                <div class="card-body border-0">
+                <div class="card-body">
                     <div class="table-wrapper">
                         <table class="table table-bordered border-secondary-subtle">
                             <tr class="d-none">
@@ -45,9 +47,9 @@
                         </table>
                     </div>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-end gap-3">
-                        <a class="btn btn-light" href="/orders/packs/create?id={{ $_GET['id'] }}">Quay lại</a>
+                        <a class="btn btn-secondary" href="/orders/packs/create?id={{ $_GET['id'] }}">Quay lại</a>
                         <button type="submit" class="btn btn-primary" id="saveBtn">Lưu</button>
                     </div>
                 </div>
@@ -143,18 +145,18 @@
                 <div class="modal-dialog modal-xl">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title fw-bold text-secondary" id="show-${details[i - 1].FK_Id_ContentPack}Label">
+                      <h5 class="modal-title fw-bold" id="show-${details[i - 1].FK_Id_ContentPack}Label">
                       Thông tin chi tiết gói hàng số ${details[i - 1].FK_Id_ContentPack}
                       </h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <table class="table">
-                        <thead class="table-light">
-                          <tr>
-                            <th class="py-3" scope="col">Tổng số lượng trong kho</th>
-                            <th class="py-3" scope="col">Đơn giá gói hàng</th>
-                            <th class="py-3" scope="col">Xem chi tiết</th>
+                      <table class="table table-borderless table-hover m-0">
+                        <thead class="table-heading">
+                          <tr class="align-middle">
+                            <th class="py-2" scope="col">Tổng số lượng trong kho</th>
+                            <th class="py-2" scope="col">Đơn giá gói hàng</th>
+                            <th class="py-2" scope="col">Xem chi tiết</th>
                           </tr>
                         </thead>
                         <tbody class="table-packs" class="p-5"
@@ -169,7 +171,7 @@
                             <input type="number" name="Count" id="Count" class="form-control">
                           </div>
                           <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                             <button type="button" class="btn btn-primary btnTake" data-id="${details[i - 1].FK_Id_ContentPack}">Lấy gói hàng</button>
                           </div>
                       </div>
@@ -251,7 +253,7 @@
                         }
                     },
                     error: function(xhr) {
-                        console.log(xhr);
+                        console.log(xhr.responseText);
                     },
                 });
             });
@@ -274,11 +276,11 @@
                         });
                         let htmls = "";
                         let data = response;
-                        htmls += `<tr>
+                        htmls += `<tr class="align-middle">
                       <td class="text-center" data-id="SoLuong" data-value="${data.SoLuong}">${data.SoLuong}</td>
                       <td class="text-center">${numberFormat(data.Price_Pack)} VNĐ</td>
                       <td class="text-center">
-                        <button class="btn btn-sm text-secondary btnDetail" data-bs-target="#showDetails-${data.Id_ContentPack}" 
+                        <button class="btn btn-sm btn-outline btnDetail" data-bs-target="#showDetails-${data.Id_ContentPack}" 
                         data-id="${data.Id_ContentPack}" data-bs-toggle="modal">
                           <i class="fa-solid fa-eye"></i>
                         </button>
@@ -292,7 +294,7 @@
                 <div class="modal-dialog modal-xl modal-dialog-centered">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title fw-bold text-secondary" id="show-${data.Id_ContentPack}Label">
+                      <h5 class="modal-title fw-bold" id="show-${data.Id_ContentPack}Label">
                       Thông tin các thùng hàng của gói hàng số ${data.Id_ContentPack}
                       </h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -300,15 +302,15 @@
                     <div class="modal-body">
                       <div class="wrapper w-100 overflow-x-auto">
                         <div class="table-responsive">
-                          <table class="table">
-                            <thead class="table-light">
-                              <tr>
-                                <th class="py-3" scope="col">Tên nguyên liệu</th>
-                                <th class="py-3" scope="col">Số lượng nguyên liệu</th>
-                                <th class="py-3" scope="col">Đơn vị</th>
-                                <th class="py-3" scope="col">Thùng chứa</th>
-                                <th class="py-3" scope="col">Số lượng thùng chứa</th>
-                                <th class="py-3" scope="col">Đơn giá</th>
+                          <table class="table table-borderless table-hover m-0">
+                            <thead class="table-heading">
+                              <tr class="align-middle">
+                                <th class="py-2" scope="col">Tên nguyên liệu</th>
+                                <th class="py-2" scope="col">Số lượng nguyên liệu</th>
+                                <th class="py-2" scope="col">Đơn vị</th>
+                                <th class="py-2" scope="col">Thùng chứa</th>
+                                <th class="py-2" scope="col">Số lượng thùng chứa</th>
+                                <th class="py-2" scope="col">Đơn giá</th>
                               </tr>
                             </thead>
                             <tbody id="table-packs-${data.Id_ContentPack}" class="p-5">
@@ -319,7 +321,7 @@
                     </div>
                     <div class="modal-footer">
                       <div class="d-flex align-items-center justify-content-end w-100">
-                        <button type="button" class="btn btn-light" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
                       data-bs-target="#show-${data.Id_ContentPack}">
                         Quay lại
                         </button>
@@ -401,7 +403,7 @@
                         },
                         success: function(response) {},
                         error: function(xhr) {
-                            console.log(xhr);
+                            console.log(xhr.responseText);
                         },
                     });
 

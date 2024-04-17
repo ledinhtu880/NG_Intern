@@ -4,56 +4,58 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Quản lý đơn gói hàng</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Quản lý đơn gói hàng</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Quản lý đơn gói hàng</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">
+            Quản lý đơn gói hàng
+        </h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <a href="{{ route('orders.packs.create') }}" class="btn btn-danger rounded-1">
-                            <i class="fa-solid fa-plus text-white me-3 fs-6"></i>
-                            <span>Thêm đơn gói hàng</span>
-                        </a>
-                    </div>
-                    <table class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col" class="py-3 text-center">#</th>
-                                <th scope="col" class="py-3">Tên khách hàng</th>
-                                <th scope="col" class="py-3">Kiểu khách hàng</th>
-                                <th scope="col" class="py-3 text-center">Ngày đặt hàng</th>
-                                <th scope="col" class="py-3 text-center">Ngày giao hàng</th>
-                                <th scope="col" class="py-3 text-center">Hoạt động</th>
+            <div class="card py-3 gap-3">
+                <div class="card-header px-3 py-0 border-0 bg-transparent">
+                    <a href="{{ route('orders.packs.create') }}" class="btn btn-main">
+                        <i class="fa-solid fa-plus text-white me-1 fs-6"></i>
+                        <span>Thêm đơn gói hàng</span>
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-borderless table-hover m-0">
+                        <thead class="table-heading">
+                            <tr class="align-middle">
+                                <th scope="col" class="py-2 text-center">#</th>
+                                <th scope="col" class="py-2">Tên khách hàng</th>
+                                <th scope="col" class="py-2">Kiểu khách hàng</th>
+                                <th scope="col" class="py-2 text-center">Ngày đặt hàng</th>
+                                <th scope="col" class="py-2 text-center">Ngày giao hàng</th>
+                                <th scope="col" class="py-2 text-center">Hoạt động</th>
                             </tr>
                         </thead>
                         <tbody id="table-data">
                             @foreach ($data as $each)
-                                <tr>
+                                <tr class="align-middle">
                                     <th scope="row" class="text-center text-body-secondary">{{ $each->Id_Order }}</th>
                                     <td>{{ $each->customer->Name_Customer }}</td>
-                                    <td>
-                                        <span class="badge text-bg-primary fw-normal fs-6">{{ $each->Name }}</span>
+                                    <td class="align-middle">
+                                        <span class="badge badge-main fw-normal fs-6">{{ $each->Name }}</span>
                                     </td>
                                     <td class="text-center">{{ $each->order_date }}</td>
                                     <td class="text-center">{{ $each->delivery_date }}</td>
-                                    <td class="text-center">
+                                    <td class="text-center align-middle">
                                         <a href="{{ route('orders.packs.show', $each->Id_Order) }}"
-                                            class="btn btn-sm text-secondary">
+                                            class="btn btn-sm btn-outline">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
                                         <a href="{{ route('orders.packs.edit', $each->Id_Order) }}"
-                                            class="btn btn-sm text-secondary">
+                                            class="btn btn-sm btn-outline">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
-                                        <button type="button" class="btn btn-sm text-secondary" data-bs-toggle="modal"
+                                        <button type="button" class="btn btn-sm btn-outline" data-bs-toggle="modal"
                                             data-bs-target="#deleteOrder-{{ $each->Id_Order }}">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
@@ -62,13 +64,16 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h4 class="modal-title fw-bold text-secondary"
-                                                            id="exampleModalLabel">Xác nhận</h1>
+                                                        <h4 class="modal-title" id="exampleModalLabel">Xác nhận</h1>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                 aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        Bạn có chắc chắn về xóa đơn gói hàng này?
+                                                        <p class="m-0">Bạn chắc chắn muốn xóa đơn hàng này?</p>
+                                                        <p class="m-0">
+                                                            Việc này sẽ xóa đơn hàng vĩnh viễn. <br>
+                                                            Hãy chắc chắn trước khi tiếp tục.
+                                                        </p>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
@@ -77,7 +82,7 @@
                                                             action="{{ route('orders.packs.destroy', $each->Id_Order) }}">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger">Xóa</button>
+                                                            <button type="submit" class="btn btn-danger">Xác nhận</button>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -89,14 +94,13 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <nav>
-                        @if ($data->lastPage() > 1)
-                            {{ $data->links('pagination::bootstrap-4') }}
-                        @endif
-                    </nav>
-                    <a href="{{ route('index') }}" class="btn btn-light">Quay lại</a>
-                </div>
+                @if ($data->lastPage() > 1)
+                    <div class="card-footer pt-0 border-0 bg-transparent">
+                        <nav>
+                            {{ $data->links('pagination::bootstrap-5') }}
+                        </nav>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

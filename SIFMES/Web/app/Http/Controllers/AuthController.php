@@ -22,10 +22,19 @@ class AuthController extends Controller
         if ($user && Hash::check($request->password, $user->Password)) {
             Auth::login($user);
             $name = Auth::user()->Name;
+            $username = DB::table('User')
+                ->where('Id_User', $user->Id_User)->value('Username');
             $roles = DB::table('LinkRoleUser')
                 ->join('Role', 'FK_Id_Role', '=', 'Id_Role')
                 ->where('FK_Id_User', $user->Id_User)->select('FK_Id_Role', 'Name_Role')->get();
+            $data = DB::table('User')
+                ->select(DB::raw("RIGHT(RTRIM(SUBSTRING(REVERSE(name), 1, CHARINDEX(' ', REVERSE(name)))), 1) AS first_character"))
+                ->where('Id_User', $user->Id_User)
+                ->first();
+            $firstCharacter = $data->first_character;
+            $request->session()->put('firstCharacter', $firstCharacter);
             $request->session()->put('roles', $roles);
+            $request->session()->put('username', $username);
             $request->session()->put('name', $name);
             return redirect()->intended('')->with('type', 'success')
                 ->with('message', 'Đăng nhập thành công');

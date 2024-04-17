@@ -27,11 +27,10 @@ Route::middleware('checklogin')->group(function () {
   Route::resource('rawMaterials', RawMaterialController::class)->middleware('checkRawMaterial');
   Route::resource('customers', CustomerController::class)->middleware('checkCustomer');
   Route::resource('stations', StationController::class)->middleware('checkStation');
-
-  Route::post('getImgByStationType', [StationController::class, 'getImgByStationType'])->name('getImgByStationType');
   Route::resource('productStationLines', ProductStationLineController::class)->middleware('checkProductStationLines');
   Route::resource('users', UserController::class)->middleware('checkUser');
 
+  Route::post('getImgByStationType', [StationController::class, 'getImgByStationType'])->name('getImgByStationType');
   Route::group(['prefix' => 'rawMaterials', 'as' => 'rawMaterials.'], function () {
     Route::post('showMaterials', [RawMaterialController::class, 'showRawMaterialsByType'])->name('showMaterials');
     Route::post('showUnit', [RawMaterialController::class, 'showUnit'])->name('showUnit');

@@ -4,30 +4,28 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Tạo đơn thùng hàng</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('orders.packs.index') }}">Quản lý đơn gói hàng</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="/orders/packs/create?id={{ $_GET['id'] }}">Thêm</a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Thêm thùng hàng vào gói hàng</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('orders.packs.index') }}">Quản lý đơn gói hàng</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="/orders/packs/create?id={{ $_GET['id'] }}">Thêm gói hàng</a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Thêm thùng hàng vào gói hàng</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">Thêm thùng hàng vào gói hàng</h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header border-0 bg-white">
-                    <h4 class="card-title m-0 fw-bold text-body-secondary">Thông tin thùng hàng</h5>
-                </div>
+            <div class="card">
                 <div class="card-body border-0">
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin thùng hàng</h5>
                     <input type="hidden" name="FK_Id_Order" value="{{ $_GET['id'] }}">
-                    <form method="POST" id="formProduct">
+                    <form method="POST" id="formProduct" class="mb-3">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
@@ -92,13 +90,13 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <button type="submit" class="btn btn-primary mb-3 px-5">
+                                <button type="submit" class="btn btn-primary px-5">
                                     <i class="fa-solid fa-plus text-white"></i>
                                     Thêm sản phẩm
                                 </button>
                             </div>
                             <div class="col-md-6">
-                                <div class="input-group mb-3">
+                                <div class="input-group">
                                     <label class="input-group-text bg-secondary-subtle" for="Count_Pack">
                                         Số lượng gói hàng
                                     </label>
@@ -108,15 +106,15 @@
                             </div>
                         </div>
                     </form>
-                    <table class="table mt-4">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col" class="py-3">Nguyên liệu</th>
-                                <th scope="col" class="py-3 text-center">Số lượng nguyên liệu</th>
-                                <th scope="col" class="py-3">Đơn vị</th>
-                                <th scope="col" class="py-3">Thùng chứa</th>
-                                <th scope="col" class="py-3 text-center">Số lượng thùng chứa</th>
-                                <th scope="col" class="py-3 text-center">Đơn giá</th>
+                    <table class="table table-borderless table-hover m-0">
+                        <thead class="table-heading">
+                            <tr class="align-middle">
+                                <th scope="col" class="py-2">Nguyên liệu</th>
+                                <th scope="col" class="py-2 text-center">Số lượng nguyên liệu</th>
+                                <th scope="col" class="py-2">Đơn vị</th>
+                                <th scope="col" class="py-2">Thùng chứa</th>
+                                <th scope="col" class="py-2 text-center">Số lượng thùng chứa</th>
+                                <th scope="col" class="py-2 text-center">Đơn giá</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -124,9 +122,9 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-end gap-3">
-                        <a href="/orders/packs/create?id={{ $_GET['id'] }}" class="btn btn-light">Quay
+                        <a href="/orders/packs/create?id={{ $_GET['id'] }}" class="btn btn-secondary">Quay
                             lại</a>
                         <button type="submit" class="btn btn-primary" id="saveBtn">Lưu gói hàng</button>
                     </div>
@@ -226,22 +224,26 @@
                             ${value.formattedPrice}
                         </td>
                         <td class="text-center">
-                            <button type="button" class="btn btn-sm text-secondary" data-bs-toggle="modal" data-bs-target="#deleteRow${id}">
+                            <button type="button" class="btn btn-sm btn-outline" data-bs-toggle="modal" data-bs-target="#deleteRow${id}">
                             <i class="fa-solid fa-trash"></i>
                             </button>
                             <div class="modal fade" id="deleteRow${id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                 <div class="modal-header">
-                                    <h4 class="modal-title fw-bold text-secondary" id="exampleModalLabel">Xác nhận</h1>
+                                    <h4 class="modal-title" id="exampleModalLabel">Xác nhận</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    Bạn có chắc chắn về việc sản phẩm này
+                                    <p class="m-0">Bạn chắc chắn muốn xóa đơn gói hàng này?</p>
+                                    <p class="m-0">
+                                        Việc này sẽ xóa đơn gói hàng vĩnh viễn. <br>
+                                        Hãy chắc chắn trước khi tiếp tục.
+                                    </p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="button" class="btn btn-danger btnDelete" data-id="${id}">Xóa</button>
+                                    <button type="button" class="btn btn-danger btnDelete" data-id="${id}">Xác nhận</button>
                                 </div>
                                 </div>
                             </div>

@@ -4,45 +4,46 @@
 
 @section('content')
     <div class="row g-0 p-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="h4 m-0 fw-bold text-body-secondary">Sửa thùng hàng trong gói hàng</h4>
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('orders.packs.index') }}">Quản lý đơn gói hàng</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a class="text-decoration-none" href="{{ route('orders.packs.edit', $Id_Order) }}">
-                        Sửa
-                    </a>
-                </li>
-                <li class="breadcrumb-item active fw-medium" aria-current="page">Sửa thùng hàng trong gói hàng</li>
-            </ol>
-        </div>
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-decoration-none" href="{{ route('index') }}">Trang chủ</a></li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('orders.packs.index') }}">Quản lý đơn gói hàng</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" href="{{ route('orders.packs.edit', $Id_Order) }}">
+                    Sửa gói hàng
+                </a>
+            </li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Sửa thùng hàng trong gói hàng</li>
+        </ol>
+    </div>
+    <div class="row g-0 px-3">
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">Sửa thùng hàng trong gói hàng</h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm mb-3">
+            <div class="card">
                 <div class="card-body">
-                    <table class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col" class="py-3 text-center col-md-2">Nguyên liệu</th>
-                                <th scope="col" class="py-3 text-center">Số lượng nguyên liệu</th>
-                                <th scope="col" class="py-3 text-center">Đơn vị</th>
-                                <th scope="col" class="py-3 text-center">Thùng chứa</th>
-                                <th scope="col" class="py-3 text-center">Số lượng thùng chứa</th>
-                                <th scope="col" class="py-3 text-center">Đơn giá</th>
-                                <th scope="col" class="py-3 text-center">Xóa</th>
+                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin thùng hàng</h5>
+                    <table class="table table-borderless m-0">
+                        <thead class="table-heading">
+                            <tr class="align-middle">
+                                <th scope="col" class="py-2 text-center text-truncate">Nguyên liệu</th>
+                                <th scope="col" class="py-2 text-center text-truncate">Số lượng nguyên liệu</th>
+                                <th scope="col" class="py-2 text-center text-truncate">Đơn vị</th>
+                                <th scope="col" class="py-2 text-center text-truncate">Thùng chứa</th>
+                                <th scope="col" class="py-2 text-center text-truncate">Số lượng thùng chứa</th>
+                                <th scope="col" class="py-2 text-center text-truncate">Đơn giá</th>
+                                <th scope="col" class="py-2 text-center text-truncate"></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($ContentSimples as $ContentSimple)
-                                <tr>
+                                <tr class="align-middle">
                                     <form action="" method="POST">
                                         <input class="Id_ContentSimple" type="hidden"
                                             value="{{ $ContentSimple->Id_ContentSimple }}">
-                                        <td class="align-middle ">
+                                        <td class="text-center">
                                             <select class="form-select Id_RawMaterial">
                                                 @foreach ($materials as $material)
                                                     <option value="{{ $material->Id_RawMaterial }}"
@@ -68,14 +69,14 @@
                                         </td>
                                         <td class="text-center">
                                             <input type="number" class="form-control Count_Container"
-                                                value="{{ $ContentSimple->Count_Container }}" min='1'>
+                                                value="{{ $ContentSimple->Count_Container }}" min="1">
                                         </td>
                                         <td class="text-center">
                                             <input type="number" class="form-control Price_Container"
-                                                value="{{ $ContentSimple->Price_Container }}" min='1'>
+                                                value="{{ $ContentSimple->Price_Container }}">
                                         </td>
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-sm text-secondary" data-bs-toggle="modal"
+                                        <td class="text-center align-middle">
+                                            <button type="button" class="btn btn-sm btn-outline" data-bs-toggle="modal"
                                                 data-bs-target="#deleteID-{{ $ContentSimple->Id_ContentSimple }}">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
@@ -84,19 +85,23 @@
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h4 class="modal-title fw-bold text-secondary"
-                                                                id="exampleModalLabel">Xác nhận</h1>
+                                                            <h4 class="modal-title" id="exampleModalLabel">Xác nhận</h1>
                                                                 <button type="button" class="btn-close"
                                                                     data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            Bạn có chắc chắn về việc xóa thùng hàng này
+                                                            <p class="m-0">Bạn chắc chắn muốn thùng hàng này?</p>
+                                                            <p class="m-0">
+                                                                Việc này sẽ thùng hàng vĩnh viễn. <br>
+                                                                Hãy chắc chắn trước khi tiếp tục.
+                                                            </p>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary"
                                                                 data-bs-dismiss="modal">Hủy</button>
                                                             <button type="button" class="btn btn-danger btnDeleteSimple"
-                                                                data-id="{{ $ContentSimple->Id_ContentSimple }}">Xóa</button>
+                                                                data-id="{{ $ContentSimple->Id_ContentSimple }}">Xác
+                                                                nhận</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -108,9 +113,9 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-end gap-2">
-                        <a class="btn btn-light" href="{{ route('orders.packs.edit', $Id_Order) }}">
+                        <a class="btn btn-secondary" href="{{ route('orders.packs.edit', $Id_Order) }}">
                             Quay lại
                         </a>
                         <button type="button" class="btn btn-primary" id="saveBtn">Lưu</button>
