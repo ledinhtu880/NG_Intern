@@ -16,7 +16,7 @@
             <div class="container-fluid">
                 <div class="row align-items-center h-100">
                     <div class="col-lg-8">
-                        <h1 class="text-dark">Welcome to VIETNAM</h1>
+                        <h1 class="h1">Welcome to VIETNAM</h1>
                     </div>
                     <div class="col-lg-4">
                         <div id="AreaInputGroup" class="input-group input-group-sm d-none">
@@ -40,7 +40,7 @@
                 <div class="row" style="height: 90vh;">
                     <div class="col-lg-2 h-100">
                         <div class="provinces-list h-100">
-                            <h4 class="text-center text-dark">DANH SÁCH TỈNH THÀNH</h4>
+                            <h3 class="h3 text-center">DANH SÁCH TỈNH THÀNH</h3>
                             <ul id="Provinces_List" class="list-group h-75 overflow-auto">
                                 @foreach ($provinces as $each)
                                     <li class="list-group-item">{{ $each->name_1 }}</li>
@@ -97,6 +97,7 @@
             // Tạo các nhóm lớp (Layer Group) cho các tỉnh và Việt Nam:
             var provincesLayerGroup = L.layerGroup().addTo(mymap);
             var vietnamLayerGroup = L.layerGroup().addTo(mymap);
+            var pointsLayerGroup = L.layerGroup().addTo(mymap);
             var roadsLayerGroup = L.layerGroup().addTo(mymap);
             var LineHighlightLayerGroup = L.layerGroup().addTo(mymap);
 
@@ -399,6 +400,10 @@
                     provincesLayerGroup.clearLayers();
                     LineHighlightLayerGroup.clearLayers();
                     highlightLine_click(e.latlng.lat, e.latlng.lng);
+                } else if ($('#Point').is(':checked')) {
+                    provincesLayerGroup.clearLayers();
+                    pointsLayerGroup.clearLayers();
+                    getCity(e.latlng.lat, e.latlng.lng);
                 }
             });
 
@@ -584,6 +589,32 @@
                                     weight: 4
                                 }).addTo(LineHighlightLayerGroup);
                             });
+                        });
+                    },
+                    error: function(xhr) {
+                        console.log('Error:', xhr);
+                    }
+                });
+            }
+
+            function getCity(lat, lng) {
+                $.ajax({
+                    url: '/get-data',
+                    type: 'GET',
+                    data: {
+                        lat: lat,
+                        lng: lng
+                    },
+                    success: function(response) {
+                        provincesLayerGroup.clearLayers();
+                        var provinceName = response[0].name_1;
+                        provinces.forEach(function(province) {
+                            if (province.name_1 === provinceName) {
+                                var lat = parseFloat(province.lat);
+                                var lon = parseFloat(province.lon);
+                                L.marker([lat, lon]).addTo(provincesLayerGroup).bindPopup(
+                                    provinceName);
+                            }
                         });
                     },
                     error: function(xhr) {
