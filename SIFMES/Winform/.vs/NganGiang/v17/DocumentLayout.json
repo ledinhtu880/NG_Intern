@@ -3,20 +3,16 @@
   "WorkspaceRootPath": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\models\\contentpack.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\models\\contentpack.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\views\\frm410.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\frm410.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\services\\process\\processservice401.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\services\\process\\processservice401.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\views\\frm410.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\frm410.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\ngangiang\\controllers\\authenticatorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\controllers\\authenticatorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\ngangiang\\views\\frm401.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\frm401.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\views\\frm408.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\frm408.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,15 +22,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
             },
             {
               "$type": "Bookmark",
@@ -47,52 +39,50 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ContentPack.cs",
-              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Models\\ContentPack.cs",
-              "RelativeDocumentMoniker": "NganGiang\\Models\\ContentPack.cs",
-              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Models\\ContentPack.cs",
-              "RelativeToolTip": "NganGiang\\Models\\ContentPack.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAzAAAA",
+              "Title": "frm410.cs",
+              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm410.cs",
+              "RelativeDocumentMoniker": "NganGiang\\Views\\frm410.cs",
+              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm410.cs",
+              "RelativeToolTip": "NganGiang\\Views\\frm410.cs",
+              "ViewState": "AQIAABcAAAAAAAAAAEBCwIYAAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-19T09:43:27.945Z",
+              "WhenOpened": "2024-05-02T03:25:45.54Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ProcessService401.cs",
-              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Services\\Process\\ProcessService401.cs",
-              "RelativeDocumentMoniker": "NganGiang\\Services\\Process\\ProcessService401.cs",
-              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Services\\Process\\ProcessService401.cs",
-              "RelativeToolTip": "NganGiang\\Services\\Process\\ProcessService401.cs",
-              "ViewState": "AQIAANUAAAAAAAAAAAAwwNkAAAAbAAAA",
+              "Title": "frm410.cs [Design]",
+              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm410.cs",
+              "RelativeDocumentMoniker": "NganGiang\\Views\\frm410.cs",
+              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm410.cs [Design]",
+              "RelativeToolTip": "NganGiang\\Views\\frm410.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-19T06:42:07.657Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-02T03:25:26.293Z",
+              "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "AuthenticatorController.cs",
-              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Controllers\\AuthenticatorController.cs",
-              "RelativeDocumentMoniker": "NganGiang\\Controllers\\AuthenticatorController.cs",
-              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Controllers\\AuthenticatorController.cs",
-              "RelativeToolTip": "NganGiang\\Controllers\\AuthenticatorController.cs",
-              "ViewState": "AQIAABIAAAAAAAAAAAAwwBYAAAATAAAA",
+              "Title": "frm408.cs",
+              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm408.cs",
+              "RelativeDocumentMoniker": "NganGiang\\Views\\frm408.cs",
+              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm408.cs",
+              "RelativeToolTip": "NganGiang\\Views\\frm408.cs",
+              "ViewState": "AQIAACoAAAAAAAAAAAAkwDIAAABLAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-19T06:41:59.69Z"
-            },
+              "WhenOpened": "2024-05-02T03:24:57.435Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 83,
+          "SelectedChildIndex": -1,
+          "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "frm401.cs",
-              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm401.cs",
-              "RelativeDocumentMoniker": "NganGiang\\Views\\frm401.cs",
-              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm401.cs",
-              "RelativeToolTip": "NganGiang\\Views\\frm401.cs",
-              "ViewState": "AQIAAAoAAAAAAAAAAAAywA8AAAA9AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-19T03:50:05.032Z"
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
             }
           ]
         }

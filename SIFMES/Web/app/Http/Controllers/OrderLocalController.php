@@ -499,7 +499,7 @@ class OrderLocalController extends Controller
       $htmls = '';
       foreach ($res as $contentSimple) {
         $htmls .= '
-                <tr class="align-middle>
+                <tr class="align-middle">
                     <td>
                         ' . $contentSimple->Name_RawMaterial . '
                     </td>
@@ -592,7 +592,7 @@ class OrderLocalController extends Controller
 
   private function getOrderLocal($orderLocal)
   {
-    $htmls = '<tr class="align-middle>
+    $htmls = '<tr class="align-middle">
                 <td class="align-middle text-center">
                     <input type="checkbox" class="form-check-input check-remove">
                 </td>
@@ -619,7 +619,7 @@ class OrderLocalController extends Controller
                                 <div class="modal-body">
                                     <table class="table table-borderless table-hover m-0">
                                         <thead class="table-heading">
-                                          <tr class="align-middle>
+                                          <tr class="align-middle">
                                               <th class="py-2" scope="col">Nguyên liệu</th>
                                               <th class="py-2" scope="col">Số lượng nguyên liệu</th>
                                               <th class="py-2" scope="col">Đơn vị</th>

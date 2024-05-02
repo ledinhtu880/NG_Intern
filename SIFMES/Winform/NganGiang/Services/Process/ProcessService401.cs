@@ -26,7 +26,6 @@ namespace NganGiang.Services.Process
                     HeaderText = "Mã đơn hàng",
                     DataPropertyName = "id_orderlocal",
                     FillWeight = 80,
-
                 };
 
                 DataGridViewTextBoxColumn column2 = new()
