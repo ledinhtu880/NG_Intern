@@ -21,8 +21,8 @@
                 <div class="card-header px-3 py-0 border-0 bg-transparent">
                     <div class="w-25">
                         <div class="input-group">
-                            <label for="typeSelect" class="input-group-text p-2">Đơn hàng</label>
-                            <select name="typeSelect" id="typeSelect" class="form-select">
+                            <label for="typeSelect" class="input-group-text">Đơn hàng</label>
+                            <select name="typeSelect" id="typeSelect" class="form-select" tabindex="1">
                                 <option value="0">Sản xuất</option>
                                 <option value="1">Đóng gói</option>
                                 <option value="2">Giao hàng</option>
@@ -66,6 +66,15 @@
                     },
                     success: function(response) {
                         htmls = ``;
+                        let maxTabIndex = Math.max.apply(null, $("*").map(function() {
+                                let tabIndex = $(this).attr("tabindex");
+                                return tabIndex ?
+                                    parseInt(tabIndex, 10) :
+                                    -Infinity; // Chuyển đổi thành số nguyên
+                            })
+                            .get()
+                        );
+                        let count = 1;
                         $.each(response, function(index, value) {
                             let Id_OrderLocal = value.Id_OrderLocal;
                             let Date_Delivery = value.Date_Delivery;
@@ -91,7 +100,7 @@
                                         <td class="text-center">${formatDate(Date_Delivery)}</td>
                                         <td class="text-center">${Date_Fin}</td>
                                         <td class="text-center">
-                                            <a href="${route}" class="btn btn-sm btn-outline"><i class="fa-solid fa-eye"></i></a>
+                                            <a href="${route}" class="btn btn-sm btn-outline" tabindex="${maxTabIndex + count}"><i class="fa-solid fa-eye"></i></a>
                                         </td>
                                     </tr>`;
                         });

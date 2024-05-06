@@ -93,7 +93,8 @@ form .form-label {
     transition: all 0.1s linear;
 }
 
-.btn.btn-main:hover {
+.btn.btn-main:hover,
+.btn.btn-main:focus {
     background-color: var(--primary-hover);
 }
 .btn.btn-outline {
@@ -109,7 +110,8 @@ form .form-label {
 
     transition: background-color 0.3s ease;
 }
-.btn.btn-outline:hover {
+.btn.btn-outline:hover,
+.btn.btn-outline:focus {
     background-color: var(--primary-hover) !important;
     color: white !important;
 }

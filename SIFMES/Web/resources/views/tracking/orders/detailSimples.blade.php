@@ -240,7 +240,7 @@
             rowElement.hover(
                 function() {
                     let id = $(this).data("id");
-                    let src = "{{ asset('') }}" + '/' + id;
+                    let src = `{{ asset('${id}') }}`;
                     imgElement.removeClass("d-none");
                     imgElement.attr("src", src);
                 },

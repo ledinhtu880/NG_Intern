@@ -152,7 +152,7 @@
                                 $('#cell' + i).append($('<p class="small">Trống</p>'))
                             } else if (details[i - 1].FK_Id_StateCell == "2") {
                                 $('#cell' + i).css("background-color", "#A6BFF7");
-                                $('#cell' + i).attr("data-status", 0)
+                                $('#cell' + i).attr("data-status", 0);
                                 $('#cell' + i).append(
                                     $(`<p class="small text-truncate" data-id="${details[i - 1].FK_Id_ContentSimple}"
                       id="simple-${details[i - 1].FK_Id_ContentSimple}">Thùng hàng <br> số ${details[i - 1].FK_Id_ContentSimple} <br>

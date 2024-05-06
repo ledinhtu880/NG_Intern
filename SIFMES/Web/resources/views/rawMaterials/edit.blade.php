@@ -153,9 +153,9 @@
             validateInput("#Name_RawMaterial", "Vui lòng nhập tên nguyên liệu");
             validateInput("#Unit", "Vui lòng nhập đơn vị");
             validateInput("#Count", "Vui lòng nhập số lượng");
-            let isValid = true;
 
             $("#saveBtn").on('click', function() {
+                let isValid = true;
                 $(".form-control").each(function(element) {
                     if ($(this).hasClass("is-invalid")) {
                         isValid = false;

@@ -37,7 +37,8 @@
                                         Số lượng
                                     </label>
                                     <input type="number" name="Count" id="Count" class="form-control" min="0"
-                                        value="{{ $orderLocal->Count }}" {{ isset($inProcess) ? 'disabled' : '' }}>
+                                        value="{{ $orderLocal->Count }}" {{ isset($inProcess) ? 'disabled' : '' }}
+                                        tabindex="1">
                                 </div>
                             </div>
                             <div class="col-md-3 mb-3">
@@ -62,7 +63,7 @@
                                     </label>
                                     <input type="date" class="form-control" id="Date_Delivery" name="Date_Delivery"
                                         value="{{ \Carbon\Carbon::parse($orderLocal->Date_Delivery)->format('Y-m-d') }}"
-                                        {{ isset($inProcess) ? 'disabled' : '' }}>
+                                        {{ isset($inProcess) ? 'disabled' : '' }} tabindex="2">
                                 </div>
                             </div>
                             <div class="col-md-3 mb-3">
@@ -72,7 +73,7 @@
                                     </label>
                                     <input type="date" class="form-control" id="Date_Start" name="Date_Start"
                                         value="{{ \Carbon\Carbon::parse($orderLocal->Date_Start)->format('Y-m-d') }}"
-                                        {{ isset($inProcess) ? 'disabled' : '' }}>
+                                        {{ isset($inProcess) ? 'disabled' : '' }} tabindex="3">
                                 </div>
                             </div>
                         </div>
@@ -234,10 +235,11 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-end gap-3">
-                        <a href="{{ route('orderLocals.expeditions.index') }}" class="btn btn-secondary">Quay lại</a>
+                        <a href="{{ route('orderLocals.expeditions.index') }}" class="btn btn-secondary"
+                            tabindex="5">Quay lại</a>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#deleteOrder-{{ $orderLocal->Id_OrderLocal }}"
-                            {{ isset($inProcess) ? 'disabled' : '' }}>
+                            {{ isset($inProcess) ? 'disabled' : '' }} tabindex="4">
                             Lưu
                         </button>
                         <div class="modal fade" id="deleteOrder-{{ $orderLocal->Id_OrderLocal }}"
@@ -281,6 +283,7 @@
 @endsection
 
 @push('javascript')
+    <script src="{{ asset('js/app.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             const toastLiveExample = $('#liveToast');

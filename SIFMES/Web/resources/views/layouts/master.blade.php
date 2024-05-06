@@ -47,7 +47,7 @@
                         </nav>
                     </div>
                     <div class="col-md-10">
-                        <div class="content-wrapper d-flex flex-column h-100">
+                        <div class="content-wr er d-flex flex-column h-100">
                             <article class="flex-grow-1 px-3">
                                 @yield('content')
                             </article>

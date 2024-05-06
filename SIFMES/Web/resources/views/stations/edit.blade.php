@@ -149,7 +149,6 @@
             validateInput("#Id_Station", "Vui lòng nhập mã trạm");
             validateInput("#Name_Station", "Vui lòng nhập tên trạm");
             validateInput("#Ip_Address", "Vui lòng nhập địa chỉ IP");
-            let isValid = true;
 
             $("#FK_Id_StationType").on('change', function() {
                 let id = $(this).val();
@@ -166,6 +165,7 @@
                 });
             });
             $("#saveBtn").on('click', function() {
+                let isValid = true;
                 $(".form-control").each(function(element) {
                     if ($(this).hasClass("is-invalid")) {
                         isValid = false;

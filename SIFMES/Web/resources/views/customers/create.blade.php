@@ -209,9 +209,10 @@
             validateInput("#Phone", "Vui lòng nhập số điện thoại");
             validateInput("#Address", "Vui lòng nhập địa chỉ");
             validateInput("#zipcode", "Vui lòng nhập zipcode");
-            let isValid = true;
 
             $("#saveBtn").on('click', function() {
+                let isValid = true;
+
                 $(".form-control").each(function(element) {
                     if ($(this).hasClass("is-invalid")) {
                         isValid = false;

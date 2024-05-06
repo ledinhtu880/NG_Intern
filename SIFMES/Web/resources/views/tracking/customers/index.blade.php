@@ -20,7 +20,7 @@
             <div class="w-25">
                 <div class="input-group">
                     <label for="customerSelect" class="input-group-text">Chọn khách hàng</label>
-                    <select name="customerSelect" id="customerSelect" class="form-select">
+                    <select name="customerSelect" id="customerSelect" class="form-select" tabindex="1">
                         @foreach ($customers as $customer)
                             <option value="{{ $customer->Id_Customer }}">{{ $customer->Name_Customer }}</option>
                         @endforeach
@@ -146,6 +146,18 @@
                             </div>`);
 
                         let data = response.data;
+                        let count = 0;
+                        let maxTabIndex = Math.max.apply(
+                            null,
+                            $("*")
+                            .map(function() {
+                                let tabIndex = $(this).attr("tabindex");
+                                return tabIndex ?
+                                    parseInt(tabIndex, 10) :
+                                    -Infinity; // Chuyển đổi thành số nguyên
+                            })
+                            .get()
+                        );
                         data.forEach((each) => {
                             let id = each.Id_Order;
                             let route =
@@ -174,12 +186,13 @@
                                         </td>
                                         <td>${each.SimpleOrPack == 1 ? 'Gói hàng' : 'Thùng hàng'}</td>
                                         <td class="text-center">
-                                            <a href="${route}" class="btn btn-sm btn-outline btn-detail">
+                                            <a href="${route}" class="btn btn-sm btn-outline btn-detail" tabindex="${maxTabIndex + count}">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
                                         </td>
                                     </tr>`;
 
+                            count++;
                             $("#orderInformation").append(html);
                         })
                     },

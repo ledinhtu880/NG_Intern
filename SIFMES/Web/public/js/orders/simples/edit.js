@@ -56,14 +56,16 @@ $(document).ready(function () {
 
         rowElement.find("[data-id='total']").html(formattedPrice);
     });
-    let isValid = true;
     $("#saveBtn").on("click", function () {
+        let isValid = true;
         $(".form-control").each(function () {
-            if ($(this).val() == "") {
+            if ($(this).hasClass("is-invalid")) {
+                isValid = false;
+            } else if ($(this).val() == "") {
+                isValid = false;
                 $(this).addClass("is-invalid");
-                isValid = false;
-            } else if ($(this).hasClass("is-invalid")) {
-                isValid = false;
+                $(this).next().text("Trường này là bắt buộc");
+                $(this).next().show();
             }
         });
         if (isValid) {

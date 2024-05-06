@@ -24,14 +24,14 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="input-group" style="width: 200px;">
                             <label class="input-group-text bg-secondary-subtle" for="Kho">Kho</label>
-                            <select name="kho" id="kho" class="form-select">
+                            <select name="kho" id="kho" class="form-select" tabindex="1">
                                 <option value="406">406</option>
                                 <option value="409">409</option>
                             </select>
                         </div>
                     </div>
                     <table class="table table-borderless table-hover m-0 table-expedition">
-                        <thead class="table-heading">
+                        <thead class="table-headingà">
                             <th scope="col" class="py-2 text-center">Chọn</th>
                             <th scope="col" class="py-2 text-center">Mã đơn hàng</th>
                             <th scope="col" class="py-2">Khách hàng</th>
@@ -45,7 +45,7 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-content-center justify-content-between">
-                        <button type="submit" class="btn btn-primary px-3" id="them">
+                        <button type="submit" class="btn btn-primary px-3" id="addBtn" tabindex="3">
                             <i class="fa-solid fa-plus text-white me-2"></i>Thêm
                         </button>
                         <div class="input-group" style="width: 300px;">
@@ -53,7 +53,7 @@
                                 Ngày giao hàng
                             </label>
                             <input type="date" name="Date_Delivery" id="Date_Delivery" class="form-control"
-                                value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" tabindex="2">
                         </div>
                     </div>
                 </div>
@@ -141,10 +141,10 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-content-center justify-content-between">
-                        <button class="btn btn-primary px-3" id="xoa">
+                        <button class="btn btn-primary px-3" id="deleteBtn" tabindex="4">
                             <i class="fa-solid fa-minus text-white me-2"></i>Xóa
                         </button>
-                        <div class="d-flex align-items-center justify-content-end">
+                        <div class="d-flex align-items-center justify-content-end" tabindex="5">
                             <a href="{{ route('orderLocals.expeditions.index') }}" class="btn btn-secondary">Quay lại</a>
                         </div>
                     </div>
@@ -332,7 +332,7 @@
                 });
             });
 
-            $('#them').on('click', function() {
+            $('#addBtn').on('click', function() {
                 if (count1 < 1) {
                     showToast(
                         "Bạn chưa chọn hoá đơn nào để tạo đơn giao!",
@@ -367,7 +367,7 @@
                 }
             });
 
-            $('#xoa').on('click', function() {
+            $('#deleteBtn').on('click', function() {
                 if (count2 < 1) {
                     showToast(
                         "Bạn chưa chọn hoá đơn nào để xoá!",

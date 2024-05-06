@@ -125,6 +125,7 @@
 
 @endsection
 @push('javascript')
+    <script src="{{ asset('js/app.js') }}"></script>
     <script>
         $(document).ready(function() {
             const toastLiveExample = $('#liveToast');

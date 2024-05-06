@@ -92,7 +92,7 @@
                                 <th scope="col" class="py-2 text-center">Hoạt động</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="table-data">
                             @foreach ($data as $each)
                                 <tr class="align-middle">
                                     <th class="text-center">{{ $each->Id_ContentPack }}</th>
@@ -167,7 +167,7 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex justify-content-end align-items-center">
-                        <a href="{{ route('tracking.orders.index') }}" class="btn btn-secondary">
+                        <a href="{{ route('tracking.orders.index') }}" class="btn btn-secondary" id="btnBack">
                             Quay lại
                         </a>
                     </div>
@@ -177,6 +177,7 @@
     </div>
 @endsection
 @push('javascript')
+    <script src="{{ asset('js/app.js') }}"></script>
     <script>
         $(document).ready(function() {
             $(".btn-detail").on('click', function() {
@@ -194,6 +195,26 @@
                     }
                 });
             });
+
+            let maxTabIndex = Math.max.apply(
+                null,
+                $("*")
+                .map(function() {
+                    let tabIndex = $(this).attr("tabindex");
+                    return tabIndex ?
+                        parseInt(tabIndex, 10) :
+                        -Infinity; // Chuyển đổi thành số nguyên
+                })
+                .get()
+            );
+            let count = 1;
+
+            $("#table-data .btn.btn-detail").each(function() {
+                $(this).attr("tabindex", count + maxTabIndex);
+                count++;
+            })
+
+            $("#btnBack").attr("tabindex", count + maxTabIndex);
         });
     </script>
 @endpush

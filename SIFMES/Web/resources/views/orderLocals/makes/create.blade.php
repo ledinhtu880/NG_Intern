@@ -27,7 +27,7 @@
                         <div class="input-group flex-fill">
                             <label class="input-group-text bg-secondary-subtle" for="FK_Id_CustomerType">Loại khách
                                 hàng</label>
-                            <select name="FK_Id_CustomerType" id="FK_Id_CustomerType" class="form-select">
+                            <select name="FK_Id_CustomerType" id="FK_Id_CustomerType" class="form-select" tabindex="1">
                                 @foreach ($customerType as $each)
                                     <option value="{{ $each->Id }}">{{ $each->Name }}</option>
                                 @endforeach
@@ -35,14 +35,14 @@
                         </div>
                         <div class="input-group flex-fill">
                             <label class="input-group-text bg-secondary-subtle" for="LiquidOrSolid">Kiểu nguyên liệu</label>
-                            <select name="LiquidOrSolid" id="LiquidOrSolid" class="form-select">
+                            <select name="LiquidOrSolid" id="LiquidOrSolid" class="form-select" tabindex="2">
                                 <option value="1">Chất rắn</option>
                                 <option value="2">Chất lỏng</option>
                             </select>
                         </div>
                         <div class="input-group flex-fill">
                             <label class="input-group-text bg-secondary-subtle" for="SimpleOrPack">Kiểu hàng</label>
-                            <select name="SimpleOrPack" id="SimpleOrPack" class="form-select">
+                            <select name="SimpleOrPack" id="SimpleOrPack" class="form-select" tabindex="3">
                                 <option value="0">Thùng hàng</option>
                                 <option value="1">Gói hàng</option>
                             </select>
@@ -66,7 +66,7 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-content-center justify-content-between">
-                        <button type="submit" class="btn btn-primary px-3" id="addBtn">
+                        <button type="submit" class="btn btn-primary px-3" id="addBtn" tabindex="5">
                             <i class="fa-solid fa-plus text-white me-2"></i>Thêm
                         </button>
                         <div class="input-group" style="width: 300px;">
@@ -74,7 +74,7 @@
                                 Ngày giao hàng
                             </label>
                             <input type="date" name="Date_Delivery" id="Date_Delivery" class="form-control"
-                                value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                tabindex="4" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
                         </div>
                     </div>
                 </div>

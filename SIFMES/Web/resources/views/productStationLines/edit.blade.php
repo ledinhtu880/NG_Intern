@@ -250,6 +250,7 @@
             validateInput("#Description", "Mô tả không được để trống")
 
             $("#btn_edit").on('click', function() {
+                let isValid = true;
                 $(".form-control").each(function(element) {
                     if ($(this).hasClass("is-invalid")) {
                         isValid = false;
@@ -261,39 +262,41 @@
                     }
                 })
 
-                let stationSelect = $(".station-select");
-                var name = $("#Name_ProdStationLine").val();
-                var stationLine = [$("#Station_Start").val()];
-                var orderType = $('#FK_Id_OrderType').val();
-                stationSelect.each(function() {
-                    if (!$(this).is(':hidden')) {
-                        stationLine.push($(this).val());
-                    }
-                });
-
-                if (stationLine.length == 1) {
-                    stationLine.push($("#Station_End").val());
-                }
-
-                $.ajax({
-                    method: "POST",
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr('content'),
-                        name: name,
-                        description: $("#Description").val(),
-                        stationLine: stationLine,
-                        orderType: orderType
-                    },
-                    dataType: 'json',
-                    url: '/productStationLines/update/' + @json($productStationLine->Id_ProdStationLine),
-                    success: function(data) {
-                        if (data.status == 200) {
-                            window.location.href = data.url;
-                        } else if (data.status == 400) {
-                            validateInput("#Name_ProdStationLine", data.message);
+                if (isValid) {
+                    let stationSelect = $(".station-select");
+                    var name = $("#Name_ProdStationLine").val();
+                    var stationLine = [$("#Station_Start").val()];
+                    var orderType = $('#FK_Id_OrderType').val();
+                    stationSelect.each(function() {
+                        if (!$(this).is(':hidden')) {
+                            stationLine.push($(this).val());
                         }
+                    });
+
+                    if (stationLine.length == 1) {
+                        stationLine.push($("#Station_End").val());
                     }
-                });
+
+                    $.ajax({
+                        method: "POST",
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content'),
+                            name: name,
+                            description: $("#Description").val(),
+                            stationLine: stationLine,
+                            orderType: orderType
+                        },
+                        dataType: 'json',
+                        url: '/productStationLines/update/' + @json($productStationLine->Id_ProdStationLine),
+                        success: function(data) {
+                            if (data.status == 200) {
+                                window.location.href = data.url;
+                            } else if (data.status == 400) {
+                                validateInput("#Name_ProdStationLine", data.message);
+                            }
+                        }
+                    });
+                }
             });
 
         });

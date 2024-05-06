@@ -1,7 +1,182 @@
 const toastLiveExample = $("#liveToast");
 const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
+function validateInput(element, message) {
+    $(element).on("blur", function () {
+        if ($(this).val() == "") {
+            $(this).addClass("is-invalid");
+            $(this).next().show();
+            if ($(this).attr("id") == "Note") {
+                $(this).next().text(message);
+                $(this).next().show();
+            } else {
+                $(this).closest(".input-group").next().text(message);
+                $(this).closest(".input-group").next().show();
+            }
+        } else {
+            if ($(this).attr("id") == "Note") {
+                $(this).next().hide();
+            } else {
+                $(this).closest(".input-group").next().hide();
+            }
+            $(this).closest(".input-group").next().hide();
+            $(this).removeClass("is-invalid");
+        }
+    });
+}
+
+function showToast(message, bgColorClass, iconClass) {
+    $(".toast-body").data("bg-color-class", bgColorClass);
+    $("#icon").data("icon-class", iconClass);
+
+    $(".toast-body").addClass(bgColorClass);
+    $("#icon").addClass(iconClass);
+    $("#toast-msg").html(message);
+    toastBootstrap.show();
+}
 
 $(document).ready(function () {
+    let token = $('meta[name="csrf-token"]').attr("content");
+    let count = $("input[name='count']").val();
+    let dateOrderControl = $("input[name='Date_Order']");
+    let deliveryDateControl = $("input[name='Date_Delivery']");
+    let receptionDateControl = $("input[name='Date_Reception']");
+
+    validateInput("#Note", "Mô tả không được để trống");
+    validateInput(
+        "#Count_RawMaterial",
+        "Số lượng nguyên vật liệu không được để trống"
+    );
+    validateInput(
+        "#Count_Container",
+        "Số lượng thùng chứa không được để trống"
+    );
+    validateInput("#Price_Container", "Đơn giá không được để trống");
+
+    toastLiveExample.on("hidden.bs.toast", function () {
+        var bgColorClass = $(".toast-body").data("bg-color-class");
+        var iconClass = $("#icon").data("icon-class");
+
+        $(".toast-body").removeClass(bgColorClass);
+        $("#icon").removeClass(iconClass);
+
+        $("#toast-msg").html("");
+    });
+
+    $(document).on("click", ".btnDelete", function () {
+        let id = $(this).data("id");
+        let modalElement = $("#deleteID-" + id); // Lấy modal tương ứng với hàng
+        let token = $('meta[name="csrf-token"]').attr("content");
+        let rowElement = $(this).closest('tr[data-id="' + id + '"]');
+        let isTake = rowElement.find('td[data-id="Status"]').data("value");
+
+        // Xóa hàng khi modal được ẩn
+        $.ajax({
+            url: "/orders/simples/deleteSimple",
+            method: "POST",
+            dataType: "json",
+            data: {
+                id: id,
+                isTake: isTake,
+                _token: token,
+            },
+            success: function (data) {
+                modalElement.on("hidden.bs.modal", function () {
+                    showToast(
+                        "Xóa thùng hàng thành công",
+                        "bg-success",
+                        "fa-check-circle"
+                    );
+                    rowElement.remove();
+                });
+
+                modalElement.modal("hide");
+            },
+        });
+    });
+
+    $("#saveBtn").on("click", function (ev) {
+        let isValid = true;
+        ev.preventDefault();
+        $("#formInformation")
+            .find(".form-control")
+            .each(function () {
+                if ($(this).hasClass("is-invalid")) {
+                    isValid = false;
+                } else if ($(this).val() == "") {
+                    isValid = false;
+                    $(this).addClass("is-invalid");
+                    $(this).next().text("Trường này là bắt buộc");
+                    $(this).next().show();
+                }
+            });
+
+        if (isValid) {
+            let rowElement = $("#table-data tr");
+            if (rowElement.length > 0) {
+                $.ajax({
+                    url: "/orders/simples/updateSimple",
+                    type: "post",
+                    data: {
+                        formData: $("#formInformation").serialize(),
+                        _token: token,
+                    },
+                    success: function (response) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/orders/simples/redirectSimples",
+                            data: {
+                                _token: token,
+                            }, // Thêm dữ liệu cần thiết
+                            success: function (response) {
+                                window.location.href = response.url;
+                            },
+                            error: function (error) {
+                                // Xử lý lỗi khi gửi yêu cầu
+                                console.error("Ajax request failed:", error);
+                            },
+                        });
+                    },
+                    error: function (xhr) {
+                        // Xử lý lỗi khi gửi yêu cầu Ajax
+                        console.log(xhr.responseText);
+                        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                    },
+                });
+            } else {
+                showToast(
+                    "Bạn chưa thêm thùng hàng nào",
+                    "bg-warning",
+                    "fa-exclamation-circle"
+                );
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        $("#backBtn").on("click", function () {
+            if (count > 0) {
+                $.ajax({
+                    url: "/orders/simples/destroySimplesWhenBack",
+                    method: "POST",
+                    dataType: "json",
+                    data: {
+                        _token: token,
+                    },
+                    success: function (response) {
+                        window.location.href = "/orders/simples/";
+                    },
+                    error: function (xhr) {
+                        // Xử lý lỗi khi gửi yêu cầu Ajax
+                        console.log(xhr.responseText);
+                        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                    },
+                });
+            } else {
+                window.location.href = "/orders/simples/";
+            }
+        });
+    });
+
     toastLiveExample.on("hidden.bs.toast", function () {
         // Lấy giá trị của thuộc tính data-bg-color-class và data-icon-class
         var bgColorClass = $(".toast-body").data("bg-color-class");
@@ -26,11 +201,6 @@ $(document).ready(function () {
         toastBootstrap.show();
     }
 
-    let token = $('meta[name="csrf-token"]').attr("content");
-    let count = $("input[name='count']").val();
-    let dateOrderControl = $("input[name='Date_Order']");
-    let deliveryDateControl = $("input[name='Date_Delivery']");
-    let receptionDateControl = $("input[name='Date_Reception']");
     dateOrderControl.on("change", function () {
         let selectedDate = new Date($(this).val());
         let currentDate = new Date();
@@ -49,9 +219,9 @@ $(document).ready(function () {
 
     let isProcessing = false;
     let clickCount = 0;
-    let isValid = true;
-
     $("#redirectBtn").on("click", function () {
+        let isValid = true;
+
         if (isProcessing || clickCount >= 1) {
             return;
         }
@@ -61,13 +231,13 @@ $(document).ready(function () {
         $("#formInformation")
             .find(".form-control")
             .each(function () {
-                if ($(this).val() == "") {
+                if ($(this).hasClass("is-invalid")) {
+                    isValid = false;
+                } else if ($(this).val() == "") {
+                    isValid = false;
                     $(this).addClass("is-invalid");
                     $(this).next().text("Trường này là bắt buộc");
                     $(this).next().show();
-                    isValid = false;
-                } else if ($(this).hasClass("is-invalid")) {
-                    isValid = false;
                 }
             });
 
@@ -93,28 +263,28 @@ $(document).ready(function () {
                 },
                 complete: function () {
                     isProcessing = false;
+                    clickCount = 0;
                 },
             });
+        } else {
+            isProcessing = false;
+            clickCount = 0; // Đặt lại clickCount nếu có lỗi trong dữ liệu đầu vào
         }
     });
     $("#formProduct").on("submit", function (event) {
+        let isValid = true;
         event.preventDefault();
 
-        $("#formProduct")
-            .find(".form-control")
-            .each(function () {
-                if ($(this).val() == "") {
-                    $(this).addClass("is-invalid");
-                    $(this)
-                        .closest(".input-group")
-                        .next()
-                        .text("Trường này là bắt buộc");
-                    $(this).closest(".input-group").next().show();
-                    isValid = false;
-                } else if ($(this).hasClass("is-invalid")) {
-                    isValid = false;
-                }
-            });
+        $("#formInformation .form-control").each(function () {
+            if ($(this).hasClass("is-invalid")) {
+                isValid = false;
+            } else if ($(this).val() == "") {
+                $(this).addClass("is-invalid");
+                $(this).next().text("Trường này là bắt buộc");
+                $(this).next().show();
+                isValid = false;
+            }
+        });
 
         if (isValid) {
             let form = $(this);

@@ -126,15 +126,14 @@ class UserController extends Controller
       $search = $request->input('searchValue');
       if ($search != "") {
         $data = DB::table('User')
-        ->where('Name', 'like', '%' . $search . '%')
-        ->orWhere('UserName', 'like', '%' . $search . '%')
-        ->select('Id_User', 'Name', 'UserName')
-        ->get();
-      }
-      else {
+          ->where('Name', 'like', '%' . $search . '%')
+          ->orWhere('UserName', 'like', '%' . $search . '%')
+          ->select('Id_User', 'Name', 'UserName')
+          ->get();
+      } else {
         $data = DB::table('User')
-        ->select('Id_User', 'Name', 'UserName')
-        ->get();
+          ->select('Id_User', 'Name', 'UserName')
+          ->get();
       }
       return response()->json($data);
     }

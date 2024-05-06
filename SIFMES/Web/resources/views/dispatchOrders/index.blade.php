@@ -23,7 +23,7 @@
                         <div class="col-md-3">
                             <div class="input-group m-0">
                                 <label class="input-group-text" for="trangthai">Hiển thị</label>
-                                <select class="form-select" id="trangthai">
+                                <select class="form-select" id="trangthai" tabindex="1">
                                     <option value="0">Sản xuất</option>
                                     <option value="1">Đóng gói</option>
                                     <option value="2">Giao hàng</option>
@@ -33,7 +33,7 @@
                         <div class="col-md-3">
                             <div class="input-group m-0 d-none" id="rawSelectBox">
                                 <label class="input-group-text" for="raw_type">Nguyên liệu</label>
-                                <select class="form-select max-w-xl" id="raw_type">
+                                <select class="form-select max-w-xl" id="raw_type" tabindex="2">
                                     @foreach ($raw_type as $item)
                                         <option value="{{ $item->Id_RawMaterialType }}">{{ $item->Name_RawMaterialType }}
                                         </option>
@@ -91,10 +91,9 @@
                             </div>
                         </div>
                         <div class="col-md-6 d-flex justify-content-end align-items-start gap-3">
-                            <a href="{{ route('index') }}" class="btn btn-secondary">Quay lại</a>
+                            <a href="{{ route('index') }}" class="btn btn-secondary" tabindex="4">Quay lại</a>
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalstart"
-                                id="khoidong">Khởi
-                                động</button>
+                                id="khoidong" tabindex="3">Khởi động</button>
                             <div class="modal fade" id="modalstart" tabindex="-1" aria-labelledby="exampleModalLabel"
                                 aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
@@ -139,6 +138,7 @@
 @endsection
 
 @push('javascript')
+    <script src="{{ asset('js/app.js') }}"></script>
     <script>
         $(document).ready(function() {
             const toastLiveExample = $("#liveToast");

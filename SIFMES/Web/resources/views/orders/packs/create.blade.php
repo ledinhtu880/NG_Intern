@@ -95,8 +95,9 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="Note" class="form-label">Ghi chú</label>
-                                    <textarea class="form-control" aria-label="Notes" name="Note" {{ isset($information) ? 'readonly' : '' }}
-                                        rows="5" tabindex="5">{{ isset($information) ? $information->Note : '' }}</textarea>
+                                    <textarea class="form-control" aria-label="Notes" name="Note" id="Note"
+                                        {{ isset($information) ? 'readonly' : '' }} rows="5" tabindex="5">{{ isset($information) ? $information->Note : '' }}</textarea>
+                                    <span class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
@@ -203,7 +204,31 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/orders/packs/create.js') }}"></script>
     <script>
+        function validateInput(element, message) {
+            $(element).on("blur", function() {
+                if ($(this).val() == "") {
+                    $(this).addClass("is-invalid");
+                    $(this).next().show();
+                    if ($(this).attr("id") == "Note") {
+                        $(this).next().text(message);
+                        $(this).next().show();
+                    } else {
+                        $(this).closest(".input-group").next().text(message);
+                        $(this).closest(".input-group").next().show();
+                    }
+                } else {
+                    if ($(this).attr("id") == "Note") {
+                        $(this).next().hide();
+                    } else {
+                        $(this).closest(".input-group").next().hide();
+                    }
+                    $(this).removeClass("is-invalid");
+                }
+            });
+        }
+
         $(document).ready(function() {
+            validateInput("#Note", "Mô tả không được để trống");
             let token = $('meta[name="csrf-token"]').attr("content");
             const toastLiveExample = $("#liveToast");
             const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));

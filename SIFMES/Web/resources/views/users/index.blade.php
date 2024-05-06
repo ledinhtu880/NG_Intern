@@ -21,7 +21,7 @@
                 <div class="card-header px-3 py-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
-                            <a href="{{ route('users.create') }}" class="btn btn-main">
+                            <a href="{{ route('users.create') }}" class="btn btn-main btnAdd" tabindex="1">
                                 <i class="fa-solid fa-plus text-white me-1 fs-6"></i>
                                 <span>Thêm người dùng</span>
                             </a>
@@ -29,7 +29,7 @@
                         <div class="d-flex justify-content-end align-items-center gap-3">
                             <div>
                                 <button type="button" class="btn btn-outline" data-bs-toggle="modal"
-                                    data-bs-target="#deleteUser">
+                                    data-bs-target="#deleteUser" tabindex="2">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                                 <div class="modal fade" id="deleteUser" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -59,7 +59,7 @@
                             </div>
                             <div>
                                 <input type="text" id="keySearch" name="search" class="form-control"
-                                    placeholder="Tìm kiếm người dùng">
+                                    placeholder="Tìm kiếm người dùng" tabindex="3">
                             </div>
                         </div>
                     </div>
@@ -185,7 +185,7 @@
         </div>
     </div>
     @if (session('message') && session('type'))
-        <div class=" toast-container rounded position-fixed bottom-0 end-0 p-3">
+        <div class="toast-container rounded position-fixed bottom-0 end-0 p-3">
             <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-body bg-{{ session('type') }} d-flex align-items-center justify-content-between">
                     <div class=" d-flex justify-content-center align-items-center gap-2">
@@ -196,7 +196,7 @@
                         @elseif(session('type') == 'info' || session('type') == 'secondary')
                             <i class="fas fa-info-circle text-light fs-5"></i>
                         @endif
-                        <h6 class="h6 text-white m-0">{{ session('message') }}</h6>
+                        <h6 class="h6 text-white m-0 ">{{ session('message') }}</h6>
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"
                         aria-label="Close"></button>
@@ -220,6 +220,7 @@
 @endsection
 
 @push('javascript')
+    <script src="{{ asset('js/app.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             const toastLiveExample = $('#liveToast');
@@ -245,9 +246,11 @@
                         } else {
                             modalElement.find('#table-roles').html('');
                             response.forEach((role) => {
-                                modalElement.find('#table-roles').append(`<tr class="align-middle">
-                                                                            <td class="text-start">${role.Name_Role}</td>
-                                                                          </tr>`);
+                                modalElement.find('#table-roles').append(
+                                    `<tr class="align-middle">
+                                        <td class="text-start">${role.Name_Role}</td>
+                                    </tr>`
+                                );
                             });
                         }
                     },
@@ -259,23 +262,23 @@
                 const toastBs = new bootstrap.Toast(toastElement.get(0));
 
                 toastLiveExample.on('hidden.bs.toast', function() {
-                    var bgColorClass = $(".toast-body").data("bg-color-class");
-                    var iconClass = $("#icon").data("icon-class");
+                    var bgColorClass = $("#toastMessage .toast-body").data("bg-color-class");
+                    var iconClass = $("#toastMessage #icon").data("icon-class");
 
-                    $(".toast-body").removeClass(bgColorClass);
-                    $("#icon").removeClass(iconClass);
+                    $("#toastMessage .toast-body").removeClass(bgColorClass);
+                    $("#toastMessage #icon").removeClass(iconClass);
 
-                    $("#toast-msg").html('');
+                    $("#toastMessage #toast-msg").html('');
                 });
 
                 function showToast(message, bgColorClass, iconClass) {
-                    $(".toast-body").data("bg-color-class", bgColorClass);
-                    $("#icon").data("icon-class", iconClass);
+                    $("#toastMessage .toast-body").data("bg-color-class", bgColorClass);
+                    $("#toastMessage #icon").data("icon-class", iconClass);
 
-                    $(".toast-body").addClass(bgColorClass);
-                    $("#icon").addClass(iconClass);
-                    $("#toast-msg").html(message);
-                    toastBootstrap.show();
+                    $("#toastMessage .toast-body").addClass(bgColorClass);
+                    $("#toastMessage #icon").addClass(iconClass);
+                    $("#toastMessage #toast-msg").html(message);
+                    toastBs.show();
                 }
 
                 let modalElement = $("#deleteUser");
@@ -334,8 +337,6 @@
                 }
             })
 
-            // $("#formSearch").on('submit', function(ev) {
-            //     ev.preventDefault();
             $("#keySearch").on('keyup', function() {
                 let searchValue = $(this).val();
                 $.ajax({
@@ -438,6 +439,17 @@
                     },
                 });
             })
+
+            let count = 0;
+            let maxTabIndex = Math.max.apply(
+                null,
+                $("*")
+                .map(function() {
+                    let tabIndex = $(this).attr("tabindex");
+                    return tabIndex ? parseInt(tabIndex, 10) : -Infinity;
+                })
+                .get()
+            );
         })
     </script>
 @endpush

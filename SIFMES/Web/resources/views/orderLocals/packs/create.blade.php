@@ -26,7 +26,7 @@
                             <label class="input-group-text bg-secondary-subtle" for="FK_Id_CustomerType">
                                 Loại khách hàng
                             </label>
-                            <select name="FK_Id_CustomerType" id="FK_Id_CustomerType" class="form-select">
+                            <select name="FK_Id_CustomerType" id="FK_Id_CustomerType" class="form-select" tabindex="1">
                                 @foreach ($customerType as $each)
                                     <option value="{{ $each->Id }}">{{ $each->Name }}</option>
                                 @endforeach
@@ -52,7 +52,7 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-content-center justify-content-between">
-                        <button type="submit" class="btn btn-primary px-3" id="addBtn">
+                        <button type="submit" class="btn btn-primary px-3" id="addBtn" tabindex="3">
                             <i class="fa-solid fa-plus text-white me-2"></i>Thêm
                         </button>
                         <div class="input-group" style="width: 300px;">
@@ -60,7 +60,7 @@
                                 Ngày giao hàng
                             </label>
                             <input type="date" name="Date_Delivery" id="Date_Delivery" class="form-control"
-                                value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" tabindex="2">
                         </div>
                     </div>
                 </div>
@@ -89,10 +89,11 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-between">
-                        <button type="submit" class="btn btn-primary px-3" id="deleteBtn">
+                        <button type="submit" class="btn btn-primary px-3" id="deleteBtn" tabindex="4">
                             <i class="fa-solid fa-minus text-white me-2"></i>Xóa
                         </button>
-                        <a href="{{ route('orderLocals.packs.index') }}" class="btn btn-secondary">Quay lại</a>
+                        <a href="{{ route('orderLocals.packs.index') }}" class="btn btn-secondary" tabindex="5">Quay
+                            lại</a>
                     </div>
                 </div>
             </div>

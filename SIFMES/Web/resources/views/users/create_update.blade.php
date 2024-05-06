@@ -40,13 +40,13 @@
                                 </label>
                                 <input type="text" class="form-control{{ $errors->has('Name') ? ' is-invalid' : '' }}"
                                     id="Name" name="Name" placeholder="Nhập tên người dùng"
-                                    value="{{ $user->Name ?? old('Name') }}">
+                                    value="{{ $user->Name ?? old('Name') }}" tabindex="1">
                             </div>
-                            @if ($errors->has('Name'))
-                                <div class="text-danger">
+                            <span class="text-danger">
+                                @if ($errors->has('Name'))
                                     {{ $errors->first('Name') }}
-                                </div>
-                            @endif
+                                @endif
+                            </span>
                         </div>
                         <div class="mb-3">
                             <div class="form-group">
@@ -54,15 +54,15 @@
                                     Tên đăng nhập
                                 </label>
                                 <input type="text"
-                                    class="form-control{{ $errors->has('UserName') ? ' is-invalid' : '' }}" id="username"
+                                    class="form-control{{ $errors->has('UserName') ? ' is-invalid' : '' }}" id="UserName"
                                     name="UserName" placeholder="Nhập tài khoản"
-                                    value="{{ $user->UserName ?? old('UserName') }}">
+                                    value="{{ $user->UserName ?? old('UserName') }}" tabindex="2">
                             </div>
-                            @if ($errors->has('UserName'))
-                                <div class="text-danger">
+                            <span class="text-danger">
+                                @if ($errors->has('UserName'))
                                     {{ $errors->first('UserName') }}
-                                </div>
-                            @endif
+                                @endif
+                            </span>
                         </div>
                         @if (!isset($user))
                             <div class="mb-3">
@@ -70,17 +70,17 @@
                                     <label for="password" class="form-label">Mật khẩu</label>
                                     <input type="password"
                                         class="form-control{{ $errors->has('Password') ? ' is-invalid' : '' }}"
-                                        id="password" name="Password" placeholder="Nhập mật khẩu">
+                                        id="Password" name="Password" placeholder="Nhập mật khẩu" tabindex="3">
                                 </div>
-                                @if ($errors->has('Password'))
-                                    <div class="text-danger">
+                                <span class="text-danger">
+                                    @if ($errors->has('Password'))
                                         {{ $errors->first('Password') }}
-                                    </div>
-                                @endif
+                                    @endif
+                                </span>
                             </div>
                         @endif
                         <div class="d-flex justify-content-end gap-3">
-                            <button class="btn btn-primary" type="submit">Lưu</button>
+                            <button class="btn btn-primary" type="submit" tabindex="4">Lưu</button>
                         </div>
                     </form>
                 </div>
@@ -88,3 +88,61 @@
         </div>
     </div>
 @endsection
+
+@push('javascript')
+    <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+        function validateInput(element, message = null) {
+            $(element).on('blur', function() {
+                if ($(this).val() == "") {
+                    $(this).parent().next().show();
+                    $(this).addClass("is-invalid");
+                    $(this).parent().next().text(message);
+                } else {
+                    if ($(this).attr("id") == "Name") {
+                        if (!/^[a-zA-ZÀ-ỹ\s]+$/.test($(this).val())) {
+                            $(this).addClass("is-invalid");
+                            $(this).parent().next().text("Tên đầy đủ không hợp lệ, vui lòng nhập đúng định dạng");
+                            $(this).parent().next().show();
+                        } else {
+                            $(this).parent().next().hide();
+                            $(this).removeClass("is-invalid");
+                        }
+                    } else if ($(this).attr("id") == "UserName") {
+                        if (!/^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/.test($(this).val())) {
+                            $(this).addClass("is-invalid");
+                            $(this).parent().next().text(
+                                "Tên người dùng không hợp lệ. Tên người dùng phải chứa ít nhất 8 ký tự và không có kí tự đặc biệt."
+                            );
+                            $(this).parent().next().show();
+                        } else {
+                            $(this).parent().next().hide();
+                            $(this).removeClass("is-invalid");
+                        }
+                    } else if ($(this).attr("id") == "Password") {
+                        if (!/(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/
+                            .test($(this).val())) {
+                            $(this).addClass("is-invalid");
+                            $(this).parent().next().text(
+                                "Mật khẩu không hợp lệ. Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm ít nhất một chữ cái viết hoa, một chữ cái viết thường, một số, và một ký tự đặc biệt"
+                            );
+                            $(this).parent().next().show();
+                        } else {
+                            $(this).parent().next().hide();
+                            $(this).removeClass("is-invalid");
+                        }
+                    } else {
+                        $(this).parent().next().hide();
+                        $(this).removeClass("is-invalid");
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            validateInput("#Name", "Vui lòng nhập tên người dùng");
+            validateInput("#UserName", "Vui lòng nhập tên đăng nhập");
+            validateInput("#Password", "Vui lòng nhập mật khẩu");
+        })
+    </script>
+@endpush

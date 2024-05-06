@@ -221,7 +221,7 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex justify-content-end align-items-center">
-                        <a href="{{ route('tracking.orderlocals.index') }}" class="btn btn-secondary">
+                        <a href="{{ route('tracking.orderlocals.index') }}" class="btn btn-secondary" tabindex="1">
                             Quay lại
                         </a>
                     </div>
@@ -231,6 +231,7 @@
     </div>
 @endsection
 @push('javascript')
+    <script src="{{ asset('js/app.js') }}"></script>
     <script>
         $(document).ready(function() {
             $(".btn-detail").on('click', function() {

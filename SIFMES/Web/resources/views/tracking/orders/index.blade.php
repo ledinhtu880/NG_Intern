@@ -25,7 +25,7 @@
                                 <label class="input-group-text bg-body-tertiary" for="After_DateOrder">Ngày đặt hàng (Từ
                                     ngày)</label>
                                 <input type="date" class="form-control" name="After_DateOrder" id="After_DateOrder"
-                                    value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                    value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" tabindex="1">
                             </div>
                             <span class="form-message text-danger"></span>
                         </div>
@@ -35,13 +35,13 @@
                                     (Đến
                                     ngày)</label>
                                 <input type="date" class="form-control" name="Before_DateOrder" id="Before_DateOrder"
-                                    value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                    value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" tabindex="2">
                                 </select>
                             </div>
                             <span class="form-message text-danger"></span>
                         </div>
                         <div class="col-md-2">
-                            <button type="submit" class="btn btn-outline" id="searchBtn">
+                            <button type="submit" class="btn btn-outline" id="searchBtn" tabindex="3">
                                 <i class="fa-solid fa-search me-2"></i>Tìm kiếm
                             </button>
                         </div>
@@ -172,8 +172,21 @@
                     },
                     success: function(response) {
                         let table = $("#table-data");
+                        let count = 0;
+                        let maxTabIndex = Math.max.apply(
+                            null,
+                            $("*")
+                            .map(function() {
+                                let tabIndex = $(this).attr("tabindex");
+                                return tabIndex ?
+                                    parseInt(tabIndex, 10) :
+                                    -Infinity; // Chuyển đổi thành số nguyên
+                            })
+                            .get()
+                        );
                         table.html("");
                         $.each(response.data, function(key, value) {
+                            count++;
                             let id = value.Id_Order;
                             let route =
                                 value.SimpleOrPack == 1 ?
@@ -202,7 +215,7 @@
                                         </td>
                                         <td>${value.SimpleOrPack == 1 ? 'Gói hàng' : 'Thùng hàng'}</td>
                                         <td class="text-center">
-                                            <a href="${route}" class="btn btn-sm btn-outline btn-detail">
+                                            <a href="${route}" class="btn btn-sm btn-outline btn-detail" tabindex="${count + maxTabIndex}">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
                                         </td>
@@ -216,6 +229,24 @@
                     },
                 });
             });
+
+            let maxTabIndex = Math.max.apply(
+                null,
+                $("*")
+                .map(function() {
+                    let tabIndex = $(this).attr("tabindex");
+                    return tabIndex ?
+                        parseInt(tabIndex, 10) :
+                        -Infinity; // Chuyển đổi thành số nguyên
+                })
+                .get()
+            );
+            let count = 1;
+
+            $("#table-data .btn.btn-detail").each(function() {
+                $(this).attr("tabindex", count + maxTabIndex);
+                count++;
+            })
         });
     </script>
 @endpush

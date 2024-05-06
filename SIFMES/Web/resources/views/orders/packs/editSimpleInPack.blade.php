@@ -217,30 +217,40 @@
 
             // Sự kiện lưu gói hàng
             $("#saveBtn").on('click', function() {
-                let idContentPack = @json($Id_ContentPack);
-                let idContentSimples = getValueIntoArr($(".Id_ContentSimple"));
-                let fkIdRawMaterials = getValueIntoArr($(".Id_RawMaterial"))
-                let countRawMaterials = getValueIntoArr($(".Count_RawMaterial"));
-                let fkIdContainerTypes = getValueIntoArr($(".Id_ContainerType"));
-                let countContainers = getValueIntoArr($(".Count_Container"));
-                let priceContainers = getValueIntoArr($(".Price_Container"));
-                $.ajax({
-                    url: '/orders/packs/updateSimpleInPack',
-                    type: 'POST',
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr('content'),
-                        idContentPack: idContentPack,
-                        idContentSimples: idContentSimples,
-                        fkIdRawMaterials: fkIdRawMaterials,
-                        countRawMaterials: countRawMaterials,
-                        fkIdContainerTypes: fkIdContainerTypes,
-                        countContainers: countContainers,
-                        priceContainers: priceContainers
-                    },
-                    success: function(response) {
-                        window.location.href = response.url
+                let isValid = true;
+                $(".table .form-control").each(function() {
+                    if ($(this).val() == "") {
+                        $(this).addClass("is-invalid");
+                        isValid = false;
                     }
-                });
+                })
+
+                if (isValid) {
+                    let idContentPack = @json($Id_ContentPack);
+                    let idContentSimples = getValueIntoArr($(".Id_ContentSimple"));
+                    let fkIdRawMaterials = getValueIntoArr($(".Id_RawMaterial"))
+                    let countRawMaterials = getValueIntoArr($(".Count_RawMaterial"));
+                    let fkIdContainerTypes = getValueIntoArr($(".Id_ContainerType"));
+                    let countContainers = getValueIntoArr($(".Count_Container"));
+                    let priceContainers = getValueIntoArr($(".Price_Container"));
+                    $.ajax({
+                        url: '/orders/packs/updateSimpleInPack',
+                        type: 'POST',
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content'),
+                            idContentPack: idContentPack,
+                            idContentSimples: idContentSimples,
+                            fkIdRawMaterials: fkIdRawMaterials,
+                            countRawMaterials: countRawMaterials,
+                            fkIdContainerTypes: fkIdContainerTypes,
+                            countContainers: countContainers,
+                            priceContainers: priceContainers
+                        },
+                        success: function(response) {
+                            window.location.href = response.url
+                        }
+                    });
+                }
             });
         });
 

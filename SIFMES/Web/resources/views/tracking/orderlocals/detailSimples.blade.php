@@ -233,7 +233,7 @@
     @endif
 @endsection
 
-{{-- @push('javascript')
+@push('javascript')
     <script src="{{ asset('js/app.js') }}"></script>
     <script>
         $(document).ready(function() {
@@ -243,7 +243,7 @@
             rowElement.hover(
                 function() {
                     let id = $(this).data("id");
-                    let src = "{{ asset('') }}" + '/' + id;
+                    let src = `{{ asset('${id}') }}`;
                     imgElement.removeClass("d-none");
                     imgElement.attr("src", src);
                 },
@@ -254,4 +254,4 @@
             );
         });
     </script>
-@endpush --}}
+@endpush

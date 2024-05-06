@@ -187,6 +187,7 @@
             validateInput("#Description", "Mô tả không được để trống")
 
             btnAdd.on('click', function() {
+                let isValid = true;
                 $(".form-control").each(function(element) {
                     if ($(this).hasClass("is-invalid")) {
                         isValid = false;
