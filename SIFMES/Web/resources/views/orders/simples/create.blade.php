@@ -34,7 +34,7 @@
                                         <div class="form-group">
                                             <label for="FK_Id_Customer" class="form-label">Khách hàng</label>
                                             <select class="form-select selectValidate" id="FK_Id_Customer"
-                                                name="FK_Id_Customer">
+                                                name="FK_Id_Customer" tabindex="1">
                                                 @foreach ($customers as $each)
                                                     @if (isset($information))
                                                         @if ($information->FK_Id_Customer == $each->Id_Customer)
@@ -51,7 +51,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <span class="form-message text-danger"></span>
+                                        <span class="text-danger"></span>
                                     </div>
                                     <div class="col-md-12 mt-3">
                                         <div class="form-group">
@@ -60,9 +60,10 @@
                                                 {{ isset($information) ? 'readonly' : '' }}
                                                 value="{{ isset($information)
                                                     ? \Carbon\Carbon::parse($information->Date_Order)->format('Y-m-d')
-                                                    : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                                    : \Carbon\Carbon::now()->format('Y-m-d') }}"
+                                                tabindex="3">
                                         </div>
-                                        <span class="form-message text-danger"></span>
+                                        <span class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
@@ -75,9 +76,10 @@
                                                 name="Date_Delivery" {{ isset($information) ? 'readonly' : '' }}
                                                 value="{{ isset($information)
                                                     ? \Carbon\Carbon::parse($information->Date_Delivery)->format('Y-m-d')
-                                                    : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                                    : \Carbon\Carbon::now()->format('Y-m-d') }}"
+                                                tabindex="2">
                                         </div>
-                                        <span class="form-message text-danger"></span>
+                                        <span class="text-danger"></span>
                                     </div>
                                     <div class="col-md-12 mt-3">
                                         <div class="form-group">
@@ -86,17 +88,19 @@
                                                 name="Date_Reception" {{ isset($information) ? 'readonly' : '' }}
                                                 value="{{ isset($information)
                                                     ? \Carbon\Carbon::parse($information->Date_Reception)->format('Y-m-d')
-                                                    : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                                    : \Carbon\Carbon::now()->format('Y-m-d') }}"
+                                                tabindex="4">
                                         </div>
-                                        <span class="form-message text-danger"></span>
+                                        <span class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="Note" class="form-label">Ghi chú</label>
-                                    <textarea class="form-control" aria-label="Notes" name="Note" {{ isset($information) ? 'readonly' : '' }}
-                                        rows="5">{{ isset($information) ? $information->Note : '' }}</textarea>
+                                    <textarea class="form-control" aria-label="Notes" name="Note" id="Note"
+                                        {{ isset($information) ? 'readonly' : '' }} rows="5" tabindex="5">{{ isset($information) ? $information->Note : '' }}</textarea>
+                                    <span class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
@@ -124,7 +128,8 @@
                                         style="width: 140px;">
                                         Nguyên vật liệu
                                     </label>
-                                    <select name="FK_Id_RawMaterial" id="FK_Id_RawMaterial" class="form-select">
+                                    <select name="FK_Id_RawMaterial" id="FK_Id_RawMaterial" class="form-select"
+                                        tabindex="6">
                                         @foreach ($materials as $each)
                                             <option value="{{ $each->Id_RawMaterial }}"
                                                 data-name="{{ $each->Name_RawMaterial }}">{{ $each->Name_RawMaterial }}
@@ -133,24 +138,27 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="input-group mb-3 align-items-center ">
+                            <div class="col-md-6 mb-3">
+                                <div class="input-group align-items-center">
                                     <label class="input-group-text bg-secondary-subtle" for="Count_RawMaterial">
                                         Số lượng nguyên vật liệu
                                     </label>
                                     <input type="number" name="Count_RawMaterial" id="Count_RawMaterial"
-                                        class="form-control" min="1" value='1'>
+                                        class="form-control"
+                                        style="border-top-right-radius: 0.375rem; border-bottom-right-radius: 0.375rem;"
+                                        min="1" value='1' tabindex="7">
                                     <p data-name="unit" class="m-0 ps-3"></p>
                                 </div>
+                                <span class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
-                                <div class="input-group mb-3">
+                                <div class="input-group">
                                     <label class="input-group-text bg-secondary-subtle" for="FK_Id_ContainerType"
                                         style="width: 140px;">
                                         Thùng chứa
                                     </label>
                                     <select class="form-select selectValidate" name="FK_Id_ContainerType"
-                                        id="FK_Id_ContainerType">
+                                        id="FK_Id_ContainerType" tabindex="8">
                                         @foreach ($containers as $each)
                                             <option value="{{ $each->Id_ContainerType }}"
                                                 data-name="{{ $each->Name_ContainerType }}">
@@ -160,27 +168,32 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="input-group mb-3">
+                            <div class="col-md-4 mb-3">
+                                <div class="input-group">
                                     <label class="input-group-text bg-secondary-subtle" for="Count_Container">
                                         Số lượng thùng chứa
                                     </label>
                                     <input type="number" name="Count_Container" id="Count_Container"
-                                        class="form-control" min="1" value='1'>
+                                        style="border-top-right-radius: 0.375rem; border-bottom-right-radius: 0.375rem;"
+                                        class="form-control" min="1" value='1' tabindex="9">
                                 </div>
+                                <span class="text-danger"></span>
                             </div>
-                            <div class="col-md-4">
-                                <div class="input-group mb-3">
+                            <div class="col-md-4 mb-3">
+                                <div class="input-group">
                                     <label class="input-group-text bg-secondary-subtle" for="Price_Container">
                                         Đơn giá
                                     </label>
                                     <input type="number" name="Price_Container" id="Price_Container"
-                                        class="form-control" step="0.01" min="1" value='1'>
+                                        style="border-top-right-radius: 0.375rem; border-bottom-right-radius: 0.375rem;"
+                                        class="form-control" step="0.01" min="1" value='1'
+                                        tabindex="10">
                                 </div>
+                                <span class="text-danger"></span>
                             </div>
                         </div>
                         <div class="py-2">
-                            <button type="submit" class="btn btn-primary px-5">
+                            <button type="submit" class="btn btn-primary px-5" tabindex="11">
                                 <i class="fa-solid fa-plus text-white"></i>
                                 Thêm sản phẩm
                             </button>
@@ -268,8 +281,9 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-end gap-3">
-                        <button class="btn btn-secondary" id="backBtn">Quay lại</button>
-                        <a href="{{ route('orders.simples.index') }}" class="btn btn-primary" id="saveBtn">Lưu</a>
+                        <button class="btn btn-secondary" id="backBtn" tabindex="13">Quay lại</button>
+                        <a href="{{ route('orders.simples.index') }}" class="btn btn-primary" id="saveBtn"
+                            tabindex="12">Lưu</a>
                     </div>
                 </div>
             </div>
@@ -295,9 +309,37 @@
     <script src="{{ asset('js/orders/simples/create.js') }}"></script>
     <script src="{{ asset('js/eventHandler.js') }}"></script>
     <script>
+        function validateInput(element, message) {
+            $(element).on('blur', function() {
+                if ($(this).val() == "") {
+                    $(this).addClass("is-invalid");
+                    $(this).next().show();
+                    if ($(this).attr("id") == "Note") {
+                        $(this).next().text(message);
+                        $(this).next().show();
+                    } else {
+                        $(this).closest(".input-group").next().text(message);
+                        $(this).closest(".input-group").next().show();
+                    }
+                } else {
+                    if ($(this).attr("id") == "Note") {
+                        $(this).next().hide();
+                    } else {
+                        $(this).closest(".input-group").next().hide();
+                    }
+                    $(this).closest(".input-group").next().hide();
+                    $(this).removeClass("is-invalid");
+                }
+            });
+        }
+
         $(document).ready(function() {
-            let count = $("input[name='count']").val();
+            validateInput("#Note", "Mô tả không được để trống")
+            validateInput("#Count_RawMaterial", "Số lượng nguyên vật liệu không được để trống")
+            validateInput("#Count_Container", "Số lượng thùng chứa không được để trống")
+            validateInput("#Price_Container", "Đơn giá không được để trống")
             let token = $('meta[name="csrf-token"]').attr("content");
+            let count = $("input[name='count']").val();
             const toastLiveExample = $('#liveToast');
             const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
 
@@ -348,51 +390,68 @@
                             rowElement.remove();
                         });
 
-                        // Đóng modal
                         modalElement.modal("hide");
                     },
                 });
             });
 
+            let isValid = true;
+
             $("#saveBtn").on('click', function(ev) {
                 ev.preventDefault();
-                let rowElement = $("#table-data tr");
-                if (rowElement.length > 0) {
-                    $.ajax({
-                        url: "/orders/simples/updateSimple",
-                        type: "post",
-                        data: {
-                            formData: $("#formInformation").serialize(),
-                            _token: token,
-                        },
-                        success: function(response) {
-                            $.ajax({
-                                type: 'POST',
-                                url: '/orders/simples/redirectSimples',
-                                data: {
-                                    _token: token
-                                }, // Thêm dữ liệu cần thiết
-                                success: function(response) {
-                                    window.location.href = response.url;
-                                },
-                                error: function(error) {
-                                    // Xử lý lỗi khi gửi yêu cầu
-                                    console.error('Ajax request failed:', error);
-                                }
-                            });
-                        },
-                        error: function(xhr) {
-                            // Xử lý lỗi khi gửi yêu cầu Ajax
-                            console.log(xhr.responseText);
-                            alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
-                        },
+                $("#formInformation")
+                    .find(".form-control")
+                    .each(function() {
+                        if ($(this).val() == "") {
+                            $(this).addClass("is-invalid");
+                            $(this).next().text("Trường này là bắt buộc");
+                            $(this).next().show();
+                            isValid = false;
+                        } else if ($(this).hasClass("is-invalid")) {
+                            isValid = false;
+                        }
                     });
-                } else {
-                    showToast(
-                        "Bạn chưa thêm thùng hàng nào",
-                        "bg-warning",
-                        "fa-exclamation-circle"
-                    );
+
+                if (isValid) {
+                    let rowElement = $("#table-data tr");
+                    if (rowElement.length > 0) {
+                        $.ajax({
+                            url: "/orders/simples/updateSimple",
+                            type: "post",
+                            data: {
+                                formData: $("#formInformation").serialize(),
+                                _token: token,
+                            },
+                            success: function(response) {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '/orders/simples/redirectSimples',
+                                    data: {
+                                        _token: token
+                                    }, // Thêm dữ liệu cần thiết
+                                    success: function(response) {
+                                        window.location.href = response.url;
+                                    },
+                                    error: function(error) {
+                                        // Xử lý lỗi khi gửi yêu cầu
+                                        console.error('Ajax request failed:',
+                                            error);
+                                    }
+                                });
+                            },
+                            error: function(xhr) {
+                                // Xử lý lỗi khi gửi yêu cầu Ajax
+                                console.log(xhr.responseText);
+                                alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                            },
+                        });
+                    } else {
+                        showToast(
+                            "Bạn chưa thêm thùng hàng nào",
+                            "bg-warning",
+                            "fa-exclamation-circle"
+                        );
+                    }
                 }
             })
 

@@ -34,13 +34,12 @@
                                 chuyền</label>
                             <input type="text" name="Name_ProdStationLine" id="Name_ProdStationLine"
                                 placeholder="Nhập tên dây chuyền" class="form-control"
-                                value="{{ old('Name_ProdStationLine') }}">
-                            <span class="text-danger" id="err_nameProdStationLine">
-                            </span>
+                                value="{{ old('Name_ProdStationLine') }}" tabindex="1">
+                            <span class="text-danger"></span>
                         </div>
                         <div class="form-group mb-3">
                             <label for="Description" class="form-label">Mô tả</label>
-                            <textarea name="Description" id="Description" placeholder="Nhập mô tả" class="form-control">{{ old('Description') }}</textarea>
+                            <textarea name="Description" id="Description" placeholder="Nhập mô tả" class="form-control" tabindex="2">{{ old('Description') }}</textarea>
                             <span class="text-danger">
                                 {{ $errors->first('Description') }}
                             </span>
@@ -48,7 +47,7 @@
                         <div class="form-group mb-3">
                             <label for="FK_Id_OrderType" class="form-label">Chọn kiểu đơn
                                 hàng</label>
-                            <select name="FK_Id_OrderType" id="FK_Id_OrderType" class="form-control ">
+                            <select name="FK_Id_OrderType" id="FK_Id_OrderType" class="form-select" tabindex="3">
                                 @foreach ($orderTypes as $orderType)
                                     <option value="{{ $orderType->Id_OrderType }}">
                                         {{ $orderType->Name_OrderType }}
@@ -60,7 +59,7 @@
                             <div class="form-group col-md-6">
                                 <label for="Station_Start" class="form-label">Chọn trạm bắt
                                     đầu</label>
-                                <select name="Station_Start" id="Station_Start" class="form-control">
+                                <select name="Station_Start" id="Station_Start" class="form-select">
                                     <option value="401">SIF-401</option>
                                     <option value="406">SIF-406</option>
                                     <option value="409">SIF-409</option>
@@ -72,7 +71,7 @@
                             <div class="form-group col-md-6">
                                 <label for="Station_End" class="form-label">Chọn trạm kết
                                     thúc</label>
-                                <select name="Station_End" id="Station_End" class="form-control">
+                                <select name="Station_End" id="Station_End" class="form-select">
                                     <option value="406">SIF-406</option>
                                     <option value="407">SIF-407</option>
                                     <option value="409">SIF-409</option>
@@ -85,34 +84,34 @@
                                 <div class="row">
                                     <div class="col-md-6 form-group station-group">
                                         <label for="" class="form-label station-label">Chọn trạm thứ 2</label>
-                                        <select name="" class="form-control station-select">
+                                        <select name="" class="form-select station-select">
                                             <option value="402">SIF-402</option>
                                             <option value="403">SIF-403</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6 form-group station-group">
                                         <label for="" class="form-label station-label">Chọn trạm thứ 3</label>
-                                        <select name="" class="form-control station-select" disabled>
+                                        <select name="" class="form-select station-select" disabled>
                                             <option value="405">SIF-405</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6 form-group station-group">
                                         <label for="" class="form-label station-label">Chọn trạm thứ 4</label>
-                                        <select name="" class="form-control station-select">
+                                        <select name="" class="form-select station-select">
                                             <option value="406">SIF-406</option>
                                             <option value="407">SIF-407</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6 form-group station-group">
                                         <label for="" class="form-label station-label">Chọn trạm thứ 5</label>
-                                        <select name="" class="form-control station-select">
+                                        <select name="" class="form-select station-select">
                                             <option value="407">SIF-407</option>
                                             <option value="408">SIF-408</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6 form-group station-group">
                                         <label for="" class="form-label station-label">Chọn trạm thứ 6</label>
-                                        <select name="" class="form-control station-select">
+                                        <select name="" class="form-select station-select">
                                             <option value="408">SIF-408</option>
                                             <option value="409">SIF-409</option>
                                             <option value="410">SIF-410</option>
@@ -120,7 +119,7 @@
                                     </div>
                                     <div class="col-md-6 form-group station-group">
                                         <label for="" class="form-label station-label">Chọn trạm thứ 7</label>
-                                        <select name="" class="form-control station-select">
+                                        <select name="" class="form-select station-select">
                                             <option value="409">SIF-409</option>
                                             <option value="410">SIF-410</option>
                                             <option value="411">SIF-411</option>
@@ -128,7 +127,7 @@
                                     </div>
                                     <div class="col-md-6 form-group station-group">
                                         <label for="" class="form-label station-label">Chọn trạm thứ 8</label>
-                                        <select name="" class="form-control station-select">
+                                        <select name="" class="form-select station-select">
                                             <option value="410">SIF-410</option>
                                             <option value="411">SIF-411</option>
                                             <option value="412">SIF-412</option>
@@ -136,14 +135,14 @@
                                     </div>
                                     <div class="col-md-6 form-group station-group">
                                         <label for="" class="form-label station-label">Chọn trạm thứ 9</label>
-                                        <select name="" class="form-control station-select" disabled>
+                                        <select name="" class="form-select station-select" disabled>
                                             <option value="411">SIF-411</option>
                                             <option value="412">SIF-412</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6 form-group station-group">
                                         <label for="" class="form-label station-label">Chọn trạm thứ 10</label>
-                                        <select name="" class="form-control station-select" disabled>
+                                        <select name="" class="form-select station-select" disabled>
                                             <option value="412">SIF-412</option>
                                         </select>
                                     </div>
@@ -154,8 +153,9 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex justify-content-end gap-3">
-                        <a href="{{ route('productStationLines.index') }}" class="btn btn-secondary">Quay lại</a>
-                        <button type="button" class="btn btn-primary" id="btn_add">Tạo</button>
+                        <a href="{{ route('productStationLines.index') }}" class="btn btn-secondary" tabindex="5">Quay
+                            lại</a>
+                        <button type="button" class="btn btn-primary" id="btnAdd" tabindex="4">Tạo</button>
                     </div>
                 </div>
             </div>
@@ -163,30 +163,42 @@
     </div>
 @endsection
 @push('javascript')
+    <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/prodStationLine.js') }}"></script>
     <script type="text/javascript">
+        function validateInput(element, message) {
+            $(element).on('blur', function() {
+                if ($(this).val() == "") {
+                    $(this).addClass("is-invalid");
+                    $(this).next().show();
+                    $(this).next().text(message);
+                } else {
+                    $(this).next().hide();
+                    $(this).removeClass("is-invalid");
+                }
+            });
+        }
         $(document).ready(function() {
-
             $("#FK_Id_OrderType").val(0);
             $("#FK_Id_OrderType").change();
 
-            const btn_add = $("#btn_add");
-            $("#Name_ProdStationLine").on('keyup', function() {
-                if ($(this).val() == "") {
-                    $("#err_nameProdStationLine").show();
-                    $("#err_nameProdStationLine").text("Tên dây chuyền không được để trống");
-                    $("#Name_ProdStationLine").addClass("is-invalid");
-                } else {
-                    $("#err_nameProdStatonLine").hide();
-                }
-            });
+            const btnAdd = $("#btnAdd");
+            validateInput("#Name_ProdStationLine", "Tên dây chuyền không được để trống")
+            validateInput("#Description", "Mô tả không được để trống")
 
-            btn_add.on('click', function() {
-                if ($("#Name_ProdStationLine").val() == "") {
-                    $("#err_nameProdStationLine").show();
-                    $("#err_nameProdStationLine").text("Tên dây chuyền không được để trống");
-                    $("#Name_ProdStationLine").addClass("is-invalid");
-                } else {
+            btnAdd.on('click', function() {
+                $(".form-control").each(function(element) {
+                    if ($(this).hasClass("is-invalid")) {
+                        isValid = false;
+                    } else if ($(this).val() == "") {
+                        isValid = false;
+                        $(this).addClass("is-invalid");
+                        $(this).next().text("Trường này là bắt buộc");
+                        $(this).next().show();
+                    }
+                })
+
+                if (isValid) {
                     let stationSelect = $(".station-select");
                     var name = $("#Name_ProdStationLine").val();
                     var stationStart = $("#Station_Start").val();
@@ -219,9 +231,7 @@
                             if (data.status == 200) {
                                 window.location.href = data.url;
                             } else {
-                                $("#err_nameProdStationLine").show();
-                                $("#err_nameProdStationLine").text(data.message);
-                                $("#Name_ProdStationLine").addClass("is-invalid");
+                                validateInput("#Name_ProdStationLine", data.message);
                             }
                         }
                     });

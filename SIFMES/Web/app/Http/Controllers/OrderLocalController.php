@@ -606,7 +606,7 @@ class OrderLocalController extends Controller
                         data-id="' . $orderLocal->Id_OrderLocal . '">
                         <i class="fa-solid fa-eye"></i>
                     </button>
-                    <div class="modal fade" id="show-' . $orderLocal->Id_OrderLocal . '" tabindex="-1"
+                    <div class="modal fade" id="show-' . $orderLocal->Id_OrderLocal . '"
                         aria-labelledby="show-$' . $orderLocal->Id_OrderLocal . 'Label" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">

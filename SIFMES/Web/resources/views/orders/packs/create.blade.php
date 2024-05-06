@@ -31,7 +31,7 @@
                                         <div class="form-group">
                                             <label for="FK_Id_Customer" class="form-label">Khách hàng</label>
                                             <select class="form-select selectValidate" id="FK_Id_Customer"
-                                                name="FK_Id_Customer">
+                                                name="FK_Id_Customer" tabindex="1">
                                                 @foreach ($customers as $each)
                                                     @if (isset($information))
                                                         @if ($information->FK_Id_Customer == $each->Id_Customer)
@@ -57,7 +57,8 @@
                                                 {{ isset($information) ? 'readonly' : '' }}
                                                 value="{{ isset($information)
                                                     ? \Carbon\Carbon::parse($information->Date_Order)->format('Y-m-d')
-                                                    : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                                    : \Carbon\Carbon::now()->format('Y-m-d') }}"
+                                                tabindex="3">
                                         </div>
                                         <span class="form-message text-danger"></span>
                                     </div>
@@ -72,7 +73,8 @@
                                                 name="Date_Delivery" {{ isset($information) ? 'readonly' : '' }}
                                                 value="{{ isset($information)
                                                     ? \Carbon\Carbon::parse($information->Date_Delivery)->format('Y-m-d')
-                                                    : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                                    : \Carbon\Carbon::now()->format('Y-m-d') }}"
+                                                tabindex="2">
                                         </div>
                                         <span class="form-message text-danger"></span>
                                     </div>
@@ -83,7 +85,8 @@
                                                 name="Date_Reception" {{ isset($information) ? 'readonly' : '' }}
                                                 value="{{ isset($information)
                                                     ? \Carbon\Carbon::parse($information->Date_Reception)->format('Y-m-d')
-                                                    : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                                    : \Carbon\Carbon::now()->format('Y-m-d') }}"
+                                                tabindex="4">
                                         </div>
                                         <span class="form-message text-danger"></span>
                                     </div>
@@ -93,7 +96,7 @@
                                 <div class="form-group">
                                     <label for="Note" class="form-label">Ghi chú</label>
                                     <textarea class="form-control" aria-label="Notes" name="Note" {{ isset($information) ? 'readonly' : '' }}
-                                        rows="5">{{ isset($information) ? $information->Note : '' }}</textarea>
+                                        rows="5" tabindex="5">{{ isset($information) ? $information->Note : '' }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -108,7 +111,7 @@
                 <div class="card-body">
                     <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin gói hàng</h5>
                     <div class="d-flex justify-content-between mb-3">
-                        <button type="submit" class="btn btn-primary px-5" id="addBtn">
+                        <button type="submit" class="btn btn-primary px-5" id="addBtn" tabindex="6">
                             <i class="fa-solid fa-plus text-white me-2"></i>Thêm gói hàng
                         </button>
                         <button type="submit" class="btn btn-primary px-5" id="redirectBtn">
@@ -175,9 +178,8 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-end gap-3">
-                        <button class="btn btn-secondary" id="backBtn">Quay
-                            lại</button>
-                        <a href="{{ route('orders.packs.index') }}" class="btn btn-primary">Lưu</a>
+                        <button class="btn btn-secondary" id="backBtn" tabindex="8">Quay lại</button>
+                        <a href="{{ route('orders.packs.index') }}" class="btn btn-primary" tabindex="7">Lưu</a>
                     </div>
                 </div>
             </div>

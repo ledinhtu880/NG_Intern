@@ -55,7 +55,7 @@
                                         </td>
                                         <td class="text-center">
                                             <input type="number" class="form-control Count_RawMaterial"
-                                                value="{{ $ContentSimple->Count_RawMaterial }}" min='1'>
+                                                value="{{ $ContentSimple->Count_RawMaterial }}" min="1">
                                         </td>
                                         <td class="text-center RawMaterial_Unit">{{ $ContentSimple->material->Unit }}</td>
                                         <td class="text-center">
@@ -81,7 +81,7 @@
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                             <div class="modal fade" id="deleteID-{{ $ContentSimple->Id_ContentSimple }}"
-                                                tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                aria-labelledby="exampleModalLabel" aria-hidden="true" tabindex="-1">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
@@ -115,7 +115,7 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-end gap-2">
-                        <a class="btn btn-secondary" href="{{ route('orders.packs.edit', $Id_Order) }}">
+                        <a class="btn btn-secondary" href="{{ route('orders.packs.edit', $Id_Order) }}" id="backBtn">
                             Quay lại
                         </a>
                         <button type="button" class="btn btn-primary" id="saveBtn">Lưu</button>
@@ -139,9 +139,7 @@
 @endsection
 
 @push('javascript')
-    {{--
-<script src="{{ asset('js/orders/packs/create.js') }}"></script>
-<script src="{{ asset('js/eventHandler.js') }}"></script> --}}
+    <script src="{{ asset('js/app.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             const toastLiveExample = $("#liveToast");
@@ -252,5 +250,14 @@
             }).get();
             return arr;
         }
+
+        let tdElements = $("td");
+        tdElements.filter(function() {
+            return !$(this).children().is('[tabIndex]');
+        }).each(function(index) {
+            $(this).children().attr("tabIndex", index);
+        });
+        $("#saveBtn").attr("tabIndex", tdElements.length);
+        $("#backBtn").attr("tabIndex", tdElements.length + 1);
     </script>
 @endpush

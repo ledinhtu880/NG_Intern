@@ -78,28 +78,6 @@ $(document).ready(function () {
         }
         disabledStation(station_select.eq(2));
       }
-      // else if ($(this).val() == 407) {
-      //   // trạm dầu là 401, trạm cuối là 407
-      //   for (let i = 0; i < 3; i++) {
-      //     showStation(station_group.eq(i));
-      //   }
-      //   station_select.eq(2).change();
-      // }
-      // else if ($(this).val() == 409) {
-      //   // trạm đầu là 401, trạm cuối là 409
-      //   for (let i = 0; i < 6; i++) {
-      //     showStation(station_group.eq(i));
-      //   }
-      //   station_select.eq(2).change();
-      // }
-      // else {
-      //   // trạm đầu là 401, trạm cuối là 412
-      //   for (let i = 0; i < 9; i++) {
-      //     showStation(station_group.eq(i));
-      //   }
-      //   station_select.eq(2).change();
-      //   station_select.eq(3).change();
-      // }
     } else if (station_start.val() == 406) {
       hideStation($("#Station_End > option[value='406']"));
       if (station_end.val() == 407) {
@@ -295,3 +273,4 @@ function hideAllStation(station_group) {
     $(this).hide();
   });
 }
+

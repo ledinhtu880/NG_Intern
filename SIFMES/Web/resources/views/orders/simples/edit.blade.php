@@ -30,7 +30,7 @@
                                         <div class="form-group">
                                             <label for="FK_Id_Customer" class="form-label">Khách hàng</label>
                                             <select class="form-select selectValidate" id="FK_Id_Customer"
-                                                name="FK_Id_Customer">
+                                                name="FK_Id_Customer" tabindex="1">
                                                 @foreach ($customers as $each)
                                                     @if ($each->Id_Customer == $order->FK_Id_Customer)
                                                         <option value="{{ $each->Id_Customer }}" selected>
@@ -42,15 +42,16 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <span class="form-message text-danger"></span>
+                                        <span class="text-danger"></span>
                                     </div>
                                     <div class="col-md-12 mt-3">
                                         <div class="form-group">
                                             <label for="Date_Order" class="form-label">Ngày đặt hàng</label>
                                             <input type="date" class="form-control" id="Date_Order" name="Date_Order"
-                                                value="{{ \Carbon\Carbon::parse($order->Date_Order)->format('Y-m-d') }}">
+                                                value="{{ \Carbon\Carbon::parse($order->Date_Order)->format('Y-m-d') }}"
+                                                tabindex="3">
                                         </div>
-                                        <span class="form-message text-danger"></span>
+                                        <span class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
@@ -61,26 +62,29 @@
                                             <label for="Date_Delivery" class="form-label">Ngày giao hàng</label>
                                             <input type="date" class="form-control" id="Date_Delivery"
                                                 name="Date_Delivery"
-                                                value="{{ \Carbon\Carbon::parse($order->Date_Delivery)->format('Y-m-d') }}">
+                                                value="{{ \Carbon\Carbon::parse($order->Date_Delivery)->format('Y-m-d') }}"
+                                                tabindex="2">
                                         </div>
-                                        <span class="form-message text-danger"></span>
+                                        <span class="text-danger"></span>
                                     </div>
                                     <div class="col-md-12 mt-3">
                                         <div class="form-group">
                                             <label for="Date_Reception" class="form-label">Ngày nhận hàng</label>
                                             <input type="date" class="form-control" id="Date_Reception"
                                                 name="Date_Reception"
-                                                value="{{ \Carbon\Carbon::parse($order->Date_Reception)->format('Y-m-d') }}">
+                                                value="{{ \Carbon\Carbon::parse($order->Date_Reception)->format('Y-m-d') }}"
+                                                tabindex="4">
                                         </div>
-                                        <span class="form-message text-danger"></span>
+                                        <span class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="Note" class="form-label">Ghi chú</label>
-                                    <textarea class="form-control" aria-label="Notes" name="Note" rows="5">{{ $order->Note }}</textarea>
+                                    <textarea class="form-control" aria-label="Notes" name="Note" id="Note" rows="5" tabindex="5">{{ $order->Note }}</textarea>
                                 </div>
+                                <span class="text-danger"></span>
                             </div>
                         </div>
                     </form>
@@ -213,9 +217,10 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-end gap-3">
-                        <a href="{{ route('orders.simples.index') }}" class="btn btn-secondary">Quay lại</a>
+                        <a href="{{ route('orders.simples.index') }}" class="btn btn-secondary" tabindex="7">Quay
+                            lại</a>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#deleteOrder-{{ $order->Id_Order }}">
+                            data-bs-target="#deleteOrder-{{ $order->Id_Order }}" tabindex="6">
                             Lưu
                         </button>
                         <div class="modal fade" id="deleteOrder-{{ $order->Id_Order }}" tabindex="-1"
@@ -258,9 +263,26 @@
 @endsection
 
 @push('javascript')
+    <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/orders/simples/edit.js') }}"></script>
     <script>
+        function validateInput(element, message) {
+            $(element).on('blur', function() {
+                if ($(this).attr("id") == "Note") {
+                    if ($(this).val() == "") {
+                        $(this).addClass("is-invalid");
+                        $(this).closest(".form-group").next().text(message);
+                        $(this).closest(".form-group").next().show();
+                    } else {
+                        $(this).closest(".form-group").next().hide();
+                        $(this).removeClass("is-invalid");
+                    }
+                }
+            });
+        }
+
         $(document).ready(function() {
+            validateInput("#Note", "Mô tả không được để trống")
             let token = $('meta[name="csrf-token"]').attr("content");
             $(".js-row").each(function(index, element) {
                 let isTake = $(element).find("td[data-id='Status']").data("value");

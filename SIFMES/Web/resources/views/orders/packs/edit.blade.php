@@ -30,7 +30,7 @@
                                         <div class="form-group">
                                             <label for="FK_Id_Customer" class="form-label">Khách hàng</label>
                                             <select class="form-select selectValidate" id="FK_Id_Customer"
-                                                name="FK_Id_Customer">
+                                                name="FK_Id_Customer" tabindex="1">
                                                 @foreach ($customers as $each)
                                                     <option value="{{ $each->Id_Customer }}"
                                                         @if ($order->FK_Id_Customer == $each->Id_Customer) selected @endif>
@@ -44,7 +44,8 @@
                                         <div class="form-group">
                                             <label for="Date_Order" class="form-label">Ngày đặt hàng</label>
                                             <input type="date" class="form-control" id="Date_Order" name="Date_Order"
-                                                value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Order)->format('Y-m-d') : \Carbon\Carbon::parse($order->Date_Order)->format('Y-m-d') }}">
+                                                value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Order)->format('Y-m-d') : \Carbon\Carbon::parse($order->Date_Order)->format('Y-m-d') }}"
+                                                tabindex="3">
                                         </div>
                                         <span class="form-message text-danger"></span>
                                     </div>
@@ -57,7 +58,8 @@
                                             <label for="Date_Delivery" class="form-label">Ngày giao hàng</label>
                                             <input type="date" class="form-control" id="Date_Delivery"
                                                 name="Date_Delivery"
-                                                value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Delivery)->format('Y-m-d') : \Carbon\Carbon::parse($order->Date_Delivery)->format('Y-m-d') }}">
+                                                value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Delivery)->format('Y-m-d') : \Carbon\Carbon::parse($order->Date_Delivery)->format('Y-m-d') }}"
+                                                tabindex="2">
                                         </div>
                                         <span class="form-message text-danger"></span>
                                     </div>
@@ -66,7 +68,8 @@
                                             <label for="Date_Reception" class="form-label">Ngày nhận hàng</label>
                                             <input type="date" class="form-control" id="Date_Reception"
                                                 name="Date_Reception"
-                                                value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Reception)->format('Y-m-d') : \Carbon\Carbon::parse($order->Date_Reception)->format('Y-m-d') }}">
+                                                value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Reception)->format('Y-m-d') : \Carbon\Carbon::parse($order->Date_Reception)->format('Y-m-d') }}"
+                                                tabindex="4">
                                         </div>
                                         <span class="form-message text-danger"></span>
                                     </div>
@@ -75,7 +78,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="Note" class="form-label">Ghi chú</label>
-                                    <textarea class="form-control" aria-label="Notes" name="Note" rows="5">{{ $order->Note }}</textarea>
+                                    <textarea class="form-control" aria-label="Notes" name="Note" rows="5" tabindex="5">{{ $order->Note }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -175,7 +178,7 @@
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-end gap-3">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#deleteOrder-{{ $order->Id_Order }}">
+                            data-bs-target="#deleteOrder-{{ $order->Id_Order }}" tabindex="6">
                             Lưu
                         </button>
                         <div class="modal fade" id="deleteOrder-{{ $order->Id_Order }}" tabindex="-1"
@@ -220,6 +223,7 @@
 @endsection
 
 @push('javascript')
+    <script src="{{ asset('js/app.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             let token = $('meta[name="csrf-token"]').attr("content");

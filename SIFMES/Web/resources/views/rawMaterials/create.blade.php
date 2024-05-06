@@ -32,23 +32,23 @@
                                     <input type="text" name="Name_RawMaterial" id="Name_RawMaterial"
                                         placeholder="Nhập tên nguyên liệu thô"
                                         class="form-control{{ $errors->has('Name_RawMaterial') ? ' is-invalid' : '' }}"
-                                        value="{{ old('Name_RawMaterial') }}">
-                                    @if ($errors->has('Name_RawMaterial'))
-                                        <span class="text-danger">
+                                        value="{{ old('Name_RawMaterial') }}" tabindex="1">
+                                    <span class="text-danger">
+                                        @if ($errors->has('Name_RawMaterial'))
                                             {{ $errors->first('Name_RawMaterial') }}
-                                        </span>
-                                    @endif
+                                        @endif
+                                    </span>
                                 </div>
                                 <div class="form-group mb-3" style="flex: 1">
                                     <label for="Unit" class="form-label">Đơn vị</label>
                                     <input type="text" name="Unit" id="Unit" placeholder="Nhập đơn vị"
                                         class="form-control{{ $errors->has('Unit') ? ' is-invalid' : '' }}"
-                                        value="{{ old('Unit') }}">
-                                    @if ($errors->has('Unit'))
-                                        <span class="text-danger">
+                                        value="{{ old('Unit') }}" tabindex="2">
+                                    <span class="text-danger">
+                                        @if ($errors->has('Unit'))
                                             {{ $errors->first('Unit') }}
-                                        </span>
-                                    @endif
+                                        @endif
+                                    </span>
                                 </div>
                             </div>
                             <div class="d-flex gap-2">
@@ -56,30 +56,31 @@
                                     <label for="Count" class="form-label">Số lượng</label>
                                     <input type="number" name="Count" id="Count" placeholder="Nhập số lượng"
                                         class="form-control{{ $errors->has('Count') ? ' is-invalid' : '' }}"
-                                        value="{{ old('Count') }}">
-                                    @if ($errors->has('Count'))
-                                        <span class="text-danger">
+                                        value="{{ old('Count') }}" tabindex="3">
+                                    <span class="text-danger">
+                                        @if ($errors->has('Count'))
                                             {{ $errors->first('Count') }}
-                                        </span>
-                                    @endif
+                                        @endif
+                                    </span>
                                 </div>
                                 <div class="form-group" style="flex: 1">
                                     <label for="FK_Id_RawMaterialType" class="form-label">Loại
                                         nguyên
                                         liệu</label>
                                     <select name="FK_Id_RawMaterialType"
-                                        class="form-select{{ $errors->has('FK_Id_RawMaterialType') ? ' is-invalid' : '' }}">
+                                        class="form-select{{ $errors->has('FK_Id_RawMaterialType') ? ' is-invalid' : '' }}"
+                                        tabindex="4">
                                         @foreach ($data as $each)
                                             <option value="{{ $each->id }}">
                                                 {{ $each->Name_RawMaterialType }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    @if ($errors->has('FK_Id_RawMaterialType'))
-                                        <span class="text-danger">
+                                    <span class="text-danger">
+                                        @if ($errors->has('FK_Id_RawMaterialType'))
                                             {{ $errors->first('FK_Id_RawMaterialType') }}
-                                        </span>
-                                    @endif
+                                        @endif
+                                    </span>
                                 </div>
                             </div>
                         </form>
@@ -87,8 +88,8 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex justify-content-end gap-3">
-                        <a href="{{ route('rawMaterials.index') }}" class="btn btn-secondary">Quay lại</a>
-                        <button type="submit" class="btn btn-primary" id="saveBtn">Lưu</button>
+                        <a href="{{ route('rawMaterials.index') }}" class="btn btn-secondary" tabindex="6">Quay lại</a>
+                        <button type="submit" class="btn btn-primary" id="saveBtn" tabindex="5">Lưu</button>
                     </div>
                 </div>
             </div>
@@ -97,11 +98,53 @@
 @endsection
 
 @push('javascript')
+    <script src="{{ asset('js/app.js') }}"></script>
     <script>
-        $(document).ready(function() {
-            $('#saveBtn').click(function(e) {
-                $('#formInformation').submit();
+        function validateInput(element, message = null) {
+            $(element).on('blur', function() {
+                if ($(this).val() == "") {
+                    $(this).next().show();
+                    $(this).addClass("is-invalid");
+                    $(this).next().text(message);
+                } else {
+                    if ($(this).attr("id") == "Name_RawMaterial") {
+                        if (!/^[a-zA-ZÀ-ỹ\s]+$/.test($(this).val())) {
+                            $(this).addClass("is-invalid");
+                            $(this).next().text("Vui lòng nhập đúng định dạng");
+                            $(this).next().show();
+                        } else {
+                            $(this).next().hide();
+                            $(this).removeClass("is-invalid");
+                        }
+                    } else {
+                        $(this).next().hide();
+                        $(this).removeClass("is-invalid");
+                    }
+                }
             });
+        }
+
+        $(document).ready(function() {
+            validateInput("#Name_RawMaterial", "Vui lòng nhập tên nguyên liệu");
+            validateInput("#Unit", "Vui lòng nhập đơn vị");
+            validateInput("#Count", "Vui lòng nhập số lượng");
+            let isValid = true;
+
+            $("#saveBtn").on('click', function() {
+                $(".form-control").each(function(element) {
+                    if ($(this).hasClass("is-invalid")) {
+                        isValid = false;
+                    } else if ($(this).val() == "") {
+                        isValid = false;
+                        $(this).next().show();
+                        $(this).addClass("is-invalid");
+                        $(this).next().text("Trường này là bắt buộc");
+                    }
+                })
+                if (isValid) {
+                    $("#formInformation").submit();
+                }
+            })
         })
     </script>
 @endpush

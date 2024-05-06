@@ -31,10 +31,11 @@
                             <div class="col-md-6">
                                 <div class="input-group mb-3">
                                     <label class="input-group-text bg-secondary-subtle" for="FK_Id_RawMaterial"
-                                        style="width: 130px;">
+                                        style="width: 140px;">
                                         Nguyên vật liệu
                                     </label>
-                                    <select name="FK_Id_RawMaterial" id="FK_Id_RawMaterial" class="form-select">
+                                    <select name="FK_Id_RawMaterial" id="FK_Id_RawMaterial" class="form-select"
+                                        tabindex="1">
                                         @foreach ($materials as $each)
                                             <option value="{{ $each->Id_RawMaterial }}"
                                                 data-name="{{ $each->Name_RawMaterial }}">
@@ -50,18 +51,18 @@
                                         Số lượng nguyên vật liệu
                                     </label>
                                     <input type="number" name="Count_RawMaterial" id="Count_RawMaterial"
-                                        class="form-control" min="1" value='1'>
+                                        class="form-control" min="1" value="1" tabindex="2">
                                     <p data-name="unit" class="m-0 ps-3"></p>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="input-group mb-3">
                                     <label class="input-group-text bg-secondary-subtle" for="FK_Id_ContainerType"
-                                        style="width: 130px;">
+                                        style="width: 140px;">
                                         Thùng chứa
                                     </label>
                                     <select class="form-select selectValidate" name="FK_Id_ContainerType"
-                                        id="FK_Id_ContainerType">
+                                        id="FK_Id_ContainerType" tabindex="3">
                                         @foreach ($containers as $each)
                                             <option value="{{ $each->Id_ContainerType }}"
                                                 data-name="{{ $each->Name_ContainerType }}">
@@ -77,7 +78,7 @@
                                         Số lượng thùng chứa
                                     </label>
                                     <input type="number" name="Count_Container" id="Count_Container" class="form-control"
-                                        min="1" value='1'>
+                                        min="1" value="1" tabindex="4">
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -86,11 +87,11 @@
                                         Đơn giá
                                     </label>
                                     <input type="number" step="0.01" name="Price_Container" id="Price_Container"
-                                        class="form-control" min="1" value='1'>
+                                        class="form-control" min="1" value="1" tabindex="5">
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <button type="submit" class="btn btn-primary px-5">
+                                <button type="submit" class="btn btn-primary px-5" tabindex="7">
                                     <i class="fa-solid fa-plus text-white"></i>
                                     Thêm sản phẩm
                                 </button>
@@ -101,7 +102,7 @@
                                         Số lượng gói hàng
                                     </label>
                                     <input type="number" name="Count_Pack" id="Count_Pack" class="form-control"
-                                        min="1" value='1'>
+                                        min="1" value="1" tabindex="6">
                                 </div>
                             </div>
                         </div>
@@ -124,9 +125,12 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex align-items-center justify-content-end gap-3">
-                        <a href="/orders/packs/create?id={{ $_GET['id'] }}" class="btn btn-secondary">Quay
-                            lại</a>
-                        <button type="submit" class="btn btn-primary" id="saveBtn">Lưu gói hàng</button>
+                        <a href="/orders/packs/create?id={{ $_GET['id'] }}" class="btn btn-secondary"
+                            tabindex="9">Quay lại
+                        </a>
+                        <button type="submit" class="btn btn-primary" id="saveBtn" tabindex="8">
+                            Lưu gói hàng
+                        </button>
                     </div>
                 </div>
             </div>

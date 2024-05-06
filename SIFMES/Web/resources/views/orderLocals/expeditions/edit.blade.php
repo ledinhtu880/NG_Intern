@@ -187,7 +187,7 @@
 
                                             <!-- Modal -->
                                             <div class="modal fade" id="i{{ $each->Id_ContentPack }}"
-                                                data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                data-bs-backdrop="static" data-bs-keyboard="false"
                                                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg modal-dialog-centered">
                                                     <div class="modal-content">
@@ -240,7 +240,7 @@
                             {{ isset($inProcess) ? 'disabled' : '' }}>
                             Lưu
                         </button>
-                        <div class="modal fade" id="deleteOrder-{{ $orderLocal->Id_OrderLocal }}" tabindex="-1"
+                        <div class="modal fade" id="deleteOrder-{{ $orderLocal->Id_OrderLocal }}"
                             aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
