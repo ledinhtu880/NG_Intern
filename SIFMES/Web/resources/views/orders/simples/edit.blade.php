@@ -13,7 +13,7 @@
         </ol>
     </div>
     <div class="row g-0 px-3">
-        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">Thông tin đơn thùng hàng</h4>
+        <h4 class="dashboard-title rounded-3 h4 fw-bold text-white m-0">Sửa đơn thùng hàng</h4>
     </div>
     <div class="row g-0 p-3">
         <div class="col-md-12">

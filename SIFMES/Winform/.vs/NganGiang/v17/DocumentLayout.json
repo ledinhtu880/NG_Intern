@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\views\\frm410.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\frm410.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\services\\process\\processservice402.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\services\\process\\processservice402.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\views\\frm410.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\frm410.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\libs\\dataprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\libs\\dataprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\views\\frm408.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\frm408.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\services\\process\\helper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\services\\process\\helper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,8 +22,47 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DataProvider.cs",
+              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Libs\\DataProvider.cs",
+              "RelativeDocumentMoniker": "NganGiang\\Libs\\DataProvider.cs",
+              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Libs\\DataProvider.cs",
+              "RelativeToolTip": "NganGiang\\Libs\\DataProvider.cs",
+              "ViewState": "AQIAAEMAAAAAAAAAAAAywFAAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-06T09:10:57.536Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ProcessService402.cs",
+              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Services\\Process\\ProcessService402.cs",
+              "RelativeDocumentMoniker": "NganGiang\\Services\\Process\\ProcessService402.cs",
+              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Services\\Process\\ProcessService402.cs",
+              "RelativeToolTip": "NganGiang\\Services\\Process\\ProcessService402.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-06T09:10:42.383Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Helper.cs",
+              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Services\\Process\\Helper.cs",
+              "RelativeDocumentMoniker": "NganGiang\\Services\\Process\\Helper.cs",
+              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Services\\Process\\Helper.cs",
+              "RelativeToolTip": "NganGiang\\Services\\Process\\Helper.cs",
+              "ViewState": "AQIAACsAAAAAAAAAAIAwwD0AAAAkAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-06T09:10:32.13Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
@@ -35,44 +74,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "frm410.cs",
-              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm410.cs",
-              "RelativeDocumentMoniker": "NganGiang\\Views\\frm410.cs",
-              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm410.cs",
-              "RelativeToolTip": "NganGiang\\Views\\frm410.cs",
-              "ViewState": "AQIAABcAAAAAAAAAAEBCwIYAAAAJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-02T03:25:45.54Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "frm410.cs [Design]",
-              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm410.cs",
-              "RelativeDocumentMoniker": "NganGiang\\Views\\frm410.cs",
-              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm410.cs [Design]",
-              "RelativeToolTip": "NganGiang\\Views\\frm410.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-02T03:25:26.293Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "frm408.cs",
-              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm408.cs",
-              "RelativeDocumentMoniker": "NganGiang\\Views\\frm408.cs",
-              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm408.cs",
-              "RelativeToolTip": "NganGiang\\Views\\frm408.cs",
-              "ViewState": "AQIAACoAAAAAAAAAAAAkwDIAAABLAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-02T03:24:57.435Z",
-              "EditorCaption": ""
             }
           ]
         },

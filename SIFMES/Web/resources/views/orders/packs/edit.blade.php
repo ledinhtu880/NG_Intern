@@ -224,245 +224,232 @@
 @endsection
 
 @push('javascript')
-    <script src="{{ asset('js/app.js') }}"></script>
-    <script type="text/javascript">
-        function validateInput(element, message) {
-            $(element).on("blur", function() {
-                if ($(this).val() == "") {
-                    $(this).addClass("is-invalid");
+<script src="{{ asset('js/app.js') }}"></script>
+<script type="text/javascript">
+    function validateInput(element, message) {
+        $(element).on("blur", function() {
+            if ($(this).val() == "") {
+                $(this).addClass("is-invalid");
+                $(this).next().show();
+                if ($(this).attr("id") == "Note") {
+                    $(this).next().text(message);
                     $(this).next().show();
-                    if ($(this).attr("id") == "Note") {
-                        $(this).next().text(message);
-                        $(this).next().show();
-                    } else {
-                        $(this).closest(".input-group").next().text(message);
-                        $(this).closest(".input-group").next().show();
-                    }
                 } else {
-                    if ($(this).attr("id") == "Note") {
-                        $(this).next().hide();
-                    } else {
-                        $(this).closest(".input-group").next().hide();
-                    }
-                    $(this).removeClass("is-invalid");
+                    $(this).closest(".input-group").next().text(message);
+                    $(this).closest(".input-group").next().show();
                 }
-            });
+            } else {
+                if ($(this).attr("id") == "Note") {
+                    $(this).next().hide();
+                } else {
+                    $(this).closest(".input-group").next().hide();
+                }
+                $(this).removeClass("is-invalid");
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        validateInput("#Note");
+        let token = $('meta[name="csrf-token"]').attr("content");
+        const toastLiveExample = $("#liveToast");
+        const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
+
+        toastLiveExample.on('hidden.bs.toast', function() {
+            var bgColorClass = $(".toast-body").data("bg-color-class");
+            var iconClass = $("#icon").data("icon-class");
+
+            $(".toast-body").removeClass(bgColorClass);
+            $("#icon").removeClass(iconClass);
+
+            $("#toast-msg").html('');
+        });
+
+        function showToast(message, bgColorClass, iconClass) {
+            $(".toast-body").data("bg-color-class", bgColorClass);
+            $("#icon").data("icon-class", iconClass);
+
+            $(".toast-body").addClass(bgColorClass);
+            $("#icon").addClass(iconClass);
+            $("#toast-msg").html(message);
+            toastBootstrap.show();
         }
 
-        $(document).ready(function() {
-            validateInput("#Note");
-            let token = $('meta[name="csrf-token"]').attr("content");
-            const toastLiveExample = $("#liveToast");
-            const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
-
-            toastLiveExample.on('hidden.bs.toast', function() {
-                var bgColorClass = $(".toast-body").data("bg-color-class");
-                var iconClass = $("#icon").data("icon-class");
-
-                $(".toast-body").removeClass(bgColorClass);
-                $("#icon").removeClass(iconClass);
-
-                $("#toast-msg").html('');
-            });
-
-            function showToast(message, bgColorClass, iconClass) {
-                $(".toast-body").data("bg-color-class", bgColorClass);
-                $("#icon").data("icon-class", iconClass);
-
-                $(".toast-body").addClass(bgColorClass);
-                $("#icon").addClass(iconClass);
-                $("#toast-msg").html(message);
-                toastBootstrap.show();
-            }
-
-            $(".js-row").each(function(index, element) {
-                let isTake = $(element).find("td[data-id='Status']").data("value");
-                if (isTake == 1) {
-                    let id = $(this).data("id");
-                    $.ajax({
-                        url: "/wares/disabledContentPack",
-                        method: "POST",
-                        dataType: "json",
-                        data: {
-                            id: id,
-                            _token: token,
-                        },
-                        success: function(response) {
-                            if (!response) {
-                                $(element).find("input[name='Count_Pack']").prop("disabled",
-                                    true)
-                            } else {
-                                $(element).find("input[name='Count_Pack']").prop("disabled",
-                                    false)
-                            }
-                        },
-                        error: function(xhr) {
-                            // Xử lý lỗi khi gửi yêu cầu Ajax
-                            console.log(xhr.responseText);
-                            alert(
-                                "Có lỗi xảy ra. Vui lòng thử lại sau."
-                            );
-                        },
-                    });
-                }
-            });
-            $(".deletePack").on('click', function() {
-                let Id_ContentPack = $(this).data('id');
-                let modalElement = $("#deleteID-" + Id_ContentPack); // Lấy modal tương ứng với hàng
-                let rowElement = $(this).closest('tr[data-id="' + Id_ContentPack + '"]');
-                let isTake = rowElement.find('td[data-id="Status"]').data("value");
+        $(".js-row").each(function(index, element) {
+            let isTake = $(element).find("td[data-id='Status']").data("value");
+            if (isTake == 1) {
+                let id = $(this).data("id");
                 $.ajax({
-                    url: '/orders/packs/destroyContentPack',
-                    type: 'POST',
+                    url: "/wares/disabledContentPack",
+                    method: "POST",
+                    dataType: "json",
                     data: {
+                        id: id,
                         _token: token,
-                        idContentPack: Id_ContentPack,
-                        isTake: isTake,
                     },
                     success: function(response) {
-                        modalElement.on("hidden.bs.modal", function() {
-                            showToast("Xóa gói hàng thành công", "bg-success",
-                                "fa-check-circle");
-                            rowElement.remove();
-                        });
-
-                        // Đóng modal
-                        modalElement.modal("hide");
-                    }
-                });
-            })
-
-            function getValueIntoArr(name) {
-                let arr = name.map(function() {
-                    return $(this).val();
-                }).get();
-                return arr;
-            }
-            $("#saveBtn").on("click", function() {
-                let isValid = true;
-                $(".Count_Pack").each(function(element) {
-                    if ($(this).val() == "") {
-                        $(this).addClass("is-invalid");
-                        isValid = false;
-                    }
-                })
-
-                if (isValid) {
-                    let idContentPacks = $(".Id_ContentPack").map(function() {
-                        return $(this).html();
-                    }).get();
-
-                    // Bỏ ký tự \n và khoảng cách thừa, chỉ lấy số
-                    idContentPacks = idContentPacks.map(function(element) {
-                        let res = $.trim(element);
-                        return res;
-                    })
-                    // Count_Packs
-                    let countPacks = $(".Count_Pack").map(function() {
-                        return $(this).val();
-                    }).get();
-
-                    let isNegative = false;
-                    countPacks.forEach(function(count) {
-                        if (count <= 0) {
-                            isNegative = true;
-                            return isNegative;
-                        }
-                    });
-                    if (isNegative) {
-                        showToast(
-                            "Số lượng gói hàng phải lớn hơn 0",
-                            "bg-warning",
-                            "fa-exclamation-circle"
-                        );
-                    } else {
-                        let order = {
-                            Id_Order: $("input[name='Id_Order']").val(),
-                            FK_Id_Customer: $("#FK_Id_Customer").val(),
-                            Date_Order: $("#Date_Order").val(),
-                            Date_Delivery: $("#Date_Delivery").val(),
-                            Date_Reception: $("#Date_Reception").val(),
-                            Note: $("#Note").val()
-                        };
-                        if (idContentPacks.length > 0) {
-                            $.ajax({
-                                url: "/wares/checkAmountContentPack",
-                                type: "post",
-                                data: {
-                                    id: order.Id_Order,
-                                    idContentPacks: idContentPacks,
-                                    countPacks: countPacks,
-                                    _token: token,
-                                },
-                                success: function(response) {
-                                    if (response.flag == true) {
-                                        showToast(
-                                            "Số lượng gói lấy vượt quá số lượng có sẵn trong kho",
-                                            "bg-warning",
-                                            "fa-exclamation-circle"
-                                        );
-                                    } else {
-                                        $.ajax({
-                                            url: "/orders/update",
-                                            type: "post",
-                                            data: {
-                                                formData: order,
-                                                id: order.Id_Order,
-                                                SimpleOrPack: 1,
-                                                _token: token,
-                                            },
-                                            success: function(response) {
-                                                let secondUrl =
-                                                    "/orders/packs/update";
-                                                $.ajax({
-                                                    url: secondUrl,
-                                                    type: "post",
-                                                    data: {
-                                                        id: order.Id_Order,
-                                                        idContentPacks: idContentPacks,
-                                                        countPacks: countPacks,
-                                                        _token: token,
-                                                    },
-                                                    success: function(
-                                                        response) {
-                                                        window.location
-                                                            .href =
-                                                            response
-                                                            .url;
-                                                    },
-                                                    error: function(xhr) {
-                                                        // Xử lý lỗi khi gửi yêu cầu Ajax
-                                                        console.log(xhr
-                                                            .responseText
-                                                        );
-                                                        alert(
-                                                            "Có lỗi xảy ra. Vui lòng thử lại sau."
-                                                        );
-                                                    },
-                                                });
-                                            },
-                                            error: function(xhr) {
-                                                // Xử lý lỗi khi gửi yêu cầu Ajax
-                                                console.log(xhr.responseText);
-                                                alert(
-                                                    "Có lỗi xảy ra. Vui lòng thử lại sau."
-                                                );
-                                            },
-                                        });
-                                    }
-                                },
-                                error: function(xhr) {
-                                    // Xử lý lỗi khi gửi yêu cầu Ajax
-                                    console.log(xhr.responseText);
-                                    alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
-                                },
-                            });
+                        if (!response) {
+                            $(element).find("input[name='Count_Pack']").prop("disabled",
+                                true)
                         } else {
-                            window.location.href = "/orders/packs";
+                            $(element).find("input[name='Count_Pack']").prop("disabled",
+                                false)
                         }
-                    }
+                    },
+                    error: function(xhr) {
+                        // Xử lý lỗi khi gửi yêu cầu Ajax
+                        console.log(xhr.responseText);
+                        alert(
+                            "Có lỗi xảy ra. Vui lòng thử lại sau."
+                        );
+                    },
+                });
+            }
+        });
+        $(".deletePack").on('click', function() {
+            let Id_ContentPack = $(this).data('id');
+            let modalElement = $("#deleteID-" + Id_ContentPack); // Lấy modal tương ứng với hàng
+            let rowElement = $(this).closest('tr[data-id="' + Id_ContentPack + '"]');
+            let isTake = rowElement.find('td[data-id="Status"]').data("value");
+            $.ajax({
+                url: '/orders/packs/destroyContentPack',
+                type: 'POST',
+                data: {
+                    _token: token,
+                    idContentPack: Id_ContentPack,
+                    isTake: isTake,
+                },
+                success: function(response) {
+                    modalElement.on("hidden.bs.modal", function() {
+                        showToast("Xóa gói hàng thành công", "bg-success",
+                            "fa-check-circle");
+                        rowElement.remove();
+                    });
+
+                    // Đóng modal
+                    modalElement.modal("hide");
                 }
             });
+        })
+
+        function getValueIntoArr(name) {
+            let arr = name.map(function() {
+                return $(this).val();
+            }).get();
+            return arr;
+        }
+        $("#saveBtn").on("click", function() {
+            let isValid = true;
+            $(".Count_Pack").each(function(element) {
+                if ($(this).val() == "") {
+                    $(this).addClass("is-invalid");
+                    isValid = false;
+                }
+            })
+
+            if (isValid) {
+                let idContentPacks = $(".Id_ContentPack").map(function() {
+                    return $(this).html();
+                }).get();
+
+                // Bỏ ký tự \n và khoảng cách thừa, chỉ lấy số
+                idContentPacks = idContentPacks.map(function(element) {
+                    let res = $.trim(element);
+                    return res;
+                })
+                // Count_Packs
+                let countPacks = $(".Count_Pack").map(function() {
+                    return $(this).val();
+                }).get();
+
+                let isNegative = false;
+                countPacks.forEach(function(count) {
+                    if (count <= 0) {
+                        isNegative = true;
+                        return isNegative;
+                    }
+                });
+                if (isNegative) {
+                    showToast(
+                        "Số lượng gói hàng phải lớn hơn 0",
+                        "bg-warning",
+                        "fa-exclamation-circle"
+                    );
+                } else {
+                    let order = {
+                        Id_Order: $("input[name='Id_Order']").val(),
+                        FK_Id_Customer: $("#FK_Id_Customer").val(),
+                        Date_Order: $("#Date_Order").val(),
+                        Date_Delivery: $("#Date_Delivery").val(),
+                        Date_Reception: $("#Date_Reception").val(),
+                        Note: $("#Note").val()
+                    };
+                    if (idContentPacks.length > 0) {
+                        $.ajax({
+                            url: "/wares/checkAmountContentPack",
+                            type: "post",
+                            data: {
+                                id: order.Id_Order,
+                                idContentPacks: idContentPacks,
+                                countPacks: countPacks,
+                                _token: token,
+                            },
+                            success: function(response) {
+                                if (response.flag == true) {
+                                    showToast(
+                                        "Số lượng gói lấy vượt quá số lượng có sẵn trong kho",
+                                        "bg-warning",
+                                        "fa-exclamation-circle"
+                                    );
+                                } else {
+                                    $.ajax({
+                                        url: "/orders/update",
+                                        type: "post",
+                                        data: {
+                                            formData: order,
+                                            id: order.Id_Order,
+                                            SimpleOrPack: 1,
+                                            _token: token,
+                                        },
+                                        success: function(response) {
+                                            let secondUrl =
+                                                "/orders/packs/update";
+                                            $.ajax({
+                                                url: secondUrl,
+                                                type: "post",
+                                                data: {
+                                                    id: order.Id_Order,
+                                                    idContentPacks: idContentPacks,
+                                                    countPacks: countPacks,
+                                                    _token: token,
+                                                },
+                                                success: function(response) {window.location.href = response.url;
+                                                },
+                                                error: function(xhr) {
+                                                    console.log(xhr.responseText);
+                                                    alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                                                },
+                                            });
+                                        },
+                                        error: function(xhr) {
+                                            console.log(xhr.responseText);
+                                            alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                                        },
+                                    });
+                                }
+                            },
+                            error: function(xhr) {
+                                // Xử lý lỗi khi gửi yêu cầu Ajax
+                                console.log(xhr.responseText);
+                                alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                            },
+                        });
+                    } else {
+                        window.location.href = "/orders/packs";
+                    }
+                }
+            }
         });
-    </script>
+    });
+</script>
 @endpush

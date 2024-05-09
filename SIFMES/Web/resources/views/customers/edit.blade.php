@@ -27,7 +27,7 @@
                         @method('PUT')
                         <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin cá nhân</h5>
                         <div class="d-flex gap-2">
-                            <div class="form-group flex-fill mb-3">
+                            <div class="form-group mb-3" style="flex: 1;">
                                 <label for="Name_Customer" class="form-label">Tên khách hàng</label>
                                 <input type="text" name="Name_Customer" id="Name_Customer"
                                     placeholder="Nhập tên người dùng"
@@ -39,7 +39,7 @@
                                     @endif
                                 </span>
                             </div>
-                            <div class="form-group flex-fill mb-3">
+                            <div class="form-group mb-3" style="flex: 1;">
                                 <label for="Name_Contact" class="form-label">Tên liên hệ</label>
                                 <input type="text" name="Name_Contact" id="Name_Contact" placeholder="Nhập tên liên hệ"
                                     class="form-control{{ $errors->has('Name_Contact') ? ' is-invalid' : '' }}"
@@ -53,7 +53,7 @@
                         </div>
                         <h5 class="h5 fw-bold border-bottom pb-2 my-3">Thông tin liên lạc</h5>
                         <div class="d-flex gap-2">
-                            <div class="form-group flex-fill mb-3">
+                            <div class="form-group mb-3" style="flex: 1;">
                                 <label for="Email" class="form-label">Email</label>
                                 <input type="text" name="Email" id="Email" placeholder="Nhập email"
                                     class="form-control{{ $errors->has('Email') ? ' is-invalid' : '' }}"
@@ -64,7 +64,7 @@
                                     @endif
                                 </span>
                             </div>
-                            <div class="form-group flex-fill mb-3">
+                            <div class="form-group mb-3" style="flex: 1;">
                                 <label for="Phone" class="form-label">Phone</label>
                                 <input type="text" name="Phone" id="Phone" placeholder="Nhập số điện thoại"
                                     class="form-control{{ $errors->has('Phone') ? ' is-invalid' : '' }}"
@@ -77,7 +77,7 @@
                             </div>
                         </div>
                         <div class="d-flex gap-2">
-                            <div class="form-group flex-fill mb-3">
+                            <div class="form-group mb-3" style="flex: 1;">
                                 <label for="Address" class="form-label">Địa chỉ</label>
                                 <input type="text" name="Address" id="Address" placeholder="Nhập địa chỉ"
                                     class="form-control{{ $errors->has('Address') ? ' is-invalid' : '' }}"
@@ -88,7 +88,7 @@
                                     @endif
                                 </span>
                             </div>
-                            <div class="form-group flex-fill mb-3">
+                            <div class="form-group mb-3" style="flex: 1;">
                                 <label for="Zipcode" class="form-label">Zipcode</label>
                                 <input type="number" name="Zipcode" id="zipcode" placeholder="Nhập zipcode"
                                     class="form-control{{ $errors->has('Zipcode') ? ' is-invalid' : '' }}"
@@ -101,7 +101,7 @@
                             </div>
                         </div>
                         <div class="d-flex gap-2">
-                            <div class="form-group flex-fill">
+                            <div class="form-group" style="flex: 1;">
                                 <label for="Time_Reception" class="form-label">Thời gian tiếp
                                     nhận</label>
                                 <input type="date" name="Time_Reception" id="Time_Reception"
@@ -114,7 +114,7 @@
                                     @endif
                                 </span>
                             </div>
-                            <div class="form-group flex-fill">
+                            <div class="form-group" style="flex: 1;">
                                 <label for="FK_Id_Mode_Transport" class="form-label">Phương
                                     thức vận
                                     chuyển</label>
@@ -134,7 +134,7 @@
                                     @endif
                                 </span>
                             </div>
-                            <div class="form-group flex-fill">
+                            <div class="form-group" style="flex: 1;">
                                 <label for="FK_Id_CustomerType" class="form-label">Chọn kiểu
                                     khách
                                     hàng</label>
@@ -213,7 +213,7 @@
                             $(this).removeClass("is-invalid");
                         }
                     } else if ($(this).attr("id") == "Phone") {
-                        if (!/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/.test($(this).val())) {
+                        if (!/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/.test($(this).val())) {
                             $(this).addClass("is-invalid");
                             $(this).next().text("Vui lòng nhập đúng định dạng số điện thoại");
                             $(this).next().show();

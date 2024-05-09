@@ -37,7 +37,7 @@ function validateDate(firstControl, secondControl) {
 
 $(document).on("keydown", function (e) {
     // Kiểm tra xem phím được ấn có phải là tab không
-    if (e.keyCode === 9) {
+    if (e.keyCode === 9 || e.keyCode === 13) {
         // Ngăn chặn hành động mặc định của tab
         e.preventDefault();
 

@@ -41,6 +41,7 @@
                                         value="{{ $orderLocal->Count }}" {{ isset($inProcess) ? 'disabled' : '' }}
                                         tabindex="1">
                                 </div>
+                                <span class="text-danger"></span>
                             </div>
                             <div class="col-md-3">
                                 <div class="input-group">
@@ -217,4 +218,28 @@
 @push('javascript')
     <script src="{{ asset('js/orderLocals/makes/edit.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            function validateInput(element, message = null) {
+                $(element).on('blur', function() {
+                    if ($(this).attr("id") == "Count") {
+                        if ($(this).val() == "") {
+                            $(this).addClass("is-invalid");
+                            $(this).parent().next().text(message);
+                            $(this).parent().next().show();
+                        } else if (parseInt($(this).val(), 10) < 0) {
+                            $(this).parent().next().show();
+                            $(this).parent().next().text("Số lượng phải lớn hơn 0");
+                            $(this).addClass("is-invalid");
+                        } else {
+                            $(this).parent().next().hide();
+                            $(this).removeClass("is-invalid");
+                        }
+                    }
+                });
+            }
+
+            validateInput("#Count", "Vui lòng nhập số lượng")
+        })
+    </script>
 @endpush

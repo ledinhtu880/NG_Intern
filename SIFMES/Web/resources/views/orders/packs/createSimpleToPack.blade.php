@@ -45,8 +45,8 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="input-group mb-3 align-items-center ">
+                            <div class="col-md-6 mb-3">
+                                <div class="input-group align-items-center">
                                     <label class="input-group-text bg-secondary-subtle" for="Count_RawMaterial">
                                         Số lượng nguyên vật liệu
                                     </label>
@@ -54,6 +54,7 @@
                                         class="form-control" min="1" value="1" tabindex="2">
                                     <p data-name="unit" class="m-0 ps-3"></p>
                                 </div>
+                                <span class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
                                 <div class="input-group mb-3">
@@ -72,23 +73,25 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="input-group mb-3">
+                            <div class="col-md-4 mb-3">
+                                <div class="input-group">
                                     <label class="input-group-text bg-secondary-subtle" for="Count_Container">
                                         Số lượng thùng chứa
                                     </label>
                                     <input type="number" name="Count_Container" id="Count_Container" class="form-control"
                                         min="1" value="1" tabindex="4">
                                 </div>
+                                <span class="text-danger"></span>
                             </div>
-                            <div class="col-md-4">
-                                <div class="input-group mb-3">
+                            <div class="col-md-4 mb-3">
+                                <div class="input-group">
                                     <label class="input-group-text bg-secondary-subtle" for="Price_Container">
                                         Đơn giá
                                     </label>
                                     <input type="number" step="0.01" name="Price_Container" id="Price_Container"
                                         class="form-control" min="1" value="1" tabindex="5">
                                 </div>
+                                <span class="text-danger"></span>
                             </div>
                             <div class="col-md-6">
                                 <button type="submit" class="btn btn-primary px-5" tabindex="7">
@@ -156,6 +159,40 @@
     <script src="{{ asset('js/orders/packs/create.js') }}"></script>
     <script>
         $(document).ready(function() {
+            function validateInput(element, message) {
+                $(element).on("blur", function() {
+                    if ($(this).val() == "") {
+                        $(this).addClass("is-invalid");
+                        $(this).next().show();
+                        if ($(this).attr("id") == "Note") {
+                            $(this).next().text(message);
+                            $(this).next().show();
+                        } else {
+                            $(this).closest(".input-group").next().text(message);
+                            $(this).closest(".input-group").next().show();
+                        }
+                    } else {
+                        if ($(this).attr("id") == "Note") {
+                            $(this).next().hide();
+                        } else {
+                            $(this).closest(".input-group").next().hide();
+                        }
+                        $(this).closest(".input-group").next().hide();
+                        $(this).removeClass("is-invalid");
+                    }
+                });
+            }
+
+            validateInput(
+                "#Count_RawMaterial",
+                "Số lượng nguyên vật liệu không được để trống"
+            );
+            validateInput(
+                "#Count_Container",
+                "Số lượng thùng chứa không được để trống"
+            );
+            validateInput("#Price_Container", "Đơn giá không được để trống");
+
             const toastLiveExample = $("#liveToast");
             const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));
 
