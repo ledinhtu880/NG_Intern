@@ -21,24 +21,29 @@
                             @csrf
                             <div class="mb-3">
                                 <label class="form-label fw-medium text-secondary" for="floatingInput">Tên đăng nhập</label>
-                                <input name="username" type="username" class="form-control" id="floatingInput"
-                                    placeholder="Vui lòng nhập tên đăng nhập">
+                                <input name="username" type="username"
+                                    class="form-control{{ $errors->has('username') ? ' is-invalid' : '' }}"
+                                    id="floatingInput" placeholder="Vui lòng nhập tên đăng nhập" tabindex="1">
+                                <span class="text-danger">
+                                    @if ($errors->has('username'))
+                                        {{ $errors->first('username') }}
+                                    @endif
+                                </span>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-medium text-secondary" for="floatingPassword">Password</label>
-                                <input name="password" type="password" class="form-control" id="floatingPassword"
-                                    placeholder="Vui lòng nhập mật khẩu">
+                                <input name="password" type="password"
+                                    class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}"
+                                    id="floatingPassword" placeholder="Vui lòng nhập mật khẩu" tabindex="2">
+                                <span class="text-danger">
+                                    @if ($errors->has('password'))
+                                        {{ $errors->first('password') }}
+                                    @endif
+                                </span>
                             </div>
                             <div class="mt-4 text-center">
-                                <button type="submit" class="btn btn-primary rounded-1">Đăng nhập</button>
+                                <button type="submit" class="btn btn-primary rounded-1" tabindex="3">Đăng nhập</button>
                             </div>
-                            <!--
-                                        <div class="mb-3 mb-3">
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="checkbox-signin" checked>
-                                                <label class="form-check-label" for="checkbox-signin">Remember me</label>
-                                            </div>
-                                        </div> -->
                         </form>
                     </div>
                 </div>
@@ -68,6 +73,7 @@
 @endif
 
 @push('javascript')
+    <script src="{{ asset('js/app.js') }}"></script>
     <script>
         const toastLiveExample = $('#liveToast');
         const toastBootstrap = new bootstrap.Toast(toastLiveExample.get(0));

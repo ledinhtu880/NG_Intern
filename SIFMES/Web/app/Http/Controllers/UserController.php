@@ -108,6 +108,9 @@ class UserController extends Controller
     if ($request->ajax()) {
       $rowData = $request->input('rowData');
       foreach ($rowData as $row) {
+        DB::table('UserStationRole')
+          ->where('FK_Id_User', $row['Id_User'])
+          ->delete();
         DB::table('LinkRoleUser')
           ->where('FK_Id_User', $row['Id_User'])
           ->delete();

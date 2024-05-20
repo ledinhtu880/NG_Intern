@@ -25,7 +25,7 @@ class MaterialStoreRequest extends FormRequest
       'Name_RawMaterial' => [
         'required',
         'unique:RawMaterial,Name_RawMaterial',
-        'regex:/^[\pL\s]+$/u'
+        'regex:/^[a-zA-ZÀ-ỹ 0-9\s]+$/'
       ],
       'Unit' => [
         'required',

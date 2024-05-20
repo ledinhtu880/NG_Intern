@@ -21,11 +21,12 @@ class RoleController extends Controller
     ];
     return view('roles.index', compact('users', 'roles', 'type_role'));
   }
-
   public function showRoleByUser(Request $request)
   {
     $user_id = $request->input('user_id');
-    $role_id = DB::table('Role')->join('LinkRoleUser', 'Role.Id_Role', '=', 'LinkRoleUser.FK_Id_Role')->where('LinkRoleUser.FK_Id_User', $user_id)->get();
+    $role_id = DB::table('Role')
+      ->join('LinkRoleUser', 'Role.Id_Role', '=', 'LinkRoleUser.FK_Id_Role')
+      ->where('LinkRoleUser.FK_Id_User', $user_id)->get();
     return response()->json($role_id);
   }
 
@@ -45,7 +46,6 @@ class RoleController extends Controller
     $roles = DB::table('LinkRoleUser')
       ->join('Role', 'FK_Id_Role', '=', 'Id_Role')
       ->where('FK_Id_User', $user_id)->select('FK_Id_Role', 'Name_Role')->get();
-    $request->session()->put('roles', $roles);
     if (!$roles->contains('FK_Id_Role', 13)) {
       $url = redirect()->route('index')
         ->with('type', 'success')
@@ -58,5 +58,15 @@ class RoleController extends Controller
     return response()->json([
       'url' => $url->getTargetUrl()
     ]);
+  }
+  public function checkUser(Request $request)
+  {
+    if ($request->ajax()) {
+      $user_id = $request->input('user_id');
+      $username = DB::table('User')->where('Id_User', $user_id)->value('UserName');
+      $flag = $username == 'admin' ? true : false;
+
+      return response()->json($flag);
+    }
   }
 }

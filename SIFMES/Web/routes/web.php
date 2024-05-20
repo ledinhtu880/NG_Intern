@@ -13,7 +13,6 @@ use App\Http\Controllers\ProductStationLineController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\InfoOrderLocalController;
 use App\Http\Controllers\InforCustomerController;
-use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -218,6 +217,7 @@ Route::middleware('checklogin')->group(function () {
     Route::get('', [RoleController::class, 'index'])->name('index')->middleware('checkRole');
     Route::post('store', [RoleController::class, 'store']);
     Route::post('showRoleByUser', [RoleController::class, 'showRoleByUser'])->middleware('checkRole');
+    Route::post('checkUser', [RoleController::class, 'checkUser'])->middleware('checkRole');
   });
 
   Route::post('getUser', [UserController::class, 'getUser'])->name('getUser');

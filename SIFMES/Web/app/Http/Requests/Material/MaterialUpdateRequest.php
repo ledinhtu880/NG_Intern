@@ -32,7 +32,7 @@ class MaterialUpdateRequest extends FormRequest
                     ->where(function ($query) use ($rawMaterial) {
                         $query->where('Id_RawMaterial', '!=', $rawMaterial);
                     }),
-                'regex:/^[\pL\s]+$/u',
+                'regex:/^[a-zA-ZÀ-ỹ 0-9\s]+$/',
             ],
             'Unit' => 'required',
             'Count' => ['required', 'integer', 'min:1'],

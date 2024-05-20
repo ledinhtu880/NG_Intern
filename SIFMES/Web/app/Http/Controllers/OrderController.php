@@ -1028,14 +1028,16 @@ class OrderController extends Controller
     $price_Container = $contentSimple->Price_Container;
     // Xóa dữ liệu bảng ContentSimple
     $contentSimple->delete();
+
     // Tìm idpack ở trong bảng detail, nếu còn tức là bảng ContentPack vẫn còn tồn tại, nếu không còn thì xóa
     $detail = DetailContentSimpleOfPack::where('FK_Id_ContentPack', $Id_ContentPack)->get();
-    $result = '';
     $contentPack = ContentPack::find($Id_ContentPack);
     if ($detail->isEmpty()) {
       $Id_Order = $contentPack->FK_Id_Order;
       $contentPack->delete();
-      $result = redirect()->route('orders.packs.edit', compact('Id_Order'))->with('type', 'success')->with('message', 'Xóa thùng hàng mã: ' . $Id_ContentSimple . ' thành công');
+      $result = redirect()->route('orders.packs.edit', ['id' => $Id_Order])
+        ->with('type', 'success')
+        ->with('message', 'Xóa thùng hàng mã: ' . $Id_ContentSimple . ' thành công');
     } else {
       $price_Pack = $contentPack->Price_Pack;
       $contentPack->Price_Pack = $price_Pack - $price_Container;
@@ -1113,29 +1115,31 @@ class OrderController extends Controller
   }
   public function showPacksDetails(Request $request)
   {
-    $id_ContentPack = $request->id_ContentPack;
-    $id_ContentSimples = DetailContentSimpleOfPack::where('FK_Id_ContentPack', $id_ContentPack)->pluck('FK_Id_ContentSimple')->toArray();
+    if ($request->ajax()) {
+      $id_ContentPack = $request->id_ContentPack;
+      $id_ContentSimples = DetailContentSimpleOfPack::where('FK_Id_ContentPack', $id_ContentPack)->pluck('FK_Id_ContentSimple')->toArray();
 
-    $ContentSimples = [];
-    foreach ($id_ContentSimples as $id_ContentSimple) {
-      $ContentSimples[] = ContentSimple::find($id_ContentSimple);
+      $ContentSimples = [];
+      foreach ($id_ContentSimples as $id_ContentSimple) {
+        $ContentSimples[] = ContentSimple::find($id_ContentSimple);
+      }
+
+      $htmls = '';
+
+      $htmls = '';
+      foreach ($ContentSimples as $each) {
+        $htmls .= '
+        <tr class="align-middle">
+            <td>' . $each->material->Name_RawMaterial . '</td>
+            <td>' . $each->Count_RawMaterial . '</td>
+            <td>' . $each->material->Unit . '</td>
+            <td>' . $each->type->Name_ContainerType . '</td>
+            <td>' . $each->Count_Container . '</td>
+            <td>' . number_format($each->Price_Container, ($each->Price_Container == (int)$each->Price_Container) ? 0 : 2, ',', '.') . ' VNĐ' . '</td>
+        </tr>';
+      }
+      return response()->json($htmls);
     }
-
-    $htmls = '';
-
-    for ($i = 0; $i < count($ContentSimples); $i++) {
-      $htmls .= '
-                <tr class="align-middle>
-                    <td>' . $ContentSimples[$i]->material->Name_RawMaterial . '</td>
-                    <td>' . $ContentSimples[$i]->Count_RawMaterial . '</td>
-                    <td>' . $ContentSimples[$i]->material->Unit . '</td>
-                    <td>' . $ContentSimples[$i]->type->Name_ContainerType . '</td>
-                    <td>' . $ContentSimples[$i]->Count_Container . '</td>
-                    <td>' . number_format($ContentSimples[$i]->Price_Container, ($ContentSimples[$i]->Price_Container == (int)$ContentSimples[$i]->Price_Container) ? 0 : 2, ',', '.') . ' VNĐ' . '</td>
-                </tr>
-            ';
-    }
-    return $htmls;
   }
   public function updatePacks(Request $request)
   {

@@ -7,11 +7,11 @@
       "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\services\\process\\processservice402.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\libs\\dataprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\ngangiang\\libs\\dataprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\libs\\dataprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\services\\process\\helper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\ngangiang\\services\\process\\helper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\services\\process\\helper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -22,8 +22,20 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 4,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
@@ -34,8 +46,7 @@
               "RelativeToolTip": "NganGiang\\Libs\\DataProvider.cs",
               "ViewState": "AQIAAEMAAAAAAAAAAAAywFAAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-06T09:10:57.536Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-06T09:10:57.536Z"
             },
             {
               "$type": "Document",
@@ -60,20 +71,7 @@
               "RelativeToolTip": "NganGiang\\Services\\Process\\Helper.cs",
               "ViewState": "AQIAACsAAAAAAAAAAIAwwD0AAAAkAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-06T09:10:32.13Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+              "WhenOpened": "2024-05-06T09:10:32.13Z"
             }
           ]
         },

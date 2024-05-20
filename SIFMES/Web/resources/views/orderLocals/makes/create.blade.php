@@ -88,13 +88,13 @@
                     <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Đơn sản xuất</h5>
                     <table class="table table-borderless table-hover mb-3">
                         <thead class="table-heading">
-                            <tr class="align-middle">
-                                <th scope="col" class="py-2 text-center">Chọn</th>
-                                <th scope="col" class="py-2 text-center">Mã đơn hàng</th>
-                                <th scope="col" class="py-2 text-center">Số lượng</th>
+                            <tr class="align-middle text-center">
+                                <th scope="col" class="py-2">Chọn</th>
+                                <th scope="col" class="py-2">Mã đơn hàng</th>
+                                <th scope="col" class="py-2">Số lượng</th>
                                 <th scope="col" class="py-2">Kiểu hàng</th>
-                                <th scope="col" class="py-2 text-center">Ngày giao hàng</th>
-                                <th scope="col" class="py-2 text-center">Hoạt động</th>
+                                <th scope="col" class="py-2">Ngày giao hàng</th>
+                                <th scope="col" class="py-2"></th>
                             </tr>
                         </thead class="table-light">
                         <tbody id="table-result">
@@ -102,10 +102,12 @@
                     </table>
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
-                    <div class="d-flex align-items-center justify-content-end">
+                    <div class="d-flex align-items-center justify-content-between">
                         <button type="submit" class="btn btn-primary px-3" id="deleteBtn">
                             <i class="fa-solid fa-minus text-white me-2"></i>Xóa
                         </button>
+                        <a href="{{ route('orderLocals.packs.index') }}" class="btn btn-secondary" tabindex="5">Quay
+                            lại</a>
                     </div>
                 </div>
             </div>

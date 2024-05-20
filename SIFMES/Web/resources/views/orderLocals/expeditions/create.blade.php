@@ -31,7 +31,7 @@
                         </div>
                     </div>
                     <table class="table table-borderless table-hover m-0 table-expedition">
-                        <thead class="table-headingà">
+                        <thead class="table-heading">
                             <th scope="col" class="py-2 text-center">Chọn</th>
                             <th scope="col" class="py-2 text-center">Mã đơn hàng</th>
                             <th scope="col" class="py-2">Khách hàng</th>
@@ -67,31 +67,31 @@
                     <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Đơn giao hàng</h5>
                     <table class="table table-borderless table-hover m-0">
                         <thead class="table-heading">
-                            <tr class="align-middle">
-                                <th scope="col" class="py-2 text-center">Chọn</th>
-                                <th scope="col" class="py-2 text-center">Mã đơn hàng</th>
-                                <th scope="col" class="py-2 text-center">Số lượng</th>
+                            <tr class="align-middle text-center">
+                                <th scope="col" class="py-2 ">Chọn</th>
+                                <th scope="col" class="py-2">Mã đơn hàng</th>
+                                <th scope="col" class="py-2">Số lượng</th>
                                 <th scope="col" class="py-2">Kiểu thùng</th>
                                 <th scope="col" class="py-2">Trạng thái</th>
-                                <th scope="col" class="py-2 text-center">Ngày giao hàng</th>
-                                <th scope="col" class="py-2 text-center"></th>
+                                <th scope="col" class="py-2">Ngày giao hàng</th>
+                                <th scope="col" class="py-2"></th>
                             </tr>
                         </thead>
                         <tbody id="table-result">
                             @foreach ($data as $each)
-                                <tr class="align-middle">
-                                    <td class="text-center">
+                                <tr class="align-middle text-center">
+                                    <td>
                                         <input type="checkbox" class="input-check form-check-input checkbox2"
                                             value="{{ $each->Id_OrderLocal }}" data-id="cb{{ $each->Id_OrderLocal }}">
                                     </td>
-                                    <td class="text-center">{{ $each->Id_OrderLocal }}</td>
-                                    <td class="text-center">{{ $each->Count }}</td>
+                                    <td>{{ $each->Id_OrderLocal }}</td>
+                                    <td>{{ $each->Count }}</td>
                                     <td>
                                         <span class="badge badge-main fw-normal fs-6">{{ $each->type }}</span>
                                     </td>
                                     <td>{{ $each->status }}</td>
-                                    <td class="text-center">{{ $each->deliveryDate }}</td>
-                                    <td class="text-center">
+                                    <td>{{ $each->deliveryDate }}</td>
+                                    <td>
                                         <button type="button" class="btnShow btn btn-sm btn-outline" data-bs-toggle="modal"
                                             data-bs-target="#show-{{ $each->Id_OrderLocal }}"
                                             data-id="{{ $each->Id_OrderLocal }}">
@@ -219,18 +219,16 @@
                                     type_container = "Hộp tròn";
                                 }
                                 let html =
-                                    `<tr class="text-center align-middle">
+                                    `<tr class="align-middle text-center">
                                         <td>
                                             <input class="form-check-input checkbox1" type="checkbox" value="${element['Id_ContentSimple']}" 
                                             id="cb${element['Id_ContentSimple']}" data-id="${element['Id_ContentPack']}">
                                         </td>
                                         <td>${element['Id_Order']}</td>
                                         <td>${element['Name_Customer']}</td>
-                                        <td>
-                                            ${type_container}
-                                        </td>
+                                        <td>${type_container}</td>
                                         <td>${element['Count_Container']}</td>
-                                        <td class="text-center">${numberFormat(element['Price_Container'])} VNĐ</td>
+                                        <td>${numberFormat(element['Price_Container'])} VNĐ</td>
                                     </tr>`;
                                 $('.table-expedition tbody').append(html);
                             } else if (selectedValue == 409) {
@@ -317,9 +315,7 @@
                                         <td>${element['Name_RawMaterial']}</td>
                                         <td>${Number(element['Count_RawMaterial']).toLocaleString()}</td>
                                         <td>${element['Unit']}</td>
-                                        <td>
-                                            ${type_container}
-                                        </td>
+                                        <td>${type_container}</td>
                                         <td>${element['Count_Container']}</td>
                                         <td>${Number(element['Price_Container'])} VNĐ</td>
                                     </tr>`;

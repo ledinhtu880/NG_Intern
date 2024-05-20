@@ -213,7 +213,7 @@
                             $(this).removeClass("is-invalid");
                         }
                     } else if ($(this).attr("id") == "Phone") {
-                        if (!/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/.test($(this).val())) {
+                        if (!/^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/.test($(this).val())) {
                             $(this).addClass("is-invalid");
                             $(this).next().text("Vui lòng nhập đúng định dạng số điện thoại");
                             $(this).next().show();

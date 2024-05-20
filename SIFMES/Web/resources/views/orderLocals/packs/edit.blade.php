@@ -267,7 +267,7 @@
                             $(this).addClass("is-invalid");
                             $(this).parent().next().text(message);
                             $(this).parent().next().show();
-                        } else if (parseInt($(this).val(), 10) < 0) {
+                        } else if (parseInt($(this).val(), 10) <= 0) {
                             $(this).parent().next().show();
                             $(this).parent().next().text("Số lượng phải lớn hơn 0");
                             $(this).addClass("is-invalid");

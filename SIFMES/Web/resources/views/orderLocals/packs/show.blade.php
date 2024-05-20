@@ -10,7 +10,7 @@
             <li class="breadcrumb-item">
                 <a class="text-decoration-none" href="{{ route('orderLocals.packs.index') }}">Quản lý đơn đóng gói</a>
             </li>
-            <li class="breadcrumb-item active fw-medium" aria-current="page">Thêm</li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Xem chi tiết </li>
         </ol>
     </div>
     <div class="row g-0 px-3">

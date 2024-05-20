@@ -40,6 +40,7 @@ $(document).ready(function () {
     let dateOrderControl = $("input[name='Date_Order']");
     let deliveryDateControl = $("input[name='Date_Delivery']");
     let receptionDateControl = $("input[name='Date_Reception']");
+    let isCreate = false;
 
     validateInput("#Note", "Mô tả không được để trống");
     validateInput(
@@ -242,36 +243,44 @@ $(document).ready(function () {
             });
 
         if (isValid) {
-            // Thực hiện yêu cầu Ajax
-            $.ajax({
-                url: "/orders/store",
-                type: "post",
-                data: {
-                    formData: $("#formInformation").serialize(),
-                    _token: token,
-                },
-                success: function (response) {
-                    // Xử lý thành công
-                    window.location.href =
-                        "/orders/simples/getSimplesInWarehouse?id=" +
-                        response.id;
-                },
-                error: function (xhr) {
-                    // Xử lý lỗi khi gửi yêu cầu Ajax
-                    console.log(xhr.responseText);
-                    alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
-                },
-                complete: function () {
-                    isProcessing = false;
-                    clickCount = 0;
-                },
-            });
+            if (count == 0) {
+                // Thực hiện yêu cầu Ajax
+                $.ajax({
+                    url: "/orders/store",
+                    type: "post",
+                    data: {
+                        formData: $("#formInformation").serialize(),
+                        _token: token,
+                    },
+                    success: function (response) {
+                        // Xử lý thành công
+                        window.location.href =
+                            "/orders/simples/getSimplesInWarehouse?id=" +
+                            response.id;
+                    },
+                    error: function (xhr) {
+                        // Xử lý lỗi khi gửi yêu cầu Ajax
+                        console.log(xhr.responseText);
+                        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                    },
+                    complete: function () {
+                        isProcessing = false;
+                        clickCount = 0;
+                    },
+                });
+            } else if (count == 1) {
+                let urlParams = new URLSearchParams(window.location.search);
+                let id = urlParams.get("id");
+                window.location.href =
+                    "/orders/simples/getSimplesInWarehouse?id=" + id;
+            }
         } else {
             isProcessing = false;
             clickCount = 0; // Đặt lại clickCount nếu có lỗi trong dữ liệu đầu vào
         }
     });
     $("#formProduct").on("submit", function (event) {
+        isCreate = true;
         let isValid = true;
         event.preventDefault();
 
@@ -317,6 +326,13 @@ $(document).ready(function () {
                 success: function (response) {
                     let htmls = "";
                     let id = parseInt(response.maxID);
+
+                    // Thay đổi URL mà không refresh trang
+                    var newUrl =
+                        "http://localhost:8000/orders/simples/createSimple?id=" +
+                        id;
+                    history.pushState({}, "", newUrl);
+
                     if (response.exists == 0) {
                         $.each(response.data, function (key, value) {
                             let rawMaterialId = value.FK_Id_RawMaterial;

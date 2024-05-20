@@ -1,0 +1,16 @@
+body {
+    font-family: "Nunito", sans-serif !important;
+}
+
+.main-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 251.96px;
+}
+
+.content-wrapper {
+    background-color: rgb(242, 246, 252);
+    height: 100vh;
+}

@@ -133,7 +133,7 @@
                     $(this).next().text(message);
                 } else {
                     if ($(this).attr("id") == "Name_RawMaterial") {
-                        if (!/^[a-zA-ZÀ-ỹ\s]+$/.test($(this).val())) {
+                        if (!/^[a-zA-ZÀ-ỹ 0-9\s]+$/.test($(this).val())) {
                             $(this).addClass("is-invalid");
                             $(this).next().text("Vui lòng nhập đúng định dạng");
                             $(this).next().show();

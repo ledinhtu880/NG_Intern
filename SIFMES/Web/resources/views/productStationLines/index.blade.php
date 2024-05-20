@@ -93,7 +93,7 @@
                 @if ($data->lastPage() > 1)
                     <div class="card-footer pt-0 border-0 bg-transparent">
                         <nav>
-                            {{ $data->links('pagination::bootstrap-5') }}
+                            {{ $data->links('pagination::bootstrap-4') }}
                         </nav>
                     </div>
                 @endif

@@ -22,6 +22,15 @@ class OrderLocalController extends Controller
       Session::flash('message', 'Quản lý đơn sản xuất');
     }
 
+    $ordersToDelete = DB::table('OrderLocal')
+      ->leftJoin('DetailContentSimpleOrderLocal', 'OrderLocal.Id_OrderLocal', '=', 'DetailContentSimpleOrderLocal.FK_Id_OrderLocal')
+      ->leftJoin('DetailContentPackOrderLocal', 'OrderLocal.Id_OrderLocal', '=', 'DetailContentPackOrderLocal.FK_Id_OrderLocal')
+      ->whereNull('DetailContentSimpleOrderLocal.FK_Id_ContentSimple')
+      ->whereNull('DetailContentPackOrderLocal.FK_Id_ContentPack')
+      ->pluck('OrderLocal.Id_OrderLocal');
+
+    DB::table('OrderLocal')->whereIn('Id_OrderLocal', $ordersToDelete)->delete();
+
     $data = OrderLocal::where('MakeOrPackOrExpedition', '0')->paginate(5);
     return view('orderLocals.makes.index', compact('data'));
   }
@@ -349,6 +358,20 @@ class OrderLocalController extends Controller
   }
   public function indexPacks()
   {
+    if (!Session::has("type") && !Session::has("message")) {
+      Session::flash('type', 'info');
+      Session::flash('message', 'Quản lý đơn giao hàng');
+    }
+
+    $ordersToDelete = DB::table('OrderLocal')
+      ->leftJoin('DetailContentSimpleOrderLocal', 'OrderLocal.Id_OrderLocal', '=', 'DetailContentSimpleOrderLocal.FK_Id_OrderLocal')
+      ->leftJoin('DetailContentPackOrderLocal', 'OrderLocal.Id_OrderLocal', '=', 'DetailContentPackOrderLocal.FK_Id_OrderLocal')
+      ->whereNull('DetailContentSimpleOrderLocal.FK_Id_ContentSimple')
+      ->whereNull('DetailContentPackOrderLocal.FK_Id_ContentPack')
+      ->pluck('OrderLocal.Id_OrderLocal');
+
+    DB::table('OrderLocal')->whereIn('Id_OrderLocal', $ordersToDelete)->delete();
+
     return view('orderLocals.packs.index', [
       'data' => OrderLocal::where('MakeOrPackOrExpedition', 1)->paginate(5)
     ]);
@@ -448,31 +471,33 @@ class OrderLocalController extends Controller
 
   public function storePacks(Request $request)
   {
-    $Id_ContentPacks = $request->Id_ContentPacks;
-    $dateDelivery = $request->Date_Delivery;
-    $htmls = '';
-    $orderLocal_id = DB::table('OrderLocal')
-      ->max('Id_OrderLocal');
-    $orderLocal_id = $orderLocal_id == null ? 0 : ++$orderLocal_id;
-    $orderLocal = OrderLocal::create([
-      'Id_OrderLocal' => $orderLocal_id,
-      'Count' => 1,
-      'Date_Delivery' => $dateDelivery,
-      'SimpleOrPack' => 1,
-      'MakeOrPackOrExpedition' => 1,
-      'Date_Start' => now()
-    ]);
-
-
-    for ($i = 0; $i < count($Id_ContentPacks); $i++) {
-      DetailContentPackOrderLocal::create([
-        'FK_Id_OrderLocal' => $orderLocal_id,
-        'FK_Id_ContentPack' => $Id_ContentPacks[$i]
+    if ($request->ajax()) {
+      $Id_ContentPacks = $request->Id_ContentPacks;
+      $dateDelivery = $request->Date_Delivery;
+      $htmls = '';
+      $orderLocal_id = DB::table('OrderLocal')
+        ->max('Id_OrderLocal');
+      $orderLocal_id = $orderLocal_id == null ? 0 : ++$orderLocal_id;
+      $orderLocal = OrderLocal::create([
+        'Id_OrderLocal' => $orderLocal_id,
+        'Count' => 1,
+        'Date_Delivery' => $dateDelivery,
+        'SimpleOrPack' => 1,
+        'MakeOrPackOrExpedition' => 1,
+        'Date_Start' => now()
       ]);
-      $htmls .= $this->getOrderLocal($orderLocal);
-    }
 
-    return $htmls;
+
+      for ($i = 0; $i < count($Id_ContentPacks); $i++) {
+        DetailContentPackOrderLocal::create([
+          'FK_Id_OrderLocal' => $orderLocal_id,
+          'FK_Id_ContentPack' => $Id_ContentPacks[$i]
+        ]);
+        $htmls .= $this->getOrderLocal($orderLocal);
+      }
+
+      return $htmls;
+    }
   }
 
   public function showPacks(Request $request)
@@ -554,10 +579,8 @@ class OrderLocalController extends Controller
           DetailContentPackOrderLocal::where('FK_Id_OrderLocal', $Id_OrderLocal)->delete();
           OrderLocal::find($Id_OrderLocal)->delete();
 
-          $db = OrderLocal::where('SimpleOrPack', 1)->where('MakeOrPackOrExpedition', 1)->get();
-          return $this->getAllOrderLocal([
+          return response()->json([
             'flag' => $isDispatcher,
-            'data' => $db,
           ]);
         }
       }
@@ -566,19 +589,21 @@ class OrderLocalController extends Controller
 
   public function showOrderLocal(Request $request)
   {
-    $Id_CustomerType = $request->idCustomerType;
-    $result = DB::table('OrderLocal')
-      ->join('DetailContentPackOrderLocal', 'Id_OrderLocal', '=', 'FK_Id_OrderLocal')
-      ->join('ContentPack', 'Id_ContentPack', '=', 'FK_Id_ContentPack')
-      ->join('Order', 'Id_Order', '=', 'FK_Id_Order')
-      ->join('Customer', 'Id_Customer', '=', 'FK_Id_Customer')
-      ->where('Customer.FK_Id_CustomerType', $Id_CustomerType)
-      ->where('OrderLocal.SimpleOrPack', 1)
-      ->where('MakeOrPackOrExpedition', 1)
-      ->groupBy('Id_OrderLocal', 'Count', 'OrderLocal.Date_Delivery', 'OrderLocal.SimpleOrPack', 'MakeOrPackOrExpedition', 'Date_Start', 'Date_Fin')
-      ->select('Id_OrderLocal', 'Count', 'OrderLocal.Date_Delivery', 'OrderLocal.SimpleOrPack', 'MakeOrPackOrExpedition', 'Date_Start', 'Date_Fin')
-      ->get();
-    return $this->getAllOrderLocal($result);
+    if ($request->ajax()) {
+      $Id_CustomerType = $request->idCustomerType;
+      $result = DB::table('OrderLocal')
+        ->join('DetailContentPackOrderLocal', 'Id_OrderLocal', '=', 'FK_Id_OrderLocal')
+        ->join('ContentPack', 'Id_ContentPack', '=', 'FK_Id_ContentPack')
+        ->join('Order', 'Id_Order', '=', 'FK_Id_Order')
+        ->join('Customer', 'Id_Customer', '=', 'FK_Id_Customer')
+        ->where('Customer.FK_Id_CustomerType', $Id_CustomerType)
+        ->where('OrderLocal.SimpleOrPack', 1)
+        ->where('MakeOrPackOrExpedition', 1)
+        ->groupBy('Id_OrderLocal', 'Count', 'OrderLocal.Date_Delivery', 'OrderLocal.SimpleOrPack', 'MakeOrPackOrExpedition', 'Date_Start', 'Date_Fin')
+        ->select('Id_OrderLocal', 'Count', 'OrderLocal.Date_Delivery', 'OrderLocal.SimpleOrPack', 'MakeOrPackOrExpedition', 'Date_Start', 'Date_Fin')
+        ->get();
+      return response()->json($this->getAllOrderLocal($result));
+    }
   }
 
   private function getAllOrderLocal($orderLocals)
@@ -731,6 +756,15 @@ class OrderLocalController extends Controller
       Session::flash('type', 'info');
       Session::flash('message', 'Quản lý đơn giao hàng');
     }
+
+    $ordersToDelete = DB::table('OrderLocal')
+      ->leftJoin('DetailContentSimpleOrderLocal', 'OrderLocal.Id_OrderLocal', '=', 'DetailContentSimpleOrderLocal.FK_Id_OrderLocal')
+      ->leftJoin('DetailContentPackOrderLocal', 'OrderLocal.Id_OrderLocal', '=', 'DetailContentPackOrderLocal.FK_Id_OrderLocal')
+      ->whereNull('DetailContentSimpleOrderLocal.FK_Id_ContentSimple')
+      ->whereNull('DetailContentPackOrderLocal.FK_Id_ContentPack')
+      ->pluck('OrderLocal.Id_OrderLocal');
+
+    DB::table('OrderLocal')->whereIn('Id_OrderLocal', $ordersToDelete)->delete();
     $data = OrderLocal::where('MakeOrPackOrExpedition', 2)->paginate(5);
     return view('orderLocals.expeditions.index', compact('data'));
   }

@@ -80,7 +80,7 @@
                                 <th scope="col" class="py-2 text-center">Số lượng</th>
                                 <th scope="col" class="py-2">Kiểu hàng</th>
                                 <th scope="col" class="py-2 text-center">Ngày giao hàng</th>
-                                <th scope="col" class="py-2 text-center">Hoạt động</th>
+                                <th scope="col" class="py-2 text-center"></th>
                             </tr>
                         </thead>
                         <tbody id="table-result">

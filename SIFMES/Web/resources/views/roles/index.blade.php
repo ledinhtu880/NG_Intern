@@ -46,7 +46,7 @@
                     <div class="card">
                         <div class="card-body">
                             @foreach ($type_role as $key => $item)
-                                <div class="role-item">
+                                <div class="role-item" id="roleItem{{ $key }}">
                                     <div class="p-3 px-0">
                                         <span data-bs-toggle="collapse" style="cursor: pointer !important;"
                                             data-bs-target="#collapseRole{{ $key }}">
@@ -155,7 +155,7 @@
                     $(this).prop('checked', false);
                 });
                 $.ajax({
-                    url: '/roles/showRoleByUser/',
+                    url: '/roles/checkUser/',
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -164,17 +164,36 @@
                         user_id: user_id,
                     },
                     success: function(response) {
-                        let list_role = response;
-                        list_role.forEach(element => {
-                            if (element['FK_Id_User'] == user_id) {
-                                let role_chk = "role" + element['FK_Id_Role'];
-                                $('#' + role_chk).prop('checked', true);
-                                role_id.push(element['FK_Id_Role']);
+                        if (response) {
+                            $("#roleItem3").removeClass('d-none');
+                        } else {
+                            $("#roleItem3").addClass('d-none');
+                        }
+                        $.ajax({
+                            url: '/roles/showRoleByUser/',
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                    'content')
+                            },
+                            data: {
+                                user_id: user_id,
+                            },
+                            success: function(response) {
+                                let list_role = response;
+                                list_role.forEach(element => {
+                                    if (element['FK_Id_User'] == user_id) {
+                                        let role_chk = "role" + element[
+                                            'FK_Id_Role'];
+                                        $('#' + role_chk).prop('checked',
+                                            true);
+                                        role_id.push(element['FK_Id_Role']);
+                                    }
+                                });
                             }
                         });
                     }
                 });
-
             });
 
             $('#users').change();

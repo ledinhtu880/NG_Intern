@@ -189,7 +189,12 @@
                                     Id_ContentSimple,
                                 success: function(data) {
                                     window.location.href = data.url;
-                                }
+                                },
+                                error: function(xhr) {
+                                    // Xử lý lỗi khi gửi yêu cầu Ajax
+                                    console.log(xhr.responseText);
+                                    alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                                },
                             });
                         } else {
                             showToast(
@@ -215,7 +220,7 @@
                 $(".RawMaterial_Unit").eq(rowNumber).html(unit);
             });
 
-            // Sự kiện lưu gói hàng
+            // Sự kiện lưu gói hàng 
             $("#saveBtn").on('click', function() {
                 let isValid = true;
                 $(".table .form-control").each(function() {
@@ -248,7 +253,12 @@
                         },
                         success: function(response) {
                             window.location.href = response.url
-                        }
+                        },
+                        error: function(xhr) {
+                            // Xử lý lỗi khi gửi yêu cầu Ajax
+                            console.log(xhr.responseText);
+                            alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                        },
                     });
                 }
             });

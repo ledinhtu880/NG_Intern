@@ -26,9 +26,8 @@
                     <h5 class="h5 fw-bold border-bottom pb-2 mb-3">
                         Thông tin người dùng
                     </h5>
-                    <form
-                        action="@if (isset($user)) {{ route('users.update', compact('user')) }} @else {{ route('users.store') }} @endif"
-                        method="POST">
+                    <form id="formInformation" method="POST"
+                        action="@if (isset($user)) {{ route('users.update', compact('user')) }} @else {{ route('users.store') }} @endif">
                         @csrf
                         @if (isset($user))
                             @method('PUT')
@@ -143,6 +142,28 @@
             validateInput("#Name", "Vui lòng nhập tên người dùng");
             validateInput("#UserName", "Vui lòng nhập tên đăng nhập");
             validateInput("#Password", "Vui lòng nhập mật khẩu");
+
+            $("#formInformation").on('submit', function(event) {
+                event.preventDefault();
+                let isValid = true;
+
+                $("#formInformation")
+                    .find(".form-control")
+                    .each(function() {
+                        if ($(this).hasClass("is-invalid")) {
+                            isValid = false;
+                        } else if ($(this).val() == "") {
+                            isValid = false;
+                            $(this).addClass("is-invalid");
+                            $(this).parent().next().text("Trường này là bắt buộc");
+                            $(this).parent().next().show();
+                        }
+                    });
+
+                if (isValid) {
+                    this.submit();
+                }
+            })
         })
     </script>
 @endpush

@@ -99,11 +99,9 @@ $(document).ready(function () {
         let Id_OrderLocals = [];
         for (let i = 0; i < checkRemove.length; i++) {
             if (checkRemove.eq(i).prop("checked")) {
-                Id_OrderLocals.push($(".Id_OrderLocal").eq(i).html());
+                let id_order_local = $(".Id_OrderLocal").eq(i).html();
+                Id_OrderLocals.push(id_order_local);
             }
-        }
-        for (let i = 0; i < Id_OrderLocals.length; i++) {
-            Id_OrderLocals[i] = Id_OrderLocals[i].replace(/\s/g, "");
         }
         if (Id_OrderLocals.length == 0) {
             showToast(
@@ -128,14 +126,16 @@ $(document).ready(function () {
                         "fa-exclamation-circle"
                     );
                 } else {
-                    showToast(
-                        "Đơn hàng đã được khởi động, không thể xóa",
-                        "bg-warning",
-                        "fa-exclamation-circle"
-                    );
-                    $("#table-result").html(response.data);
                     slBox_CustomerType.change();
+                    showToast(
+                        "Xóa đơn đóng gói thành công",
+                        "bg-success",
+                        "fa-check-circle"
+                    );
                 }
+            },
+            error: function (xhr) {
+                console.log(xhr.responseText);
             },
         });
     });
@@ -152,6 +152,9 @@ $(document).on("click", ".btnShow", function () {
         },
         success: function (response) {
             $(".table-simples").html(response);
+        },
+        error: function (xhr) {
+            console.log(xhr.responseText);
         },
     });
 });

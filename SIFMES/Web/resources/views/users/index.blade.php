@@ -147,7 +147,6 @@
                                                                 data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        {{ $user->Name }}?
                                                         <p class="m-0">Bạn chắc chắn muốn xóa người dùng này?</p>
                                                         <p class="m-0">
                                                             Việc này sẽ xóa người dùng vĩnh viễn. <br>
@@ -177,7 +176,7 @@
                 @if ($users->lastPage() > 1)
                     <div class="card-footer pt-0 border-0 bg-transparent">
                         <nav>
-                            {{ $users->links('pagination::bootstrap-5') }}
+                            {{ $users->links('pagination::bootstrap-4') }}
                         </nav>
                     </div>
                 @endif
