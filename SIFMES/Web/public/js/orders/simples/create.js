@@ -269,8 +269,7 @@ $(document).ready(function () {
                     },
                 });
             } else if (count == 1) {
-                let urlParams = new URLSearchParams(window.location.search);
-                let id = urlParams.get("id");
+                let id = $("#Id_Order").val();
                 window.location.href =
                     "/orders/simples/getSimplesInWarehouse?id=" + id;
             }
@@ -326,12 +325,7 @@ $(document).ready(function () {
                 success: function (response) {
                     let htmls = "";
                     let id = parseInt(response.maxID);
-
-                    // Thay đổi URL mà không refresh trang
-                    var newUrl =
-                        "http://localhost:8000/orders/simples/createSimple?id=" +
-                        id;
-                    history.pushState({}, "", newUrl);
+                    $("#Id_Order").val(id);
 
                     if (response.exists == 0) {
                         $.each(response.data, function (key, value) {

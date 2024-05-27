@@ -17,7 +17,7 @@ namespace NganGiang.Services.Process
         #region Hàm lấy dữ liệu
         public DataTable GetCheckAmount(int id)
         {
-            string query = $"SELECT (Count_RawMaterial * Count_Container) AS 'Số lượng'," +
+            string query = $"SELECT (Count_RawMaterial * Count_Container) AS 'Số lượng', " +
                 $"RawMaterial.Count AS N'Tồn kho' FROM ContentSimple" +
                 $"\n INNER JOIN RawMaterial ON ContentSimple.FK_Id_RawMaterial = Id_RawMaterial" +
                 $"\n WHERE Id_ContentSimple = {id}";

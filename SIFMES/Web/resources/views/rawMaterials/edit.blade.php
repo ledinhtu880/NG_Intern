@@ -31,7 +31,8 @@
                                 <label for="Name_RawMaterial" class="form-label">Tên nguyên
                                     liệu</label>
                                 <input type="text" name="Name_RawMaterial" id="Name_RawMaterial"
-                                    placeholder="Nhập tên nguyên liệu thô" value="{{ $material->Name_RawMaterial }}"
+                                    placeholder="Nhập tên nguyên liệu thô"
+                                    value="{{ old('Name_RawMaterial', $material->Name_RawMaterial) }}"
                                     class="form-control{{ $errors->has('Name_RawMaterial') ? ' is-invalid' : '' }}"
                                     tabindex="1">
                                 <span class="text-danger">
@@ -43,7 +44,7 @@
                             <div class="form-group mb-3" style="flex: 1">
                                 <label for="Unit" class="form-label">Đơn vị</label>
                                 <input type="text" name="Unit" id="Unit" placeholder="Nhập đơn vị"
-                                    value="{{ $material->Unit }}"
+                                    value="{{ old('Unit', $material->Unit) }}"
                                     class="form-control{{ $errors->has('Unit') ? ' is-invalid' : '' }}" tabindex="2">
                                 <span class="text-danger">
                                     @if ($errors->has('Unit'))
@@ -56,7 +57,7 @@
                             <div class="form-group" style="flex: 1">
                                 <label for="Count" class="form-label">Số lượng</label>
                                 <input type="number" name="Count" id="Count" placeholder="Nhập số lượng"
-                                    value="{{ $material->Count }}"
+                                    value="{{ old('Count', $material->Count) }}"
                                     class="form-control{{ $errors->has('Count') ? ' is-invalid' : '' }}" tabindex="3">
                                 <span class="text-danger">
                                     @if ($errors->has('Count'))

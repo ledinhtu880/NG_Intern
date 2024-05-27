@@ -51,11 +51,11 @@
                                         <td class="text-center">{{ $each->{"Thực hành"} }}</td>
                                         <td class="text-center">
                                             <a href="{{ route('eduProgram.edit', $each->{"Mã môn học"}) }}"
-                                                class="btn btn-sm text-secondary">
+                                                class="btn btn-sm btn-outline-secondary">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
-                                            <button type="button" class="btn btn-sm text-secondary" data-bs-toggle="modal"
-                                                data-bs-target="#i{{ $each->{"Mã môn học"} }}">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                data-bs-toggle="modal" data-bs-target="#i{{ $each->{"Mã môn học"} }}">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                             <div class="modal fade" id="i{{ $each->{"Mã môn học"} }}" tabindex="-1"

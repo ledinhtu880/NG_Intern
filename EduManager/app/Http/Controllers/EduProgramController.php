@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EduProgram\EduProgramStoreRequest;
+use App\Http\Requests\EduProgram\EduProgramUpdateRequest;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -23,19 +25,22 @@ class EduProgramController extends Controller
     {
         return view('eduProgram.create');
     }
-    public function store(Request $request)
+    public function store(EduProgramStoreRequest $request)
     {
+        $validator = $request->validated();
+
         $subjectID = DB::select('exec GetNextSubjectId')[0]->NewSubjectId;
         Subject::create([
             'Id_Sub' => $subjectID,
-            'Sym_Sub' => $request->Sym_Sub,
-            'Name_Sub' => $request->Name_Sub,
+            'Sym_Sub' => $validator['Sym_Sub'],
+            'Name_Sub' => $validator['Name_Sub'],
         ]);
 
+
         $lessons = [
-            ['FK_Id_LS' => 1, 'NumHour' => $request->Theory],
-            ['FK_Id_LS' => 2, 'NumHour' => $request->Exercise],
-            ['FK_Id_LS' => 3, 'NumHour' => $request->Practice],
+            ['FK_Id_LS' => 1, 'NumHour' => $validator['Theory']],
+            ['FK_Id_LS' => 2, 'NumHour' => $validator['Exercise']],
+            ['FK_Id_LS' => 3, 'NumHour' => $validator['Practice']],
         ];
 
         foreach ($lessons as $lesson) {
@@ -64,17 +69,22 @@ class EduProgramController extends Controller
 
         return view('eduProgram.edit', compact('subject'));
     }
-    public function update(Request $request)
+    public function update(EduProgramUpdateRequest $request)
     {
+        $validator = $request->validated();
 
         $eduProgram = DB::table('EduProgram')->where('FK_Id_Sub', $request->Id_Sub)->get();
+        Subject::where('Id_Sub', $request->Id_Sub)->update([
+            'Sym_Sub' => $validator['Sym_Sub'],
+            'Name_Sub' => $validator['Name_Sub'],
+        ]);
         foreach ($eduProgram as $each) {
             if ($each->FK_Id_LS == 1) {
-                EduProgram::where('FK_Id_Sub', $request->Id_Sub)->where('FK_Id_LS', 1)->update(['NumHour' => $request->Theory]);
+                EduProgram::where('FK_Id_Sub', $request->Id_Sub)->where('FK_Id_LS', 1)->update(['NumHour' => $validator['Theory']]);
             } else if ($each->FK_Id_LS == 2) {
-                EduProgram::where('FK_Id_Sub', $request->Id_Sub)->where('FK_Id_LS', 2)->update(['NumHour' => $request->Exercise]);
+                EduProgram::where('FK_Id_Sub', $request->Id_Sub)->where('FK_Id_LS', 2)->update(['NumHour' => $validator['Exercise']]);
             } else if ($each->FK_Id_LS == 3) {
-                EduProgram::where('FK_Id_Sub', $request->Id_Sub)->where('FK_Id_LS', 3)->update(['NumHour' => $request->Practice]);
+                EduProgram::where('FK_Id_Sub', $request->Id_Sub)->where('FK_Id_LS', 3)->update(['NumHour' => $validator['Practice']]);
             }
         }
         return redirect()->route('eduProgram.index')->with([
@@ -84,11 +94,19 @@ class EduProgramController extends Controller
     }
     public function destroy(Request $request)
     {
-        EduProgram::where('FK_Id_Sub', $request->id)->delete();
-        Subject::where('Id_Sub', $request->id)->delete();
-        return redirect()->route('eduProgram.index')->with([
-            'message' => 'Xóa môn học thành công.',
-            'type' => 'success',
-        ]);
+        $exists = DB::table('LessonSub')->where('FK_Id_Sub', $request->id)->exists();
+        if ($exists) {
+            return redirect()->route('EduProgram.index')->with([
+                'message' => 'Phải xóa bài học trước khi xóa môn học.',
+                'type' => 'warning',
+            ]);
+        } else {
+            EduProgram::where('FK_Id_Sub', $request->id)->delete();
+            Subject::where('Id_Sub', $request->id)->delete();
+            return redirect()->route('eduProgram.index')->with([
+                'message' => 'Xóa môn học thành công.',
+                'type' => 'success',
+            ]);
+        }
     }
 }

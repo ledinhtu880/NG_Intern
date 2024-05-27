@@ -123,8 +123,7 @@
                                     class="form-select{{ $errors->has('FK_Id_CustomerType') ? ' is-invalid' : '' }}"
                                     tabindex="8">
                                     @foreach ($customerTypes as $each)
-                                        <option value="{{ $each->Id }}">{{ $each->Name }}
-                                        </option>
+                                        <option value="{{ $each->Id }}">{{ $each->Name }}</option>
                                     @endforeach
                                 </select>
                                 <span class="text-danger">

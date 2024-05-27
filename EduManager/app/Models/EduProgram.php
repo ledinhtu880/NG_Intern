@@ -20,4 +20,9 @@ class EduProgram extends Model
             'NumHour' => $numHour,
         ]);
     }
+
+    public function eduProgram()
+    {
+        return $this->hasOne(EduProgram::class, 'FK_Id_Sub', 'Id_Sub');
+    }
 }

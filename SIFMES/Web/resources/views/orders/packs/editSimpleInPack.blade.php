@@ -165,10 +165,11 @@
             }
 
             let token = $('meta[name="csrf-token"]').attr("content");
-
-            $('.btnDeleteSimple').click(function() {
+            $(".btnDeleteSimple").on('click', function() {
                 let Id_ContentSimple = $(this).data('id');
                 let Id_ContentPack = @json($Id_ContentPack);
+                let rowElement = $(this).closest('tr');
+                let modalElement = $("#deleteID-" + Id_ContentSimple);
                 $.ajax({
                     method: 'POST',
                     data: {
@@ -177,7 +178,11 @@
                     },
                     url: "/orders/simples/checkSimpleInProcess",
                     success: function(response) {
-                        if (response == 1) {
+                        if (response.flag == 1) {
+                            showToast(
+                                "Thùng hàng đang trong quá trình sản xuất, không thể xóa!",
+                                "bg-warning", "fa-exclamation-circle");
+                        } else {
                             $.ajax({
                                 method: 'POST',
                                 data: {
@@ -188,7 +193,16 @@
                                 url: "/orders/packs/destroySimpleInPack/" +
                                     Id_ContentSimple,
                                 success: function(data) {
-                                    window.location.href = data.url;
+                                    modalElement.on("hidden.bs.modal", function() {
+                                        showToast(
+                                            "Xóa thùng hàng thành công",
+                                            "bg-success",
+                                            "fa-check-circle"
+                                        );
+                                        rowElement.remove();
+                                    });
+
+                                    modalElement.modal("hide");
                                 },
                                 error: function(xhr) {
                                     // Xử lý lỗi khi gửi yêu cầu Ajax
@@ -196,10 +210,6 @@
                                     alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
                                 },
                             });
-                        } else {
-                            showToast(
-                                "Thùng hàng đang trong quá trình sản xuất, không thể xóa!",
-                                "bg-warning", "fa-exclamation-circle");
                         }
                     },
                     error: function(xhr) {

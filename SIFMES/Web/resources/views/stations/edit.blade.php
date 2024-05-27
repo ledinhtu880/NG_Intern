@@ -27,7 +27,7 @@
                                 <label for="Id_Station" class="form-label">Mã trạm</label>
                                 <input type="text" name="Id_Station" id="Id_Station" placeholder="Nhập mã trạm"
                                     class="form-control{{ $errors->has('Id_Station') ? ' is-invalid' : '' }}"
-                                    value="{{ $station->Id_Station }}" disabled>
+                                    value="{{ old('Id_Station', $station->Id_Station) }}" disabled>
                                 <span class="text-danger">
                                     @if ($errors->has('Id_Station'))
                                         {{ $errors->first('Id_Station') }}
@@ -39,7 +39,7 @@
                                 <label for="Name_Station" class="form-label">Tên trạm</label>
                                 <input type="text" name="Name_Station" id="Name_Station" placeholder="Nhập tên trạm"
                                     class="form-control{{ $errors->has('Name_Station') ? ' is-invalid' : '' }}"
-                                    value="{{ $station->Name_Station }}" tabindex="1">
+                                    value="{{ old('Name_Station', $station->Name_Station) }}" tabindex="1">
                                 <span class="text-danger">
                                     @if ($errors->has('Name_Station'))
                                         {{ $errors->first('Name_Station') }}
@@ -51,7 +51,7 @@
                             <label for="Ip_Address" class="form-label">Địa chỉ IP</label>
                             <input type="text" name="Ip_Address" id="Ip_Address" placeholder="Nhập địa chỉ IP"
                                 class="form-control{{ $errors->has('Ip_Address') ? ' is-invalid' : '' }}"
-                                value="{{ $station->Ip_Address }}" tabindex="2">
+                                value="{{ old('Ip_Address', $station->Ip_Address) }}" tabindex="2">
                             <span class="text-danger">
                                 @if ($errors->has('Ip_Address'))
                                     {{ $errors->first('Ip_Address') }}

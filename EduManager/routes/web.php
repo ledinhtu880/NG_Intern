@@ -22,4 +22,6 @@ Route::group(['prefix' => 'lessonSub', 'as' => 'lessonSub.'], function () {
     Route::post('/checkAmount', [LessonSubController::class, 'checkAmount'])->name('checkAmount');
     Route::post('/destroy', [LessonSubController::class, 'destroy'])->name('destroy');
     Route::post('/showSubjects', [LessonSubController::class, 'showSubjects'])->name('showSubjects');
+    Route::post('/checkDuplicatedStore', [LessonSubController::class, 'checkDuplicatedStore'])->name('checkDuplicatedStore');
+    Route::post('/checkDuplicatedUpdate', [LessonSubController::class, 'checkDuplicatedUpdate'])->name('checkDuplicatedUpdate');
 });

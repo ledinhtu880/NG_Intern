@@ -144,9 +144,9 @@
         $(document).ready(function() {
             validateInput("#Sym_Sub", "Vui lòng nhập ký hiệu môn học");
             validateInput("#Name_Sub", "Vui lòng nhập tên môn học");
-            validateInput("#Theory");
-            validateInput("#Exercise");
-            validateInput("#Practice");
+            validateInput("#Theory", "Vui lòng nhập số tiết lý thuyết");
+            validateInput("#Exercise", "Vui lòng nhập số tiết bài tập");
+            validateInput("#Practice", "Vui lòng nhập số tiết thực hành");
 
             $("#saveBtn").on('click', function() {
                 let isValid = true;
@@ -157,7 +157,6 @@
                         $(this).addClass("is-invalid");
                         $(this).next().text("Trường này là bắt buộc");
                         $(this).next().show();
-                        console.log($(this));
                     } else if ($(this).hasClass("is-invalid")) {
                         isValid = false;
                     }

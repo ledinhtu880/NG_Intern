@@ -118,6 +118,7 @@ class OrderController extends Controller
       $id = $request->input('Id_ContentSimple');
       $flag = DB::table('ContentSimple')
         ->join('ProcessContentSimple', 'ContentSimple.Id_ContentSimple', '=', 'ProcessContentSimple.FK_Id_ContentSimple')
+        ->where('ProcessContentSimple.FK_Id_ContentSimple', $id)
         ->exists();
       return response()->json($flag);
     }
@@ -505,7 +506,7 @@ class OrderController extends Controller
         return response()->json([
           'status' => 'success',
           'data' => $data,
-          'maxID' => $id,
+          'maxID' => $FK_Id_Order,
           'exists' => 0
         ]);
       }
@@ -1019,36 +1020,38 @@ class OrderController extends Controller
   }
   public function destroySimpleInPack(Request $request)
   {
-    $Id_ContentSimple = $request->Id_ContentSimple;
-    $Id_ContentPack = $request->Id_ContentPack;
-    // Xóa dữ liệu bảng detail
-    DetailContentSimpleOfPack::where('FK_Id_ContentSimple', $Id_ContentSimple)->delete();
-    // Sửa giá tiền ở bảng ContentPack
-    $contentSimple = ContentSimple::find($Id_ContentSimple);
-    $price_Container = $contentSimple->Price_Container;
-    // Xóa dữ liệu bảng ContentSimple
-    $contentSimple->delete();
+    if ($request->ajax()) {
+      $Id_ContentSimple = $request->Id_ContentSimple;
+      $Id_ContentPack = $request->Id_ContentPack;
+      // Xóa dữ liệu bảng detail
+      DetailContentSimpleOfPack::where('FK_Id_ContentSimple', $Id_ContentSimple)->delete();
+      // Sửa giá tiền ở bảng ContentPack
+      $contentSimple = ContentSimple::find($Id_ContentSimple);
+      $price_Container = $contentSimple->Price_Container;
+      // Xóa dữ liệu bảng ContentSimple
+      $contentSimple->delete();
 
-    // Tìm idpack ở trong bảng detail, nếu còn tức là bảng ContentPack vẫn còn tồn tại, nếu không còn thì xóa
-    $detail = DetailContentSimpleOfPack::where('FK_Id_ContentPack', $Id_ContentPack)->get();
-    $contentPack = ContentPack::find($Id_ContentPack);
-    if ($detail->isEmpty()) {
-      $Id_Order = $contentPack->FK_Id_Order;
-      $contentPack->delete();
-      $result = redirect()->route('orders.packs.edit', ['id' => $Id_Order])
-        ->with('type', 'success')
-        ->with('message', 'Xóa thùng hàng mã: ' . $Id_ContentSimple . ' thành công');
-    } else {
-      $price_Pack = $contentPack->Price_Pack;
-      $contentPack->Price_Pack = $price_Pack - $price_Container;
-      $contentPack->save();
-      // return $price_Container;
-      $result = redirect()->back()->with('type', 'success')->with('message', 'Xóa thùng hàng mã: ' . $Id_ContentSimple . ' thành công');
+      // Tìm idpack ở trong bảng detail, nếu còn tức là bảng ContentPack vẫn còn tồn tại, nếu không còn thì xóa
+      $detail = DetailContentSimpleOfPack::where('FK_Id_ContentPack', $Id_ContentPack)->get();
+      $contentPack = ContentPack::find($Id_ContentPack);
+      if ($detail->isEmpty()) {
+        $Id_Order = $contentPack->FK_Id_Order;
+        $contentPack->delete();
+        $result = redirect()->route('orders.packs.edit', ['id' => $Id_Order])
+          ->with('type', 'success')
+          ->with('message', 'Xóa thùng hàng mã: ' . $Id_ContentSimple . ' thành công');
+      } else {
+        $price_Pack = $contentPack->Price_Pack;
+        $contentPack->Price_Pack = $price_Pack - $price_Container;
+        $contentPack->save();
+
+        $result = redirect()->back()->with('type', 'success')->with('message', 'Xóa thùng hàng mã: ' . $Id_ContentSimple . ' thành công');
+      }
+
+      return response()->json([
+        'url' => $result->getTargetUrl()
+      ]);
     }
-
-    return response()->json([
-      'url' => $result->getTargetUrl()
-    ]);
   }
   public function updateSimpleInPack(Request $request)
   {

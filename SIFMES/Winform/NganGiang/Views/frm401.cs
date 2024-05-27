@@ -36,10 +36,9 @@ namespace NganGiang.Views
             {
                 if (Convert.ToBoolean(row.Cells[0].Value) == true)
                 {
-                    chk.Add(Convert.ToInt32(row.Cells[3].Value));   
+                    chk.Add(Convert.ToInt32(row.Cells[3].Value));
                 }
             }
-
 
             if (chk.Count > 0)
             {
@@ -56,7 +55,6 @@ namespace NganGiang.Views
                             MessageBox.Show($"{state_pedestalProvided}", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
-
                     }
                     MessageBox.Show("Cấp thùng chứa và đế dán mã RFID thành công!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();

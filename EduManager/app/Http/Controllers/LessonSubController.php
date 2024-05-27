@@ -24,6 +24,15 @@ class LessonSubController extends Controller
             $symSubject = $request->input('symSubject');
             $data = DB::table('LessonSubjectView')->where('Ký hiệu môn học', $symSubject)->get();
             $Id_Sub = DB::table('Subjects')->where('Sym_Sub', $symSubject)->value('Id_Sub');
+            foreach ($data as $each) {
+                $ids = DB::table('LessonSub')
+                    ->join('Subjects', 'Subjects.Id_Sub', '=', 'LessonSub.FK_Id_Sub')
+                    ->where('Sym_Sub', $symSubject)
+                    ->where('Les_Unit', $each->{"Bài học"})
+                    ->select('Id_Les', 'FK_Id_LS')->get();
+                $each->ids = $ids;
+            }
+
             return response()->json([
                 'status' => 'success',
                 'data' => $data,
@@ -31,6 +40,7 @@ class LessonSubController extends Controller
             ]);
         }
     }
+
     public function store(Request $request)
     {
         if ($request->ajax()) {
@@ -109,13 +119,15 @@ class LessonSubController extends Controller
             $data = $request->input('data');
 
             DB::table('LessonSub')
-                ->where('FK_Id_Sub', $data['idSub'])->where('Les_Unit', $data['lesUnit'])
+                ->whereIn('Id_Les', $data['idLes'])
                 ->update([
                     'NumHour' => DB::raw("CASE
                                     WHEN FK_Id_LS = 1 THEN " . $data['theory'] . "
                                     WHEN FK_Id_LS = 2 THEN " . $data['exercise'] . "
                                     WHEN FK_Id_LS = 3 THEN " . $data['practice'] . "
-                                END")
+                                END"),
+                    'Les_Unit' => $data['lesUnit'],
+                    'Les_Name' => $data['lesName']
                 ]);
 
             return response()->json('success');
@@ -124,10 +136,93 @@ class LessonSubController extends Controller
     public function destroy(Request $request)
     {
         if ($request->ajax()) {
-            $id = $request->input('id');
-            $lesUnit = $request->input('lesUnit');
-            LessonSub::where('FK_Id_Sub', '=', $id)->where('Les_Unit', $lesUnit)->delete();
+            $idLes = $request->input('idLes');
+            LessonSub::whereIn('Id_Les', $idLes)->delete();
             return response()->json('success');
+        }
+    }
+
+    public function checkDuplicatedStore(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = $request->input('data');
+            $Id_Sub = DB::table('Subjects')->where('Sym_Sub', $data['symSubject'])->value('Id_Sub');
+
+            $existsLessonUnit = LessonSub::where('FK_Id_Sub', $Id_Sub)->where('Les_Unit', $data['lesUnit'])->exists();
+            $existsLessonName = LessonSub::where('FK_Id_Sub', $Id_Sub)->where('Les_Name', $data['lesName'])->exists();
+            if ($existsLessonUnit && $existsLessonName) {
+                return response()->json([
+                    'status' => 'success',
+                    'flag' => 1,
+                    'message' => [
+                        'Tên bài học đã tồn tại.',
+                        'Tiêu đề bài học đã tồn tại.'
+                    ]
+                ]);
+            } else if ($existsLessonName) {
+                return response()->json([
+                    'status' => 'success',
+                    'flag' => 2,
+                    'message' => 'Tiêu đề bài học đã tồn tại.'
+                ]);
+            }
+            if ($existsLessonUnit) {
+                return response()->json([
+                    'status' => 'success',
+                    'flag' => 3,
+                    'message' => 'Tên bài học đã tồn tại.'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'success',
+                    'flag' => 0,
+                ]);
+            }
+        }
+    }
+    public function checkDuplicatedUpdate(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = $request->input('data');
+
+            $existsLessonUnit = LessonSub::whereNotIn('Id_Les', $data['idLes'])->where('Les_Unit', $data['lesUnit'])->exists();
+            $existsLessonName = LessonSub::whereNotIn('Id_Les', $data['idLes'])->where('Les_Name', $data['lesName'])->exists();
+            if ($existsLessonUnit && $existsLessonName) {
+                return response()->json([
+                    'status' => 'success',
+                    'flag' => 1,
+                    'message' => [
+                        'Tên bài học đã tồn tại.',
+                        'Tiêu đề bài học đã tồn tại.'
+                    ],
+                    'lesName' => $data['lesName'],
+                    'lesUnit' => $data['lesUnit'],
+                ]);
+            } else if ($existsLessonName) {
+                return response()->json([
+                    'status' => 'success',
+                    'flag' => 2,
+                    'message' => 'Tiêu đề bài học đã tồn tại.',
+                    'lesName' => $data['lesName'],
+                    'lesUnit' => $data['lesUnit'],
+                ]);
+            }
+            if ($existsLessonUnit) {
+                return response()->json([
+                    'status' => 'success',
+                    'flag' => 3,
+                    'message' => 'Tên bài học đã tồn tại.',
+                    'lesName' => $data['lesName'],
+                    'lesUnit' => $data['lesUnit'],
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'success',
+                    'flag' => 0,
+                    'lesName' => $data['lesName'],
+                    'lesUnit' => $data['lesUnit'],
+                ]);
+            }
         }
     }
 }

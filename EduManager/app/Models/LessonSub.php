@@ -12,4 +12,9 @@ class LessonSub extends Model
     protected $primaryKey = 'Id_Les';
     public $timestamps = false;
     protected $fillable = ['Les_Unit', 'Les_Name', 'FK_Id_Sub', 'FK_Id_LS', 'NumHour'];
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class, 'FK_Id_Sub', 'Id_Sub');
+    }
 }

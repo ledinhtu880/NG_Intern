@@ -33,7 +33,9 @@ class CustomerController extends Controller
     $customer = new Customer();
     $customer->Id_Customer = $idMax;
     $customer->fill($request->all());
+    $customer->Time_Reception = \Carbon\Carbon::now();
     $customer->save();
+
     return redirect()->route('customers.index')->with([
       'type' => 'success',
       'message' => 'Thêm người dùng thành công'
@@ -48,17 +50,8 @@ class CustomerController extends Controller
   public function update(CustomerUpdateRequest $request, string $id)
   {
     $validator = $request->validated();
-
     $customer = Customer::find($id);
-    $customer->Name_Customer = $validator['Name_Customer'];
-    $customer->Email = $validator['Email'];
-    $customer->Phone = $validator['Phone'];
-    $customer->Name_Contact = $validator['Name_Contact'];
-    $customer->Address = $validator['Address'];
-    $customer->Zipcode = $validator['Zipcode'];
-    $customer->FK_Id_Mode_Transport = $validator['FK_Id_Mode_Transport'];
-    $customer->Time_Reception = $validator['Time_Reception'];
-    $customer->FK_Id_CustomerType = $validator['FK_Id_CustomerType'];
+    $customer->fill($validator);
     $customer->save();
 
     if ($customer->wasChanged()) {
@@ -75,18 +68,16 @@ class CustomerController extends Controller
   }
   public function destroy(Customer $customer)
   {
-    $exists = Order::where('FK_Id_Customer', $customer->Id_Customer)->exists();
-    if ($exists) {
+    if (Order::where('FK_Id_Customer', $customer->Id_Customer)->exists()) {
       return redirect()->route('customers.index')->with([
         'message' => 'Khách hàng đang có đơn hàng, không thể xóa.',
-        'type' => 'warning',
+        'type' => 'warning'
       ]);
     } else {
-      Customer::destroy($customer->Id_Customer);;
-
+      $customer->delete();
       return redirect()->route('customers.index')->with([
         'message' => 'Xóa khách hàng thành công',
-        'type' => 'success',
+        'type' => 'success'
       ]);
     }
   }

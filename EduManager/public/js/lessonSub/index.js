@@ -14,8 +14,11 @@ function validateInput(element, message = null) {
                     $(this).next().hide();
                     $(this).removeClass("is-invalid");
                 }
-            } else if ($(this).attr("id") == "Les_Name") {
-                if (!/^[\w\W\s\d-,]*$/.test($(this).val())) {
+            } else if (
+                $(this).attr("id") == "Les_Name" ||
+                $(this).attr("id") == "Les_Unit"
+            ) {
+                if (!/^[a-zA-ZÀ-ỹ\s\d]+$/.test($(this).val())) {
                     $(this).addClass("is-invalid");
                     $(this).next().text("Vui lòng chỉ nhập ký tự chữ và số.");
                     $(this).next().show();
@@ -53,7 +56,7 @@ function validateInputInModal(element, message = null) {
                 element.attr("id") == "Les_Name" ||
                 element.attr("id") == "Les_Unit"
             ) {
-                if (!/^[\w\s\d-,]*$/.test(element.val())) {
+                if (!/^[a-zA-ZÀ-ỹ\s\d]+$/.test(element.val())) {
                     element.addClass("is-invalid");
                     element.next().text("Vui lòng chỉ nhập ký tự chữ và số.");
                     element.next().show();
@@ -121,8 +124,15 @@ $(document).ready(function () {
 
                 $("#table-data").empty();
                 $.each(data, function (key, value) {
-                    let editModalID = "editModal-" + response.Id_Sub;
-                    let deleteModalId = "deleteModal-" + response.Id_Sub;
+                    let htmlLesson = "";
+                    let strLesson = "";
+                    $.each(value.ids, function (idKey, element) {
+                        htmlLesson += `<input type="hidden" name="Id_Les", id="les${element.FK_Id_LS}" value="${element.Id_Les}">`;
+                        strLesson += element.Id_Les;
+                    });
+
+                    let editModalID = "editModal-" + strLesson;
+                    let deleteModalId = "deleteModal-" + strLesson;
 
                     let htmls = `<tr class="align-middle text-center" data-id="${response.Id_Sub}">
                             <td scope="row" class="fw-bold">${value["Ký hiệu môn học"]}</td>
@@ -136,8 +146,8 @@ $(document).ready(function () {
                             <td>${value["Bài tập"]}</td>
                             <td>${value["Thực hành"]}</td>
                             <td>
-                            <button type="button" class="btn btn-sm btn-outline" data-bs-toggle="modal" data-bs-target="#${editModalID}">
-                            <i class="fa-solid fa-pen-to-square"></i>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#${editModalID}">
+                                <i class="fa-solid fa-pen-to-square"></i>
                             </button>
                             <div class="modal fade" id="${editModalID}" tabindex="-1"
                             aria-labelledby="${editModalID}Label" aria-hidden="true">
@@ -146,10 +156,11 @@ $(document).ready(function () {
                                         <div class="modal-header">
                                             <h1 class="modal-title fs-5" id="${editModalID}Label">Sửa bài học</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
+                                                aria-label="Close" tabindex="-1"></button>
                                         </div>
                                         <div class="modal-body modal-edit">
                                             <form>
+                                                ${htmlLesson}
                                                 <div class="d-flex gap-2 mb-3">
                                                     <div class="form-group" style="flex: 1; text-align: start;">
                                                         <label for="Sym_Sub" class="form-label">Ký hiệu môn học</label>
@@ -201,22 +212,23 @@ $(document).ready(function () {
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Đóng</button>
-                                            <button type="button" class="btn btn-primary btnUpdate" data-id=${response.Id_Sub}>Lưu</button>
+                                            <button type="button" class="btn btn-primary btnUpdate" data-id="${response.Id_Sub}" strLesson="${strLesson}">Lưu</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-sm btn-outline" data-bs-toggle="modal" data-bs-target="#${deleteModalId}">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#${deleteModalId}">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
-                            <div class="modal fade" id="${deleteModalId}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="${deleteModalId}" tabindex="-1" aria-labelledby="example${deleteModalId}" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="modal-title" id="exampleModalLabel">Xác nhận</h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <h4 class="modal-title" id="example${deleteModalId}">Xác nhận</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" tabindex="-1"></button>
                                         </div>
                                         <div class="modal-body">
+                                            ${htmlLesson}
                                             <p class="m-0">Bạn chắc chắn muốn xóa bài học này?</p>
                                                 <p class="m-0">
                                                     Việc này sẽ xóa bài học vĩnh viễn. <br>
@@ -225,7 +237,7 @@ $(document).ready(function () {
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                            <button type="button" class="btn btn-danger btnDelete" data-id="${response.Id_Sub}">Xác nhận</button>
+                                            <button type="button" class="btn btn-danger btnDelete" data-id="${response.Id_Sub}" strLesson="${strLesson}">Xác nhận</button>
                                         </div>
                                     </div>
                                 </div>
@@ -245,6 +257,31 @@ $(document).ready(function () {
                         lessonNameInput,
                         "Vui lòng nhập tiêu đề bài học"
                     );
+
+                    $(".modal").each(function (index) {
+                        // Tính maxTabIndex hiện tại của toàn bộ trang
+                        let maxTabIndex = Math.max.apply(
+                            null,
+                            $("*")
+                                .map(function () {
+                                    let tabIndex = $(this).attr("tabindex");
+                                    return tabIndex && tabIndex !== "-1"
+                                        ? parseInt(tabIndex, 10)
+                                        : -Infinity;
+                                })
+                                .get()
+                        );
+
+                        // Gán tabindex mới cho các phần tử trong modal
+                        $(this)
+                            .find("input, button, a")
+                            .each(function () {
+                                if ($(this).attr("tabindex") !== "-1") {
+                                    maxTabIndex++;
+                                    $(this).attr("tabindex", maxTabIndex);
+                                }
+                            });
+                    });
                 });
             },
             error: function (xhr) {
@@ -280,6 +317,8 @@ $(document).ready(function () {
                 $(this).val("0");
             } else {
                 $(this).val("");
+                $(this).removeClass("is-invalid");
+                $(this).next().text("");
             }
         });
     });
@@ -299,64 +338,86 @@ $(document).ready(function () {
         });
         if (isValid) {
             let symSubject = $("#Sym_Sub");
+            let lesUnit = $("#Les_Unit");
+            let lesName = $("#Les_Name");
+            let lessons = [
+                {
+                    FK_Id_LS: 1,
+                    NumHour: $("#Theory").val(),
+                },
+                {
+                    FK_Id_LS: 2,
+                    NumHour: $("#Exercise").val(),
+                },
+                {
+                    FK_Id_LS: 3,
+                    NumHour: $("#Practice").val(),
+                },
+            ];
+            let data = {
+                symSubject: symSubject.val(),
+                lesUnit: lesUnit.val(),
+                lesName: lesName.val(),
+                lessons: lessons,
+            };
+
             $.ajax({
-                url: "/lessonSub/checkAmount",
+                url: "/lessonSub/checkDuplicatedStore",
                 method: "POST",
                 dataType: "json",
                 data: {
-                    symSubject: symSubject.val(),
-                    theoryNumHour: $("#Theory").val(),
-                    exerciseNumHour: $("#Exercise").val(),
-                    practiceNumHour: $("#Practice").val(),
+                    data: data,
                     _token: token,
                 },
                 success: function (response) {
-                    if (response.flag == false) {
-                        showToast(
-                            response.message,
-                            "bg-warning",
-                            "fa-xmark-circle"
-                        );
-                    } else {
-                        let lesUnit = $("#Les_Unit");
-                        let lesName = $("#Les_Name");
-                        let lessons = [
-                            {
-                                FK_Id_LS: 1,
-                                NumHour: $("#Theory").val(),
-                            },
-                            {
-                                FK_Id_LS: 2,
-                                NumHour: $("#Exercise").val(),
-                            },
-                            {
-                                FK_Id_LS: 3,
-                                NumHour: $("#Practice").val(),
-                            },
-                        ];
-                        let data = {
-                            symSubject: symSubject.val(),
-                            lesUnit: lesUnit.val(),
-                            lesName: lesName.val(),
-                            lessons: lessons,
-                        };
-
+                    if (response.flag == 0) {
                         $.ajax({
-                            url: "/lessonSub/store",
+                            url: "/lessonSub/checkAmount",
                             method: "POST",
                             dataType: "json",
                             data: {
-                                data: data,
+                                symSubject: symSubject.val(),
+                                theoryNumHour: $("#Theory").val(),
+                                exerciseNumHour: $("#Exercise").val(),
+                                practiceNumHour: $("#Practice").val(),
                                 _token: token,
                             },
                             success: function (response) {
-                                $("#createSubjectModel").modal("hide");
-                                showToast(
-                                    "Thêm bài học thành công",
-                                    "bg-success",
-                                    "fa-check-circle"
-                                );
-                                $(selectElement).change();
+                                if (response.flag == false) {
+                                    showToast(
+                                        response.message,
+                                        "bg-warning",
+                                        "fa-xmark-circle"
+                                    );
+                                } else {
+                                    $.ajax({
+                                        url: "/lessonSub/store",
+                                        method: "POST",
+                                        dataType: "json",
+                                        data: {
+                                            data: data,
+                                            _token: token,
+                                        },
+                                        success: function (response) {
+                                            $("#createSubjectModel").modal(
+                                                "hide"
+                                            );
+                                            showToast(
+                                                "Thêm bài học thành công",
+                                                "bg-success",
+                                                "fa-check-circle"
+                                            );
+                                            $(selectElement).change();
+                                        },
+                                        error: function (xhr) {
+                                            // Xử lý lỗi khi gửi yêu cầu Ajax
+                                            console.log(xhr.responseText);
+                                            alert(
+                                                "Có lỗi xảy ra. Vui lòng thử lại sau."
+                                            );
+                                        },
+                                    });
+                                }
                             },
                             error: function (xhr) {
                                 // Xử lý lỗi khi gửi yêu cầu Ajax
@@ -364,6 +425,22 @@ $(document).ready(function () {
                                 alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
                             },
                         });
+                    } else if (response.flag == 1) {
+                        $("#Les_Unit").addClass("is-invalid");
+                        $("#Les_Unit").next().text(response.message[0]);
+                        $("#Les_Unit").next().show();
+
+                        $("#Les_Name").addClass("is-invalid");
+                        $("#Les_Name").next().text(response.message[1]);
+                        $("#Les_Name").next().show();
+                    } else if (response.flag == 2) {
+                        $("#Les_Name").addClass("is-invalid");
+                        $("#Les_Name").next().text(response.message);
+                        $("#Les_Name").next().show();
+                    } else if (response.flag == 3) {
+                        $("#Les_Unit").addClass("is-invalid");
+                        $("#Les_Unit").next().text(response.message);
+                        $("#Les_Unit").next().show();
                     }
                 },
                 error: function (xhr) {
@@ -377,18 +454,25 @@ $(document).ready(function () {
 
     $(document).on("click", ".btnDelete", function () {
         let id = $(this).data("id");
-        let modalElement = $("#deleteModal-" + id); // Lấy modal tương ứng với hàng
-        let rowElement = $(this).closest('tr[data-id="' + id + '"]');
-        let lesUnit = rowElement.find("td[data-id='lesUnit']").data("value");
+        let idLes = [];
+        let strLesson = "";
 
-        // Xóa hàng khi modal được ẩn
+        let rowElement = $(this).closest('tr[data-id="' + id + '"]');
+        let modalElement = $(this).closest(".modal");
+        let idLesElement = modalElement.find("input[name='Id_Les']");
+        idLesElement.each(function () {
+            idLes.push($(this).val());
+            strLesson += $(this).val();
+        });
+        let data = {};
+        data["idLes"] = idLes;
+
         $.ajax({
             url: "/lessonSub/destroy",
             method: "POST",
             dataType: "json",
             data: {
-                id: id,
-                lesUnit: lesUnit,
+                idLes: idLes,
                 _token: token,
             },
             success: function (response) {
@@ -413,8 +497,18 @@ $(document).ready(function () {
 
     $(document).on("click", ".btnUpdate", function () {
         let id = $(this).data("id");
-        let modalElement = $("#editModal-" + id); // Lấy modal tương ứng với hàng
+        let idLes = [];
+        let strLesson = "";
+
+        let modalElement = $(this).closest(".modal");
+        let idLesElement = modalElement.find("input[name='Id_Les']");
+        idLesElement.each(function () {
+            idLes.push($(this).val());
+            strLesson += $(this).val();
+        });
+
         let data = {};
+        data["idLes"] = idLes;
         data["idSub"] = id;
         data["symSubject"] = modalElement.find("#Sym_Sub").val();
         data["lesUnit"] = modalElement.find("#Les_Unit").val();
@@ -449,49 +543,75 @@ $(document).ready(function () {
         if (isValid) {
             let symSubject = modalElement.find("#Sym_Sub");
             $.ajax({
-                url: "/lessonSub/checkAmount",
+                url: "/lessonSub/checkDuplicatedUpdate",
                 method: "POST",
                 dataType: "json",
                 data: {
-                    symSubject: symSubject.val(),
-                    theoryNumHour: modalElement.find("#Theory").val(),
-                    exerciseNumHour: modalElement.find("#Exercise").val(),
-                    practiceNumHour: modalElement.find("#Practice").val(),
+                    data: data,
                     _token: token,
                 },
                 success: function (response) {
-                    if (response.flag == false) {
-                        showToast(
-                            response.message,
-                            "bg-warning",
-                            "fa-xmark-circle"
-                        );
-                    } else {
+                    if (response.flag == 0) {
                         $.ajax({
-                            url: "/lessonSub/update",
+                            url: "/lessonSub/checkAmount",
                             method: "POST",
                             dataType: "json",
                             data: {
-                                data: data,
+                                symSubject: symSubject.val(),
+                                theoryNumHour: modalElement
+                                    .find("#Theory")
+                                    .val(),
+                                exerciseNumHour: modalElement
+                                    .find("#Exercise")
+                                    .val(),
+                                practiceNumHour: modalElement
+                                    .find("#Practice")
+                                    .val(),
                                 _token: token,
                             },
                             success: function (response) {
-                                if (response == "success") {
-                                    $(selectElement).change();
-                                    setTimeout(() => {
-                                        modalElement.on(
-                                            "hidden.bs.modal",
-                                            function () {
-                                                showToast(
-                                                    "Chỉnh sửa bài học thành công",
-                                                    "bg-success",
-                                                    "fa-check-circle"
+                                if (response.flag == false) {
+                                    showToast(
+                                        response.message,
+                                        "bg-warning",
+                                        "fa-xmark-circle"
+                                    );
+                                } else {
+                                    $.ajax({
+                                        url: "/lessonSub/update",
+                                        method: "POST",
+                                        dataType: "json",
+                                        data: {
+                                            data: data,
+                                            _token: token,
+                                        },
+                                        success: function (response) {
+                                            if (response == "success") {
+                                                modalElement.on(
+                                                    "hidden.bs.modal",
+                                                    function () {
+                                                        showToast(
+                                                            "Chỉnh sửa bài học thành công",
+                                                            "bg-success",
+                                                            "fa-check-circle"
+                                                        );
+                                                        $(
+                                                            selectElement
+                                                        ).change();
+                                                    }
                                                 );
+                                                // Đóng modal
+                                                modalElement.modal("hide");
                                             }
-                                        );
-                                        // Đóng modal
-                                        modalElement.modal("hide");
-                                    }, 2000);
+                                        },
+                                        error: function (xhr) {
+                                            // Xử lý lỗi khi gửi yêu cầu Ajax
+                                            console.log(xhr.responseText);
+                                            alert(
+                                                "Có lỗi xảy ra. Vui lòng thử lại sau."
+                                            );
+                                        },
+                                    });
                                 }
                             },
                             error: function (xhr) {
@@ -500,6 +620,34 @@ $(document).ready(function () {
                                 alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
                             },
                         });
+                    } else if (response.flag == 1) {
+                        modalElement.find("#Les_Unit").addClass("is-invalid");
+                        modalElement
+                            .find("#Les_Unit")
+                            .next()
+                            .text(response.message[0]);
+                        modalElement.find("#Les_Unit").next().show();
+
+                        modalElement.find("#Les_Name").addClass("is-invalid");
+                        modalElement
+                            .find("#Les_Name")
+                            .next()
+                            .text(response.message[1]);
+                        modalElement.find("#Les_Name").next().show();
+                    } else if (response.flag == 2) {
+                        modalElement.find("#Les_Name").addClass("is-invalid");
+                        modalElement
+                            .find("#Les_Name")
+                            .next()
+                            .text(response.message);
+                        modalElement.find("#Les_Name").next().show();
+                    } else if (response.flag == 3) {
+                        modalElement.find("#Les_Unit").addClass("is-invalid");
+                        modalElement
+                            .find("#Les_Unit")
+                            .next()
+                            .text(response.message);
+                        modalElement.find("#Les_Unit").next().show();
                     }
                 },
                 error: function (xhr) {

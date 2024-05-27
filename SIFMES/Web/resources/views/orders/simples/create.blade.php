@@ -25,6 +25,7 @@
                     <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Thông tin chung</h5>
                     <form method="POST" id="formInformation">
                         @csrf
+                        <input type="hidden" name="Id_Order" id="Id_Order">
                         <input type="hidden" name="count" value="{{ isset($count) ? 1 : 0 }}">
                         <input type="hidden" name="SimpleOrPack" value="0">
                         <div class="row">

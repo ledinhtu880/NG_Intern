@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-  //
   public function index()
   {
-    $users = User::all();
+    // $users = User::all();
+    $users = User::select('Id_User', 'Name')->where('Username', '!=', 'admin')->get();
     $roles = DB::table('Role')->get();
     $type_role = [
       0 => 'Quản lý',
@@ -19,14 +19,18 @@ class RoleController extends Controller
       2 => 'Theo dõi',
       3 => 'Quản trị hệ thống'
     ];
+
     return view('roles.index', compact('users', 'roles', 'type_role'));
   }
+
   public function showRoleByUser(Request $request)
   {
     $user_id = $request->input('user_id');
     $role_id = DB::table('Role')
       ->join('LinkRoleUser', 'Role.Id_Role', '=', 'LinkRoleUser.FK_Id_Role')
-      ->where('LinkRoleUser.FK_Id_User', $user_id)->get();
+      ->where('LinkRoleUser.FK_Id_User', $user_id)
+      ->get();
+
     return response()->json($role_id);
   }
 
@@ -34,7 +38,9 @@ class RoleController extends Controller
   {
     $roles = $request->input('role_id');
     $user_id = $request->input('user_id');
+
     DB::table('LinkRoleUser')->where('FK_Id_User', $user_id)->delete();
+
     if ($roles != null) {
       foreach ($roles as $role_id) {
         DB::table('LinkRoleUser')->insert([
@@ -43,22 +49,26 @@ class RoleController extends Controller
         ]);
       }
     }
+
     $roles = DB::table('LinkRoleUser')
       ->join('Role', 'FK_Id_Role', '=', 'Id_Role')
-      ->where('FK_Id_User', $user_id)->select('FK_Id_Role', 'Name_Role')->get();
+      ->where('FK_Id_User', $user_id)
+      ->select('FK_Id_Role', 'Name_Role')
+      ->get();
+
+    $redirectUrl = redirect()->route('index');
+
     if (!$roles->contains('FK_Id_Role', 13)) {
-      $url = redirect()->route('index')
-        ->with('type', 'success')
+      $redirectUrl = $redirectUrl->with('type', 'success')
         ->with('message', 'Đăng ký vai trò thành công!');
     } else {
-      $url = redirect()->route('roles.index')
-        ->with('type', 'success')
+      $redirectUrl = $redirectUrl->with('type', 'success')
         ->with('message', 'Đăng ký vai trò thành công!');
     }
-    return response()->json([
-      'url' => $url->getTargetUrl()
-    ]);
+
+    return response()->json(['url' => $redirectUrl->getTargetUrl()]);
   }
+
   public function checkUser(Request $request)
   {
     if ($request->ajax()) {

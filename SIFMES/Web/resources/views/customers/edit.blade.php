@@ -32,7 +32,7 @@
                                 <input type="text" name="Name_Customer" id="Name_Customer"
                                     placeholder="Nhập tên người dùng"
                                     class="form-control{{ $errors->has('Name_Customer') ? ' is-invalid' : '' }}"
-                                    value="{{ $customer->Name_Customer }}" tabindex="1">
+                                    value="{{ old('Name_Customer', $customer->Name_Customer) }}" tabindex="1">
                                 <span class="text-danger">
                                     @if ($errors->has('Name_Customer'))
                                         {{ $errors->first('Name_Customer') }}
@@ -43,7 +43,7 @@
                                 <label for="Name_Contact" class="form-label">Tên liên hệ</label>
                                 <input type="text" name="Name_Contact" id="Name_Contact" placeholder="Nhập tên liên hệ"
                                     class="form-control{{ $errors->has('Name_Contact') ? ' is-invalid' : '' }}"
-                                    value="{{ $customer->Name_Contact }}" tabindex="2">
+                                    value="{{ old('Name_Contact', $customer->Name_Contact) }}" tabindex="2">
                                 <span class="text-danger">
                                     @if ($errors->has('Name_Contact'))
                                         {{ $errors->first('Name_Contact') }}
@@ -57,7 +57,7 @@
                                 <label for="Email" class="form-label">Email</label>
                                 <input type="text" name="Email" id="Email" placeholder="Nhập email"
                                     class="form-control{{ $errors->has('Email') ? ' is-invalid' : '' }}"
-                                    value="{{ $customer->Email }}" tabindex="3">
+                                    value="{{ old('Email', $customer->Email) }}" tabindex="3">
                                 <span class="text-danger">
                                     @if ($errors->has('Email'))
                                         {{ $errors->first('Email') }}
@@ -68,7 +68,7 @@
                                 <label for="Phone" class="form-label">Phone</label>
                                 <input type="text" name="Phone" id="Phone" placeholder="Nhập số điện thoại"
                                     class="form-control{{ $errors->has('Phone') ? ' is-invalid' : '' }}"
-                                    value="{{ $customer->Phone }}" tabindex="4">
+                                    value="{{ old('Phone', $customer->Phone) }}" tabindex="4">
                                 <span class="text-danger">
                                     @if ($errors->has('Phone'))
                                         {{ $errors->first('Phone') }}
@@ -81,7 +81,7 @@
                                 <label for="Address" class="form-label">Địa chỉ</label>
                                 <input type="text" name="Address" id="Address" placeholder="Nhập địa chỉ"
                                     class="form-control{{ $errors->has('Address') ? ' is-invalid' : '' }}"
-                                    value="{{ $customer->Address }}" tabindex="5">
+                                    value="{{ old('Address', $customer->Address) }}" tabindex="5">
                                 <span class="text-danger">
                                     @if ($errors->has('Address'))
                                         {{ $errors->first('Address') }}
@@ -92,7 +92,7 @@
                                 <label for="Zipcode" class="form-label">Zipcode</label>
                                 <input type="number" name="Zipcode" id="zipcode" placeholder="Nhập zipcode"
                                     class="form-control{{ $errors->has('Zipcode') ? ' is-invalid' : '' }}"
-                                    value="{{ $customer->ZipCode }}" tabindex="6">
+                                    value="{{ old('ZipCode', $customer->ZipCode) }}" tabindex="6">
                                 <span class="text-danger">
                                     @if ($errors->has('Zipcode'))
                                         {{ $errors->first('Zipcode') }}
@@ -102,8 +102,7 @@
                         </div>
                         <div class="d-flex gap-2">
                             <div class="form-group" style="flex: 1;">
-                                <label for="Time_Reception" class="form-label">Thời gian tiếp
-                                    nhận</label>
+                                <label for="Time_Reception" class="form-label">Thời gian tiếp nhận</label>
                                 <input type="date" name="Time_Reception" id="Time_Reception"
                                     class="form-control{{ $errors->has('Time_Reception') ? ' is-invalid' : '' }}"
                                     value="{{ \Carbon\Carbon::parse($customer->Time_Reception)->format('Y-m-d') }}"
@@ -115,9 +114,7 @@
                                 </span>
                             </div>
                             <div class="form-group" style="flex: 1;">
-                                <label for="FK_Id_Mode_Transport" class="form-label">Phương
-                                    thức vận
-                                    chuyển</label>
+                                <label for="FK_Id_Mode_Transport" class="form-label">Phương thức vận chuyển</label>
                                 <select name="FK_Id_Mode_Transport"
                                     class="form-select{{ $errors->has('FK_Id_Mode_Transport') ? ' is-invalid' : '' }}"
                                     tabindex="8">

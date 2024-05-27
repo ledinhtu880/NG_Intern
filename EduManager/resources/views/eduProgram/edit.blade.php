@@ -99,8 +99,8 @@
                 </div>
                 <div class="card-footer pt-0 border-0 bg-transparent">
                     <div class="d-flex justify-content-end gap-3">
-                        <a href="{{ route('eduProgram.index') }}" class="btn btn-secondary" tabindex="10">Quay lại</a>
-                        <button type="submit" class="btn btn-primary" id="saveBtn" tabindex="9">Lưu</button>
+                        <a href="{{ route('eduProgram.index') }}" class="btn btn-secondary" tabindex="9">Quay lại</a>
+                        <button type="submit" class="btn btn-primary" id="saveBtn" tabindex="10">Lưu</button>
                     </div>
                 </div>
             </div>
