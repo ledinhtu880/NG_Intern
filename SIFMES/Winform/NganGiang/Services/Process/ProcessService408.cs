@@ -22,7 +22,7 @@ namespace NganGiang.Services.Process
         public DataTable ShowContentPack()
         {
             string query = @"SELECT FK_Id_OrderLocal AS [Mã đơn hàng], ProcessContentPack.FK_Id_ContentPack AS [Mã gói hàng],
-            CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Kiểu hàng], 
+            CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Loại hàng], 
             Name_State AS [Trạng thái], CONVERT(DATE, ProcessContentPack.Date_Start) AS [Ngày bắt đầu]
             FROM ProcessContentPack
                 INNER JOIN ContentPack on FK_Id_ContentPack = Id_ContentPack

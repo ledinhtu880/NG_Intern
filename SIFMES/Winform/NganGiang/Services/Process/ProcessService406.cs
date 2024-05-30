@@ -15,15 +15,10 @@ namespace NganGiang.Services.Process
     {
         public DataTable getProcessAt406()
         {
-            /**
-             * Lấy ra các đơn hàng đang ở trạm 406 và chưa được xử lý
-             * Trả về bảng các cột: Id_OrderLocal, Id_ContentSimple, Name_RawMaterial, RawMaterial.Count, Count_RawMaterial * Count_Container as Count_Need, Name_State, Date_Start, SimpleOrPack
-             **/
             int FK_Id_Station = 406;
             int FK_Id_State = 0;
             string query = "SELECT FK_Id_OrderLocal, Id_ContentSimple, Name_RawMaterial, RawMaterial.Count, " +
                            "Count_RawMaterial * Count_Container as Count_Need, Name_State, " +
-                           // Mã 103 là mã định dạng cho dd/mm/yyyy.
                            "CONVERT(varchar(30), ProcessContentSimple.Date_Start, 103) as Date_Start, " +
                            "CASE OrderLocal.SimpleOrPack WHEN 0 THEN N'Thùng hàng' ELSE N'Gói hàng' END as SimpleOrPack " +
                            "FROM ProcessContentSimple " +
@@ -38,7 +33,6 @@ namespace NganGiang.Services.Process
         }
         public DataTable getInforOrderByIdContentSimple(ContentSimple contentSimple)
         {
-            // Lấy ra thông tin đơn hàng theo Id_ContentSimple
             string query = $@"SELECT  Name_RawMaterial as N'Nguyên liệu', Count_RawMaterial as N'Số lượng nguyên liệu',
                 Unit as N'Đơn vị', Name_ContainerType as N'Thùng chứa',
                 (Count_Container - COALESCE(SUM(RegisterContentSimpleAtWareHouse.Count), 0)) as N'Số lượng thùng chứa', 
@@ -54,9 +48,6 @@ namespace NganGiang.Services.Process
         }
         public bool updateProcessContentSimple(ProcessContentSimple processContentSimple, out string message)
         {
-            /**
-             * Bảng ProcessContentSimple: FK_Id_State chuyển thành 2 – Đã xử lý, cập nhật ngày hoàn thành Date_Fin
-             */
             try
             {
                 message = "";
@@ -88,11 +79,6 @@ namespace NganGiang.Services.Process
         }
         public bool updateDetailStateCellOfSimpleWareHouse(ProcessContentSimple processContentSimple, out string message)
         {
-            /**
-             * Bảng DetailStateCellOfSimpleWareHouse: 
-             * Cập nhật FK_Id_ContentSimple
-             * Cập nhật FK_Id_StateCell = 2
-             **/
             try
             {
                 string query = $"DECLARE @rowi INT; DECLARE @colj INT; " +
@@ -137,9 +123,12 @@ namespace NganGiang.Services.Process
         public DataTable getLocationMatrix()
         {
             // Lấy ra vị trí thùng hàng trong kho 406
-            string query = "SELECT RowI, ColJ, Id_ContentSimple, (Count_Container - COALESCE(SUM(RegisterContentSimpleAtWareHouse.Count), 0)) as SoLuong FROM ContentSimple LEFT JOIN RegisterContentSimpleAtWareHouse ON Id_ContentSimple = FK_Id_ContentSimple JOIN DetailStateCellOfSimpleWareHouse on Id_ContentSimple = DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple GROUP BY RowI, ColJ, Id_ContentSimple, Count_Container";
-            DataTable dt = DataProvider.Instance.ExecuteQuery(query);
-            return dt;
+            string query = "SELECT RowI, ColJ, Id_ContentSimple, (Count_Container - COALESCE(SUM(RegisterContentSimpleAtWareHouse.Count), 0)) as SoLuong " +
+                "FROM ContentSimple LEFT JOIN RegisterContentSimpleAtWareHouse ON Id_ContentSimple = FK_Id_ContentSimple " +
+                "JOIN DetailStateCellOfSimpleWareHouse on Id_ContentSimple = DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple " +
+                "GROUP BY RowI, ColJ, Id_ContentSimple, Count_Container " +
+                "ORDER BY RowI, Colj";
+            return DataProvider.Instance.ExecuteQuery(query);
         }
         private List<decimal> getIdContentSimplesByDetailContentSimpleOrderLocal(OrderLocal orderLocal)
         {

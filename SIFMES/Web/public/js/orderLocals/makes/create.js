@@ -393,6 +393,7 @@ $(document).ready(function () {
                                 "fa-check-circle"
                             );
                         });
+                        $(selectElement).change();
                     }
                 },
                 error: function (xhr) {

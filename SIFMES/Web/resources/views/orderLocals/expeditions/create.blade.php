@@ -35,7 +35,7 @@
                             <th scope="col" class="py-2 text-center">Chọn</th>
                             <th scope="col" class="py-2 text-center">Mã đơn hàng</th>
                             <th scope="col" class="py-2">Khách hàng</th>
-                            <th scope="col" class="py-2">Kiểu hàng</th>
+                            <th scope="col" class="py-2 text-center">Kiểu hàng</th>
                             <th scope="col" class="py-2 text-center">Số lượng thùng chứa</th>
                             <th scope="col" class="py-2 text-center">Đơn giá</th>
                         </thead>
@@ -224,10 +224,10 @@
                                             <input class="form-check-input checkbox1" type="checkbox" value="${element['Id_ContentSimple']}" 
                                             id="cb${element['Id_ContentSimple']}" data-id="${element['Id_ContentPack']}">
                                         </td>
-                                        <td>${element['Id_Order']}</td>
+                                        <td class="text-center">${element['Id_Order']}</td>
                                         <td>${element['Name_Customer']}</td>
-                                        <td>${type_container}</td>
-                                        <td>${element['Count_Container']}</td>
+                                        <td class="text-center">${type_container}</td>
+                                        <td class="text-center">${element['Count_Container']}</td>
                                         <td>${numberFormat(element['Price_Container'])} VNĐ</td>
                                     </tr>`;
                                 $('.table-expedition tbody').append(html);
@@ -244,7 +244,7 @@
                                                 </td>
                                                 <td class="text-center">${element['Id_Order']}</td>
                                                 <td>${element['Name_Customer']}</td>
-                                                <td>${simpleOrPack}</td>
+                                                <td class="text-center">${simpleOrPack}</td>
                                                 <td class="text-center">${element['Count_Pack']}</td>
                                                 <td class="text-center">${numberFormat(element['Price_Pack'])} VNĐ</td>
                                             </tr>`;

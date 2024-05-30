@@ -128,7 +128,7 @@
             btnProcess.BackColor = Color.FromArgb(43, 76, 114);
             btnProcess.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             btnProcess.ForeColor = SystemColors.Control;
-            btnProcess.Location = new Point(1040, 760);
+            btnProcess.Location = new Point(1040, 767);
             btnProcess.Margin = new Padding(6);
             btnProcess.Name = "btnProcess";
             btnProcess.Size = new Size(290, 65);
@@ -143,7 +143,7 @@
             panelWarehouse.Controls.Add(groupBox1);
             panelWarehouse.Location = new Point(15, 466);
             panelWarehouse.Name = "panelWarehouse";
-            panelWarehouse.Size = new Size(1315, 310);
+            panelWarehouse.Size = new Size(1315, 292);
             panelWarehouse.TabIndex = 0;
             // 
             // groupBox1
@@ -153,7 +153,7 @@
             groupBox1.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox1.Location = new Point(0, 0);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(1315, 310);
+            groupBox1.Size = new Size(1315, 292);
             groupBox1.TabIndex = 15;
             groupBox1.TabStop = false;
             groupBox1.Text = "Các gói hàng trong kho (Click để xem chi tiết)";
@@ -187,7 +187,7 @@
             dgvWare.RowHeadersVisible = false;
             dgvWare.RowHeadersWidth = 51;
             dgvWare.SelectionMode = DataGridViewSelectionMode.CellSelect;
-            dgvWare.Size = new Size(1309, 277);
+            dgvWare.Size = new Size(1309, 259);
             dgvWare.TabIndex = 1;
             dgvWare.CellContentClick += dgvWare_CellContentClick;
             // 
@@ -210,7 +210,7 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
-            ClientSize = new Size(1345, 840);
+            ClientSize = new Size(1345, 847);
             Controls.Add(lbHeader);
             Controls.Add(panelWarehouse);
             Controls.Add(panelDGV);

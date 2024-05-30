@@ -17,7 +17,7 @@ namespace NganGiang.Services.Process
         public DataTable ShowContentPack()
         {
             string query = @"SELECT DISTINCT FK_Id_OrderLocal AS [Mã đơn hàng], Id_ContentPack AS [Mã gói hàng],
-            CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Kiểu hàng], 
+            CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Loại hàng], 
             Name_State AS [Trạng thái], CONVERT(DATE, ProcessContentPack.Date_Start) AS [Ngày bắt đầu]
             FROM ProcessContentPack
                 INNER JOIN ContentPack on ProcessContentPack.FK_Id_ContentPack = Id_ContentPack
@@ -37,7 +37,8 @@ namespace NganGiang.Services.Process
                 "FROM ContentPack " +
                 "LEFT JOIN RegisterContentPackAtWareHouse ON Id_ContentPack = FK_Id_ContentPack " +
                 "JOIN DetailStateCellOfPackWareHouse p on Id_ContentPack = p.FK_Id_ContentPack " +
-                "GROUP BY Rowi, Colj, Id_ContentPack, Count_Pack";
+                "GROUP BY Rowi, Colj, Id_ContentPack, Count_Pack " +
+                "ORDER BY RowI, Colj";
             return DataProvider.Instance.ExecuteQuery(query);
         }
         public WareHouse getRowAndCol()
@@ -46,7 +47,7 @@ namespace NganGiang.Services.Process
             WareHouse wareHouse = new WareHouse(409);
             string query = "SELECT numRow, numCol " +
                 "FROM WareHouse " +
-                "WHERE FK_Id_Station = 409";
+                $"WHERE FK_Id_Station = {wareHouse.FK_Id_Station}";
             SqlDataReader reader = DataProvider.Instance.ExecuteReader(query);
             if (reader.Read())
             {
@@ -80,13 +81,13 @@ namespace NganGiang.Services.Process
         }
         public List<int> GetIdContentSimpleList(int id)
         {
-            string query = $"SELECT Id_ContentSimple AS [Mã thùng hàng] " +
-                $"FROM ContentSimple " +
-                $"INNER JOIN DetailContentSimpleOfPack ON Id_ContentSimple = FK_Id_ContentSimple " +
-                $"INNER JOIN DetailContentPackOrderLocal ON DetailContentPackOrderLocal.FK_Id_ContentPack = DetailContentSimpleOfPack.FK_Id_ContentPack " +
-                $"INNER JOIN RawMaterial on ContentSimple.FK_Id_RawMaterial = RawMaterial.Id_RawMaterial " +
-                $"WHERE DetailContentPackOrderLocal.FK_Id_ContentPack = {id} AND RawMaterial.FK_Id_RawMaterialType <> 0" +
-                $"GROUP BY Id_ContentSimple";
+            string query = @$"SELECT Id_ContentSimple AS [Mã thùng hàng] 
+                FROM ContentSimple 
+                INNER JOIN DetailContentSimpleOfPack ON Id_ContentSimple = FK_Id_ContentSimple 
+                INNER JOIN DetailContentPackOrderLocal ON DetailContentPackOrderLocal.FK_Id_ContentPack = DetailContentSimpleOfPack.FK_Id_ContentPack 
+                INNER JOIN RawMaterial on ContentSimple.FK_Id_RawMaterial = RawMaterial.Id_RawMaterial 
+                WHERE DetailContentPackOrderLocal.FK_Id_ContentPack = {id} AND RawMaterial.FK_Id_RawMaterialType <> 0
+                GROUP BY Id_ContentSimple";
 
             List<int> idContentSimpleList = new List<int>();
 

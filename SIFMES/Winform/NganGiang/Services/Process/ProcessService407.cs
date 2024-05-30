@@ -32,7 +32,7 @@ namespace NganGiang.Services.Process
 
                 DataGridViewTextBoxColumn column2 = new()
                 {
-                    HeaderText = "Kiểu hàng",
+                    HeaderText = "Loại hàng",
                     DataPropertyName = "type_simple",
                     FillWeight = 80,
                 };

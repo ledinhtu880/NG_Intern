@@ -784,6 +784,7 @@ class OrderLocalController extends Controller
         ->join('Customer', 'Customer.Id_Customer', '=', 'Order.FK_Id_Customer')
         ->where('Order.SimpleOrPack', 0)
         ->where('ProcessContentSimple.FK_Id_Station', 406)
+        ->where('ProcessContentSimple.FK_Id_State', 2)
         ->whereNotIn('ContentSimple.Id_ContentSimple', function ($query) {
           $query->select('ContentSimple.Id_ContentSimple')
             ->from('ContentSimple')
@@ -799,6 +800,7 @@ class OrderLocalController extends Controller
         ->leftJoin('DetailStateCellOfPackWareHouse', 'DetailStateCellOfPackWareHouse.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
         ->join('Customer', 'Customer.Id_Customer', '=', 'Order.FK_Id_Customer')
         ->where('Order.SimpleOrPack', 1)
+        ->where('ProcessContentPack.FK_Id_State', 2)
         ->where('ProcessContentPack.FK_Id_Station', $station)
         ->whereNotIn('ContentPack.Id_ContentPack', function ($query) {
           $query->select('Id_ContentPack')

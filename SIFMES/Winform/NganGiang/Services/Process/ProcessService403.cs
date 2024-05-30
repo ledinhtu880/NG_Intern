@@ -43,7 +43,7 @@ namespace NganGiang.Services.Process
         {
             string query =
                 "SELECT FK_Id_OrderLocal AS [Mã đơn hàng], " +
-                "CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Kiểu hàng], " +
+                "CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Loại hàng], " +
                 "Id_ContentSimple AS [Mã thùng hàng], " +
                 "Name_RawMaterial AS [Tên nguyên liệu thô], RawMaterial.Count AS [Số lượng nguyên liệu tồn], " +
                 "Count_RawMaterial * Count_Container AS [Số lượng nguyên liệu cần], Unit AS [Đơn vị], Name_State AS [Trạng thái], " +
