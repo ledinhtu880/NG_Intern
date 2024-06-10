@@ -407,3 +407,4 @@ D:\Workspace\NG_Intern\SIFMES\Winform\NganGiang\obj\Debug\net8.0-windows\refint\
 D:\Workspace\NG_Intern\SIFMES\Winform\NganGiang\obj\Debug\net8.0-windows\NganGiang.pdb
 D:\Workspace\NG_Intern\SIFMES\Winform\NganGiang\obj\Debug\net8.0-windows\NganGiang.genruntimeconfig.cache
 D:\Workspace\NG_Intern\SIFMES\Winform\NganGiang\obj\Debug\net8.0-windows\ref\NganGiang.dll
+D:\Workspace\NG_Intern\SIFMES\Winform\NganGiang\bin\Debug\net8.0-windows\S7.Net.dll

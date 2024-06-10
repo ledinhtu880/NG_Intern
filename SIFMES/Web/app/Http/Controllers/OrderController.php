@@ -256,6 +256,13 @@ class OrderController extends Controller
       ]);
     }
   }
+
+  public function destroySimplesWhenDirect(Request $request)
+  {
+    if ($request->ajax()) {
+      return response()->json('');
+    }
+  }
   public function updateSimplesWhenSave(Request $request)
   {
     if ($request->ajax()) {
@@ -506,7 +513,7 @@ class OrderController extends Controller
         return response()->json([
           'status' => 'success',
           'data' => $data,
-          'maxID' => $FK_Id_Order,
+          'maxID' => $id,
           'exists' => 0
         ]);
       }

@@ -36,7 +36,6 @@ class EduProgramController extends Controller
             'Name_Sub' => $validator['Name_Sub'],
         ]);
 
-
         $lessons = [
             ['FK_Id_LS' => 1, 'NumHour' => $validator['Theory']],
             ['FK_Id_LS' => 2, 'NumHour' => $validator['Exercise']],

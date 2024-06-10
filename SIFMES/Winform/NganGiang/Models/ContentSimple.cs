@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace NganGiang.Models
 {
@@ -18,7 +19,7 @@ namespace NganGiang.Models
         public bool ContainerProvided { get; set; }
         public bool PedestalProvided { get; set; }
         public bool RFIDProvided { get; set; }
-        public byte RFID { get; set; }
+        public string RFID { get; set; }
         public bool RawMaterialProvided { get; set; }
     }
 }

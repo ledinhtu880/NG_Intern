@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "59h4fJQEQrfsVkYgou7X6FQ+CIlx+rCcvnIGjNqJ6GM3+CjY+L9VzcX5355wNM0G9NZTkHQ9c7aFUVv6OpM2NQ==",
+  "dgSpecHash": "JbvTuLYKZ1ZZs6WKXLN3Co1yQyriyToR6nh6Mm7sCYvpPepaH5nGAGlGTvU6CjOcEMSKEmzxmlvf/+q3fQt/3A==",
   "success": true,
   "projectFilePath": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\NganGiang.csproj",
   "expectedPackageFiles": [
@@ -16,6 +16,7 @@
     "C:\\Users\\tus\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\tus\\.nuget\\packages\\runtime.win-x64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\tus\\.nuget\\packages\\runtime.win-x86.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x86.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+    "C:\\Users\\tus\\.nuget\\packages\\s7netplus\\0.20.0\\s7netplus.0.20.0.nupkg.sha512",
     "C:\\Users\\tus\\.nuget\\packages\\system.data.sqlclient\\4.8.6\\system.data.sqlclient.4.8.6.nupkg.sha512",
     "C:\\Users\\tus\\.nuget\\packages\\system.security.accesscontrol\\4.7.0\\system.security.accesscontrol.4.7.0.nupkg.sha512",
     "C:\\Users\\tus\\.nuget\\packages\\system.security.principal.windows\\4.7.0\\system.security.principal.windows.4.7.0.nupkg.sha512"

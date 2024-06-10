@@ -111,8 +111,7 @@
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Đóng</button>
                                             <button type="button" class="btn btn-primary btn-primary"
-                                                data-bs-dismiss="modal" id="xacnhan">Xác
-                                                nhận</button>
+                                                data-bs-dismiss="modal" id="xacnhan">Xác nhận</button>
                                         </div>
                                     </div>
                                 </div>
@@ -364,7 +363,7 @@
                         "fa-exclamation-circle"
                     );
                 } else if (id.length >= 1) {
-                    $('#xacnhan').on('click', function() {
+                    $('#xacnhan').off('click').on('click', function() {
                         var daychuyen = $('#daychuyen option:selected').val();
                         $.ajax({
                             url: '/dispatchs/store',
@@ -391,7 +390,6 @@
                     })
                 }
             });
-
         });
     </script>
 @endpush

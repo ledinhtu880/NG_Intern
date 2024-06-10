@@ -34,7 +34,7 @@ namespace NganGiang.Views
         {
             List<string> Id_ContentSimples = new List<string>();
             bool check = false;
-            // Kiểm tra xem checkbox đã được check hay chưa
+
             foreach (DataGridViewRow row in dgv402.Rows)
             {
                 if (row != null)
@@ -42,7 +42,6 @@ namespace NganGiang.Views
                     DataGridViewCheckBoxCell? cell = row.Cells["IsSelected"] as DataGridViewCheckBoxCell;
                     if (cell != null && cell.Value is bool)
                     {
-                        // Nếu checkbox được check thì thêm Id_ContentSimple vào danh sách
                         if ((Boolean)cell.Value)
                         {
                             Id_ContentSimples.Add(row.Cells["Mã thùng hàng"].Value.ToString());
@@ -68,7 +67,7 @@ namespace NganGiang.Views
 
         private void dgv402_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.ColumnIndex == 9) // Kiểm tra cột "Ngày bắt đầu"
+            if (e.ColumnIndex == 9)
             {
                 if (e.Value != null && e.Value != DBNull.Value)
                 {
@@ -76,7 +75,7 @@ namespace NganGiang.Views
                     if (DateTime.TryParse(e.Value.ToString(), out date))
                     {
                         e.Value = date.ToString("dd/MM/yyyy");
-                        e.FormattingApplied = true; // Đánh dấu đã áp dụng định dạng
+                        e.FormattingApplied = true;
                     }
                 }
             }

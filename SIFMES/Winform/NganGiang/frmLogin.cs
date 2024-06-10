@@ -9,6 +9,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Net.Sockets;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +26,6 @@ namespace NganGiang
         {
             InitializeComponent();
             authController = new AuthenticatorController();
-
         }
         private void btnLogIn_Click(object sender, EventArgs e)
         {

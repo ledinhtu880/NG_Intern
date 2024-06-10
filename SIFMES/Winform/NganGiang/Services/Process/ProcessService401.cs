@@ -1,6 +1,8 @@
 ﻿using NganGiang.Libs;
+using NganGiang.Models;
 using System.Data;
 using System.Data.SqlClient;
+using System.Windows.Forms;
 
 namespace NganGiang.Services.Process
 {
@@ -10,7 +12,15 @@ namespace NganGiang.Services.Process
         {
             try
             {
-                string query = "SELECT FK_Id_OrderLocal as id_orderlocal, Id_ContentSimple as id_simple, Name_RawMaterial as name_raw, RawMaterial.Count as quantity, \r\n\t\tUnit as unit, Count_RawMaterial * Count_Container as quantity_order, Name_State as status, ProcessContentSimple.Date_Start as date_start, SimpleOrPack as type_simple FROM ProcessContentSimple \r\nINNER JOIN ContentSimple on Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple\r\nINNER JOIN DetailContentSimpleOrderLocal on Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple\r\nINNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial\r\nINNER JOIN [State] on Id_State = FK_Id_State\r\nINNER JOIN OrderLocal on FK_Id_OrderLocal = Id_OrderLocal\r\nWHERE FK_Id_Station = 401 and FK_Id_State = 0 AND OrderLocal.MakeOrPackOrExpedition = 0 order by id_orderlocal asc, id_simple asc, date_start desc";
+                string query = @"SELECT FK_Id_OrderLocal AS id_orderlocal, Id_ContentSimple AS id_simple, Name_RawMaterial AS name_raw, RawMaterial.Count AS quantity, (select Count from RawMaterial where Id_RawMaterial = 0) AS quantity_container, (select Count from RawMaterial where Id_RawMaterial = 1) AS quantity_pedestal, Unit AS unit, Count_RawMaterial * Count_Container AS quantity_order, Name_State AS status, CONVERT(date, ProcessContentSimple.Date_Start) AS date_start, SimpleOrPack AS type_simple, FK_Id_RawMaterial, FK_Id_ContainerType
+                    FROM ProcessContentSimple
+                    INNER JOIN ContentSimple ON Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple
+                    INNER JOIN DetailContentSimpleOrderLocal ON Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple
+                    INNER JOIN RawMaterial ON Id_RawMaterial = FK_Id_RawMaterial
+                    INNER JOIN [State] ON [State].Id_State = FK_Id_State
+                    INNER JOIN OrderLocal ON FK_Id_OrderLocal = Id_OrderLocal
+                    WHERE FK_Id_Station = 401 and FK_Id_State != 2 AND OrderLocal.MakeOrPackOrExpedition = 0 
+                    ORDER BY id_orderlocal ASC, id_simple ASC, date_start DESC";
                 DataTable dt = DataProvider.Instance.ExecuteQuery(query);
 
                 dgv.AutoGenerateColumns = false;
@@ -18,82 +28,146 @@ namespace NganGiang.Services.Process
                 DataGridViewCheckBoxColumn column = new()
                 {
                     HeaderText = "",
-                    FillWeight = 10
+                    FillWeight = 20,
+                    Frozen = false
                 };
 
                 DataGridViewTextBoxColumn column1 = new()
                 {
+                    Name = "id_orderlocal",
                     HeaderText = "Mã đơn hàng",
                     DataPropertyName = "id_orderlocal",
-                    FillWeight = 80,
+                    FillWeight = 120,
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false
                 };
 
                 DataGridViewTextBoxColumn column2 = new()
                 {
+                    Name = "type_simple",
                     HeaderText = "Loại hàng",
                     DataPropertyName = "type_simple",
                     FillWeight = 80,
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false
                 };
 
                 DataGridViewTextBoxColumn column3 = new()
                 {
+                    Name = "id_simple",
                     HeaderText = "Mã thùng hàng",
                     DataPropertyName = "id_simple",
-                    FillWeight = 80
+                    FillWeight = 120,
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false
                 };
 
                 DataGridViewTextBoxColumn column4 = new()
                 {
-                    HeaderText = "Tên nguyên liệu thô",
-                    DataPropertyName = "name_raw"
+                    Name = "name_raw",
+                    HeaderText = "Tên nguyên liệu",
+                    DataPropertyName = "name_raw",
+                    FillWeight = 140,
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false
                 };
 
                 DataGridViewTextBoxColumn column5 = new()
                 {
-                    HeaderText = "Số lượng tồn",
+                    Name = "quantity",
+                    HeaderText = "Số lượng nguyên liệu tồn",
                     DataPropertyName = "quantity",
-                    FillWeight = 70
-
+                    FillWeight = 220,
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false
                 };
 
                 DataGridViewTextBoxColumn column6 = new()
                 {
-                    HeaderText = "Số lượng cần",
-                    DataPropertyName = "quantity_order",
-                    FillWeight = 70,
-
+                    Name = "quantity_container",
+                    HeaderText = "Số lượng thùng hàng tồn",
+                    DataPropertyName = "quantity_container",
+                    FillWeight = 220,
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false
                 };
 
                 DataGridViewTextBoxColumn column7 = new()
                 {
-                    HeaderText = "Đơn vị",
-                    DataPropertyName = "Unit",
-                    FillWeight = 50,
-
+                    Name = "quantity_pedestal",
+                    HeaderText = "Số lượng đế thùng tồn",
+                    DataPropertyName = "quantity_pedestal",
+                    FillWeight = 220,
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false
                 };
 
                 DataGridViewTextBoxColumn column8 = new()
                 {
-                    HeaderText = "Trạng thái",
-                    DataPropertyName = "status"
+                    Name = "quantity_order",
+                    HeaderText = "Số lượng cần",
+                    DataPropertyName = "quantity_order",
+                    FillWeight = 140,
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false
                 };
 
                 DataGridViewTextBoxColumn column9 = new()
                 {
-                    HeaderText = "Ngày bắt đầu",
-                    DataPropertyName = "date_start"
+                    Name = "Unit",
+                    HeaderText = "Đơn vị",
+                    DataPropertyName = "Unit",
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false
                 };
 
+                DataGridViewTextBoxColumn column10 = new()
+                {
+                    Name = "status",
+                    HeaderText = "Trạng thái",
+                    DataPropertyName = "status",
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false
+                };
 
-                dgv.Columns.AddRange(column, column1, column2, column3, column4, column5, column6, column7, column8, column9);
+                DataGridViewTextBoxColumn column11 = new()
+                {
+                    Name = "date_start",
+                    HeaderText = "Ngày bắt đầu",
+                    DataPropertyName = "date_start",
+                    FillWeight = 140,
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false
+                };
+
+                DataGridViewTextBoxColumn column12 = new()
+                {
+                    Name = "FK_Id_RawMaterial",
+                    DataPropertyName = "FK_Id_RawMaterial",
+                    Visible = false,
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false
+                };
+
+                DataGridViewTextBoxColumn column13 = new()
+                {
+                    Name = "FK_Id_ContainerType",
+                    DataPropertyName = "FK_Id_ContainerType",
+                    Visible = false,
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false
+                };
+
+                dgv.Columns.AddRange(column, column1, column2, column3, column4, column5, column6, column7, column8, column9, column10, column11, column12, column13);
                 dgv.ColumnHeadersHeight = 60;
                 dgv.RowTemplate.Height = 35;
                 dgv.DataSource = dt;
+                dgv.BringToFront();
             }
 
             catch (Exception e)
             {
-                MessageBox.Show("Đã có lỗi xảy ra!", $"{e.Message}", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(e.Message, $"Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -135,13 +209,24 @@ namespace NganGiang.Services.Process
             return quantity_raw; ;
         }
 
-        public bool checkQuantity(int id_simple_content)
+        public bool checkQuantityContainer(int id_simple_content)
         {
-            int quantityContainer_raw = getQuantityContainerRaw();
-            int quantityPedestal_raw = getQuantityPedestalRaw();
-            int quantity_raw_simple = getQuantityContentSimple(id_simple_content);
+            int quantityContainer = getQuantityContainerRaw();
+            int quantityRawSimple = getQuantityContentSimple(id_simple_content);
 
-            if (quantity_raw_simple > quantityContainer_raw || quantity_raw_simple > quantityPedestal_raw)
+            if (quantityRawSimple > quantityContainer)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool checkQuantityPedestal(int id_simple_content)
+        {
+            int quantityPedestal = getQuantityPedestalRaw();
+            int quantityRawSimple = getQuantityContentSimple(id_simple_content);
+
+            if (quantityRawSimple > quantityPedestal)
             {
                 return false;
             }
@@ -157,11 +242,11 @@ namespace NganGiang.Services.Process
             }
             catch (SqlException e)
             {
-                MessageBox.Show($"{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        public void UpdatePesdestalProvided(int id_simple_content)
+        public void UpdatePedestalProvided(int id_simple_content)
         {
             try
             {
@@ -174,7 +259,7 @@ namespace NganGiang.Services.Process
             }
         }
 
-        private static byte[] GenerateRandomBytes(int length)
+        public static byte[] GenerateRandomBytes(int length)
         {
             byte[] randomBytes = new byte[length];
             using (var rng = new System.Security.Cryptography.RNGCryptoServiceProvider())
@@ -206,11 +291,10 @@ namespace NganGiang.Services.Process
             }
         }
 
-        public void UpdateRFIDProvided(int id_simple_content)
+        public void UpdateRFIDProvided(int id_simple_content, byte[] rfidBytes)
         {
             try
             {
-                byte[] rfidBytes = GenerateRandomBytes(16);
                 string query = $"Update ContentSimple set RFIDProvided = 1, RFID = @rfid where Id_ContentSimple = @id_simple";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
@@ -224,6 +308,43 @@ namespace NganGiang.Services.Process
 
                 int station = FindNextStation(id_simple_content);
                 query = $"insert into ProcessContentSimple(FK_Id_ContentSimple, FK_Id_Station, FK_Id_State, Date_Start) values({id_simple_content}, {station}, 0, '{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}')";
+                DataProvider.Instance.ExecuteNonQuery(query);
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show($"{e.Message}", "Cảnh báo1", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        public bool UpdateState(int id_simple_content, int state)
+        {
+            try
+            {
+                string query = $"Update ProcessContentSimple set FK_Id_State = {state} where FK_Id_ContentSimple = {id_simple_content}";
+                return DataProvider.Instance.ExecuteNonQuery(query) > 0;
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+        public void UpdateQuantityContainer(int quantityConsumed)
+        {
+            try
+            {
+                string query = $"Update RawMaterial set Count = Count - {quantityConsumed} where Id_RawMaterial = 0";
+                DataProvider.Instance.ExecuteNonQuery(query);
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show($"{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        public void UpdateQuantityPedestal(int quantityConsumed)
+        {
+            try
+            {
+                string query = $"Update RawMaterial set Count = Count - {quantityConsumed} where Id_RawMaterial = 1";
                 DataProvider.Instance.ExecuteNonQuery(query);
             }
             catch (SqlException e)

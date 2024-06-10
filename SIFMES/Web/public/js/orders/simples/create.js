@@ -95,7 +95,9 @@ $(document).ready(function () {
         });
     });
 
+    var isSaveBtnClicked = false;
     $("#saveBtn").on("click", function (ev) {
+        isSaveBtnClicked = true;
         let isValid = true;
         ev.preventDefault();
         $("#formInformation")
@@ -153,29 +155,27 @@ $(document).ready(function () {
         }
     });
 
-    $(document).ready(function () {
-        $("#backBtn").on("click", function () {
-            if (count > 0) {
-                $.ajax({
-                    url: "/orders/simples/destroySimplesWhenBack",
-                    method: "POST",
-                    dataType: "json",
-                    data: {
-                        _token: token,
-                    },
-                    success: function (response) {
-                        window.location.href = "/orders/simples/";
-                    },
-                    error: function (xhr) {
-                        // Xử lý lỗi khi gửi yêu cầu Ajax
-                        console.log(xhr.responseText);
-                        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
-                    },
-                });
-            } else {
-                window.location.href = "/orders/simples/";
-            }
-        });
+    $("#backBtn").on("click", function () {
+        if (count > 0) {
+            $.ajax({
+                url: "/orders/simples/destroySimplesWhenBack",
+                method: "POST",
+                dataType: "json",
+                data: {
+                    _token: token,
+                },
+                success: function (response) {
+                    window.location.href = "/orders/simples/";
+                },
+                error: function (xhr) {
+                    // Xử lý lỗi khi gửi yêu cầu Ajax
+                    console.log(xhr.responseText);
+                    alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                },
+            });
+        } else {
+            window.location.href = "/orders/simples/";
+        }
     });
 
     toastLiveExample.on("hidden.bs.toast", function () {
@@ -411,4 +411,27 @@ $(document).ready(function () {
             });
         }
     });
+
+    $(".sidebar-wrapped, .breadcrumb")
+        .find("a")
+        .click(function (event) {
+            if (count > 0) {
+                $.ajax({
+                    url: "/orders/simples/destroySimplesWhenBack",
+                    method: "POST",
+                    dataType: "json",
+                    data: {
+                        _token: token,
+                    },
+                    success: function (response) {
+                        window.location.href = "/orders/simples/";
+                    },
+                    error: function (xhr) {
+                        // Xử lý lỗi khi gửi yêu cầu Ajax
+                        console.log(xhr.responseText);
+                        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                    },
+                });
+            }
+        });
 });
