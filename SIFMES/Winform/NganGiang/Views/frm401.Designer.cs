@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
@@ -37,6 +38,7 @@
             btnProcess = new Button();
             panelDGV = new Panel();
             dgv401 = new DataGridView();
+            timer1 = new System.Windows.Forms.Timer(components);
             panelDGV.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv401).BeginInit();
             SuspendLayout();
@@ -86,7 +88,7 @@
             dgv401.AllowUserToDeleteRows = false;
             dgv401.AllowUserToResizeColumns = false;
             dgv401.AllowUserToResizeRows = false;
-            dgv401.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgv401.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             dgv401.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells;
             dgv401.BackgroundColor = SystemColors.ControlLightLight;
             dgv401.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
@@ -132,6 +134,12 @@
             dgv401.TabIndex = 2;
             dgv401.CellFormatting += dgv401_CellFormatting;
             // 
+            // timer1
+            // 
+            timer1.Enabled = true;
+            timer1.Interval = 1000;
+            timer1.Tick += timer1_Tick;
+            // 
             // frm401
             // 
             AcceptButton = btnProcess;
@@ -159,5 +167,6 @@
         private Button btnProcess;
         private Panel panelDGV;
         private DataGridView dgv401;
+        private System.Windows.Forms.Timer timer1;
     }
 }

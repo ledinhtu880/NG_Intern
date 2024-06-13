@@ -12,7 +12,7 @@ namespace NganGiang.Services.Process
         {
             try
             {
-                string query = @"SELECT FK_Id_OrderLocal AS id_orderlocal, Id_ContentSimple AS id_simple, Name_RawMaterial AS name_raw, RawMaterial.Count AS quantity, (select Count from RawMaterial where Id_RawMaterial = 0) AS quantity_container, (select Count from RawMaterial where Id_RawMaterial = 1) AS quantity_pedestal, Unit AS unit, Count_RawMaterial * Count_Container AS quantity_order, Name_State AS status, CONVERT(date, ProcessContentSimple.Date_Start) AS date_start, SimpleOrPack AS type_simple, FK_Id_RawMaterial, FK_Id_ContainerType
+                string query = @"SELECT FK_Id_OrderLocal AS id_orderlocal, Id_ContentSimple AS id_simple, Name_RawMaterial AS name_raw, RawMaterial.Count AS quantity, (SELECT Count FROM RawMaterial WHERE Id_RawMaterial = 0) AS quantity_container, (select Count from RawMaterial where Id_RawMaterial = 1) AS quantity_pedestal, Unit AS unit, Count_Container AS quantity_order, Name_State AS status, CONVERT(date, ProcessContentSimple.Date_Start) AS date_start, SimpleOrPack AS type_simple, FK_Id_RawMaterial, FK_Id_ContainerType
                     FROM ProcessContentSimple
                     INNER JOIN ContentSimple ON Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple
                     INNER JOIN DetailContentSimpleOrderLocal ON Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple
@@ -28,7 +28,6 @@ namespace NganGiang.Services.Process
                 DataGridViewCheckBoxColumn column = new()
                 {
                     HeaderText = "",
-                    FillWeight = 20,
                     Frozen = false
                 };
 
@@ -37,7 +36,6 @@ namespace NganGiang.Services.Process
                     Name = "id_orderlocal",
                     HeaderText = "Mã đơn hàng",
                     DataPropertyName = "id_orderlocal",
-                    FillWeight = 120,
                     SortMode = DataGridViewColumnSortMode.NotSortable,
                     Frozen = false
                 };
@@ -47,7 +45,6 @@ namespace NganGiang.Services.Process
                     Name = "type_simple",
                     HeaderText = "Loại hàng",
                     DataPropertyName = "type_simple",
-                    FillWeight = 80,
                     SortMode = DataGridViewColumnSortMode.NotSortable,
                     Frozen = false
                 };
@@ -57,7 +54,6 @@ namespace NganGiang.Services.Process
                     Name = "id_simple",
                     HeaderText = "Mã thùng hàng",
                     DataPropertyName = "id_simple",
-                    FillWeight = 120,
                     SortMode = DataGridViewColumnSortMode.NotSortable,
                     Frozen = false
                 };
@@ -67,7 +63,6 @@ namespace NganGiang.Services.Process
                     Name = "name_raw",
                     HeaderText = "Tên nguyên liệu",
                     DataPropertyName = "name_raw",
-                    FillWeight = 140,
                     SortMode = DataGridViewColumnSortMode.NotSortable,
                     Frozen = false
                 };
@@ -77,7 +72,6 @@ namespace NganGiang.Services.Process
                     Name = "quantity",
                     HeaderText = "Số lượng nguyên liệu tồn",
                     DataPropertyName = "quantity",
-                    FillWeight = 220,
                     SortMode = DataGridViewColumnSortMode.NotSortable,
                     Frozen = false
                 };
@@ -85,9 +79,8 @@ namespace NganGiang.Services.Process
                 DataGridViewTextBoxColumn column6 = new()
                 {
                     Name = "quantity_container",
-                    HeaderText = "Số lượng thùng hàng tồn",
+                    HeaderText = "Số lượng thùng chứa tồn",
                     DataPropertyName = "quantity_container",
-                    FillWeight = 220,
                     SortMode = DataGridViewColumnSortMode.NotSortable,
                     Frozen = false
                 };
@@ -97,7 +90,6 @@ namespace NganGiang.Services.Process
                     Name = "quantity_pedestal",
                     HeaderText = "Số lượng đế thùng tồn",
                     DataPropertyName = "quantity_pedestal",
-                    FillWeight = 220,
                     SortMode = DataGridViewColumnSortMode.NotSortable,
                     Frozen = false
                 };
@@ -107,7 +99,6 @@ namespace NganGiang.Services.Process
                     Name = "quantity_order",
                     HeaderText = "Số lượng cần",
                     DataPropertyName = "quantity_order",
-                    FillWeight = 140,
                     SortMode = DataGridViewColumnSortMode.NotSortable,
                     Frozen = false
                 };
@@ -135,7 +126,6 @@ namespace NganGiang.Services.Process
                     Name = "date_start",
                     HeaderText = "Ngày bắt đầu",
                     DataPropertyName = "date_start",
-                    FillWeight = 140,
                     SortMode = DataGridViewColumnSortMode.NotSortable,
                     Frozen = false
                 };
@@ -162,7 +152,6 @@ namespace NganGiang.Services.Process
                 dgv.ColumnHeadersHeight = 60;
                 dgv.RowTemplate.Height = 35;
                 dgv.DataSource = dt;
-                dgv.BringToFront();
             }
 
             catch (Exception e)
@@ -313,19 +302,6 @@ namespace NganGiang.Services.Process
             catch (SqlException e)
             {
                 MessageBox.Show($"{e.Message}", "Cảnh báo1", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        public bool UpdateState(int id_simple_content, int state)
-        {
-            try
-            {
-                string query = $"Update ProcessContentSimple set FK_Id_State = {state} where FK_Id_ContentSimple = {id_simple_content}";
-                return DataProvider.Instance.ExecuteNonQuery(query) > 0;
-            }
-            catch (SqlException e)
-            {
-                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
             }
         }
         public void UpdateQuantityContainer(int quantityConsumed)

@@ -249,7 +249,7 @@ class TrackingController extends Controller
         $each->countTotal = $countTotal;
         $each->totalPercent = $totalPercent;
         $each->completePercent = $completePercent;
-        $each->progress == 100 ? $each->status = 'Hoàn thành' : $each->status = 'Chưa hoàn thành';
+        $each->status = $each->progress == 100 ? 'Hoàn thành' : 'Chưa hoàn thành';
       }
       Session::put('data', $data);
 

@@ -73,5 +73,25 @@ namespace NganGiang.Services.Process
                 throw;
             }
         }
+
+        public static bool UpdateState(int id_simple_content, int state, int station)
+        {
+            try
+            {
+                string query = $"UPDATE ProcessContentSimple SET FK_Id_State = {state} WHERE FK_Id_ContentSimple = {id_simple_content} AND FK_Id_Station = {station}";
+                return true;
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public static string getRFID(int id_simple_content)
+        {
+            string query = $"SELECT RFID FROM ContentSimple WHERE Id_ContentSimple = {id_simple_content}";
+            return DataProvider.Instance.GetValue(query);
+        }
     }
 }

@@ -15,20 +15,20 @@ namespace NganGiang.Services.Process
     internal class ProcessService403
     {
         #region Hàm lấy dữ liệu
-        public DataTable GetCheckAmount(int id)
+        public DataTable GetCheckQuantity(int id)
         {
-            string query = $"SELECT (Count_RawMaterial * Count_Container) AS 'Số lượng', " +
-                $"RawMaterial.Count AS N'Tồn kho' FROM ContentSimple" +
-                $"\n INNER JOIN RawMaterial ON ContentSimple.FK_Id_RawMaterial = Id_RawMaterial" +
-                $"\n WHERE Id_ContentSimple = {id}";
+            string query = $@"SELECT (Count_RawMaterial * Count_Container) AS 'Số lượng', 
+                RawMaterial.Count AS N'Tồn kho' FROM ContentSimple
+                INNER JOIN RawMaterial ON ContentSimple.FK_Id_RawMaterial = Id_RawMaterial 
+                WHERE Id_ContentSimple = {id}";
             return DataProvider.Instance.ExecuteQuery(query);
         }
         public int GetAmount(int id)
         {
-            string query = $"SELECT (Count_RawMaterial * Count_Container) AS 'Số lượng'," +
-                $"RawMaterial.Count AS N'Tồn kho' FROM ContentSimple" +
-                $"\n INNER JOIN RawMaterial ON ContentSimple.FK_Id_RawMaterial = Id_RawMaterial" +
-                $"\n WHERE Id_ContentSimple = {id}";
+            string query = @$"SELECT (Count_RawMaterial * Count_Container) AS 'Số lượng', 
+                RawMaterial.Count AS N'Tồn kho' FROM ContentSimple 
+                INNER JOIN RawMaterial ON ContentSimple.FK_Id_RawMaterial = Id_RawMaterial 
+                WHERE Id_ContentSimple = {id}";
             return Convert.ToInt32(DataProvider.Instance.GetValue(query));
         }
         public int GetRawMaterialID(int id)
@@ -42,22 +42,23 @@ namespace NganGiang.Services.Process
         public DataTable ShowContentSimple()
         {
             string query =
-                "SELECT FK_Id_OrderLocal AS [Mã đơn hàng], " +
-                "CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Loại hàng], " +
-                "Id_ContentSimple AS [Mã thùng hàng], " +
-                "Name_RawMaterial AS [Tên nguyên liệu thô], RawMaterial.Count AS [Số lượng nguyên liệu tồn], " +
-                "Count_RawMaterial * Count_Container AS [Số lượng nguyên liệu cần], Unit AS [Đơn vị], Name_State AS [Trạng thái], " +
-                "CONVERT(date, ProcessContentSimple.Date_Start) AS [Ngày bắt đầu] " +
-                "FROM ProcessContentSimple " +
-                "INNER JOIN ContentSimple ON Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple " +
-                "INNER JOIN DetailContentSimpleOrderLocal ON Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple " +
-                "INNER JOIN RawMaterial ON Id_RawMaterial = FK_Id_RawMaterial " +
-                "INNER JOIN State ON Id_State = FK_Id_State " +
-                "INNER JOIN OrderLocal ON FK_Id_OrderLocal = Id_OrderLocal " +
-                "WHERE FK_Id_Station = 403 AND FK_Id_State = 0 " +
-                "group by FK_Id_OrderLocal, SimpleOrPack, Id_ContentSimple, Name_RawMaterial, RawMaterial.Count, Unit, Name_State, " +
-                "Count_RawMaterial * Count_Container, CONVERT(date, ProcessContentSimple.Date_Start)" +
-                "order by FK_Id_OrderLocal asc, Id_ContentSimple asc, CONVERT(date, ProcessContentSimple.Date_Start) desc";
+                @"SELECT FK_Id_OrderLocal AS [Mã đơn hàng], 
+                CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Loại hàng], 
+                Id_ContentSimple AS [Mã thùng hàng], 
+                Name_RawMaterial AS [Tên nguyên liệu thô], RawMaterial.Count AS [Số lượng nguyên liệu tồn], 
+                Count_RawMaterial * Count_Container AS [Số lượng nguyên liệu cần], Unit AS [Đơn vị], 
+                Name_State AS [Trạng thái], CONVERT(date, ProcessContentSimple.Date_Start) AS [Ngày bắt đầu], 
+                FK_Id_RawMaterial AS [Loại nguyên liệu], Count_Container AS [Số lượng thùng chứa], 
+                FK_Id_ContainerType as [Loại thùng chứa] 
+                FROM ProcessContentSimple 
+                INNER JOIN ContentSimple ON Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple 
+                INNER JOIN DetailContentSimpleOrderLocal ON Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple 
+                INNER JOIN RawMaterial ON Id_RawMaterial = FK_Id_RawMaterial 
+                INNER JOIN State ON Id_State = FK_Id_State 
+                INNER JOIN OrderLocal ON FK_Id_OrderLocal = Id_OrderLocal 
+                WHERE FK_Id_Station = 403 AND FK_Id_State != 2 
+                GROUP BY FK_Id_OrderLocal, SimpleOrPack, Id_ContentSimple, Name_RawMaterial, RawMaterial.Count, Unit, Name_State, Count_RawMaterial * Count_Container, CONVERT(date, ProcessContentSimple.Date_Start), FK_Id_RawMaterial, Count_Container, FK_Id_ContainerType
+                ORDER BY FK_Id_OrderLocal ASC, Id_ContentSimple ASC, CONVERT(date, ProcessContentSimple.Date_Start) DESC";
             return DataProvider.Instance.ExecuteQuery(query);
         }
         public void UpdateRawMaterial(int amount, int id)
@@ -94,6 +95,19 @@ namespace NganGiang.Services.Process
             catch (SqlException ex)
             {
                 MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        public bool UpdateState(int id_simple_content, int state)
+        {
+            try
+            {
+                string query = $"UPDATE ProcessContentSimple SET FK_Id_State = {state} WHERE FK_Id_ContentSimple = {id_simple_content} AND FK_Id_Station = 403";
+                return true;
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
         }
         #endregion

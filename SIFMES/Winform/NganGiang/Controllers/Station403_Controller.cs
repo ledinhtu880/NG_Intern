@@ -20,9 +20,9 @@ namespace NganGiang.Controllers
         {
             data.DataSource = Service.ShowContentSimple();
         }
-        public bool CheckAmount(int id)
+        public bool checkQuantity(int id)
         {
-            DataTable data = Service.GetCheckAmount(id);
+            DataTable data = Service.GetCheckQuantity(id);
 
             if (data.Rows.Count > 0)
             {
@@ -44,18 +44,20 @@ namespace NganGiang.Controllers
         {
             return Service.GetRawMaterialID(id);
         }
-        public bool Update(int id)
+        public void Update(int id)
         {
-            if (CheckAmount(id))
-            {
-                int soLuong = Service.GetAmount(id);
-                Service.UpdateRawMaterial(soLuong, id);
-                Service.UpdateContentSimple(id);
-                Service.UpdateProcessContentSimple(id);
-
-                return true;
-            }
-            return false;
+            int soLuong = Service.GetAmount(id);
+            Service.UpdateRawMaterial(soLuong, id);
+            Service.UpdateContentSimple(id);
+            Service.UpdateProcessContentSimple(id);
+        }
+        public string getRFID(int id_simple_content)
+        {
+            return Helper.getRFID(id_simple_content);
+        }
+        public bool UpdateState(int id_simple_content, int state, int station)
+        {
+            return Helper.UpdateState(id_simple_content, state, station);
         }
         #endregion
     }

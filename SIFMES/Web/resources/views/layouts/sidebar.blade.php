@@ -34,7 +34,7 @@
                     trạm</a>
                 <a class="sidebar-item{{ Str::startsWith(request()->url(), url('/productStationLines')) ? ' active' : '' }}"
                     href="{{ route('productStationLines.index') }}">
-                    Quản lý xử lý dây chuyền
+                    Quản lý dây chuyền sản xuất
                 </a>
             </div>
             <div class="sidebar-group">

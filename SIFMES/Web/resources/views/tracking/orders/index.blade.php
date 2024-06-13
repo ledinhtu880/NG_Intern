@@ -171,6 +171,7 @@
                         _token: token,
                     },
                     success: function(response) {
+                        console.log(response.data);
                         let table = $("#table-data");
                         let count = 0;
                         let maxTabIndex = Math.max.apply(

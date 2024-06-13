@@ -17,7 +17,7 @@ namespace NganGiang.Views
     {
         Station401_Controller processController { get; set; }
         PLCService plcService { get; set; }
-        List<ContentSimple> chk = new List<ContentSimple>();
+        bool isPLCReady = false;
 
         public frm401()
         {
@@ -36,7 +36,14 @@ namespace NganGiang.Views
         }
         private void btnProcess_Click(object sender, EventArgs e)
         {
-            chk.Clear();
+            List<ContentSimple> listContentSimple = new List<ContentSimple>();
+            if (!isPLCReady)
+            {
+                MessageBox.Show("PLC chưa sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            listContentSimple.Clear();
             foreach (DataGridViewRow row in dgv401.Rows)
             {
                 if (Convert.ToBoolean(row.Cells[0].Value) == true)
@@ -52,38 +59,38 @@ namespace NganGiang.Views
                     contentSimple.FK_Id_ContainerType = Convert.ToInt32(row.Cells["FK_Id_ContainerType"].Value);
                     contentSimple.RFID = rfidBase64;
 
-                    chk.Add(contentSimple);
+                    listContentSimple.Add(contentSimple);
                 }
             }
-            if (chk.Count > 0)
+            if (listContentSimple.Count > 0)
             {
                 DialogResult confirm = MessageBox.Show("Bạn chắc chắn muốn cấp thùng chứa và đế dán mã RFID cho các thùng hàng trên?", "Xác nhận hành động", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                 if (confirm == DialogResult.OK)
                 {
-                    foreach (var item in chk)
+                    foreach (var item in listContentSimple)
                     {
-                        int id_content_simple = Convert.ToInt32(item.Id_ContentSimple);
+                        int id_simple_content = Convert.ToInt32(item.Id_ContentSimple);
 
-                        if (!processController.checkQuantityContainer(id_content_simple))
+                        if (!processController.checkQuantityContainer(id_simple_content))
                         {
-                            MessageBox.Show($"Số lượng nguyên liệu thùng chứa cấp cho thùng hàng {id_content_simple} không đủ! Vui lòng thử lại sau.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show($"Số lượng nguyên liệu thùng chứa cấp cho thùng hàng {id_simple_content} không đủ! Vui lòng thử lại sau.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
-                        else if (!processController.checkQuantityPedestal(id_content_simple))
+                        else if (!processController.checkQuantityPedestal(id_simple_content))
                         {
-                            MessageBox.Show($"Số lượng nguyên liệu đế cấp cho thùng hàng {id_content_simple} không đủ! Vui lòng thử lại sau.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show($"Số lượng nguyên liệu đế cấp cho thùng hàng {id_simple_content} không đủ! Vui lòng thử lại sau.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
 
-                        plcService.sendTo401(id_content_simple, item.FK_Id_RawMaterial, item.FK_Id_ContainerType, item.Count_Container, item.RFID);
+                        plcService.sendTo401(item.FK_Id_RawMaterial, item.FK_Id_ContainerType, item.Count_Container, item.RFID);
 
-                        if (processController.UpdateState(Convert.ToInt32(item.Id_ContentSimple), 1))
+                        if (processController.UpdateState(Convert.ToInt32(item.Id_ContentSimple), 1, 401))
                         {
                             DataGridViewRow row = dgv401.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["id_simple"].Value) == item.Id_ContentSimple);
 
                             if (row != null)
                             {
-                                row.Cells["Unit"].Value = "Đang xử lý";
+                                row.Cells["status"].Value = "Đang xử lý";
                             }
                         }
 
@@ -95,7 +102,7 @@ namespace NganGiang.Views
                             {
                                 byte[] rfidBytes = Convert.FromBase64String(plcService.getRFIDFromPLC());
                                 processController.UpdateQuantity(item.Count_Container);
-                                processController.UpdateProcessAndSimple(id_content_simple, rfidBytes);
+                                processController.UpdateProcessAndSimple(id_simple_content, rfidBytes);
 
                                 break;
                             }
@@ -104,7 +111,7 @@ namespace NganGiang.Views
                         plcService.updateStatus();
                     }
 
-                    MessageBox.Show("Cấp thùng chứa và đế dán mã RFID thành công!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Cấp thùng chứa và đế dán mã RFID thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
                 }
             }
@@ -123,7 +130,7 @@ namespace NganGiang.Views
                 e.Value = stringValue;
                 e.FormattingApplied = true;
             }
-            if (e.ColumnIndex == 9)
+            if (e.ColumnIndex == 11)
             {
                 if (e.Value != null && e.Value != DBNull.Value)
                 {
@@ -139,6 +146,16 @@ namespace NganGiang.Views
         private void frm401_Load(object sender, EventArgs e)
         {
             LoadData();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (plcService.getSignal() && !isPLCReady)
+            {
+                isPLCReady = true;
+                timer1.Enabled = false;
+                MessageBox.Show("PLC đã sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }
