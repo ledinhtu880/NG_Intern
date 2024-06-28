@@ -29,17 +29,17 @@ namespace NganGiang.Services.Process
             return dt;
         }
 
-        List<int> id_simple_content = new List<int>();
+        List<int> id_content_simple = new List<int>();
         private void getIdContentSimple(int id_pack)
         {
-            id_simple_content.Clear();
+            id_content_simple.Clear();
             string query = $"select distinct Id_ContentSimple from DetailContentSimpleOfPack DL join ContentSimple C on DL.FK_Id_ContentSimple = C.Id_ContentSimple where DL.FK_Id_ContentPack = {id_pack}";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             if (dt.Rows.Count > 0)
             {
                 foreach (DataRow dr in dt.Rows)
                 {
-                    id_simple_content.Add(Convert.ToInt32(dr[0]));
+                    id_content_simple.Add(Convert.ToInt32(dr[0]));
                 }
             }
         }
@@ -68,7 +68,7 @@ namespace NganGiang.Services.Process
             getIdContentSimple(id_pack);
             try
             {
-                foreach (var id_simple in id_simple_content)
+                foreach (var id_simple in id_content_simple)
                 {
                     string query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_fin = '{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}' where FK_Id_ContentSimple = {id_simple} and FK_Id_Station = 412";
                     DataProvider.Instance.ExecuteNonQuery(query);

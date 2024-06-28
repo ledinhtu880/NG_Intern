@@ -1,4 +1,6 @@
 ﻿using NganGiang.Controllers;
+using NganGiang.Models;
+using NganGiang.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,11 +16,14 @@ namespace NganGiang.Views
     public partial class frm405 : Form
     {
         private Station405_Controller processController { get; set; }
-        List<int> list_id_simple = new List<int>();
+        List<ContentSimple> listContentSimple = new List<ContentSimple>();
+        PLCService plcService { get; set; }
+        bool isPLCReady = false;
         public frm405()
         {
             InitializeComponent();
             processController = new Station405_Controller();
+            plcService = new PLCService();
         }
 
         private void frm405_Load(object sender, EventArgs e)
@@ -45,8 +50,7 @@ namespace NganGiang.Views
                 e.Value = stringValue;
                 e.FormattingApplied = true;
             }
-
-            if (e.ColumnIndex == 9)
+            if (e.ColumnIndex == 10)
             {
                 DateTime date_start = Convert.ToDateTime(e.Value);
                 string formattedDate = date_start.ToString("dd-MM-yyyy");
@@ -63,29 +67,67 @@ namespace NganGiang.Views
 
         private void btnProcess_Click(object sender, EventArgs e)
         {
-            list_id_simple.Clear();
+            if (!isPLCReady)
+            {
+                MessageBox.Show("PLC chưa sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            listContentSimple.Clear();
             foreach (DataGridViewRow row in dgv405.Rows)
             {
                 if (Convert.ToBoolean(row.Cells[0].Value) == true)
                 {
-                    list_id_simple.Add(Convert.ToInt32(row.Cells[3].Value));
+                    string rfidBase64 = processController.getRFID(Convert.ToInt32(row.Cells["Id_Simple"].Value));
+
+                    ContentSimple contentSimple = new ContentSimple();
+                    contentSimple.Id_ContentSimple = Convert.ToInt32(row.Cells["Id_Simple"].Value);
+                    contentSimple.Count_Container = Convert.ToInt32(row.Cells["Count_Container"].Value);
+                    contentSimple.FK_Id_ContainerType = Convert.ToInt32(row.Cells["FK_Id_ContainerType"].Value);
+                    contentSimple.RFID = rfidBase64;
+
+                    listContentSimple.Add(contentSimple);
                 }
             }
 
-            if (list_id_simple.Count > 0)
+            if (listContentSimple.Count > 0)
             {
                 DialogResult confirm = MessageBox.Show("Bạn chắc chắn muốn cấp nắp thùng cho các thùng hàng trên?", "Xác nhận hành động", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                 if (confirm == DialogResult.OK)
                 {
-                    foreach (var item in list_id_simple)
+                    foreach (var item in listContentSimple)
                     {
-                        var result = processController.UpdateCoverHatProvided(item);
-                        if (!string.IsNullOrEmpty(result))
+                        int id_content_simple = Convert.ToInt32(item.Id_ContentSimple);
+                        if (!processController.checkQuantity(id_content_simple))
                         {
-                            MessageBox.Show($"{result}", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show("Số lượng nắp thùng cấp cho thùng hàng {id_content_simple} không đủ! Vui lòng thử lại sau", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
 
+                        plcService.sendTo405(item.FK_Id_ContainerType, item.Count_Container, item.RFID);
+
+                        if (processController.UpdateState(Convert.ToInt32(item.Id_ContentSimple), 1, 405))
+                        {
+                            DataGridViewRow row = dgv405.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["id_simple"].Value) == item.Id_ContentSimple);
+
+                            if (row != null)
+                            {
+                                row.Cells["status"].Value = "Đang xử lý";
+                            }
+                        }
+
+                        while (true)
+                        {
+                            bool isAcknowledged = plcService.CheckAcknowledgment();
+
+                            if (isAcknowledged)
+                            {
+                                byte[] rfidBytes = Convert.FromBase64String(plcService.getRFIDFromPLC());
+                                processController.UpdateCoverHatProvided(id_content_simple);
+
+                                break;
+                            }
+                        }
+                        plcService.updateStatus();
                     }
                     MessageBox.Show("Cấp nắp thùng thành công!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
@@ -94,6 +136,16 @@ namespace NganGiang.Views
             else
             {
                 MessageBox.Show("Bạn chưa chọn nội dung sản xuất!", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (plcService.getSignal() && !isPLCReady)
+            {
+                isPLCReady = true;
+                timer1.Enabled = false;
+                MessageBox.Show("PLC đã sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

@@ -157,18 +157,20 @@ $(document).ready(function () {
 
     $("#backBtn").on("click", function () {
         if (count > 0) {
+            let id = $("#Id_Order").val();
+            alert(id);
             $.ajax({
                 url: "/orders/simples/destroySimplesWhenBack",
                 method: "POST",
                 dataType: "json",
                 data: {
+                    id: id,
                     _token: token,
                 },
                 success: function (response) {
                     window.location.href = "/orders/simples/";
                 },
                 error: function (xhr) {
-                    // Xử lý lỗi khi gửi yêu cầu Ajax
                     console.log(xhr.responseText);
                     alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
                 },
@@ -253,6 +255,7 @@ $(document).ready(function () {
                         _token: token,
                     },
                     success: function (response) {
+                        alert("hehe");
                         // Xử lý thành công
                         window.location.href =
                             "/orders/simples/getSimplesInWarehouse?id=" +
@@ -325,7 +328,8 @@ $(document).ready(function () {
                 success: function (response) {
                     let htmls = "";
                     let id = parseInt(response.maxID);
-                    $("#Id_Order").val(id);
+                    $("#Id_Order").val(response.orderID);
+                    console.log(response);
 
                     if (response.exists == 0) {
                         $.each(response.data, function (key, value) {
@@ -416,16 +420,17 @@ $(document).ready(function () {
         .find("a")
         .click(function (event) {
             if (count > 0) {
+                let id = $("#Id_Order").val();
+                alert(id);
                 $.ajax({
                     url: "/orders/simples/destroySimplesWhenBack",
                     method: "POST",
                     dataType: "json",
                     data: {
+                        id: id,
                         _token: token,
                     },
-                    success: function (response) {
-                        window.location.href = "/orders/simples/";
-                    },
+                    success: function (response) {},
                     error: function (xhr) {
                         // Xử lý lỗi khi gửi yêu cầu Ajax
                         console.log(xhr.responseText);

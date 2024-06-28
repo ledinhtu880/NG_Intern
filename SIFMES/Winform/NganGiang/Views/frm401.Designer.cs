@@ -88,7 +88,6 @@
             dgv401.AllowUserToDeleteRows = false;
             dgv401.AllowUserToResizeColumns = false;
             dgv401.AllowUserToResizeRows = false;
-            dgv401.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             dgv401.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells;
             dgv401.BackgroundColor = SystemColors.ControlLightLight;
             dgv401.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;

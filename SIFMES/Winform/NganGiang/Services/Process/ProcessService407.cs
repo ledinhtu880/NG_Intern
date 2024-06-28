@@ -99,9 +99,9 @@ namespace NganGiang.Services.Process
             }
         }
 
-        public bool IsLastStation(int id_simple_content)
+        public bool IsLastStation(int id_content_simple)
         {
-            string query = $"SELECT FK_Id_Station from DetailProductionStationLine DP inner join DispatcherOrder D on DP.FK_Id_ProdStationLine = D.FK_Id_ProdStationLine inner join OrderLocal O on O.Id_OrderLocal = D.FK_Id_OrderLocal WHERE FK_Id_OrderLocal =(select FK_Id_OrderLocal from DetailContentSimpleOrderLocal, OrderLocal \r\nwhere FK_Id_ContentSimple = {id_simple_content} and OrderLocal.Id_OrderLocal = DetailContentSimpleOrderLocal.FK_Id_OrderLocal and OrderLocal.MakeOrPackOrExpedition = 2) and FK_Id_Station > 407";
+            string query = $"SELECT FK_Id_Station from DetailProductionStationLine DP inner join DispatcherOrder D on DP.FK_Id_ProdStationLine = D.FK_Id_ProdStationLine inner join OrderLocal O on O.Id_OrderLocal = D.FK_Id_OrderLocal WHERE FK_Id_OrderLocal =(select FK_Id_OrderLocal from DetailContentSimpleOrderLocal, OrderLocal \r\nwhere FK_Id_ContentSimple = {id_content_simple} and OrderLocal.Id_OrderLocal = DetailContentSimpleOrderLocal.FK_Id_OrderLocal and OrderLocal.MakeOrPackOrExpedition = 2) and FK_Id_Station > 407";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             if (dt.Rows.Count > 0)
             {
@@ -140,9 +140,9 @@ namespace NganGiang.Services.Process
                 return -1;
             }
         }
-        public int getCountInRegister(int id_simple_content)
+        public int getCountInRegister(int id_content_simple)
         {
-            string query = $"select sum(Count) as countTotal from RegisterContentSimpleAtWareHouse where FK_Id_ContentSimple = {id_simple_content} group by FK_Id_ContentSimple";
+            string query = $"select sum(Count) as countTotal from RegisterContentSimpleAtWareHouse where FK_Id_ContentSimple = {id_content_simple} group by FK_Id_ContentSimple";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             int count = 0;
             if (dt.Rows.Count > 0)
@@ -153,10 +153,10 @@ namespace NganGiang.Services.Process
             return 0;
         }
 
-        public bool IsOutOfStockContainer(int id_simple_content)
+        public bool IsOutOfStockContainer(int id_content_simple)
         {
-            int countRegister = getCountInRegister(id_simple_content);
-            string query = $"select Count_Container - {countRegister} from ContentSimple where Id_ContentSimple = {id_simple_content}";
+            int countRegister = getCountInRegister(id_content_simple);
+            string query = $"select Count_Container - {countRegister} from ContentSimple where Id_ContentSimple = {id_content_simple}";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             if (dt.Rows.Count > 0)
             {
@@ -169,20 +169,20 @@ namespace NganGiang.Services.Process
             return true;
         }
 
-        public byte[] GenerateQrCode(int id_simple_content)
+        public byte[] GenerateQrCode(int id_content_simple)
         {
-            string qrText = $"Thùng hàng số {id_simple_content}";
+            string qrText = $"Thùng hàng số {id_content_simple}";
 
             byte[] binaryData = Encoding.UTF8.GetBytes(qrText);
 
             return binaryData;
         }
 
-        public void FreeCellDetail(int id_simple_content)
+        public void FreeCellDetail(int id_content_simple)
         {
             try
             {
-                string query = $"Update DetailStateCellOfSimpleWareHouse set FK_Id_StateCell = 1, FK_Id_ContentSimple = NULL where FK_Id_Station = 406 and FK_Id_ContentSimple = {id_simple_content}";
+                string query = $"Update DetailStateCellOfSimpleWareHouse set FK_Id_StateCell = 1, FK_Id_ContentSimple = NULL where FK_Id_Station = 406 and FK_Id_ContentSimple = {id_content_simple}";
                 DataProvider.Instance.ExecuteNonQuery(query);
             }
             catch (SqlException e)
@@ -191,20 +191,20 @@ namespace NganGiang.Services.Process
             }
         }
 
-        public void UpdateQrCodeAndState(int id_simple_content)
+        public void UpdateQrCodeAndState(int id_content_simple)
         {
             try
             {
-                byte[] qrcode = GenerateQrCode(id_simple_content);
+                byte[] qrcode = GenerateQrCode(id_content_simple);
                 string query = "Update ContentSimple set QRCode = @qr, QRCodeProvided = 1 where Id_ContentSimple = @id_simple";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@id_simple", id_simple_content),
+                    new SqlParameter("@id_simple", id_content_simple),
                     new SqlParameter("@qr", qrcode)
                 };
                 DataProvider.Instance.ExecuteNonQuery(query, parameters);
 
-                query = $"Update ProcessContentSimple set FK_Id_State = 1 where FK_Id_ContentSimple = {id_simple_content} AND FK_Id_Station = 407";
+                query = $"Update ProcessContentSimple set FK_Id_State = 1 where FK_Id_ContentSimple = {id_content_simple} AND FK_Id_Station = 407";
                 DataProvider.Instance.ExecuteNonQuery(query);
             }
             catch (SqlException e)
@@ -213,29 +213,29 @@ namespace NganGiang.Services.Process
             }
         }
 
-        public void UpdateAndInsertProcessSimple(int id_simple_content)
+        public void UpdateAndInsertProcessSimple(int id_content_simple)
         {
             try
             {
                 var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                string query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentSimple = {id_simple_content} and FK_Id_Station = 407";
+                string query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentSimple = {id_content_simple} and FK_Id_Station = 407";
                 DataProvider.Instance.ExecuteNonQuery(query);
 
                 query = "insert into ProcessContentSimple(FK_Id_ContentSimple, FK_Id_Station, FK_Id_State, Date_Start) values(@id_content, @station, @state, @date_start)";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@id_content", id_simple_content),
+                    new SqlParameter("@id_content", id_content_simple),
                     new SqlParameter("@station", 408),
                     new SqlParameter("@state", 0),
                     new SqlParameter("@date_start", date)
                 };
                 DataProvider.Instance.ExecuteNonQuery(query, parameters);
 
-                byte[] qrcode = GenerateQrCode(id_simple_content);
+                byte[] qrcode = GenerateQrCode(id_content_simple);
                 query = "Update ContentSimple set QRCode = @qr, QRCodeProvided = 1 where Id_ContentSimple = @id_simple";
                 parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@id_simple", id_simple_content),
+                    new SqlParameter("@id_simple", id_content_simple),
                     new SqlParameter("@qr", qrcode)
                 };
                 DataProvider.Instance.ExecuteNonQuery(query, parameters);
@@ -247,12 +247,12 @@ namespace NganGiang.Services.Process
         }
 
         private List<int> contentPack = new List<int>();
-        public void GetContentPack(int id_simple_content)
+        public void GetContentPack(int id_content_simple)
         {
             contentPack.Clear();
             try
             {
-                string query = $"select Id_ContentPack from ContentPack P join DetailContentSimpleOfPack DP on P.Id_ContentPack = DP.FK_Id_ContentPack where DP.FK_Id_ContentSimple = {id_simple_content}";
+                string query = $"select Id_ContentPack from ContentPack P join DetailContentSimpleOfPack DP on P.Id_ContentPack = DP.FK_Id_ContentPack where DP.FK_Id_ContentSimple = {id_content_simple}";
                 DataTable dt = DataProvider.Instance.ExecuteQuery(query);
                 if (dt.Rows.Count > 0)
                 {
@@ -268,12 +268,12 @@ namespace NganGiang.Services.Process
             }
         }
 
-        public void UpdateAndInsertProcessPack(int id_simple_content)
+        public void UpdateAndInsertProcessPack(int id_content_simple)
         {
             try
             {
                 var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                string query = $"Update ProcessContentPack set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentPack = {id_simple_content} and FK_Id_Station = 407";
+                string query = $"Update ProcessContentPack set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentPack = {id_content_simple} and FK_Id_Station = 407";
                 DataProvider.Instance.ExecuteNonQuery(query);
 
                 foreach (var item in contentPack)
@@ -295,18 +295,18 @@ namespace NganGiang.Services.Process
             }
         }
 
-        public void UpdateProcessAndOrder(int id_simple_content)
+        public void UpdateProcessAndOrder(int id_content_simple)
         {
             try
             {
                 var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                string query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentSimple = {id_simple_content} and FK_Id_Station = 407";
+                string query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentSimple = {id_content_simple} and FK_Id_Station = 407";
                 DataProvider.Instance.ExecuteNonQuery(query);
 
-                query = $"UPDATE OrderLocal set Date_Fin = '{date}' FROM DetailContentSimpleOrderLocal D JOIN OrderLocal O ON D.FK_Id_OrderLocal = O.Id_OrderLocal WHERE D.FK_Id_ContentSimple = {id_simple_content}";
+                query = $"UPDATE OrderLocal set Date_Fin = '{date}' FROM DetailContentSimpleOrderLocal D JOIN OrderLocal O ON D.FK_Id_OrderLocal = O.Id_OrderLocal WHERE D.FK_Id_ContentSimple = {id_content_simple}";
                 DataProvider.Instance.ExecuteNonQuery(query);
 
-                query = $"UPDATE dbo.[Order] SET Date_Delivery = '{date}' FROM ContentSimple C join dbo.[Order] O on C.FK_Id_Order = O.Id_Order WHERE C.Id_ContentSimple = {id_simple_content}";
+                query = $"UPDATE dbo.[Order] SET Date_Delivery = '{date}' FROM ContentSimple C join dbo.[Order] O on C.FK_Id_Order = O.Id_Order WHERE C.Id_ContentSimple = {id_content_simple}";
                 DataProvider.Instance.ExecuteNonQuery(query);
             }
             catch (SqlException e)

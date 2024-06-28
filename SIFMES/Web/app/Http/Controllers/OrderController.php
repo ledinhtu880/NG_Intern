@@ -238,8 +238,7 @@ class OrderController extends Controller
   public function destroySimplesWhenBack(Request $request)
   {
     if ($request->ajax()) {
-      $maxID = DB::table('Order')->max('Id_Order');
-      $id = ($maxID === null) ? 0 : $maxID;
+      $id = $request->input('id');
 
       $simples = DB::table('ContentSimple')->where('FK_Id_Order', $id)->pluck('Id_ContentSimple');
       foreach ($simples as $each) {
@@ -493,6 +492,7 @@ class OrderController extends Controller
         // Thêm dòng dữ liệu mới
         $maxID = DB::table('ContentSimple')->max('Id_ContentSimple');
         $id = ($maxID === null) ? 0 : $maxID + 1;
+        $orderID = DB::table('Order')->max('Id_Order');
 
         DB::table('ContentSimple')->insert([
           'Id_ContentSimple' => $id,
@@ -514,6 +514,7 @@ class OrderController extends Controller
           'status' => 'success',
           'data' => $data,
           'maxID' => $id,
+          'orderID' => $orderID,
           'exists' => 0
         ]);
       }

@@ -23,36 +23,36 @@ namespace NganGiang.Controllers
             process407Services.listProcessSimpleOrderLocal(dgv);
         }
 
-        public byte[] GenerateQrCode(int id_simple_content)
+        public byte[] GenerateQrCode(int id_content_simple)
         {
-            return process407Services.GenerateQrCode(id_simple_content);
+            return process407Services.GenerateQrCode(id_content_simple);
         }
 
-        public bool IsLastStation(int id_simple_content)
+        public bool IsLastStation(int id_content_simple)
         {
-            return process407Services.IsLastStation(id_simple_content);
+            return process407Services.IsLastStation(id_content_simple);
         }
 
-        public bool UpdateData(int id_simple_content)
+        public bool UpdateData(int id_content_simple)
         {
             bool isSuccess = true;
             try
             {
-                bool isLastStation = process407Services.IsLastStation(id_simple_content);
-                bool isOutOfStockConatiner = process407Services.IsOutOfStockContainer(id_simple_content);
-                if (process407Services.checkCustomer(id_simple_content) == 1)
+                bool isLastStation = process407Services.IsLastStation(id_content_simple);
+                bool isOutOfStockConatiner = process407Services.IsOutOfStockContainer(id_content_simple);
+                if (process407Services.checkCustomer(id_content_simple) == 1)
                 {
-                    if (isOutOfStockConatiner == true)
+                    if (isOutOfStockConatiner)
                     {
-                        process407Services.FreeCellDetail(id_simple_content);
-                        if (isLastStation == true)
+                        process407Services.FreeCellDetail(id_content_simple);
+                        if (isLastStation)
                         {
-                            process407Services.UpdateProcessAndOrder(id_simple_content);
+                            process407Services.UpdateProcessAndOrder(id_content_simple);
                         }
                         else
                         {
-                            process407Services.UpdateAndInsertProcessSimple(id_simple_content);
-                            process407Services.UpdateAndInsertProcessPack(id_simple_content);
+                            process407Services.UpdateAndInsertProcessSimple(id_content_simple);
+                            process407Services.UpdateAndInsertProcessPack(id_content_simple);
                         }
                     }
                     else
@@ -63,15 +63,16 @@ namespace NganGiang.Controllers
                 }
                 else
                 {
-                    if (isLastStation == true)
+                    process407Services.FreeCellDetail(id_content_simple);
+                    if (isLastStation)
                     {
-                        process407Services.UpdateQrCodeAndState(id_simple_content);
-                        process407Services.UpdateProcessAndOrder(id_simple_content);
+                        process407Services.UpdateQrCodeAndState(id_content_simple);
+                        process407Services.UpdateProcessAndOrder(id_content_simple);
                     }
                     else
                     {
-                        process407Services.UpdateAndInsertProcessSimple(id_simple_content);
-                        process407Services.UpdateAndInsertProcessPack(id_simple_content);
+                        process407Services.UpdateAndInsertProcessSimple(id_content_simple);
+                        process407Services.UpdateAndInsertProcessPack(id_content_simple);
                     }
                 }
             }

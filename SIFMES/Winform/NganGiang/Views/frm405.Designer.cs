@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
@@ -37,6 +38,7 @@
             dgv405 = new DataGridView();
             btnProcess = new Button();
             lbHeader = new Label();
+            timer1 = new System.Windows.Forms.Timer(components);
             panelDGV.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv405).BeginInit();
             SuspendLayout();
@@ -133,6 +135,12 @@
             lbHeader.Text = "Xử lý tại trạm 405";
             lbHeader.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // timer1
+            // 
+            timer1.Enabled = true;
+            timer1.Interval = 1000;
+            timer1.Tick += timer1_Tick;
+            // 
             // frm405
             // 
             AcceptButton = btnProcess;
@@ -158,5 +166,6 @@
         private DataGridView dgv405;
         private Button btnProcess;
         private Label lbHeader;
+        private System.Windows.Forms.Timer timer1;
     }
 }

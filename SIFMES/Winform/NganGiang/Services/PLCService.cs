@@ -20,7 +20,6 @@ namespace NganGiang.Services
             plcDB = 1;
             OpenConnection();
         }
-
         private void OpenConnection()
         {
             if (!plcClient.IsConnected)
@@ -28,7 +27,6 @@ namespace NganGiang.Services
                 plcClient.Open();
             }
         }
-
         private void CloseConnection()
         {
             if (plcClient.IsConnected)
@@ -36,12 +34,61 @@ namespace NganGiang.Services
                 plcClient.Close();
             }
         }
-
         public void Dispose()
         {
             CloseConnection();
         }
-
+        public void updateStatus()
+        {
+            try
+            {
+                OpenConnection();
+                APIClient.sendBool(plcClient, plcDB, 1, false);
+            }
+            catch (PlcException ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        public bool CheckAcknowledgment()
+        {
+            try
+            {
+                OpenConnection();
+                return APIClient.read_bool(plcClient, plcDB, 1);
+            }
+            catch (PlcException ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+        public bool getSignal()
+        {
+            try
+            {
+                OpenConnection();
+                return APIClient.read_bool(plcClient, plcDB, 0);
+            }
+            catch (PlcException ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+        public string getRFIDFromPLC()
+        {
+            try
+            {
+                OpenConnection();
+                return APIClient.read_string(plcClient, plcDB, start_byte_for_struct.string_start_byte);
+            }
+            catch (PlcException ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "";
+            }
+        }
         public void sendTo401(int materialType, int containerType, int countContainer, string RFID)
         {
             try
@@ -74,7 +121,6 @@ namespace NganGiang.Services
                 MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         public void sendTo403(int materialType, int containerType, int countContainer, string RFID)
         {
             try
@@ -91,58 +137,19 @@ namespace NganGiang.Services
                 MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        public void updateStatus()
+        public void sendTo405(int containerType, int countContainer, string RFID)
         {
             try
             {
                 OpenConnection();
-                APIClient.sendBool(plcClient, plcDB, 1, false);
+                APIClient.sendInt(plcClient, plcDB, 0, 405);
+                APIClient.sendInt(plcClient, plcDB, 1, containerType);
+                APIClient.sendInt(plcClient, plcDB, 2, countContainer);
+                APIClient.sendString(plcClient, plcDB, start_byte_for_struct.string_start_byte, RFID);
             }
             catch (PlcException ex)
             {
                 MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        public bool CheckAcknowledgment()
-        {
-            try
-            {
-                OpenConnection();
-                return APIClient.read_bool(plcClient, plcDB, 1);
-            }
-            catch (PlcException ex)
-            {
-                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-        }
-        public bool getSignal()
-        {
-            try
-            {
-                OpenConnection();
-                return APIClient.read_bool(plcClient, plcDB, 0);
-            }
-            catch (PlcException ex)
-            {
-                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-        }
-
-        public string getRFIDFromPLC()
-        {
-            try
-            {
-                OpenConnection();
-                return APIClient.read_string(plcClient, plcDB, start_byte_for_struct.string_start_byte);
-            }
-            catch (PlcException ex)
-            {
-                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return "";
             }
         }
     }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Common;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -33,16 +34,28 @@ namespace NganGiang.Views
         {
             DataTable dt = simpleController.getProcessContentSimple();
             dgv402.DataSource = dt;
+
             foreach (DataGridViewColumn column in dgv402.Columns)
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
                 column.Frozen = false;
-                if(column.Name == "Loại nguyên liệu" || column.Name == "Số lượng thùng chứa" || column.Name == "Loại thùng chứa")
+
+                if (column.Name == "Loại nguyên liệu" || column.Name == "Số lượng thùng chứa" || column.Name == "Loại thùng chứa")
                 {
                     column.Visible = false;
                 }
+
+                if (column.Name == "Số lượng nguyên liệu tồn" || column.Name == "Số lượng nguyên liệu cần")
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                }
+                else
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                }
             }
         }
+
 
         private void btnProcess_Click(object sender, EventArgs e)
         {

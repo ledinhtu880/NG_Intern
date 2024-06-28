@@ -10,17 +10,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NganGiang.Models;
+using NganGiang.Services;
 
 namespace NganGiang.Views
 {
     public partial class frm406 : Form
     {
         private Station406_Controller controller;
+        PLCService plcService { get; set; }
+        bool isPLCReady = false;
         Point[] points;
         public frm406()
         {
             InitializeComponent();
             controller = new Station406_Controller();
+            plcService = new PLCService();
         }
         private void frm406_Load(object sender, EventArgs e)
         {
@@ -30,6 +34,20 @@ namespace NganGiang.Views
         private void updateDGV()
         {
             dgv406.DataSource = controller.getProcessAt406();
+            foreach (DataGridViewColumn column in dgv406.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+                column.Frozen = false;
+
+                if (column.Name == "Count_Need" || column.Name == "Count")
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                }
+                else
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                }
+            }
             updateDGVWareHouse();
         }
 
@@ -120,6 +138,12 @@ namespace NganGiang.Views
         }
         private void btnProcess_Click(object sender, EventArgs e)
         {
+            if (!isPLCReady)
+            {
+                MessageBox.Show("PLC chưa sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             int rowWare = controller.getRowAndCol(out int colWare);
             if (rowWare == 0 || colWare == 0)
             {
@@ -191,6 +215,16 @@ namespace NganGiang.Views
         private void dgv_ware_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
         {
             e.Column.SortMode = DataGridViewColumnSortMode.NotSortable;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (plcService.getSignal() && !isPLCReady)
+            {
+                isPLCReady = true;
+                timer1.Enabled = false;
+                MessageBox.Show("PLC đã sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 

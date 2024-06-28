@@ -98,17 +98,23 @@ namespace NganGiang.Views
         public void loadData()
         {
             simpleController.Show(dgv403);
-            dgv403.Columns[7].FillWeight = 70;
-            dgv403.Columns[8].FillWeight = 70;
-            dgv403.Columns[9].FillWeight = 70;
-
             foreach (DataGridViewColumn column in dgv403.Columns)
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
                 column.Frozen = false;
+
                 if (column.Name == "Loại nguyên liệu" || column.Name == "Số lượng thùng chứa" || column.Name == "Loại thùng chứa")
                 {
                     column.Visible = false;
+                }
+
+                if (column.Name == "Số lượng nguyên liệu tồn" || column.Name == "Số lượng nguyên liệu cần")
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                }
+                else
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 }
             }
         }

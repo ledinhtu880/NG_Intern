@@ -21,9 +21,9 @@ namespace NganGiang.Controllers
             DataTable dt = processService.getProcessContentSimple();
             return dt;
         }
-        public string getRFID(int id_simple_content)
+        public string getRFID(int id_content_simple)
         {
-            return Helper.getRFID(id_simple_content);
+            return Helper.getRFID(id_content_simple);
         }
         public bool checkQuantity(int Id_ContentSimple)
         {
@@ -67,9 +67,9 @@ namespace NganGiang.Controllers
                 MessageBox.Show("Rót thất bại.\n" + e.Message, "Chú ý", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        public bool UpdateState(int id_simple_content, int state, int station)
+        public bool UpdateState(int id_content_simple, int state, int station)
         {
-            return Helper.UpdateState(id_simple_content, state, station);
+            return Helper.UpdateState(id_content_simple, state, station);
         }
     }
 }

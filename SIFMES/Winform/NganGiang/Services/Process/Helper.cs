@@ -74,12 +74,12 @@ namespace NganGiang.Services.Process
             }
         }
 
-        public static bool UpdateState(int id_simple_content, int state, int station)
+        public static bool UpdateState(int id_content_simple, int state, int station)
         {
             try
             {
-                string query = $"UPDATE ProcessContentSimple SET FK_Id_State = {state} WHERE FK_Id_ContentSimple = {id_simple_content} AND FK_Id_Station = {station}";
-                return true;
+                string query = $"UPDATE ProcessContentSimple SET FK_Id_State = {state} WHERE FK_Id_ContentSimple = {id_content_simple} AND FK_Id_Station = {station}";
+                return DataProvider.Instance.ExecuteNonQuery(query) > 0;
             }
             catch (SqlException e)
             {
@@ -88,10 +88,20 @@ namespace NganGiang.Services.Process
             }
         }
 
-        public static string getRFID(int id_simple_content)
+        public static string getRFID(int id_content_simple)
         {
-            string query = $"SELECT RFID FROM ContentSimple WHERE Id_ContentSimple = {id_simple_content}";
-            return DataProvider.Instance.GetValue(query);
+            string query = $"SELECT RFID FROM ContentSimple WHERE Id_ContentSimple = {id_content_simple}";
+            return DataProvider.Instance.GetRFID(query);
+        }
+        public static string Base64ToHex(string base64String)
+        {
+            byte[] bytes = Convert.FromBase64String(base64String);
+            StringBuilder hex = new StringBuilder("0x");
+            foreach (byte b in bytes)
+            {
+                hex.AppendFormat("{0:X2}", b);
+            }
+            return hex.ToString();
         }
     }
 }

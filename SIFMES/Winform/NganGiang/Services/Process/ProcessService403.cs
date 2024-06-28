@@ -25,8 +25,8 @@ namespace NganGiang.Services.Process
         }
         public int GetAmount(int id)
         {
-            string query = @$"SELECT (Count_RawMaterial * Count_Container) AS 'Số lượng', 
-                RawMaterial.Count AS N'Tồn kho' FROM ContentSimple 
+            string query = @$"SELECT (Count_RawMaterial * Count_Container) AS 'Số lượng'
+                FROM ContentSimple 
                 INNER JOIN RawMaterial ON ContentSimple.FK_Id_RawMaterial = Id_RawMaterial 
                 WHERE Id_ContentSimple = {id}";
             return Convert.ToInt32(DataProvider.Instance.GetValue(query));
@@ -95,19 +95,6 @@ namespace NganGiang.Services.Process
             catch (SqlException ex)
             {
                 MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        public bool UpdateState(int id_simple_content, int state)
-        {
-            try
-            {
-                string query = $"UPDATE ProcessContentSimple SET FK_Id_State = {state} WHERE FK_Id_ContentSimple = {id_simple_content} AND FK_Id_Station = 403";
-                return true;
-            }
-            catch (SqlException e)
-            {
-                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
             }
         }
         #endregion

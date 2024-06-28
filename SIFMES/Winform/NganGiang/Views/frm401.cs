@@ -69,16 +69,16 @@ namespace NganGiang.Views
                 {
                     foreach (var item in listContentSimple)
                     {
-                        int id_simple_content = Convert.ToInt32(item.Id_ContentSimple);
+                        int id_content_simple = Convert.ToInt32(item.Id_ContentSimple);
 
-                        if (!processController.checkQuantityContainer(id_simple_content))
+                        if (!processController.checkQuantityContainer(id_content_simple))
                         {
-                            MessageBox.Show($"Số lượng nguyên liệu thùng chứa cấp cho thùng hàng {id_simple_content} không đủ! Vui lòng thử lại sau.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show($"Số lượng nguyên liệu thùng chứa cấp cho thùng hàng {id_content_simple} không đủ! Vui lòng thử lại sau.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
-                        else if (!processController.checkQuantityPedestal(id_simple_content))
+                        else if (!processController.checkQuantityPedestal(id_content_simple))
                         {
-                            MessageBox.Show($"Số lượng nguyên liệu đế cấp cho thùng hàng {id_simple_content} không đủ! Vui lòng thử lại sau.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show($"Số lượng nguyên liệu đế cấp cho thùng hàng {id_content_simple} không đủ! Vui lòng thử lại sau.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
 
@@ -102,7 +102,7 @@ namespace NganGiang.Views
                             {
                                 byte[] rfidBytes = Convert.FromBase64String(plcService.getRFIDFromPLC());
                                 processController.UpdateQuantity(item.Count_Container);
-                                processController.UpdateProcessAndSimple(id_simple_content, rfidBytes);
+                                processController.UpdateProcessAndSimple(id_content_simple, rfidBytes);
 
                                 break;
                             }

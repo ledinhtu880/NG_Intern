@@ -1,5 +1,6 @@
 ﻿using NganGiang.Services.Process;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -51,13 +52,13 @@ namespace NganGiang.Controllers
             Service.UpdateContentSimple(id);
             Service.UpdateProcessContentSimple(id);
         }
-        public string getRFID(int id_simple_content)
+        public string getRFID(int id_content_simple)
         {
-            return Helper.getRFID(id_simple_content);
+            return Helper.getRFID(id_content_simple);
         }
-        public bool UpdateState(int id_simple_content, int state, int station)
+        public bool UpdateState(int id_content_simple, int state, int station)
         {
-            return Helper.UpdateState(id_simple_content, state, station);
+            return Helper.UpdateState(id_content_simple, state, station);
         }
         #endregion
     }

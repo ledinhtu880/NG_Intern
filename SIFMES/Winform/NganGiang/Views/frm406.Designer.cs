@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
@@ -50,6 +51,7 @@
             dgv_ware = new DataGridView();
             btnProcess = new Button();
             lbHeader = new Label();
+            timer1 = new System.Windows.Forms.Timer(components);
             panelDGV.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv406).BeginInit();
             panelWarehouse.SuspendLayout();
@@ -227,6 +229,8 @@
             // 
             dgv_ware.AllowUserToAddRows = false;
             dgv_ware.AllowUserToDeleteRows = false;
+            dgv_ware.AllowUserToResizeColumns = false;
+            dgv_ware.AllowUserToResizeRows = false;
             dgv_ware.BackgroundColor = Color.White;
             dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle4.BackColor = SystemColors.Control;
@@ -285,6 +289,12 @@
             lbHeader.Text = "Xử lý tại trạm 406";
             lbHeader.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // timer1
+            // 
+            timer1.Enabled = true;
+            timer1.Interval = 1000;
+            timer1.Tick += timer1_Tick;
+            // 
             // frm406
             // 
             AcceptButton = btnProcess;
@@ -326,5 +336,6 @@
         private DataGridViewTextBoxColumn Count_Need;
         private DataGridViewTextBoxColumn Date_Start;
         private DataGridViewTextBoxColumn Name_State;
+        private System.Windows.Forms.Timer timer1;
     }
 }

@@ -28,7 +28,8 @@ namespace NganGiang.Services.Process
                 DataGridViewCheckBoxColumn column = new()
                 {
                     HeaderText = "",
-                    Frozen = false
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
                 DataGridViewTextBoxColumn column1 = new()
@@ -37,7 +38,8 @@ namespace NganGiang.Services.Process
                     HeaderText = "Mã đơn hàng",
                     DataPropertyName = "id_orderlocal",
                     SortMode = DataGridViewColumnSortMode.NotSortable,
-                    Frozen = false
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
                 DataGridViewTextBoxColumn column2 = new()
@@ -46,7 +48,8 @@ namespace NganGiang.Services.Process
                     HeaderText = "Loại hàng",
                     DataPropertyName = "type_simple",
                     SortMode = DataGridViewColumnSortMode.NotSortable,
-                    Frozen = false
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
                 DataGridViewTextBoxColumn column3 = new()
@@ -55,7 +58,8 @@ namespace NganGiang.Services.Process
                     HeaderText = "Mã thùng hàng",
                     DataPropertyName = "id_simple",
                     SortMode = DataGridViewColumnSortMode.NotSortable,
-                    Frozen = false
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
                 DataGridViewTextBoxColumn column4 = new()
@@ -64,7 +68,8 @@ namespace NganGiang.Services.Process
                     HeaderText = "Tên nguyên liệu",
                     DataPropertyName = "name_raw",
                     SortMode = DataGridViewColumnSortMode.NotSortable,
-                    Frozen = false
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
                 DataGridViewTextBoxColumn column5 = new()
@@ -73,7 +78,8 @@ namespace NganGiang.Services.Process
                     HeaderText = "Số lượng nguyên liệu tồn",
                     DataPropertyName = "quantity",
                     SortMode = DataGridViewColumnSortMode.NotSortable,
-                    Frozen = false
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
                 };
 
                 DataGridViewTextBoxColumn column6 = new()
@@ -82,7 +88,8 @@ namespace NganGiang.Services.Process
                     HeaderText = "Số lượng thùng chứa tồn",
                     DataPropertyName = "quantity_container",
                     SortMode = DataGridViewColumnSortMode.NotSortable,
-                    Frozen = false
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
                 };
 
                 DataGridViewTextBoxColumn column7 = new()
@@ -91,7 +98,8 @@ namespace NganGiang.Services.Process
                     HeaderText = "Số lượng đế thùng tồn",
                     DataPropertyName = "quantity_pedestal",
                     SortMode = DataGridViewColumnSortMode.NotSortable,
-                    Frozen = false
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
                 };
 
                 DataGridViewTextBoxColumn column8 = new()
@@ -100,7 +108,8 @@ namespace NganGiang.Services.Process
                     HeaderText = "Số lượng cần",
                     DataPropertyName = "quantity_order",
                     SortMode = DataGridViewColumnSortMode.NotSortable,
-                    Frozen = false
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
                 DataGridViewTextBoxColumn column9 = new()
@@ -109,7 +118,8 @@ namespace NganGiang.Services.Process
                     HeaderText = "Đơn vị",
                     DataPropertyName = "Unit",
                     SortMode = DataGridViewColumnSortMode.NotSortable,
-                    Frozen = false
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
                 DataGridViewTextBoxColumn column10 = new()
@@ -118,7 +128,8 @@ namespace NganGiang.Services.Process
                     HeaderText = "Trạng thái",
                     DataPropertyName = "status",
                     SortMode = DataGridViewColumnSortMode.NotSortable,
-                    Frozen = false
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
                 DataGridViewTextBoxColumn column11 = new()
@@ -127,7 +138,8 @@ namespace NganGiang.Services.Process
                     HeaderText = "Ngày bắt đầu",
                     DataPropertyName = "date_start",
                     SortMode = DataGridViewColumnSortMode.NotSortable,
-                    Frozen = false
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
                 DataGridViewTextBoxColumn column12 = new()
@@ -145,24 +157,24 @@ namespace NganGiang.Services.Process
                     DataPropertyName = "FK_Id_ContainerType",
                     Visible = false,
                     SortMode = DataGridViewColumnSortMode.NotSortable,
-                    Frozen = false
+                    Frozen = false,
                 };
 
                 dgv.Columns.AddRange(column, column1, column2, column3, column4, column5, column6, column7, column8, column9, column10, column11, column12, column13);
+
+                // Adjust the DataGridView column headers and rows
                 dgv.ColumnHeadersHeight = 60;
                 dgv.RowTemplate.Height = 35;
                 dgv.DataSource = dt;
             }
-
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, $"Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        public int getQuantityContentSimple(int id_simple_content)
+        public int getQuantityContentSimple(int id_content_simple)
         {
-            string query = $"select Count_Container * Count_RawMaterial as quantity_simple from ContentSimple where Id_ContentSimple = {id_simple_content}";
+            string query = $"select Count_Container * Count_RawMaterial as quantity_simple from ContentSimple where Id_ContentSimple = {id_content_simple}";
 
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             int quantity = 0;
@@ -198,10 +210,10 @@ namespace NganGiang.Services.Process
             return quantity_raw; ;
         }
 
-        public bool checkQuantityContainer(int id_simple_content)
+        public bool checkQuantityContainer(int id_content_simple)
         {
             int quantityContainer = getQuantityContainerRaw();
-            int quantityRawSimple = getQuantityContentSimple(id_simple_content);
+            int quantityRawSimple = getQuantityContentSimple(id_content_simple);
 
             if (quantityRawSimple > quantityContainer)
             {
@@ -210,10 +222,10 @@ namespace NganGiang.Services.Process
             return true;
         }
 
-        public bool checkQuantityPedestal(int id_simple_content)
+        public bool checkQuantityPedestal(int id_content_simple)
         {
             int quantityPedestal = getQuantityPedestalRaw();
-            int quantityRawSimple = getQuantityContentSimple(id_simple_content);
+            int quantityRawSimple = getQuantityContentSimple(id_content_simple);
 
             if (quantityRawSimple > quantityPedestal)
             {
@@ -222,11 +234,11 @@ namespace NganGiang.Services.Process
             return true;
         }
 
-        public void UpdateContainerProvided(int id_simple_content)
+        public void UpdateContainerProvided(int id_content_simple)
         {
             try
             {
-                string query = $"Update ContentSimple set ContainerProvided = 1 where Id_ContentSimple = {id_simple_content}";
+                string query = $"Update ContentSimple set ContainerProvided = 1 where Id_ContentSimple = {id_content_simple}";
                 DataProvider.Instance.ExecuteNonQuery(query);
             }
             catch (SqlException e)
@@ -235,11 +247,11 @@ namespace NganGiang.Services.Process
             }
         }
 
-        public void UpdatePedestalProvided(int id_simple_content)
+        public void UpdatePedestalProvided(int id_content_simple)
         {
             try
             {
-                string query = $"Update ContentSimple set PedestalProvided = 1 where Id_ContentSimple = {id_simple_content}";
+                string query = $"Update ContentSimple set PedestalProvided = 1 where Id_ContentSimple = {id_content_simple}";
                 DataProvider.Instance.ExecuteNonQuery(query);
             }
             catch (SqlException e)
@@ -258,9 +270,9 @@ namespace NganGiang.Services.Process
             return randomBytes;
         }
 
-        private int FindNextStation(int id_simple_content)
+        private int FindNextStation(int id_content_simple)
         {
-            string query = $"SELECT FK_Id_Station from DetailProductionStationLine DP inner join DispatcherOrder D on DP.FK_Id_ProdStationLine = D.FK_Id_ProdStationLine\r\n\t\t\t\t\t\t\t\t\t\tinner join OrderLocal O on O.Id_OrderLocal = D.FK_Id_OrderLocal \r\nWHERE FK_Id_OrderLocal =(select FK_Id_OrderLocal from DetailContentSimpleOrderLocal where FK_Id_ContentSimple = {id_simple_content})";
+            string query = $"SELECT FK_Id_Station from DetailProductionStationLine DP inner join DispatcherOrder D on DP.FK_Id_ProdStationLine = D.FK_Id_ProdStationLine\r\n\t\t\t\t\t\t\t\t\t\tinner join OrderLocal O on O.Id_OrderLocal = D.FK_Id_OrderLocal \r\nWHERE FK_Id_OrderLocal =(select FK_Id_OrderLocal from DetailContentSimpleOrderLocal where FK_Id_ContentSimple = {id_content_simple})";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             List<int> station = new List<int>();
             if (dt.Rows.Count > 0)
@@ -280,23 +292,23 @@ namespace NganGiang.Services.Process
             }
         }
 
-        public void UpdateRFIDProvided(int id_simple_content, byte[] rfidBytes)
+        public void UpdateRFIDProvided(int id_content_simple, byte[] rfidBytes)
         {
             try
             {
                 string query = $"Update ContentSimple set RFIDProvided = 1, RFID = @rfid where Id_ContentSimple = @id_simple";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@id_simple", id_simple_content),
+                    new SqlParameter("@id_simple", id_content_simple),
                     new SqlParameter("@rfid", rfidBytes)
                 };
                 DataProvider.Instance.ExecuteNonQuery(query, parameters);
 
-                query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_Fin = '{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}' where FK_Id_ContentSimple = {id_simple_content}";
+                query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_Fin = '{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}' where FK_Id_ContentSimple = {id_content_simple}";
                 DataProvider.Instance.ExecuteNonQuery(query);
 
-                int station = FindNextStation(id_simple_content);
-                query = $"insert into ProcessContentSimple(FK_Id_ContentSimple, FK_Id_Station, FK_Id_State, Date_Start) values({id_simple_content}, {station}, 0, '{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}')";
+                int station = FindNextStation(id_content_simple);
+                query = $"insert into ProcessContentSimple(FK_Id_ContentSimple, FK_Id_Station, FK_Id_State, Date_Start) values({id_content_simple}, {station}, 0, '{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}')";
                 DataProvider.Instance.ExecuteNonQuery(query);
             }
             catch (SqlException e)

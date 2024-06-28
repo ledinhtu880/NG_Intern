@@ -21,26 +21,24 @@ namespace NganGiang.Controllers
             SqlParameter[] parameters =
             {
             new SqlParameter("@username", username)
-        };
+            };
             DataTable dt = DataProvider.Instance.ExecuteQuery(query, parameters);
             if (dt.Rows.Count > 0)
             {
                 return dt.Rows[0]["Password"].ToString();
             }
-            return null;
+            return String.Empty;
         }
         public bool CheckLogin(string username, string password)
         {
             string hashedPassword = GetHashedPassword(username);
-            // Chỉnh sửa ở đây: Sử dụng Verify của BCrypt.Net với cả hai định dạng "$2a$" và "$2y$"
-            bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(password, hashedPassword);
-            if (isPasswordCorrect)
+            if (hashedPassword == String.Empty)
             {
-                return true;
+                return false;
             }
             else
             {
-                return false;
+                return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
             }
         }
     }

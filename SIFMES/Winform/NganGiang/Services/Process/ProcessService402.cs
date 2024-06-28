@@ -161,18 +161,5 @@ namespace NganGiang.Services.Process
             reader.Close();
             return true;
         }
-        public bool UpdateState(int id_simple_content, int state)
-        {
-            try
-            {
-                string query = $"UPDATE ProcessContentSimple SET FK_Id_State = {state} WHERE FK_Id_ContentSimple = {id_simple_content} AND FK_Id_Station = 402";
-                return true;
-            }
-            catch (SqlException e)
-            {
-                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-        }
     }
 }

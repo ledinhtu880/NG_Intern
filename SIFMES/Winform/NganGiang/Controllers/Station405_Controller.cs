@@ -1,4 +1,6 @@
 ﻿using NganGiang.Services.Process;
+using System.Data;
+using System.Windows.Navigation;
 
 namespace NganGiang.Controllers
 {
@@ -15,30 +17,25 @@ namespace NganGiang.Controllers
         {
             processServices.listProcessSimpleOrderLocal(dgv);
         }
-        public bool checkQuantity(int id_simple_content)
+        public bool checkQuantity(int id_content_simple)
         {
-            return processServices.checkQuantity(id_simple_content);
+            return processServices.checkQuantity(id_content_simple);
         }
-        public string UpdateCoverHatProvided(int id_simple_content)
+        public void UpdateCoverHatProvided(int id_content_simple)
         {
-            bool checkQuantity = processServices.checkQuantity(id_simple_content);
-            if (checkQuantity == true)
-            {
-                processServices.UpdateCoverHatProvided(id_simple_content);
-                return string.Empty;
-            }
-            else
-            {
-                return $"Số lượng nắp thùng cấp cho thùng hàng {id_simple_content} không đủ! Vui lòng thử lại sau";
-            }
+            processServices.UpdateCoverHatProvided(id_content_simple);
         }
-        public string getRFID(int id_simple_content)
+        public string getRFID(int id_content_simple)
         {
-            return Helper.getRFID(id_simple_content);
+            return Helper.getRFID(id_content_simple);
         }
-        public bool UpdateState(int id_simple_content, int state, int station)
+        public bool UpdateState(int id_content_simple, int state, int station)
         {
-            return Helper.UpdateState(id_simple_content, state, station);
+            return Helper.UpdateState(id_content_simple, state, station);
+        }
+        public String Base64ToHex(string base64String)
+        {
+            return Helper.Base64ToHex(base64String);
         }
     }
 }

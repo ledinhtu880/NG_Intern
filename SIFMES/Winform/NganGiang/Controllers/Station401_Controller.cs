@@ -15,37 +15,37 @@ namespace NganGiang.Controllers
         {
             processServices.listMakeContent(dgv);
         }
-        public string UpdateProcessAndSimple(int id_simple_content, byte[] rfidBytes)
+        public string UpdateProcessAndSimple(int id_content_simple, byte[] rfidBytes)
         {
-            processServices.UpdateContainerProvided(id_simple_content);
-            processServices.UpdatePedestalProvided(id_simple_content);
-            processServices.UpdateRFIDProvided(id_simple_content, rfidBytes);
+            processServices.UpdateContainerProvided(id_content_simple);
+            processServices.UpdatePedestalProvided(id_content_simple);
+            processServices.UpdateRFIDProvided(id_content_simple, rfidBytes);
             return string.Empty;
         }
-        public bool checkQuantityContainer(int id_simple_content)
+        public bool checkQuantityContainer(int id_content_simple)
         {
-            return processServices.checkQuantityContainer(id_simple_content);
+            return processServices.checkQuantityContainer(id_content_simple);
         }
-        public bool checkQuantityPedestal(int id_simple_content)
+        public bool checkQuantityPedestal(int id_content_simple)
         {
-            return processServices.checkQuantityPedestal(id_simple_content);
+            return processServices.checkQuantityPedestal(id_content_simple);
         }
-        public void UpdateContainerProvided(int id_simple_content)
+        public void UpdateContainerProvided(int id_content_simple)
         {
-            processServices.UpdateContainerProvided(id_simple_content);
+            processServices.UpdateContainerProvided(id_content_simple);
         }
-        public void UpdatePedestalProvided(int id_simple_content)
+        public void UpdatePedestalProvided(int id_content_simple)
         {
-            processServices.UpdatePedestalProvided(id_simple_content);
+            processServices.UpdatePedestalProvided(id_content_simple);
         }
         public void UpdateQuantity(int quantityConsumed)
         {
             processServices.UpdateQuantityContainer(quantityConsumed);
             processServices.UpdateQuantityPedestal(quantityConsumed);
         }
-        public bool UpdateState(int id_simple_content, int state, int station)
+        public bool UpdateState(int id_content_simple, int state, int station)
         {
-            return Helper.UpdateState(id_simple_content, state, station);
+            return Helper.UpdateState(id_content_simple, state, station);
         }
         public byte[] GenerateRandomBytes(int length)
         {

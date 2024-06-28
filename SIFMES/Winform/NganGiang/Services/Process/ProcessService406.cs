@@ -146,7 +146,7 @@ namespace NganGiang.Services.Process
             return Id_ContentSimples;
         }
 
-        private bool checkStation406AndSate2(List<decimal> Id_ContentSimples)
+        private bool checkStation406AndState2(List<decimal> Id_ContentSimples)
         {
             bool check = true;
             foreach (int Id_ContentSimple in Id_ContentSimples)
@@ -184,7 +184,7 @@ namespace NganGiang.Services.Process
 
             orderLocal.Date_Fin = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-            if (this.checkStation406AndSate2(Id_ContentSimples))
+            if (this.checkStation406AndState2(Id_ContentSimples))
             {
                 // Cập nhật bảng Order
                 string query = $"UPDATE OrderLocal SET Date_Fin = '{orderLocal.Date_Fin}' WHERE Id_OrderLocal = {orderLocal.Id_OrderLocal}";
@@ -230,7 +230,7 @@ namespace NganGiang.Services.Process
             }
 
 
-            if (this.checkStation406AndSate2(Id_ContentSimples))
+            if (this.checkStation406AndState2(Id_ContentSimples))
             {
                 query = $"UPDATE [Order] SET Date_Delivery = '{order.Date_Delivery}' WHERE Id_Order = {order.Id_Order}";
                 int rowAffected = DataProvider.Instance.ExecuteNonQuery(query);

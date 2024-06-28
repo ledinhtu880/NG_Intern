@@ -149,22 +149,24 @@ $(document).ready(function () {
     $(".sidebar-wrapped, .breadcrumb")
         .find("a")
         .click(function (event) {
-            let urlParams = new URLSearchParams(window.location.search);
-            let id = urlParams.get("id");
-            $.ajax({
-                url: "/orders/packs/destroyPacksWhenBack",
-                method: "POST",
-                dataType: "json",
-                data: {
-                    id: id,
-                    _token: token,
-                },
-                success: function (response) {},
-                error: function (xhr) {
-                    // Xử lý lỗi khi gửi yêu cầu Ajax
-                    console.log(xhr.responseText);
-                    alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
-                },
-            });
+            if (count > 0) {
+                let urlParams = new URLSearchParams(window.location.search);
+                let id = urlParams.get("id");
+                $.ajax({
+                    url: "/orders/packs/destroyPacksWhenBack",
+                    method: "POST",
+                    dataType: "json",
+                    data: {
+                        id: id,
+                        _token: token,
+                    },
+                    success: function (response) {},
+                    error: function (xhr) {
+                        // Xử lý lỗi khi gửi yêu cầu Ajax
+                        console.log(xhr.responseText);
+                        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                    },
+                });
+            }
         });
 });
