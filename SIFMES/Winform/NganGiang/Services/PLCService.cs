@@ -152,6 +152,19 @@ namespace NganGiang.Services
                 MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        public void sendTo406(string RFID)
+        {
+            try
+            {
+                OpenConnection();
+                APIClient.sendInt(plcClient, plcDB, 0, 406);
+                APIClient.sendString(plcClient, plcDB, start_byte_for_struct.string_start_byte, RFID);
+            }
+            catch (PlcException ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }
 

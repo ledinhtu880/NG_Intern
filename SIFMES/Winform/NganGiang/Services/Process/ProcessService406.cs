@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using NganGiang.Libs;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace NganGiang.Services.Process
 {
@@ -16,7 +17,7 @@ namespace NganGiang.Services.Process
         public DataTable getProcessAt406()
         {
             int FK_Id_Station = 406;
-            int FK_Id_State = 0;
+            int FK_Id_State = 2;
             string query = "SELECT FK_Id_OrderLocal, Id_ContentSimple, Name_RawMaterial, RawMaterial.Count, " +
                            "Count_RawMaterial * Count_Container as Count_Need, Name_State, " +
                            "CONVERT(varchar(30), ProcessContentSimple.Date_Start, 103) as Date_Start, " +
@@ -27,7 +28,7 @@ namespace NganGiang.Services.Process
                            "INNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial " +
                            "INNER JOIN [State] on Id_State = FK_Id_State " +
                            "INNER JOIN OrderLocal on FK_Id_OrderLocal = Id_OrderLocal " +
-                           "WHERE FK_Id_Station = " + FK_Id_Station + "and FK_Id_State = " + FK_Id_State;
+                           "WHERE FK_Id_Station = " + FK_Id_Station + "and FK_Id_State != " + FK_Id_State;
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             return dt;
         }
@@ -55,11 +56,7 @@ namespace NganGiang.Services.Process
                 processContentSimple.FK_Id_Station = 406;
                 processContentSimple.Date_Fin = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-                string query = @"UPDATE ProcessContentSimple SET " +
-                "FK_Id_State = '" + processContentSimple.FK_Id_State + "'" +
-                ", Date_Fin = '" + processContentSimple.Date_Fin + "'" +
-                " WHERE FK_Id_ContentSimple = '" + processContentSimple.FK_Id_ContentSimple + "'" +
-                " AND FK_Id_Station = '" + processContentSimple.FK_Id_Station + "'";
+                string query = @$"UPDATE ProcessContentSimple SET FK_Id_State = '{processContentSimple.FK_Id_State}', Date_Fin = '{processContentSimple.Date_Fin}' WHERE FK_Id_ContentSimple = '{processContentSimple.FK_Id_ContentSimple}' AND FK_Id_Station = '{processContentSimple.FK_Id_Station}'";
 
                 int rowsAffected = DataProvider.Instance.ExecuteNonQuery(query);
 
@@ -169,8 +166,9 @@ namespace NganGiang.Services.Process
         {
             // Cập nhật bảng OrderLocal
             // Bảng OrderLocal cập nhật Date_Fin
-
-            string queryGetIdOrderLocal = $"SELECT FK_Id_OrderLocal\r\nFROM DetailContentSimpleOrderLocal\r\nWHERE FK_Id_ContentSimple = {processContentSimple.FK_Id_ContentSimple}";
+            string queryGetIdOrderLocal = $@"SELECT FK_Id_OrderLocal 
+                FROM DetailContentSimpleOrderLocal 
+                WHERE FK_Id_ContentSimple = {processContentSimple.FK_Id_ContentSimple}";
 
             OrderLocal orderLocal = new OrderLocal();
             SqlDataReader reader = DataProvider.Instance.ExecuteReader(queryGetIdOrderLocal);

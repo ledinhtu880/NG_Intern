@@ -151,8 +151,7 @@ namespace NganGiang.Views
                 return;
             }
 
-            List<decimal> Id_ContentSimples = new List<decimal>();
-            bool checkBox = false;
+            List<ContentSimple> listContentSimple = new List<ContentSimple>();
             foreach (DataGridViewRow row in dgv406.Rows)
             {
                 if (row != null)
@@ -160,20 +159,48 @@ namespace NganGiang.Views
                     DataGridViewCheckBoxCell? chk = row.Cells["IsSelected"] as DataGridViewCheckBoxCell;
                     if (chk != null && chk.Value != null && (bool)chk.Value)
                     {
-                        Id_ContentSimples.Add(Decimal.Parse(row.Cells["Id_ContentSimple"].Value.ToString()));
-                        checkBox = true;
+                        ContentSimple item = new ContentSimple();
+                        item.Id_ContentSimple = Decimal.Parse(row.Cells["Id_ContentSimple"].Value.ToString());
+                        item.RFID = controller.getRFID(Int32.Parse(row.Cells["Id_ContentSimple"].Value.ToString()));
+                        listContentSimple.Add(item);
                     }
                 }
             }
 
-            if (checkBox)
+            if (listContentSimple.Count > 0)
             {
                 if (MessageBox.Show("Bạn chắc chắn muốn lưu các thùng hàng trên vào kho ?", "Xác nhận hành động", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    if (controller.processClickStorage(Id_ContentSimples))
+                    foreach (var item in listContentSimple)
                     {
-                        MessageBox.Show("Lưu kho thùng hàng thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        if (controller.UpdateState(Convert.ToInt32(item.Id_ContentSimple), 1, 406))
+                        {
+                            DataGridViewRow row = dgv406.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["Id_ContentSimple"].Value) == item.Id_ContentSimple);
+
+                            if (row != null)
+                            {
+                                row.Cells["Name_State"].Value = "Đang xử lý";
+                            }
+                        }
+
+                        plcService.sendTo406(item.RFID);
+
+                        while (true)
+                        {
+                            bool isAcknowledged = plcService.CheckAcknowledgment();
+
+                            if (isAcknowledged)
+                            {
+                                byte[] rfidBytes = Convert.FromBase64String(plcService.getRFIDFromPLC());
+                                if (!controller.processClickStorage(item))
+                                {
+                                    return;
+                                }
+                                break;
+                            }
+                        }
                     }
+                    MessageBox.Show("Lưu kho thùng hàng thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     updateDGV();
                 }
             }
@@ -211,12 +238,10 @@ namespace NganGiang.Views
                 return;
             }
         }
-
         private void dgv_ware_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
         {
             e.Column.SortMode = DataGridViewColumnSortMode.NotSortable;
         }
-
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (plcService.getSignal() && !isPLCReady)
@@ -227,5 +252,4 @@ namespace NganGiang.Views
             }
         }
     }
-
 }

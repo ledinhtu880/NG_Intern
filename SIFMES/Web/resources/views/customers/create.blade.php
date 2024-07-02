@@ -175,7 +175,7 @@
                             $(this).removeClass("is-invalid");
                         }
                     } else if ($(this).attr("id") == "zipcode") {
-                        if (!/^[0-9]{5}(?:-[0-9]{4})?$/.test($(this).val())) {
+                        if (!/^\d{5,6}(-\d{4,5})?$/.test($(this).val())) {
                             $(this).addClass("is-invalid");
                             $(this).next().text("Vui lòng nhập đúng định dạng");
                             $(this).next().show();

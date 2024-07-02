@@ -37,25 +37,30 @@ namespace NganGiang.Controllers
             return service.getLocationMatrix();
         }
 
-        public bool processClickStorage(List<decimal> Id_ContentSimples)
+        public bool processClickStorage(ContentSimple contentSimple)
         {
             ProcessContentSimple process;
             string message = "";
-            foreach (decimal Id_ContentSimple in Id_ContentSimples)
+            process = new ProcessContentSimple();
+            process.FK_Id_ContentSimple = contentSimple.Id_ContentSimple;
+            if (!service.updateDetailStateCellOfSimpleWareHouse(process, out message) ||
+                !service.updateProcessContentSimple(process, out message) ||
+                !service.updateOrderLocal(process, out message) ||
+                !service.updateOrder(process, out message)
+               )
             {
-                process = new ProcessContentSimple();
-                process.FK_Id_ContentSimple = Id_ContentSimple;
-                if (!service.updateDetailStateCellOfSimpleWareHouse(process, out message) ||
-                    !service.updateProcessContentSimple(process, out message) ||
-                    !service.updateOrderLocal(process, out message) ||
-                    !service.updateOrder(process, out message)
-                   )
-                {
-                    MessageBox.Show("Xảy ra lỗi với mã thùng hàng = " + process.FK_Id_ContentSimple + "\n" + message, "Chú ý", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
-                }
+                MessageBox.Show("Xảy ra lỗi với mã thùng hàng = " + process.FK_Id_ContentSimple + "\n" + message, "Chú ý", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
             return true;
+        }
+        public string getRFID(int id_content_simple)
+        {
+            return Helper.getRFID(id_content_simple);
+        }
+        public bool UpdateState(int id_content_simple, int state, int station)
+        {
+            return Helper.UpdateState(id_content_simple, state, station);
         }
     }
 }
