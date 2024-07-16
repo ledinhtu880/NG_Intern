@@ -1,4 +1,6 @@
 ﻿using NganGiang.Controllers;
+using NganGiang.Models;
+using NganGiang.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,12 +15,15 @@ namespace NganGiang.Views
 {
     public partial class frm407 : Form
     {
-        private Station407_Controller process407Controller { get; set; }
-        List<int> listContentSimple = new List<int>();
+        private Station407_Controller processController { get; set; }
+        List<ContentSimple> listContentSimple = new List<ContentSimple>();
+        PLCService plcService { get; set; }
+        bool isPLCReady = false;
         public frm407()
         {
             InitializeComponent();
-            process407Controller = new Station407_Controller();
+            processController = new Station407_Controller();
+            plcService = new PLCService();
         }
         private void Process407_Load(object sender, EventArgs e)
         {
@@ -32,7 +37,7 @@ namespace NganGiang.Views
                 dgv407.Columns.Clear();
                 dgv407.DataSource = null;
             }
-            process407Controller.DisplayListOrderProcess(dgv407);
+            processController.DisplayListOrderProcess(dgv407);
         }
         private void dgv407_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
@@ -60,37 +65,118 @@ namespace NganGiang.Views
         private void btnProcess_Click(object sender, EventArgs e)
         {
             listContentSimple.Clear();
+            if (!isPLCReady)
+            {
+                MessageBox.Show("PLC chưa sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             foreach (DataGridViewRow row in dgv407.Rows)
             {
                 if (Convert.ToBoolean(row.Cells[0].Value) == true)
                 {
-                    listContentSimple.Add(Convert.ToInt32(row.Cells[3].Value));
+                    ContentSimple item = new ContentSimple();
+                    item.Id_ContentSimple = Convert.ToInt32(row.Cells[3].Value);
+                    item.RFID = processController.getRFID(Convert.ToInt32(row.Cells[3].Value));
+                    listContentSimple.Add(item);
                 }
             }
             if (listContentSimple.Count > 0)
             {
-                bool flag = false;
                 DialogResult confirm = MessageBox.Show("Bạn chắc chắn muốn dán nhãn cho các thùng hàng trên?", "Xác nhận hành động", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                 if (confirm == DialogResult.OK)
                 {
-                    foreach (var item in listContentSimple)
+                    foreach (ContentSimple item in listContentSimple)
                     {
-                        if (process407Controller.UpdateData(item))
+                        int id_content_simple = Convert.ToInt32(item.Id_ContentSimple);
+                        /*if (processController.isInternalCustomer(id_content_simple))
                         {
-                            flag = true;
+                            if (!processController.IsOutOfStockContainer(id_content_simple))
+                            {
+                                MessageBox.Show($"Số lượng thùng chứa trong kho 406 của thùng số {id_content_simple} vẫn còn dư.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                        }*/
+
+                        plcService.sendTo407(item.RFID);
+
+                        if (processController.UpdateStateSimple(Convert.ToInt32(item.Id_ContentSimple), 1, 407))
+                        {
+                            DataGridViewRow row = dgv407.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["Id_Simple"].Value) == item.Id_ContentSimple);
+
+                            if (row != null)
+                            {
+                                row.Cells["Status"].Value = "Đang xử lý";
+                            }
                         }
 
+                        while (true)
+                        {
+                            bool isAcknowledged = plcService.CheckAcknowledgment();
+
+                            // Nếu là thùng hàng trong gói hàng thì sẽ sử dụng hàm UpdateAndInsertProcessPack, 
+                            /*if (isAcknowledged)
+                            {
+                                if (processController.isInternalCustomer(id_content_simple))
+                                {
+                                    if (processController.IsLastStation(id_content_simple))
+                                    {
+                                        processController.UpdateProcessAndOrder(id_content_simple);
+                                    }
+                                    *//*else
+                                    { 
+                                        processController.UpdateAndInsertProcessSimple(id_content_simple);
+                                        processController.UpdateAndInsertProcessPack(id_content_simple);
+                                    }*//*
+                                }
+                                else
+                                {
+                                    if (processController.IsLastStation(id_content_simple))
+                                    {
+                                        processController.UpdateQrCodeAndState(id_content_simple);
+                                        processController.UpdateProcessAndOrder(id_content_simple);
+                                    }
+                                    *//*else
+                                    {
+                                        processController.UpdateAndInsertProcessSimple(id_content_simple);
+                                        processController.UpdateAndInsertProcessPack(id_content_simple);
+                                    }*//*
+                                }*/
+                            if (isAcknowledged)
+                            {
+                                bool isInternalCustomer = processController.isInternalCustomer(id_content_simple);
+                                bool isLastStation = processController.IsLastStation(id_content_simple);
+
+                                if (isLastStation)
+                                {
+                                    if (!isInternalCustomer)
+                                    {
+                                        processController.UpdateQrCodeAndState(id_content_simple);
+                                    }
+                                    processController.UpdateProcessAndOrder(id_content_simple);
+                                }
+                                break;
+                            }
+                        }
+                        plcService.updateStatus();
                     }
-                    if (flag)
-                    {
-                        MessageBox.Show("Dán nhãn thùng và xuất phiếu giao thành công!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
+                    MessageBox.Show("Dán nhãn và xuất phiếu giao thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
                 }
             }
             else
             {
-                MessageBox.Show("Bạn chưa chọn nội dung sản xuất!", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Bạn chưa chọn nội dung sản xuất!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (plcService.getSignal() && !isPLCReady)
+            {
+                isPLCReady = true;
+                timer1.Enabled = false;
+                MessageBox.Show("PLC đã sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

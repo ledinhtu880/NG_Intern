@@ -49,7 +49,6 @@ namespace NganGiang.Views
             {
                 if (MessageBox.Show("Bạn chắc chắn muốn rót nguyên liệu lỏng vào thùng hàng?", "Xác nhận hành động", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    bool flag = false;
                     foreach (var item in listContentSimple)
                     {
                         int Id_ContentSimple = Convert.ToInt32(item.Id_ContentSimple);
@@ -59,7 +58,7 @@ namespace NganGiang.Views
                             return;
                         }
                         plcService.sendTo403(item.FK_Id_RawMaterial, item.FK_Id_ContainerType, item.Count_Container, item.RFID);
-                        if (simpleController.UpdateState(Convert.ToInt32(item.Id_ContentSimple), 1, 403))
+                        if (simpleController.UpdateStateSimple(Convert.ToInt32(item.Id_ContentSimple), 1, 403))
                         {
                             DataGridViewRow row = dgv403.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["Mã thùng hàng"].Value) == item.Id_ContentSimple);
 

@@ -17,7 +17,7 @@ namespace NganGiang.Services
         public PLCService()
         {
             plcClient = new Plc(CpuType.S71500, "192.168.3.129", 0, 1);
-            plcDB = 1;
+            plcDB = 10;
             OpenConnection();
         }
         private void OpenConnection()
@@ -159,6 +159,33 @@ namespace NganGiang.Services
                 OpenConnection();
                 APIClient.sendInt(plcClient, plcDB, 0, 406);
                 APIClient.sendString(plcClient, plcDB, start_byte_for_struct.string_start_byte, RFID);
+            }
+            catch (PlcException ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        public void sendTo407(string RFID)
+        {
+            try
+            {
+                OpenConnection();
+                APIClient.sendInt(plcClient, plcDB, 0, 407);
+                APIClient.sendString(plcClient, plcDB, start_byte_for_struct.string_start_byte, RFID);
+            }
+            catch (PlcException ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        public void sendTo408(decimal Id_ContentPack, int Count_Pack)
+        {
+            try
+            {
+                OpenConnection();
+                APIClient.sendInt(plcClient, plcDB, 0, 408);
+                APIClient.sendInt(plcClient, plcDB, 1, Convert.ToInt32(Id_ContentPack));
+                APIClient.sendInt(plcClient, plcDB, 2, Count_Pack);
             }
             catch (PlcException ex)
             {

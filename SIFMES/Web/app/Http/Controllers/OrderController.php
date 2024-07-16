@@ -565,6 +565,11 @@ class OrderController extends Controller
           ->join('CustomerType', 'Customer.FK_Id_CustomerType', '=', 'CustomerType.Id')
           ->where('Id_ContentSimple', $id)
           ->value('CustomerType.ID');
+
+        $exists = DB::table('DetailContentSimpleOfPack')->where('FK_Id_ContentSimple', $id)->exists();
+        if ($exists) {
+          $flag = 0;
+        }
       } else {
         $flag = DB::table('ContentPack')
           ->join('Order', 'ContentPack.FK_Id_Order', '=', 'Order.Id_Order')
@@ -572,6 +577,15 @@ class OrderController extends Controller
           ->join('CustomerType', 'Customer.FK_Id_CustomerType', '=', 'CustomerType.Id')
           ->where('Id_ContentPack', $id)
           ->value('CustomerType.ID');
+
+        $exists = DB::table('Order')
+          ->join('ContentPack', 'Order.Id_Order', '=', 'ContentPack.FK_Id_Order')
+          ->join('Customer', 'Order.FK_Id_Customer', '=', 'Customer.Id_Customer')
+          ->where('Customer.FK_id_CustomerType', 0)
+          ->where('ContentPack.Id_ContentPack', $id)->exists();
+        if ($exists) {
+          $flag = 0;
+        }
       }
       return response()->json([
         'status' => 'success',
@@ -618,7 +632,6 @@ class OrderController extends Controller
       ]);
     }
   }
-  // cho de chat GPT cai...
   public function indexPacks()
   {
     if (!Session::has("type") && !Session::has("message")) {
@@ -638,7 +651,6 @@ class OrderController extends Controller
       ->whereNull('RegisterContentPackAtWareHouse.FK_ID_ContentPack')
       ->pluck('Order.Id_Order');
 
-    // Xóa các Order không có ContentPack hoặc ContentSimple
     DB::table('Order')->whereIn('Id_Order', $ordersToDelete)->delete();
 
     $data = Order::join('Customer', 'Id_Customer', '=', 'FK_Id_Customer')
@@ -919,13 +931,13 @@ class OrderController extends Controller
       ->where('Id_ContentPack', '=', $Id_ContentPack)
       ->value('FK_Id_Order');
     $details = DetailContentSimpleOfPack::where('FK_Id_ContentPack', $Id_ContentPack)->get();
-    $id_ContentSimples = [];
+    $listContentSimple = [];
     foreach ($details as $detail) {
-      $id_ContentSimples[] = $detail->FK_Id_ContentSimple;
+      $listContentSimple[] = $detail->FK_Id_ContentSimple;
     }
     $ContentSimples = [];
-    for ($i = 0; $i < count($id_ContentSimples); $i++) {
-      $ContentSimples[] = ContentSimple::find($id_ContentSimples[$i]);
+    for ($i = 0; $i < count($listContentSimple); $i++) {
+      $ContentSimples[] = ContentSimple::find($listContentSimple[$i]);
     }
     $materials = RawMaterial::all();
     $containerTypes = ContainerType::all();
@@ -1064,7 +1076,7 @@ class OrderController extends Controller
   public function updateSimpleInPack(Request $request)
   {
     $Id_ContentPack = $request->idContentPack;
-    $Id_ContentSimples = $request->idContentSimples;
+    $listContentSimple = $request->idContentSimples;
     $FK_Id_RawMaterials = $request->fkIdRawMaterials;
     $Count_RawMaterials = $request->countRawMaterials;
     $FK_Id_ContainerTypes = $request->fkIdContainerTypes;
@@ -1072,8 +1084,8 @@ class OrderController extends Controller
     $Price_Containers = $request->priceContainers;
 
     // Sửa từng hàng của bảng ContentSimple
-    for ($i = 0; $i < count($Id_ContentSimples); $i++) {
-      $ContentSimple = ContentSimple::find($Id_ContentSimples[$i]);
+    for ($i = 0; $i < count($listContentSimple); $i++) {
+      $ContentSimple = ContentSimple::find($listContentSimple[$i]);
       $ContentSimple->FK_Id_RawMaterial = $FK_Id_RawMaterials[$i];
       $ContentSimple->Count_RawMaterial = $Count_RawMaterials[$i];
       $ContentSimple->FK_Id_ContainerType = $FK_Id_ContainerTypes[$i];
@@ -1128,10 +1140,10 @@ class OrderController extends Controller
   {
     if ($request->ajax()) {
       $id_ContentPack = $request->id_ContentPack;
-      $id_ContentSimples = DetailContentSimpleOfPack::where('FK_Id_ContentPack', $id_ContentPack)->pluck('FK_Id_ContentSimple')->toArray();
+      $listContentSimple = DetailContentSimpleOfPack::where('FK_Id_ContentPack', $id_ContentPack)->pluck('FK_Id_ContentSimple')->toArray();
 
       $ContentSimples = [];
-      foreach ($id_ContentSimples as $id_ContentSimple) {
+      foreach ($listContentSimple as $id_ContentSimple) {
         $ContentSimples[] = ContentSimple::find($id_ContentSimple);
       }
 
@@ -1157,41 +1169,41 @@ class OrderController extends Controller
     if ($request->ajax()) {
       $id = $request->input('id');
 
-      $Id_ContentPacks = $request->input('idContentPacks');
+      $listContentPack = $request->input('idContentPacks');
       $Count_Packs = $request->input('countPacks');
       $data = [];
-      for ($i = 0; $i < count($Id_ContentPacks); $i++) {
+      for ($i = 0; $i < count($listContentPack); $i++) {
         $check = DB::table('ContentPack')
           ->where('FK_Id_Order', $id)
-          ->where('Id_ContentPack', $Id_ContentPacks[$i])
+          ->where('Id_ContentPack', $listContentPack[$i])
           ->exists();
         if ($check) {
-          DB::table('ContentPack')->where('Id_ContentPack', $Id_ContentPacks[$i])->update([
+          DB::table('ContentPack')->where('Id_ContentPack', $listContentPack[$i])->update([
             'Count_Pack' => $Count_Packs[$i]
           ]);
         } else {
           $result = DB::table('ContentPack')
             ->selectRaw('(Count_Pack - COALESCE(SUM(RegisterContentPackAtWareHouse.Count), 0)) as SoLuong')
             ->leftJoin('RegisterContentPackAtWareHouse', 'Id_ContentPack', '=', 'FK_Id_ContentPack')
-            ->where('Id_ContentPack', '=', $Id_ContentPacks[$i])
+            ->where('Id_ContentPack', '=', $listContentPack[$i])
             ->groupBy('Id_ContentPack', 'Count_Pack', 'Price_Pack')
             ->first();
 
           $soLuongCu = DB::table('RegisterContentPackAtWareHouse')
-            ->where('FK_Id_ContentPack', $Id_ContentPacks[$i])
+            ->where('FK_Id_ContentPack', $listContentPack[$i])
             ->where('FK_Id_Order', $id)
             ->value('Count');
 
           $soLuongThayDoi = $Count_Packs[$i] - (int)$soLuongCu;
           if ($soLuongThayDoi == $result->SoLuong) {
             DB::table('DetailStateCellOfPackWareHouse')
-              ->where('FK_Id_ContentPack', '=', (int)$Id_ContentPacks[$i])
+              ->where('FK_Id_ContentPack', '=', (int)$listContentPack[$i])
               ->update([
                 'FK_Id_ContentPack' => null,
                 'FK_Id_StateCell' => 1,
               ]);
           }
-          DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_ContentPack', $Id_ContentPacks[$i])->update([
+          DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_ContentPack', $listContentPack[$i])->update([
             'Count' => $Count_Packs[$i]
           ]);
         }

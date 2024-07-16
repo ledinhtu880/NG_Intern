@@ -11,7 +11,17 @@ namespace NganGiang.Services.Process
         {
             try
             {
-                string query = "SELECT FK_Id_OrderLocal as id_orderlocal, Id_ContentSimple as id_simple, Name_RawMaterial as name_raw, RawMaterial.Count as quantity, \r\n\t\tUnit as unit, Count_RawMaterial * Count_Container as quantity_order, Name_State as status, ProcessContentSimple.Date_Start as date_start, SimpleOrPack as type_simple FROM ProcessContentSimple \r\nINNER JOIN ContentSimple on Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple\r\nINNER JOIN DetailContentSimpleOrderLocal on Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple\r\nINNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial\r\nINNER JOIN [State] on Id_State = FK_Id_State\r\nINNER JOIN OrderLocal on FK_Id_OrderLocal = Id_OrderLocal\r\nWHERE FK_Id_Station = 407 and FK_Id_State = 0 AND OrderLocal.MakeOrPackOrExpedition = 2 order by date_start desc";
+                string query = @"SELECT FK_Id_OrderLocal AS Id_OrderLocal, Id_ContentSimple AS Id_Simple, Name_RawMaterial AS Name_Raw,
+	                                RawMaterial.Count AS Quantity, Unit AS unit, Count_RawMaterial * Count_Container AS Quantity_Order,
+	                                Name_State AS Status, ProcessContentSimple.Date_Start AS Date_Start, SimpleOrPack AS Type_Simple 
+                                FROM ProcessContentSimple 
+                                INNER JOIN ContentSimple ON Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple
+                                INNER JOIN DetailContentSimpleOrderLocal ON Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple
+                                INNER JOIN RawMaterial ON Id_RawMaterial = FK_Id_RawMaterial
+                                INNER JOIN [State] ON Id_State = FK_Id_State
+                                INNER JOIN OrderLocal ON FK_Id_OrderLocal = Id_OrderLocal
+                                WHERE FK_Id_Station = 407 and FK_Id_State <> 2 AND OrderLocal.MakeOrPackOrExpedition = 2 
+                                ORDER BY Date_Start DESC";
                 DataTable dt = DataProvider.Instance.ExecuteQuery(query);
 
                 dgv.AutoGenerateColumns = false;
@@ -19,76 +29,107 @@ namespace NganGiang.Services.Process
                 DataGridViewCheckBoxColumn column = new()
                 {
                     HeaderText = "",
-                    FillWeight = 10,
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
                 DataGridViewTextBoxColumn column1 = new()
                 {
+                    Name = "Id_OrderLocal",
                     HeaderText = "Mã đơn hàng",
-                    DataPropertyName = "id_orderlocal",
-                    FillWeight = 80,
+                    DataPropertyName = "Id_OrderLocal",
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
 
                 };
 
                 DataGridViewTextBoxColumn column2 = new()
                 {
+                    Name = "Type_Simple",
                     HeaderText = "Loại hàng",
-                    DataPropertyName = "type_simple",
-                    FillWeight = 80,
+                    DataPropertyName = "Type_Simple",
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
                 DataGridViewTextBoxColumn column3 = new()
                 {
+                    Name = "Id_Simple",
                     HeaderText = "Mã thùng hàng",
-                    DataPropertyName = "id_simple",
-                    FillWeight = 80
+                    DataPropertyName = "Id_Simple",
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
                 DataGridViewTextBoxColumn column4 = new()
                 {
-                    HeaderText = "Tên nguyên liệu thô",
-                    DataPropertyName = "name_raw"
+                    Name = "Name_Raw",
+                    HeaderText = "Tên nguyên liệu",
+                    DataPropertyName = "Name_Raw",
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
                 DataGridViewTextBoxColumn column5 = new()
                 {
+                    Name = "Quantity",
                     HeaderText = "Số lượng nguyên liệu tồn",
-                    DataPropertyName = "quantity",
-                    FillWeight = 80
+                    DataPropertyName = "Quantity",
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
 
                 };
 
                 DataGridViewTextBoxColumn column6 = new()
                 {
+                    Name = "Quantity_Order",
                     HeaderText = "Số lượng nguyên liệu cần",
-                    DataPropertyName = "quantity_order",
-                    FillWeight = 80,
+                    DataPropertyName = "Quantity_Order",
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
 
                 };
 
                 DataGridViewTextBoxColumn column7 = new()
                 {
+                    Name = "Unit",
                     HeaderText = "Đơn vị",
                     DataPropertyName = "Unit",
-                    FillWeight = 50,
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
 
                 };
 
                 DataGridViewTextBoxColumn column8 = new()
                 {
+                    Name = "Status",
                     HeaderText = "Trạng thái",
-                    DataPropertyName = "status"
+                    DataPropertyName = "Status",
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
                 DataGridViewTextBoxColumn column9 = new()
                 {
+                    Name = "Date_Start",
                     HeaderText = "Ngày bắt đầu",
-                    DataPropertyName = "date_start"
+                    DataPropertyName = "Date_Start",
+                    SortMode = DataGridViewColumnSortMode.NotSortable,
+                    Frozen = false,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 };
 
 
                 dgv.Columns.AddRange(column, column1, column2, column3, column4, column5, column6, column7, column8, column9);
-                dgv.ColumnHeadersHeight = 70;
+                dgv.ColumnHeadersHeight = 60;
                 dgv.RowTemplate.Height = 35;
                 dgv.DataSource = dt;
             }
@@ -101,7 +142,12 @@ namespace NganGiang.Services.Process
 
         public bool IsLastStation(int id_content_simple)
         {
-            string query = $"SELECT FK_Id_Station from DetailProductionStationLine DP inner join DispatcherOrder D on DP.FK_Id_ProdStationLine = D.FK_Id_ProdStationLine inner join OrderLocal O on O.Id_OrderLocal = D.FK_Id_OrderLocal WHERE FK_Id_OrderLocal =(select FK_Id_OrderLocal from DetailContentSimpleOrderLocal, OrderLocal \r\nwhere FK_Id_ContentSimple = {id_content_simple} and OrderLocal.Id_OrderLocal = DetailContentSimpleOrderLocal.FK_Id_OrderLocal and OrderLocal.MakeOrPackOrExpedition = 2) and FK_Id_Station > 407";
+            string query = @$"SELECT FK_Id_Station FROM DetailProductionStationLine DP 
+                            INNER JOIN DispatcherOrder D ON DP.FK_Id_ProdStationLine = D.FK_Id_ProdStationLine 
+                            INNER JOIN OrderLocal O ON O.Id_OrderLocal = D.FK_Id_OrderLocal 
+                            WHERE FK_Id_OrderLocal = (SELECT FK_Id_OrderLocal FROM DetailContentSimpleOrderLocal, OrderLocal 
+                                                    WHERE FK_Id_ContentSimple = {id_content_simple} AND OrderLocal.Id_OrderLocal = DetailContentSimpleOrderLocal.FK_Id_OrderLocal 
+                                                    AND OrderLocal.MakeOrPackOrExpedition = 2) AND FK_Id_Station > 407";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             if (dt.Rows.Count > 0)
             {
@@ -187,7 +233,7 @@ namespace NganGiang.Services.Process
             }
             catch (SqlException e)
             {
-                MessageBox.Show($"{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -209,7 +255,7 @@ namespace NganGiang.Services.Process
             }
             catch (SqlException e)
             {
-                MessageBox.Show($"{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -242,7 +288,7 @@ namespace NganGiang.Services.Process
             }
             catch (SqlException e)
             {
-                MessageBox.Show($"{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -264,7 +310,7 @@ namespace NganGiang.Services.Process
             }
             catch (SqlException e)
             {
-                MessageBox.Show($"{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -273,12 +319,12 @@ namespace NganGiang.Services.Process
             try
             {
                 var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                string query = $"Update ProcessContentPack set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentPack = {id_content_simple} and FK_Id_Station = 407";
-                DataProvider.Instance.ExecuteNonQuery(query);
+                string query/* = $"Update ProcessContentPack set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentPack = {id_content_simple} and FK_Id_Station = 407";
+                DataProvider.Instance.ExecuteNonQuery(query)*/;
 
                 foreach (var item in contentPack)
                 {
-                    query = "insert into ProcessContentPack(FK_Id_ContentPack, FK_Id_Station, FK_Id_State, Date_Start) values(@id_pack, @station, @state, @date_start)";
+                    query = "insert into ProcessContentPack(FK_Id_ContentPack, FK_Id_Station, FK_Id_State, Date_Start) values (@id_pack, @station, @state, @date_start)";
                     SqlParameter[] parameters = new SqlParameter[]
                     {
                         new SqlParameter("@id_pack", item),
@@ -291,7 +337,7 @@ namespace NganGiang.Services.Process
             }
             catch (SqlException e)
             {
-                MessageBox.Show($"{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -303,15 +349,20 @@ namespace NganGiang.Services.Process
                 string query = $"Update ProcessContentSimple set FK_Id_State = 2, Date_fin = '{date}' where FK_Id_ContentSimple = {id_content_simple} and FK_Id_Station = 407";
                 DataProvider.Instance.ExecuteNonQuery(query);
 
-                query = $"UPDATE OrderLocal set Date_Fin = '{date}' FROM DetailContentSimpleOrderLocal D JOIN OrderLocal O ON D.FK_Id_OrderLocal = O.Id_OrderLocal WHERE D.FK_Id_ContentSimple = {id_content_simple}";
-                DataProvider.Instance.ExecuteNonQuery(query);
+                query = $"SELECT * FROM ContentSimple WHERE Id_ContentSimple = {id_content_simple} AND QRCode IS NULL";
+                DataTable dt = DataProvider.Instance.ExecuteQuery(query);
+                if (dt.Rows.Count == 0)
+                {
+                    query = $"UPDATE OrderLocal set Date_Fin = '{date}' FROM DetailContentSimpleOrderLocal D JOIN OrderLocal O ON D.FK_Id_OrderLocal = O.Id_OrderLocal WHERE D.FK_Id_ContentSimple = {id_content_simple}";
+                    DataProvider.Instance.ExecuteNonQuery(query);
 
-                query = $"UPDATE dbo.[Order] SET Date_Delivery = '{date}' FROM ContentSimple C join dbo.[Order] O on C.FK_Id_Order = O.Id_Order WHERE C.Id_ContentSimple = {id_content_simple}";
-                DataProvider.Instance.ExecuteNonQuery(query);
+                    query = $"UPDATE dbo.[Order] SET Date_Delivery = '{date}' FROM ContentSimple C join dbo.[Order] O on C.FK_Id_Order = O.Id_Order WHERE C.Id_ContentSimple = {id_content_simple}";
+                    DataProvider.Instance.ExecuteNonQuery(query);
+                }
             }
             catch (SqlException e)
             {
-                MessageBox.Show($"{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

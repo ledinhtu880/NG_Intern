@@ -41,6 +41,11 @@ $(document).ready(function () {
             success: function (response) {
                 $("#table-data").html(response);
             },
+            error: function (xhr) {
+                // Xử lý lỗi khi gửi yêu cầu Ajax
+                console.log(xhr.responseText);
+                alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+            },
         });
         $.ajax({
             url: "/orderLocals/packs/showOrderLocal",
@@ -52,6 +57,11 @@ $(document).ready(function () {
             success: function (response) {
                 $("#table-result").html(response);
             },
+            error: function (xhr) {
+                // Xử lý lỗi khi gửi yêu cầu Ajax
+                console.log(xhr.responseText);
+                alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+            },
         });
     });
 
@@ -59,15 +69,15 @@ $(document).ready(function () {
 
     $("#addBtn").on("click", function () {
         let Id_ContentPack = $(".Id_ContentPack");
-        let Id_ContentPacks = [];
+        let listContentPack = [];
         let Date_Delivery = $("#Date_Delivery").val();
         let checkBoxAdd = $(".checkbox-add");
         for (let i = 0; i < Id_ContentPack.length; i++) {
             if (checkBoxAdd.eq(i).prop("checked")) {
-                Id_ContentPacks.push(Id_ContentPack.eq(i).html());
+                listContentPack.push(Id_ContentPack.eq(i).html());
             }
         }
-        if (Id_ContentPacks.length == 0) {
+        if (listContentPack.length == 0) {
             showToast(
                 "Vui lòng chọn ít nhất 1 gói",
                 "bg-warning",
@@ -80,16 +90,36 @@ $(document).ready(function () {
             type: "POST",
             data: {
                 _token: token,
-                Id_ContentPacks: Id_ContentPacks,
+                listContentPack: listContentPack,
                 Date_Delivery: Date_Delivery,
             },
             success: function (response) {
-                // $("#table-result").append(response);
-                showToast("Thêm thành công", "bg-success", "fa-check-circle");
-                slBox_CustomerType.change();
+                $.ajax({
+                    url: "/orderLocals/packs/freeContentSimpleInPack",
+                    type: "POST",
+                    data: {
+                        _token: token,
+                        listContentPack: listContentPack,
+                    },
+                    success: function (response) {
+                        showToast(
+                            "Thêm thành công",
+                            "bg-success",
+                            "fa-check-circle"
+                        );
+                        slBox_CustomerType.change();
+                    },
+                    error: function (xhr) {
+                        // Xử lý lỗi khi gửi yêu cầu Ajax
+                        console.log(xhr.responseText);
+                        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                    },
+                });
             },
             error: function (xhr) {
+                // Xử lý lỗi khi gửi yêu cầu Ajax
                 console.log(xhr.responseText);
+                alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
             },
         });
     });
@@ -135,7 +165,9 @@ $(document).ready(function () {
                 }
             },
             error: function (xhr) {
+                // Xử lý lỗi khi gửi yêu cầu Ajax
                 console.log(xhr.responseText);
+                alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
             },
         });
     });
@@ -154,7 +186,9 @@ $(document).on("click", ".btnShow", function () {
             $(".table-simples").html(response);
         },
         error: function (xhr) {
+            // Xử lý lỗi khi gửi yêu cầu Ajax
             console.log(xhr.responseText);
+            alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
         },
     });
 });

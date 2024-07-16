@@ -18,23 +18,23 @@ namespace NganGiang.Services.Process
         {
             int FK_Id_Station = 406;
             int FK_Id_State = 2;
-            string query = "SELECT FK_Id_OrderLocal, Id_ContentSimple, Name_RawMaterial, RawMaterial.Count, " +
-                           "Count_RawMaterial * Count_Container as Count_Need, Name_State, " +
-                           "CONVERT(varchar(30), ProcessContentSimple.Date_Start, 103) as Date_Start, " +
-                           "CASE OrderLocal.SimpleOrPack WHEN 0 THEN N'Thùng hàng' ELSE N'Gói hàng' END as SimpleOrPack " +
-                           "FROM ProcessContentSimple " +
-                           "INNER JOIN ContentSimple on Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple " +
-                           "INNER JOIN DetailContentSimpleOrderLocal on Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple " +
-                           "INNER JOIN RawMaterial on Id_RawMaterial = FK_Id_RawMaterial " +
-                           "INNER JOIN [State] on Id_State = FK_Id_State " +
-                           "INNER JOIN OrderLocal on FK_Id_OrderLocal = Id_OrderLocal " +
-                           "WHERE FK_Id_Station = " + FK_Id_Station + "and FK_Id_State != " + FK_Id_State;
+            string query = @$"SELECT FK_Id_OrderLocal, Id_ContentSimple, Name_RawMaterial, RawMaterial.Count, 
+                            Count_RawMaterial * Count_Container AS Count_Need, Name_State, 
+                            CONVERT(varchar(30), ProcessContentSimple.Date_Start, 103) AS Date_Start, 
+                            CASE OrderLocal.SimpleOrPack WHEN 0 THEN N'Thùng hàng' ELSE N'Gói hàng' END as SimpleOrPack 
+                            FROM ProcessContentSimple 
+                            INNER JOIN ContentSimple ON Id_ContentSimple = ProcessContentSimple.FK_Id_ContentSimple 
+                            INNER JOIN DetailContentSimpleOrderLocal ON Id_ContentSimple = DetailContentSimpleOrderLocal.FK_Id_ContentSimple 
+                            INNER JOIN RawMaterial ON Id_RawMaterial = FK_Id_RawMaterial 
+                            INNER JOIN [State] ON Id_State = FK_Id_State 
+                            INNER JOIN OrderLocal ON FK_Id_OrderLocal = Id_OrderLocal 
+                            WHERE FK_Id_Station = {FK_Id_Station} and FK_Id_State != {FK_Id_State}";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             return dt;
         }
         public DataTable getInforOrderByIdContentSimple(ContentSimple contentSimple)
         {
-            string query = $@"SELECT  Name_RawMaterial as N'Nguyên liệu', Count_RawMaterial as N'Số lượng nguyên liệu',
+            string query = $@"SELECT Name_RawMaterial as N'Nguyên liệu', Count_RawMaterial as N'Số lượng nguyên liệu',
                 Unit as N'Đơn vị', Name_ContainerType as N'Thùng chứa',
                 (Count_Container - COALESCE(SUM(RegisterContentSimpleAtWareHouse.Count), 0)) as N'Số lượng thùng chứa', 
                 format(Price_Container, '##,###.## VNĐ') as N'Đơn giá'

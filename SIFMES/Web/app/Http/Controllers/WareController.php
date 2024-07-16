@@ -296,30 +296,30 @@ class WareController extends Controller
     if ($request->ajax()) {
       $id = $request->input('id');
       $data = [];
-      $Id_ContentPacks = $request->input('idContentPacks');
+      $listContentPack = $request->input('idContentPacks');
       $Count_Packs = $request->input('countPacks');
-      for ($i = 0; $i < count($Id_ContentPacks); $i++) {
+      for ($i = 0; $i < count($listContentPack); $i++) {
         $check = DB::table('ContentPack')
           ->where('FK_Id_Order', $id)
-          ->where('Id_ContentPack', $Id_ContentPacks[$i])
+          ->where('Id_ContentPack', $listContentPack[$i])
           ->exists();
         if (!$check) {
           $result = DB::table('ContentPack')
             ->selectRaw('(Count_Pack - COALESCE(SUM(RegisterContentPackAtWareHouse.Count), 0)) as SoLuong')
             ->leftJoin('RegisterContentPackAtWareHouse', 'Id_ContentPack', '=', 'FK_Id_ContentPack')
-            ->where('Id_ContentPack', '=', $Id_ContentPacks[$i])
+            ->where('Id_ContentPack', '=', $listContentPack[$i])
             ->groupBy('Id_ContentPack', 'Count_Pack', 'Price_Pack')
             ->first();
 
           $soLuongCu = DB::table('RegisterContentPackAtWareHouse')
-            ->where('FK_Id_ContentPack', $Id_ContentPacks[$i])
+            ->where('FK_Id_ContentPack', $listContentPack[$i])
             ->where('FK_Id_Order', $id)
             ->value('Count');
 
           if ((int)$soLuongCu < (int)$Count_Packs[$i]) {
             $soLuongThayDoi = (int)$Count_Packs[$i] - (int)$soLuongCu;
             if ($soLuongThayDoi > $result->SoLuong) {
-              $result->id = $Id_ContentPacks;
+              $result->id = $listContentPack;
               $data[] = $result;
             }
           }

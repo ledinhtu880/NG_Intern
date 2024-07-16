@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
@@ -38,6 +39,7 @@
             Column1 = new DataGridViewCheckBoxColumn();
             lbHeader = new Label();
             btnProcess = new Button();
+            timer1 = new System.Windows.Forms.Timer(components);
             panelDGV.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv408).BeginInit();
             SuspendLayout();
@@ -143,6 +145,12 @@
             btnProcess.UseVisualStyleBackColor = false;
             btnProcess.Click += btnProcess_Click;
             // 
+            // timer1
+            // 
+            timer1.Enabled = true;
+            timer1.Interval = 1000;
+            timer1.Tick += timer1_Tick;
+            // 
             // frm408
             // 
             AcceptButton = btnProcess;
@@ -170,5 +178,6 @@
         private Label lbHeader;
         private Button btnProcess;
         private DataGridViewCheckBoxColumn Column1;
+        private System.Windows.Forms.Timer timer1;
     }
 }

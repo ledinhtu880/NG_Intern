@@ -43,9 +43,9 @@ namespace NganGiang.Controllers
             processServices.UpdateQuantityContainer(quantityConsumed);
             processServices.UpdateQuantityPedestal(quantityConsumed);
         }
-        public bool UpdateState(int id_content_simple, int state, int station)
+        public bool UpdateStateSimple(int id_content_simple, int state, int station)
         {
-            return Helper.UpdateState(id_content_simple, state, station);
+            return Helper.UpdateStateSimple(id_content_simple, state, station);
         }
         public byte[] GenerateRandomBytes(int length)
         {

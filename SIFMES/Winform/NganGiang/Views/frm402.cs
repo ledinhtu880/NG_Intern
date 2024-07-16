@@ -97,7 +97,7 @@ namespace NganGiang.Views
                         }
                         plcService.sendTo402(item.FK_Id_RawMaterial, item.FK_Id_ContainerType, item.Count_Container, item.RFID);
 
-                        if (simpleController.UpdateState(Convert.ToInt32(item.Id_ContentSimple), 1, 402))
+                        if (simpleController.UpdateStateSimple(Convert.ToInt32(item.Id_ContentSimple), 1, 402))
                         {
                             DataGridViewRow row = dgv402.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["Mã thùng hàng"].Value) == item.Id_ContentSimple);
 

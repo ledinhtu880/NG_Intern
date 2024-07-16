@@ -42,7 +42,7 @@
             <div class="container-fluid g-0">
                 <div class="row g-0">
                     <div class="col-md-2">
-                        <nav class="vh-100" style="border-right: 1px solid rgb(224, 224, 224) !important;">
+                        <nav class="vh-100">
                             @include('layouts.sidebar')
                         </nav>
                     </div>
@@ -69,6 +69,23 @@
     <script src="{{ asset('js/jquery-3.7.0.min.js') }}"></script>
     <script src="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.contextMenu.js" type="text/javascript"></script>
     <script src="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.ui.position.min.js" type="text/javascript">
+    </script>
+    <script>
+        $(document).ready(function() {
+            var activeItem = $('.sidebar-item.active');
+            if (activeItem.length) {
+                var sidebar = $('.sidebar-wrapped');
+                var sidebarHeight = sidebar.height();
+                var itemTop = activeItem.position().top;
+                var itemHeight = activeItem.outerHeight();
+
+                var offset = itemTop - (sidebarHeight / 2) + (itemHeight / 2);
+
+                sidebar.animate({
+                    scrollTop: offset
+                }, 0);
+            }
+        });
     </script>
     @stack('javascript')
 </body>

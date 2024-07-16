@@ -472,8 +472,8 @@ class OrderLocalController extends Controller
   public function storePacks(Request $request)
   {
     if ($request->ajax()) {
-      $Id_ContentPacks = $request->Id_ContentPacks;
-      $dateDelivery = $request->Date_Delivery;
+      $listContentPack = $request->input('listContentPack');
+      $dateDelivery = $request->input('Date_Delivery');
       $htmls = '';
       $orderLocal_id = DB::table('OrderLocal')
         ->max('Id_OrderLocal');
@@ -488,10 +488,10 @@ class OrderLocalController extends Controller
       ]);
 
 
-      for ($i = 0; $i < count($Id_ContentPacks); $i++) {
+      for ($i = 0; $i < count($listContentPack); $i++) {
         DetailContentPackOrderLocal::create([
           'FK_Id_OrderLocal' => $orderLocal_id,
-          'FK_Id_ContentPack' => $Id_ContentPacks[$i]
+          'FK_Id_ContentPack' => $listContentPack[$i]
         ]);
         $htmls .= $this->getOrderLocal($orderLocal);
       }
@@ -499,7 +499,25 @@ class OrderLocalController extends Controller
       return $htmls;
     }
   }
+  public function freeContentSimpleInPack(Request $request)
+  {
+    if ($request->ajax()) {
+      $listContentPack = $request->input('listContentPack');
+      foreach ($listContentPack as $each) {
+        $listContentSimple = DB::table('DetailContentSimpleOfPack')
+          ->where('FK_Id_ContentPack', $each)
+          ->pluck('FK_Id_ContentSimple')->toArray();
 
+        DB::table('DetailStateCellOfSimpleWareHouse')
+          ->whereIn('FK_Id_ContentSimple', $listContentSimple)
+          ->update([
+            'FK_Id_StateCell' => 1,
+            'FK_Id_ContentSimple' => NULL
+          ]);
+      }
+      return response()->json();
+    }
+  }
   public function showPacks(Request $request)
   {
     if ($request->ajax()) {
@@ -525,31 +543,18 @@ class OrderLocalController extends Controller
       foreach ($res as $contentSimple) {
         $htmls .= '
                 <tr class="align-middle">
-                    <td>
-                        ' . $contentSimple->Name_RawMaterial . '
-                    </td>
-                    <td>
-                        ' . $contentSimple->Count_RawMaterial . '
-                    </td>
-                    <td>
-                        ' . $contentSimple->Unit . '
-                    </td>
-                    <td>
-                        ' . $contentSimple->Name_ContainerType . '
-                    </td>
-                    <td>
-                        ' . $contentSimple->Count_Container . '
-                    </td>
-                    <td>
-                        ' . $this->numberFormat($contentSimple->Price_Container) . ' VNĐ
-                    </td>
+                    <td>' . $contentSimple->Name_RawMaterial . '</td>
+                    <td>' . $contentSimple->Count_RawMaterial . '</td>
+                    <td>' . $contentSimple->Unit . '</td>
+                    <td>' . $contentSimple->Name_ContainerType . '</td>
+                    <td>' . $contentSimple->Count_Container . '</td>
+                    <td>' . $this->numberFormat($contentSimple->Price_Container) . ' VNĐ </td>
                 </tr>
             ';
       }
       return response()->json($htmls);
     }
   }
-
   private function numberFormat($number, $decimals = 0, $decimalSeparator = ",", $thousandSeparator = ".")
   {
     $parsedNumber = floatval($number);
@@ -558,7 +563,6 @@ class OrderLocalController extends Controller
 
     return implode($decimalSeparator, $parts);
   }
-
   public function deletePacks(Request $request)
   {
     if ($request->ajax()) {
@@ -586,7 +590,6 @@ class OrderLocalController extends Controller
       }
     }
   }
-
   public function showOrderLocal(Request $request)
   {
     if ($request->ajax()) {
@@ -605,7 +608,6 @@ class OrderLocalController extends Controller
       return response()->json($this->getAllOrderLocal($result));
     }
   }
-
   private function getAllOrderLocal($orderLocals)
   {
     $htmls = '';
@@ -614,18 +616,17 @@ class OrderLocalController extends Controller
     }
     return $htmls;
   }
-
   private function getOrderLocal($orderLocal)
   {
-    $htmls = '<tr class="align-middle">
-                <td class="align-middle text-center">
+    $htmls = '<tr class="align-middle text-center">
+                <td>
                     <input type="checkbox" class="form-check-input check-remove">
                 </td>
-                <td class="text-center Id_OrderLocal">' . $orderLocal->Id_OrderLocal . '</td>
-                <td class="text-center">' . $orderLocal->Count . '</td>
+                <td class="Id_OrderLocal">' . $orderLocal->Id_OrderLocal . '</td>
+                <td>' . $orderLocal->Count . '</td>
                 <td>Gói hàng</td>
-                <td class="text-center">' . \Carbon\Carbon::parse($orderLocal->Date_Delivery)->format('d/m/Y') . '</td>
-                <td class="text-center">
+                <td>' . \Carbon\Carbon::parse($orderLocal->Date_Delivery)->format('d/m/Y') . '</td>
+                <td>
                     <button type="button" class="btnShow btn btn-sm btn-outline" data-bs-toggle="modal"
                         data-bs-target="#show-' . $orderLocal->Id_OrderLocal . '"
                         data-id="' . $orderLocal->Id_OrderLocal . '">
@@ -782,6 +783,7 @@ class OrderLocalController extends Controller
         ->join('ProcessContentSimple', 'ProcessContentSimple.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
         ->leftJoin('DetailStateCellOfSimpleWareHouse', 'DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
         ->join('Customer', 'Customer.Id_Customer', '=', 'Order.FK_Id_Customer')
+        ->where('Customer.FK_Id_CustomerType', 0)
         ->where('Order.SimpleOrPack', 0)
         ->where('ProcessContentSimple.FK_Id_Station', 406)
         ->where('ProcessContentSimple.FK_Id_State', 2)
@@ -793,12 +795,30 @@ class OrderLocalController extends Controller
             ->where('OrderLocal.MakeOrPackOrExpedition', 2);
         })
         ->select('ContentSimple.Id_ContentSimple', 'Order.Id_Order', 'Customer.Name_Customer', 'ContentSimple.FK_Id_ContainerType', 'ContentSimple.Count_Container', 'ContentSimple.Price_Container')
+        ->union(
+          DB::table('ContentSimple')
+            ->select(
+              'Id_ContentSimple',
+              'Id_Order',
+              'Name_Customer',
+              'FK_Id_ContainerType',
+              'Count_Container',
+              'Price_Container',
+            )
+            ->join('Order', 'Id_Order', '=', 'FK_Id_Order')
+            ->join('Customer', 'Id_Customer', '=', 'FK_Id_Customer')
+            ->join('RegisterContentSimpleAtWareHouse', 'FK_Id_ContentSimple', '=', 'Id_ContentSimple')
+            ->where('Customer.FK_Id_CustomerType', 1)
+            ->where('SimpleOrPack', 0)
+        )
         ->get();
     } else if ($station == 409) {
-      $data = DB::table('Order')->join('ContentPack', 'Order.Id_Order', '=', 'ContentPack.FK_Id_Order')
+      $data = DB::table('Order')
+        ->join('ContentPack', 'Order.Id_Order', '=', 'ContentPack.FK_Id_Order')
         ->join('ProcessContentPack', 'ProcessContentPack.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
-        ->leftJoin('DetailStateCellOfPackWareHouse', 'DetailStateCellOfPackWareHouse.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
         ->join('Customer', 'Customer.Id_Customer', '=', 'Order.FK_Id_Customer')
+        ->leftJoin('DetailStateCellOfPackWareHouse', 'DetailStateCellOfPackWareHouse.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
+        ->where('Customer.FK_Id_CustomerType', 0)
         ->where('Order.SimpleOrPack', 1)
         ->where('ProcessContentPack.FK_Id_State', 2)
         ->where('ProcessContentPack.FK_Id_Station', $station)
@@ -809,6 +829,18 @@ class OrderLocalController extends Controller
             ->join('OrderLocal', 'FK_Id_OrderLocal', '=', 'Id_OrderLocal')
             ->where('OrderLocal.MakeOrPackOrExpedition', 2);
         })
+        ->select('ContentPack.Id_ContentPack', 'Order.Id_Order', 'Customer.Name_Customer', 'ContentPack.Count_Pack', 'ContentPack.Price_Pack')
+        ->selectRaw("CASE WHEN SimpleOrPack = 0 THEN 'Thùng hàng' ELSE 'Gói hàng' END AS Status")
+        ->union(
+          DB::table('Order')
+            ->join('ContentPack', 'Order.Id_Order', '=', 'ContentPack.FK_Id_Order')
+            ->join('Customer', 'Customer.Id_Customer', '=', 'Order.FK_Id_Customer')
+            ->join('RegisterContentPackAtWareHouse', 'FK_Id_ContentPack', '=', 'Id_ContentPack')
+            ->where('Customer.FK_Id_CustomerType', 0)
+            ->where('SimpleOrPack', 1)
+            ->select('ContentPack.Id_ContentPack', 'Order.Id_Order', 'Customer.Name_Customer', 'ContentPack.Count_Pack', 'ContentPack.Price_Pack')
+            ->selectRaw("CASE WHEN SimpleOrPack = 0 THEN 'Thùng hàng' ELSE 'Gói hàng' END AS Status")
+        )
         ->get();
     }
     return response()->json($data);
@@ -832,6 +864,12 @@ class OrderLocalController extends Controller
         'MakeOrPackOrExpedition' => 2,
         'Date_Start' => $currentDateTime
       ]);
+      DB::table('DetailStateCellOfSimpleWareHouse')
+        ->whereIn('FK_Id_ContentSimple', $ids)
+        ->update([
+          'FK_Id_StateCell' => 1,
+          'FK_Id_ContentSimple' => NULL
+        ]);
       foreach ($ids as $id) {
         DB::table('DetailContentSimpleOrderLocal')->insert([
           'FK_Id_OrderLocal' => $lastId + 1,
@@ -847,6 +885,12 @@ class OrderLocalController extends Controller
         'MakeOrPackOrExpedition' => 2,
         'Date_Start' => $currentDateTime
       ]);
+      DB::table('DetailStateCellOfPackWareHouse')
+        ->whereIn('FK_Id_ContentPack', $ids)
+        ->update([
+          'FK_Id_StateCell' => 1,
+          'FK_Id_ContentPack' => NULL
+        ]);
       foreach ($ids as $id) {
         DB::table('DetailContentPackOrderLocal')->insert([
           'FK_Id_OrderLocal' => $lastId + 1,
@@ -863,7 +907,7 @@ class OrderLocalController extends Controller
       $details = DB::table('DetailContentSimpleOrderLocal')
         ->join('ContentSimple', 'ContentSimple.Id_ContentSimple', '=', 'DetailContentSimpleOrderLocal.FK_Id_ContentSimple')
         ->join('RawMaterial', 'RawMaterial.Id_RawMaterial', '=', 'ContentSimple.FK_Id_RawMaterial')
-        ->where('Fk_Id_OrderLocal', $id)
+        ->where('FK_Id_OrderLocal', $id)
         ->select('FK_Id_ContainerType', 'Name_RawMaterial', 'Count_RawMaterial', 'Unit', 'Count_Container', 'Price_Container')
         ->get();
     } else {
@@ -871,7 +915,7 @@ class OrderLocalController extends Controller
         ->join('DetailContentSimpleOfPack', 'DetailContentSimpleOfPack.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
         ->join('ContentSimple', 'ContentSimple.Id_ContentSimple', '=', 'DetailContentSimpleOfPack.FK_Id_ContentSimple')
         ->join('RawMaterial', 'RawMaterial.Id_RawMaterial', '=', 'ContentSimple.FK_Id_RawMaterial')
-        ->where('Fk_Id_OrderLocal', $id)
+        ->where('FK_Id_OrderLocal', $id)
         ->select('FK_Id_ContainerType', 'Name_RawMaterial', 'Count_RawMaterial', 'Unit', 'Count_Container', 'Price_Container')
         ->get();
     }

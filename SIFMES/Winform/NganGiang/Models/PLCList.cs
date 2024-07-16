@@ -48,9 +48,9 @@ namespace NganGiang.Models
     public class start_byte_for_struct
     {
         public static int bool_start_byte = 0;
-        public static int byte_start_byte = 2;
-        public static int int_start_byte = 8;
-        public static int float_start_byte = 18;
-        public static int string_start_byte = 38;
+        public static int byte_start_byte = 26;
+        public static int int_start_byte = 126;
+        public static int float_start_byte = 226;
+        public static int string_start_byte = 426;
     }
 }

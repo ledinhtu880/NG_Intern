@@ -99,13 +99,14 @@ namespace NganGiang.Views
                         int id_content_simple = Convert.ToInt32(item.Id_ContentSimple);
                         if (!processController.checkQuantity(id_content_simple))
                         {
-                            MessageBox.Show("Số lượng nắp thùng cấp cho thùng hàng {id_content_simple} không đủ! Vui lòng thử lại sau", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show($"Số lượng nắp thùng cấp cho thùng hàng {id_content_simple} không đủ! Vui lòng thử lại sau", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            LoadData();
                             return;
                         }
 
                         plcService.sendTo405(item.FK_Id_ContainerType, item.Count_Container, item.RFID);
 
-                        if (processController.UpdateState(Convert.ToInt32(item.Id_ContentSimple), 1, 405))
+                        if (processController.UpdateStateSimple(Convert.ToInt32(item.Id_ContentSimple), 1, 405))
                         {
                             DataGridViewRow row = dgv405.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["id_simple"].Value) == item.Id_ContentSimple);
 
@@ -129,13 +130,13 @@ namespace NganGiang.Views
                         }
                         plcService.updateStatus();
                     }
-                    MessageBox.Show("Cấp nắp thùng thành công!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Cấp nắp thùng thành công!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
                 }
             }
             else
             {
-                MessageBox.Show("Bạn chưa chọn nội dung sản xuất!", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Bạn chưa chọn nội dung sản xuất!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

@@ -59,7 +59,7 @@ namespace NganGiang.Services.Process
             }
             catch (SqlException e)
             {
-                MessageBox.Show($"Cập nhật thông tin của ProcessContentPack bị lỗi tại gói hàng {id_pack}: {e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Cập nhật thông tin của ProcessContentPack bị lỗi tại gói hàng {id_pack}: {e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -82,7 +82,7 @@ namespace NganGiang.Services.Process
             }
             catch (SqlException e)
             {
-                MessageBox.Show($"Cập nhật thông tin của ProcessContentSimple bị lỗi: {e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Cập nhật thông tin của ProcessContentSimple bị lỗi: {e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

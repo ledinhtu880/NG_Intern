@@ -55,7 +55,7 @@ namespace NganGiang.Views
                     {
                         process412Controller.UpdateData(item);
                     }
-                    MessageBox.Show("Xuất phiếu giao thành công!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Xuất phiếu giao thành công!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
                 }
             }

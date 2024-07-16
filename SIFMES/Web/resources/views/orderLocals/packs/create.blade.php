@@ -74,13 +74,13 @@
                     <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Đơn đóng gói</h5>
                     <table class="table table-borderless table-hover m-0">
                         <thead class="table-heading">
-                            <tr class="align-middle">
-                                <th scope="col" class="py-2 text-center">Chọn</th>
-                                <th scope="col" class="py-2 text-center">Mã đơn hàng</th>
-                                <th scope="col" class="py-2 text-center">Số lượng</th>
+                            <tr class="align-middle text-center">
+                                <th scope="col" class="py-2">Chọn</th>
+                                <th scope="col" class="py-2">Mã đơn hàng</th>
+                                <th scope="col" class="py-2">Số lượng</th>
                                 <th scope="col" class="py-2">Kiểu hàng</th>
-                                <th scope="col" class="py-2 text-center">Ngày giao hàng</th>
-                                <th scope="col" class="py-2 text-center"></th>
+                                <th scope="col" class="py-2">Ngày giao hàng</th>
+                                <th scope="col" class="py-2"></th>
                             </tr>
                         </thead>
                         <tbody id="table-result">

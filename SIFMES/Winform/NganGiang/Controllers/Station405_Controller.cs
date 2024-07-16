@@ -29,9 +29,9 @@ namespace NganGiang.Controllers
         {
             return Helper.getRFID(id_content_simple);
         }
-        public bool UpdateState(int id_content_simple, int state, int station)
+        public bool UpdateStateSimple(int id_content_simple, int state, int station)
         {
-            return Helper.UpdateState(id_content_simple, state, station);
+            return Helper.UpdateStateSimple(id_content_simple, state, station);
         }
         public String Base64ToHex(string base64String)
         {

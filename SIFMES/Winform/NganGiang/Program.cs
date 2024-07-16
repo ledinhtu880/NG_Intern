@@ -12,6 +12,7 @@
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             DeleteTempFolder();
+            CreateWrongIdentificationFolder();
             Application.Run(new frmLogin());
         }
         private static void DeleteTempFolder()
@@ -28,6 +29,21 @@
             catch (Exception ex)
             {
                 MessageBox.Show("Không thể xóa thư mục temp: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private static void CreateWrongIdentificationFolder()
+        {
+            string folderPath = Path.Combine(Application.StartupPath, "WrongIdentification");
+            try
+            {
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

@@ -20,13 +20,13 @@ namespace NganGiang.Controllers
         {
             data.DataSource = Service.ShowContentPack();
         }
-        public bool Update(int id)
+        /*public bool Update(int id)
         {
             bool isSuccess = true;
 
             try
             {
-                if (Service.checkCustomer(id) == 1)
+                *//*if (Service.checkCustomer(id) == 1)
                 {
                     if (Service.CheckWarehouse(id))
                     {
@@ -44,7 +44,9 @@ namespace NganGiang.Controllers
                     Service.FreeContentSimple(id);
                     Service.UpdateProcessContentSimple(id);
                     Service.UpdateProcessContentPack(id);
-                }
+                }*//*
+                Service.UpdateProcessContentSimple(id);
+                Service.UpdateProcessContentPack(id);
             }
             catch (SqlException ex)
             {
@@ -53,6 +55,22 @@ namespace NganGiang.Controllers
             }
 
             return isSuccess;
+        }*/
+        public void Update(int id)
+        {
+            try
+            {
+                Service.UpdateProcessContentSimple(id);
+                Service.UpdateProcessContentPack(id);
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        public bool UpdateStatePack(int Id_ContentPack, int state, int station)
+        {
+            return Helper.UpdateStatePack(Id_ContentPack, state, station);
         }
     }
 }

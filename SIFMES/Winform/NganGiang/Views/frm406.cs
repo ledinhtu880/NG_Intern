@@ -173,7 +173,7 @@ namespace NganGiang.Views
                 {
                     foreach (var item in listContentSimple)
                     {
-                        if (controller.UpdateState(Convert.ToInt32(item.Id_ContentSimple), 1, 406))
+                        if (controller.UpdateStateSimple(Convert.ToInt32(item.Id_ContentSimple), 1, 406))
                         {
                             DataGridViewRow row = dgv406.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["Id_ContentSimple"].Value) == item.Id_ContentSimple);
 
@@ -199,6 +199,7 @@ namespace NganGiang.Views
                                 break;
                             }
                         }
+                        plcService.updateStatus();
                     }
                     MessageBox.Show("Lưu kho thùng hàng thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     updateDGV();

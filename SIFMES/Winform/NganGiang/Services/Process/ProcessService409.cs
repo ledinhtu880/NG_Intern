@@ -76,6 +76,7 @@ namespace NganGiang.Services.Process
             }
             catch (Exception ex)
             {
+                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }

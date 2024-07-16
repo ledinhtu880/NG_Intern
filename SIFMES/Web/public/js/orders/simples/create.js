@@ -255,7 +255,6 @@ $(document).ready(function () {
                         _token: token,
                     },
                     success: function (response) {
-                        alert("hehe");
                         // Xử lý thành công
                         window.location.href =
                             "/orders/simples/getSimplesInWarehouse?id=" +
@@ -329,7 +328,6 @@ $(document).ready(function () {
                     let htmls = "";
                     let id = parseInt(response.maxID);
                     $("#Id_Order").val(response.orderID);
-                    console.log(response);
 
                     if (response.exists == 0) {
                         $.each(response.data, function (key, value) {

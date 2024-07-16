@@ -256,7 +256,7 @@ namespace NganGiang.Services.Process
             }
             catch (SqlException e)
             {
-                MessageBox.Show($"{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -325,7 +325,7 @@ namespace NganGiang.Services.Process
             }
             catch (SqlException e)
             {
-                MessageBox.Show($"{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         public void UpdateQuantityPedestal(int quantityConsumed)
@@ -337,7 +337,7 @@ namespace NganGiang.Services.Process
             }
             catch (SqlException e)
             {
-                MessageBox.Show($"{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

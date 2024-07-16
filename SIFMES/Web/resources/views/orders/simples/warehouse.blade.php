@@ -155,60 +155,60 @@
                                 $('#cell' + i).attr("data-status", 0);
                                 $('#cell' + i).append(
                                     $(`<p class="small text-truncate" data-id="${details[i - 1].FK_Id_ContentSimple}"
-                      id="simple-${details[i - 1].FK_Id_ContentSimple}">Thùng hàng <br> số ${details[i - 1].FK_Id_ContentSimple} <br>
-                      <button type="button" class="btnShow btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
-                      data-bs-target="#show-${details[i - 1].FK_Id_ContentSimple}"
-                      data-id="${details[i - 1].FK_Id_ContentSimple}">
-                      <i class="fa-solid fa-eye"></i>
-                  </button> </p>`));
+                                        id="simple-${details[i - 1].FK_Id_ContentSimple}">Thùng hàng <br> số ${details[i - 1].FK_Id_ContentSimple} <br>
+                                        <button type="button" class="btnShow btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+                                        data-bs-target="#show-${details[i - 1].FK_Id_ContentSimple}"
+                                        data-id="${details[i - 1].FK_Id_ContentSimple}">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button> </p>`));
                                 let modals = `
-              <div class="modal fade" id="show-${details[i - 1].FK_Id_ContentSimple}" tabindex="-1"
-                    aria-labelledby="#show-${details[i - 1].FK_Id_ContentSimple}Label" aria-hidden="true">
-                <div class="modal-dialog modal-xl">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title fw-bold" id="show-${details[i - 1].FK_Id_ContentSimple}Label">
-                      Thông tin chi tiết thùng hàng số ${details[i - 1].FK_Id_ContentSimple}
-                      </h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="wrapper w-100 overflow-x-auto">
-                        <div class="table-responsive">
-                          <table class="table table-borderless table-hover m-0">
-                            <thead class="table-heading">
-                              <tr class="align-middle">
-                                <th scope="col" class="py-2 text-truncate">Nguyên liệu</th>
-                                <th scope="col" class="py-2 text-truncate" style="width: 200px;">Số lượng nguyên liệu</th>
-                                <th scope="col" class="py-2 text-truncate">Đơn vị</th>
-                                <th scope="col" class="py-2 text-truncate">Thùng chứa</th>
-                                <th scope="col" class="py-2 text-truncate">Tổng số lượng trong kho</th>
-                                <th scope="col" class="py-2 text-truncate" style="width: 200px;">Số lượng khả dụng</th>
-                                <th scope="col" class="py-2 text-truncate">Đơn giá</th>
-                              </tr>
-                            </thead>
-                            <tbody class="table-simples" class="p-5"
-                                data-value="${details[i - 1].FK_Id_ContentSimple}">
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="d-flex align-items-stretch justify-content-between w-100">
-                          <div class="input-group w-50">
-                            <label class="input-group-text" for="Count">Số lượng</label>
-                            <input type="number" name="Count" id="Count" class="form-control">
-                          </div>
-                          <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                            <button type="button" class="btn btn-primary btnTake" data-id="${details[i - 1].FK_Id_ContentSimple}">Lấy thùng hàng</button>
-                          </div>
-                        </div>
-                    </div>
-                  </div>
-                </div>
-              </div>`
+                                <div class="modal fade" id="show-${details[i - 1].FK_Id_ContentSimple}" tabindex="-1"
+                                        aria-labelledby="#show-${details[i - 1].FK_Id_ContentSimple}Label" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h5 class="modal-title fw-bold" id="show-${details[i - 1].FK_Id_ContentSimple}Label">
+                                        Thông tin chi tiết thùng hàng số ${details[i - 1].FK_Id_ContentSimple}
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                        <div class="wrapper w-100 overflow-x-auto">
+                                            <div class="table-responsive">
+                                            <table class="table table-borderless table-hover m-0">
+                                                <thead class="table-heading">
+                                                <tr class="align-middle">
+                                                    <th scope="col" class="py-2 text-truncate">Nguyên liệu</th>
+                                                    <th scope="col" class="py-2 text-truncate" style="width: 200px;">Số lượng nguyên liệu</th>
+                                                    <th scope="col" class="py-2 text-truncate">Đơn vị</th>
+                                                    <th scope="col" class="py-2 text-truncate">Thùng chứa</th>
+                                                    <th scope="col" class="py-2 text-truncate">Tổng số lượng trong kho</th>
+                                                    <th scope="col" class="py-2 text-truncate" style="width: 200px;">Số lượng khả dụng</th>
+                                                    <th scope="col" class="py-2 text-truncate">Đơn giá</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody class="table-simples" class="p-5"
+                                                    data-value="${details[i - 1].FK_Id_ContentSimple}">
+                                                </tbody>
+                                            </table>
+                                            </div>
+                                        </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <div class="d-flex align-items-stretch justify-content-between w-100">
+                                            <div class="input-group w-50">
+                                                <label class="input-group-text" for="Count">Số lượng</label>
+                                                <input type="number" name="Count" id="Count" class="form-control">
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                <button type="button" class="btn btn-primary btnTake" data-id="${details[i - 1].FK_Id_ContentSimple}">Lấy thùng hàng</button>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>`
                                 $('#cell' + i).append(modals);
                             }
                         }
@@ -236,14 +236,14 @@
                         let htmls = "";
                         $.each(response, function(key, value) {
                             htmls += `<tr class="align-middle">
-                        <td class="text-center">${value.Name_RawMaterial}</td>
-                        <td class="text-center">${value.Count_RawMaterial}</td>
-                        <td class="text-center">${value.Unit}</td>
-                        <td class="text-center">${value.Name_ContainerType}</td>
-                        <td class="text-center">${value.Count_Container}</td>
-                        <td data-id="SoLuong" data-value="${value.SoLuong}" class="text-center">${value.SoLuong}</td>
-                        <td class="text-center">${numberFormat(value.Price_Container)} VNĐ </td>
-                      </tr>`;
+                                        <td class="text-center">${value.Name_RawMaterial}</td>
+                                        <td class="text-center">${value.Count_RawMaterial}</td>
+                                        <td class="text-center">${value.Unit}</td>
+                                        <td class="text-center">${value.Name_ContainerType}</td>
+                                        <td class="text-center">${value.Count_Container}</td>
+                                        <td data-id="SoLuong" data-value="${value.SoLuong}" class="text-center">${value.SoLuong}</td>
+                                        <td class="text-center">${numberFormat(value.Price_Container)} VNĐ </td>
+                                    </tr>`;
                         });
                         table.html(htmls);
                     },
@@ -299,7 +299,9 @@
                                 }
                             }
                         } else {
-                            showToast("Chỉ lấy được thùng hàng từ đơn nội bộ", "bg-warning",
+                            showToast(
+                                "Chỉ lấy được thùng hàng từ đơn \"Sản xuất thùng hàng cho nội bộ\"",
+                                "bg-warning",
                                 "fa-exclamation-circle");
                             modalElement.modal("hide");
                         }
@@ -353,7 +355,6 @@
                         }),
                         success: function(response) {
                             var redirectUrl = response.url;
-
                             window.location.href = redirectUrl + '?id=' + response.id;
                         },
                         error: function(xhr) {

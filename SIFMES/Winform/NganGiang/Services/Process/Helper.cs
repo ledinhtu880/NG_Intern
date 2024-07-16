@@ -74,7 +74,7 @@ namespace NganGiang.Services.Process
             }
         }
 
-        public static bool UpdateState(int id_content_simple, int state, int station)
+        public static bool UpdateStateSimple(int id_content_simple, int state, int station)
         {
             try
             {
@@ -88,6 +88,20 @@ namespace NganGiang.Services.Process
             }
         }
 
+
+        public static bool UpdateStatePack(int Id_ContentPack, int state, int station)
+        {
+            try
+            {
+                string query = $"UPDATE ProcessContentPack SET FK_Id_State = {state} WHERE FK_Id_ContentPack = {Id_ContentPack} AND FK_Id_Station = {station}";
+                return DataProvider.Instance.ExecuteNonQuery(query) > 0;
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show($"{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
         public static string getRFID(int id_content_simple)
         {
             string query = $"SELECT RFID FROM ContentSimple WHERE Id_ContentSimple = {id_content_simple}";

@@ -21,8 +21,8 @@ namespace NganGiang.Services.Process
     {
         public DataTable ShowContentPack()
         {
-            string query = @"SELECT FK_Id_OrderLocal AS [Mã đơn hàng], ProcessContentPack.FK_Id_ContentPack AS [Mã gói hàng],
-            CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Loại hàng], 
+            string query = @"SELECT FK_Id_OrderLocal AS [Mã đơn hàng], ProcessContentPack.FK_Id_ContentPack AS [Mã gói hàng], ContentPack.Count_Pack as [Số lượng],
+            CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Loại hàng],
             Name_State AS [Trạng thái], CONVERT(DATE, ProcessContentPack.Date_Start) AS [Ngày bắt đầu]
             FROM ProcessContentPack
                 INNER JOIN ContentPack on FK_Id_ContentPack = Id_ContentPack
@@ -36,7 +36,7 @@ namespace NganGiang.Services.Process
             INNER JOIN ContentSimple CS ON DCS.FK_Id_ContentSimple = CS.Id_ContentSimple
             WHERE (CS.ContainerProvided <> 1 OR CS.PedestalProvided <> 1 OR CS.RFIDProvided <> 1
             OR CS.RawMaterialProvided <> 1 OR CS.CoverHatProvided <> 1) AND NOT (CS.FK_Id_RawMaterial IN (0, 1, 2)))
-            GROUP BY FK_Id_OrderLocal, ProcessContentPack.FK_Id_ContentPack, SimpleOrPack, Name_State, ProcessContentPack.Date_Start";
+            GROUP BY FK_Id_OrderLocal, ProcessContentPack.FK_Id_ContentPack, ContentPack.Count_Pack, SimpleOrPack, Name_State, ProcessContentPack.Date_Start";
             return DataProvider.Instance.ExecuteQuery(query);
         }
 

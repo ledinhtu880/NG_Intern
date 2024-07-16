@@ -126,6 +126,7 @@ Route::middleware('checklogin')->group(function () {
         Route::post('showSimpleInPack', [OrderLocalController::class, 'showSimpleInPack'])->name('showSimpleInPack');
         Route::put('update/{id}', [OrderLocalController::class, 'updatePacks'])->name('update');
         Route::post('destroyPack', [OrderLocalController::class, 'destroyPack'])->name('destroyPack');
+        Route::post('freeContentSimpleInPack', [OrderLocalController::class, 'freeContentSimpleInPack'])->name('freeContentSimpleInPack');
       });
     });
 

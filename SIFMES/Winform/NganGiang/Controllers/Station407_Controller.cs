@@ -32,55 +32,41 @@ namespace NganGiang.Controllers
         {
             return process407Services.IsLastStation(id_content_simple);
         }
-
-        public bool UpdateData(int id_content_simple)
+        public bool IsOutOfStockContainer(int id_content_simple)
         {
-            bool isSuccess = true;
-            try
-            {
-                bool isLastStation = process407Services.IsLastStation(id_content_simple);
-                bool isOutOfStockConatiner = process407Services.IsOutOfStockContainer(id_content_simple);
-                if (process407Services.checkCustomer(id_content_simple) == 1)
-                {
-                    if (isOutOfStockConatiner)
-                    {
-                        process407Services.FreeCellDetail(id_content_simple);
-                        if (isLastStation)
-                        {
-                            process407Services.UpdateProcessAndOrder(id_content_simple);
-                        }
-                        else
-                        {
-                            process407Services.UpdateAndInsertProcessSimple(id_content_simple);
-                            process407Services.UpdateAndInsertProcessPack(id_content_simple);
-                        }
-                    }
-                    else
-                    {
-                        isSuccess = false;
-                        MessageBox.Show($"Số lượng thùng chứa trong kho 406 vẫn còn dư.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                else
-                {
-                    process407Services.FreeCellDetail(id_content_simple);
-                    if (isLastStation)
-                    {
-                        process407Services.UpdateQrCodeAndState(id_content_simple);
-                        process407Services.UpdateProcessAndOrder(id_content_simple);
-                    }
-                    else
-                    {
-                        process407Services.UpdateAndInsertProcessSimple(id_content_simple);
-                        process407Services.UpdateAndInsertProcessPack(id_content_simple);
-                    }
-                }
-            }
-            catch (SqlException ex)
-            {
-                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            return isSuccess;
+            return process407Services.IsOutOfStockContainer(id_content_simple);
+        }
+        public bool isInternalCustomer(int id_content_simple)
+        {
+            return process407Services.checkCustomer(id_content_simple) == 1;
+        }
+        public void FreeCellDetail(int id_content_simple)
+        {
+            process407Services.FreeCellDetail(id_content_simple);
+        }
+        public void UpdateQrCodeAndState(int id_content_simple)
+        {
+            process407Services.UpdateQrCodeAndState(id_content_simple);
+        }
+        public void UpdateProcessAndOrder(int id_content_simple)
+        {
+            process407Services.UpdateProcessAndOrder(id_content_simple);
+        }
+        public void UpdateAndInsertProcessPack(int id_content_simple)
+        {
+            process407Services.UpdateAndInsertProcessPack(id_content_simple);
+        }
+        public void UpdateAndInsertProcessSimple(int id_content_simple)
+        {
+            process407Services.UpdateAndInsertProcessSimple(id_content_simple);
+        }
+        public string getRFID(int id_content_simple)
+        {
+            return Helper.getRFID(id_content_simple);
+        }
+        public bool UpdateStateSimple(int id_content_simple, int state, int station)
+        {
+            return Helper.UpdateStateSimple(id_content_simple, state, station);
         }
     }
 }

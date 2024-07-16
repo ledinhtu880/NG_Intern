@@ -67,9 +67,9 @@ namespace NganGiang.Controllers
                 MessageBox.Show("Rót thất bại.\n" + e.Message, "Chú ý", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        public bool UpdateState(int id_content_simple, int state, int station)
+        public bool UpdateStateSimple(int id_content_simple, int state, int station)
         {
-            return Helper.UpdateState(id_content_simple, state, station);
+            return Helper.UpdateStateSimple(id_content_simple, state, station);
         }
     }
 }

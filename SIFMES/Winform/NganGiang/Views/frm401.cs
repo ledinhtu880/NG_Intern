@@ -84,7 +84,7 @@ namespace NganGiang.Views
 
                         plcService.sendTo401(item.FK_Id_RawMaterial, item.FK_Id_ContainerType, item.Count_Container, item.RFID);
 
-                        if (processController.UpdateState(Convert.ToInt32(item.Id_ContentSimple), 1, 401))
+                        if (processController.UpdateStateSimple(Convert.ToInt32(item.Id_ContentSimple), 1, 401))
                         {
                             DataGridViewRow row = dgv401.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["id_simple"].Value) == item.Id_ContentSimple);
 
@@ -117,7 +117,7 @@ namespace NganGiang.Views
             }
             else
             {
-                MessageBox.Show("Bạn chưa chọn nội dung sản xuất!", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Bạn chưa chọn nội dung sản xuất!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
         private void dgv401_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)

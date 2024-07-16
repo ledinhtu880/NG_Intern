@@ -355,15 +355,13 @@
                         htmls = "";
                         $.each(response.data, function(key, value) {
                             htmls += `<tr>
-                        <td class="text-center">${value.Name_RawMaterial}</td>
-                        <td class="text-center">${value.Count_RawMaterial}</td>
-                        <td class="text-center">${value.Unit}</td>
-                        <td class="text-center">${value.Name_ContainerType}</td>
-                        <td class="text-center">${value.Count_Container}</td>
-                        <td class="text-center">${numberFormat(
-              value.Price_Container
-            )} VNĐ </td>
-                        </tr>`;
+                                        <td class="text-center">${value.Name_RawMaterial}</td>
+                                        <td class="text-center">${value.Count_RawMaterial}</td>
+                                        <td class="text-center">${value.Unit}</td>
+                                        <td class="text-center">${value.Name_ContainerType}</td>
+                                        <td class="text-center">${value.Count_Container}</td>
+                                        <td class="text-center">${numberFormat(value.Price_Container)} VNĐ </td>
+                                    </tr>`;
                         });
                         table.html(htmls);
                     },
@@ -411,21 +409,18 @@
                         url: "{{ route('orders.packs.getPack') }}",
                         method: "POST",
                         dataType: "json",
-                        contentType: 'application/json', // Thêm dòng này để xác định loại dữ liệu gửi đi là JSON
+                        contentType: 'application/json',
                         data: JSON.stringify({
                             dataArr: dataArr,
                             FK_Id_Order: FK_Id_Order,
                             _token: token,
                         }),
                         success: function(response) {
-                            // Lấy URL từ phản hồi JSON
                             var redirectUrl = response.url;
 
-                            // Chuyển hướng đến route "orders.simples.create"
                             window.location.href = redirectUrl + '?id=' + response.id;
                         },
                         error: function(xhr) {
-                            // Xử lý lỗi khi gửi yêu cầu Ajax
                             console.log(xhr.responseText);
                             alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
                         },

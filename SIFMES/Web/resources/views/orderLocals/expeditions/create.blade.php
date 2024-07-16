@@ -31,13 +31,13 @@
                         </div>
                     </div>
                     <table class="table table-borderless table-hover m-0 table-expedition">
-                        <thead class="table-heading">
-                            <th scope="col" class="py-2 text-center">Chọn</th>
-                            <th scope="col" class="py-2 text-center">Mã đơn hàng</th>
+                        <thead class="table-heading text-center">
+                            <th scope="col" class="py-2">Chọn</th>
+                            <th scope="col" class="py-2">Mã đơn hàng</th>
                             <th scope="col" class="py-2">Khách hàng</th>
-                            <th scope="col" class="py-2 text-center">Kiểu hàng</th>
-                            <th scope="col" class="py-2 text-center">Số lượng thùng chứa</th>
-                            <th scope="col" class="py-2 text-center">Đơn giá</th>
+                            <th scope="col" class="py-2">Kiểu hàng</th>
+                            <th scope="col" class="py-2">Số lượng thùng chứa</th>
+                            <th scope="col" class="py-2">Đơn giá</th>
                         </thead>
                         <tbody id="table-data">
                         </tbody>
@@ -232,26 +232,25 @@
                                     </tr>`;
                                 $('.table-expedition tbody').append(html);
                             } else if (selectedValue == 409) {
-                                let simpleOrPack = '';
-                                if (element['SimpleOrPack'] == 0) {
-                                    simpleOrPack = "Thùng hàng";
-                                } else if (element['SimpleOrPack'] == 1) {
-                                    simpleOrPack = "Gói hàng";
-                                }
-                                let html = `<tr class="align-middle">
-                                                <td class="text-center">
+                                let html = `<tr class="align-middle text-center">
+                                                <td>
                                                     <input class="form-check-input checkbox1" type="checkbox" value="${element['Id_ContentPack']}" id="cb${element['Id_ContentPack']}" data-id="${element['Id_ContentPack']}">
                                                 </td>
-                                                <td class="text-center">${element['Id_Order']}</td>
+                                                <td>${element['Id_Order']}</td>
                                                 <td>${element['Name_Customer']}</td>
-                                                <td class="text-center">${simpleOrPack}</td>
-                                                <td class="text-center">${element['Count_Pack']}</td>
-                                                <td class="text-center">${numberFormat(element['Price_Pack'])} VNĐ</td>
+                                                <td>${element['Status']}</td>
+                                                <td>${element['Count_Pack']}</td>
+                                                <td>${numberFormat(element['Price_Pack'])} VNĐ</td>
                                             </tr>`;
                                 $('.table-expedition tbody').append(html);
                             }
                         }
-                    }
+                    },
+                    error: function(xhr) {
+                        // Xử lý lỗi khi gửi yêu cầu Ajax
+                        console.log(xhr.responseText);
+                        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                    },
                 });
             });
 
@@ -322,9 +321,11 @@
                             $('.table-details').append(html);
                         }
                     },
-                    error: function(error) {
-                        console.log(error.responseText);
-                    }
+                    error: function(xhr) {
+                        // Xử lý lỗi khi gửi yêu cầu Ajax
+                        console.log(xhr.responseText);
+                        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                    },
                 });
             });
 
@@ -358,7 +359,12 @@
                             setTimeout(() => {
                                 window.location.reload();
                             }, 1000);
-                        }
+                        },
+                        error: function(xhr) {
+                            // Xử lý lỗi khi gửi yêu cầu Ajax
+                            console.log(xhr.responseText);
+                            alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                        },
                     });
                 }
             });
@@ -397,7 +403,12 @@
                                     window.location.reload();
                                 }, 1000);
                             }
-                        }
+                        },
+                        error: function(xhr) {
+                            // Xử lý lỗi khi gửi yêu cầu Ajax
+                            console.log(xhr.responseText);
+                            alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                        },
                     });
                 }
             });

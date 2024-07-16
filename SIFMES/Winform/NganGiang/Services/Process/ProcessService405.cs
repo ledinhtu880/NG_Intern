@@ -235,7 +235,7 @@ namespace NganGiang.Services.Process
             }
             catch (SqlException e)
             {
-                MessageBox.Show($"Đã có lỗi xảy ra \n{e.Message}", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Đã có lỗi xảy ra \n{e.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

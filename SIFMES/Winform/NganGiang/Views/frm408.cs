@@ -9,22 +9,27 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FontAwesome.Sharp;
+using NganGiang.Services;
+using NganGiang.Models;
 
 
 namespace NganGiang.Views
 {
     public partial class frm408 : Form
     {
-        Station408_Controller packController { get; set; }
-        List<int> listContentPack = new List<int>();
+        Station408_Controller processController { get; set; }
+        List<ContentPack> listContentPack = new List<ContentPack>();
+        PLCService plcService { get; set; }
+        bool isPLCReady = false;
         public frm408()
         {
             InitializeComponent();
-            packController = new Station408_Controller();
+            processController = new Station408_Controller();
+            plcService = new PLCService();
         }
         public void loadData()
         {
-            packController.Show(dgv408);
+            processController.Show(dgv408);
             // Vòng lặp qua các cột trong DataGridView và tắt sắp xếp
 
             if (!dgv408.Columns.Contains("XemChiTietColumn"))
@@ -73,11 +78,20 @@ namespace NganGiang.Views
 
         private void btnProcess_Click(object sender, EventArgs e)
         {
+            if (!isPLCReady)
+            {
+                MessageBox.Show("PLC chưa sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             foreach (DataGridViewRow rows in dgv408.Rows)
             {
                 if (Convert.ToBoolean(rows.Cells[0].Value) == true)
                 {
-                    listContentPack.Add(Convert.ToInt32(rows.Cells["Mã gói hàng"].Value.ToString()));
+                    ContentPack item = new ContentPack();
+                    item.Id_ContentPack = Convert.ToInt32(rows.Cells["Mã gói hàng"].Value.ToString());
+                    item.Count_Pack = Convert.ToInt32(rows.Cells["Số lượng"].Value.ToString());
+
+                    listContentPack.Add(item);
                 }
             }
             if (listContentPack.Count > 0)
@@ -87,30 +101,46 @@ namespace NganGiang.Views
                 {
                     foreach (var item in listContentPack)
                     {
-                        if (packController.Update(item))
+                        plcService.sendTo408(item.Id_ContentPack, item.Count_Pack);
+
+                        if (processController.UpdateStatePack(Convert.ToInt32(item.Id_ContentPack), 1, 408))
                         {
-                            flag = true;
+                            DataGridViewRow row = dgv408.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["Mã gói hàng"].Value) == item.Id_ContentPack);
+
+                            if (row != null)
+                            {
+                                row.Cells["Trạng thái"].Value = "Đang xử lý";
+                            }
                         }
-                        else
+
+                        while (true)
                         {
-                            flag = false;
-                            break;
+                            bool isAcknowledged = plcService.CheckAcknowledgment();
+                            if (isAcknowledged)
+                            {
+                                processController.Update(Convert.ToInt32(item.Id_ContentPack));
+                                break;
+                            }
                         }
+                        plcService.updateStatus();
                     }
-                    if (flag)
-                    {
-                        MessageBox.Show("Xử lý thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    else
-                    {
-                        listContentPack.Clear();
-                    }
+                    MessageBox.Show("Đóng gói thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     loadData();
                 }
             }
             else
             {
                 MessageBox.Show("Bạn chưa chọn nội dung sản xuất!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (plcService.getSignal() && !isPLCReady)
+            {
+                isPLCReady = true;
+                timer1.Enabled = false;
+                MessageBox.Show("PLC đã sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }
