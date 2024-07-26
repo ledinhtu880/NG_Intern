@@ -386,52 +386,53 @@ class OrderLocalController extends Controller
 
   public function showSimpleByCustomerTypePacks(Request $request)
   {
-    $Id_CustomerType = $request->idCustomerType;
+    if ($request->ajax()) {
 
-    $query = DB::table('Order')
-      ->join('Customer', 'Order.FK_Id_Customer', '=', 'Customer.Id_Customer')
-      ->join('ContentPack', 'Order.Id_Order', '=', 'ContentPack.FK_Id_Order')
-      ->join('DetailContentSimpleOfPack', 'DetailContentSimpleOfPack.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
-      ->join('ContentSimple', 'DetailContentSimpleOfPack.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
-      ->join('ProcessContentSimple', 'ProcessContentSimple.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
-      ->join('DetailStateCellOfSimpleWareHouse', 'DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
-      ->select(
-        'ContentPack.Id_ContentPack',
-        'Customer.Name_Customer',
-        'Count_Pack',
-        'Price_Pack',
-        'Order.Id_Order'
-      )
-      ->where('SimpleOrPack', '=', 1)
-      ->where('FK_Id_CustomerType', '=', $Id_CustomerType)
-      ->whereNotIn('ContentSimple.Id_ContentSimple', function ($query) {
-        $query->select('ContentSimple.Id_ContentSimple')
-          ->from('Order')
-          ->join('ContentPack', 'Order.Id_Order', '=', 'ContentPack.FK_Id_Order')
-          ->join('DetailContentSimpleOfPack', 'DetailContentSimpleOfPack.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
-          ->join('ContentSimple', 'DetailContentSimpleOfPack.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
-          ->join('ProcessContentSimple', 'ProcessContentSimple.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
-          ->where('SimpleOrPack', '=', 1)
-          ->where('ProcessContentSimple.FK_Id_Station', '>=', 407);
-      })
-      ->whereNotIn('ContentPack.Id_ContentPack', function ($query) {
-        $query->select('DetailContentPackOrderLocal.FK_Id_ContentPack')
-          ->from('DetailContentPackOrderLocal');
-      })
-      ->groupBy(
-        'ContentPack.Id_ContentPack',
-        'Customer.Name_Customer',
-        'Count_Pack',
-        'Price_Pack',
-        'Order.Id_Order'
-      )
-      ->get();
+      $Id_CustomerType = $request->idCustomerType;
 
+      $query = DB::table('Order')
+        ->join('Customer', 'Order.FK_Id_Customer', '=', 'Customer.Id_Customer')
+        ->join('ContentPack', 'Order.Id_Order', '=', 'ContentPack.FK_Id_Order')
+        ->join('DetailContentSimpleOfPack', 'DetailContentSimpleOfPack.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
+        ->join('ContentSimple', 'DetailContentSimpleOfPack.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
+        ->join('ProcessContentSimple', 'ProcessContentSimple.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
+        ->leftJoin('DetailStateCellOfSimpleWareHouse', 'DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
+        ->select(
+          'ContentPack.Id_ContentPack',
+          'Customer.Name_Customer',
+          'Count_Pack',
+          'Price_Pack',
+          'Order.Id_Order'
+        )
+        ->where('SimpleOrPack', '=', 1)
+        ->where('FK_Id_CustomerType', '=', $Id_CustomerType)
+        ->whereNotIn('ContentSimple.Id_ContentSimple', function ($query) {
+          $query->select('ContentSimple.Id_ContentSimple')
+            ->from('Order')
+            ->join('ContentPack', 'Order.Id_Order', '=', 'ContentPack.FK_Id_Order')
+            ->join('DetailContentSimpleOfPack', 'DetailContentSimpleOfPack.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
+            ->join('ContentSimple', 'DetailContentSimpleOfPack.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
+            ->join('ProcessContentSimple', 'ProcessContentSimple.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
+            ->where('SimpleOrPack', '=', 1)
+            ->where('ProcessContentSimple.FK_Id_Station', '>=', 407);
+        })
+        ->whereNotIn('ContentPack.Id_ContentPack', function ($query) {
+          $query->select('DetailContentPackOrderLocal.FK_Id_ContentPack')
+            ->from('DetailContentPackOrderLocal');
+        })
+        ->groupBy(
+          'ContentPack.Id_ContentPack',
+          'Customer.Name_Customer',
+          'Count_Pack',
+          'Price_Pack',
+          'Order.Id_Order'
+        )
+        ->get();
 
-    $htmls = '';
-    foreach ($query as $item) {
-      $htmls .=
-        '<tr class="align-middle">
+      $htmls = '';
+      foreach ($query as $item) {
+        $htmls .=
+          '<tr class="align-middle">
             <td class="text-center">
                 <input type="checkbox" class="form-check-input checkbox-add">
             </td>
@@ -442,9 +443,10 @@ class OrderLocalController extends Controller
             <td class="text-center">' . $this->numberFormat($item->Price_Pack) . ' VNĐ' . '</td>
         </tr>
           ';
-    }
+      }
 
-    return $htmls;
+      return $htmls;
+    }
   }
 
   public function deleteOrderLocal(string $Id_OrderLocal)
@@ -761,8 +763,12 @@ class OrderLocalController extends Controller
     $ordersToDelete = DB::table('OrderLocal')
       ->leftJoin('DetailContentSimpleOrderLocal', 'OrderLocal.Id_OrderLocal', '=', 'DetailContentSimpleOrderLocal.FK_Id_OrderLocal')
       ->leftJoin('DetailContentPackOrderLocal', 'OrderLocal.Id_OrderLocal', '=', 'DetailContentPackOrderLocal.FK_Id_OrderLocal')
+      ->leftJoin('DetailContentSimpleGroupInOrder', 'OrderLocal.Id_OrderLocal', '=', 'DetailContentSimpleGroupInOrder.FK_Id_OrderLocal')
+      ->leftJoin('DetailContentPackGroupInOrder', 'OrderLocal.Id_OrderLocal', '=', 'DetailContentPackGroupInOrder.FK_Id_OrderLocal')
       ->whereNull('DetailContentSimpleOrderLocal.FK_Id_ContentSimple')
       ->whereNull('DetailContentPackOrderLocal.FK_Id_ContentPack')
+      ->whereNull('DetailContentSimpleGroupInOrder.Index')
+      ->whereNull('DetailContentPackGroupInOrder.Index')
       ->pluck('OrderLocal.Id_OrderLocal');
 
     DB::table('OrderLocal')->whereIn('Id_OrderLocal', $ordersToDelete)->delete();
@@ -771,8 +777,7 @@ class OrderLocalController extends Controller
   }
   public function createExpedition()
   {
-    $data = OrderLocal::where('MakeOrPackOrExpedition', 2)->get();
-    return view('orderLocals.expeditions.create', compact('data'));
+    return view('orderLocals.expeditions.create');
   }
   public function showOrderByStation(Request $request)
   {
@@ -781,35 +786,65 @@ class OrderLocalController extends Controller
       $data = DB::table('Order')
         ->join('ContentSimple', 'Order.Id_Order', '=', 'ContentSimple.FK_Id_Order')
         ->join('ProcessContentSimple', 'ProcessContentSimple.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
-        ->leftJoin('DetailStateCellOfSimpleWareHouse', 'DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
         ->join('Customer', 'Customer.Id_Customer', '=', 'Order.FK_Id_Customer')
+        ->join('RawMaterial', 'ContentSimple.FK_Id_RawMaterial', '=', 'Id_RawMaterial')
+        ->leftJoin('DetailStateCellOfSimpleWareHouse', 'DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
         ->where('Customer.FK_Id_CustomerType', 0)
         ->where('Order.SimpleOrPack', 0)
         ->where('ProcessContentSimple.FK_Id_Station', 406)
         ->where('ProcessContentSimple.FK_Id_State', 2)
-        ->whereNotIn('ContentSimple.Id_ContentSimple', function ($query) {
-          $query->select('ContentSimple.Id_ContentSimple')
-            ->from('ContentSimple')
-            ->join('DetailContentSimpleOrderLocal', 'ContentSimple.Id_ContentSimple', '=', 'DetailContentSimpleOrderLocal.FK_Id_ContentSimple')
-            ->join('OrderLocal', 'DetailContentSimpleOrderLocal.FK_Id_OrderLocal', '=', 'OrderLocal.Id_OrderLocal')
-            ->where('OrderLocal.MakeOrPackOrExpedition', 2);
-        })
-        ->select('ContentSimple.Id_ContentSimple', 'Order.Id_Order', 'Customer.Name_Customer', 'ContentSimple.FK_Id_ContainerType', 'ContentSimple.Count_Container', 'ContentSimple.Price_Container')
+        ->select(
+          'ContentSimple.Id_ContentSimple',
+          'Order.Id_Order',
+          'Customer.Name_Customer',
+          'Name_RawMaterial',
+          'ContentSimple.FK_Id_ContainerType',
+          'ContentSimple.Count_Container',
+          DB::raw('NULL AS TotalTaken'),
+          'ContentSimple.Price_Container'
+        )
+        ->groupBy(
+          'ContentSimple.Id_ContentSimple',
+          'Order.Id_Order',
+          'Customer.Name_Customer',
+          'Name_RawMaterial',
+          'ContentSimple.FK_Id_ContainerType',
+          'ContentSimple.Count_Container',
+          'ContentSimple.Price_Container'
+        )
+        ->havingRaw('ContentSimple.Count_Container <> (SELECT COUNT([index]) from DetailContentSimpleGroupInOrder where DetailContentSimpleGroupInOrder.FK_Id_ContentSimple = ContentSimple.Id_ContentSimple)')
         ->union(
-          DB::table('ContentSimple')
-            ->select(
-              'Id_ContentSimple',
-              'Id_Order',
-              'Name_Customer',
-              'FK_Id_ContainerType',
-              'Count_Container',
-              'Price_Container',
-            )
-            ->join('Order', 'Id_Order', '=', 'FK_Id_Order')
-            ->join('Customer', 'Id_Customer', '=', 'FK_Id_Customer')
-            ->join('RegisterContentSimpleAtWareHouse', 'FK_Id_ContentSimple', '=', 'Id_ContentSimple')
+          DB::table('Order')
+            ->join('ContentSimple', 'Order.Id_Order', '=', 'ContentSimple.FK_Id_Order')
+            ->join('ProcessContentSimple', 'ProcessContentSimple.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
+            ->join('Customer', 'Customer.Id_Customer', '=', 'Order.FK_Id_Customer')
+            ->join('RegisterContentSimpleAtWareHouse as rcsaw', 'rcsaw.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
+            ->join('RawMaterial', 'ContentSimple.FK_Id_RawMaterial', '=', 'Id_RawMaterial')
+            ->leftJoin('DetailStateCellOfSimpleWareHouse', 'DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
             ->where('Customer.FK_Id_CustomerType', 1)
-            ->where('SimpleOrPack', 0)
+            ->where('Order.SimpleOrPack', 0)
+            ->where('ProcessContentSimple.FK_Id_Station', 406)
+            ->where('ProcessContentSimple.FK_Id_State', 2)
+            ->select(
+              'ContentSimple.Id_ContentSimple',
+              'Order.Id_Order',
+              'Customer.Name_Customer',
+              'Name_RawMaterial',
+              'ContentSimple.FK_Id_ContainerType',
+              'ContentSimple.Count_Container',
+              DB::raw('SUM(rcsaw.count) AS TotalTaken'),
+              'ContentSimple.Price_Container'
+            )
+            ->groupBy(
+              'ContentSimple.Id_ContentSimple',
+              'Order.Id_Order',
+              'Customer.Name_Customer',
+              'Name_RawMaterial',
+              'ContentSimple.FK_Id_ContainerType',
+              'ContentSimple.Count_Container',
+              'ContentSimple.Price_Container'
+            )
+            ->havingRaw('ContentSimple.Count_Container <> (SELECT COUNT([index]) from DetailContentSimpleGroupInOrder where DetailContentSimpleGroupInOrder.FK_Id_ContentSimple = ContentSimple.Id_ContentSimple)')
         )
         ->get();
     } else if ($station == 409) {
@@ -821,81 +856,189 @@ class OrderLocalController extends Controller
         ->where('Customer.FK_Id_CustomerType', 0)
         ->where('Order.SimpleOrPack', 1)
         ->where('ProcessContentPack.FK_Id_State', 2)
-        ->where('ProcessContentPack.FK_Id_Station', $station)
-        ->whereNotIn('ContentPack.Id_ContentPack', function ($query) {
-          $query->select('Id_ContentPack')
-            ->from('ContentPack')
-            ->join('DetailContentPackOrderLocal', 'Id_ContentPack', '=', 'FK_Id_ContentPack')
-            ->join('OrderLocal', 'FK_Id_OrderLocal', '=', 'Id_OrderLocal')
-            ->where('OrderLocal.MakeOrPackOrExpedition', 2);
-        })
-        ->select('ContentPack.Id_ContentPack', 'Order.Id_Order', 'Customer.Name_Customer', 'ContentPack.Count_Pack', 'ContentPack.Price_Pack')
+        ->where('ProcessContentPack.FK_Id_Station', 409)
+        ->select('ContentPack.Id_ContentPack', 'Order.Id_Order', 'Customer.Name_Customer', 'ContentPack.Count_Pack', DB::raw('NULL AS TotalTaken'), 'ContentPack.Price_Pack')
         ->selectRaw("CASE WHEN SimpleOrPack = 0 THEN 'Thùng hàng' ELSE 'Gói hàng' END AS Status")
+        ->groupBy(
+          'ContentPack.Id_ContentPack',
+          'Order.Id_Order',
+          'Customer.Name_Customer',
+          'ContentPack.Count_Pack',
+          'ContentPack.Price_Pack',
+          'SimpleOrPack',
+        )
+        ->havingRaw('ContentPack.Count_Pack <> (SELECT COUNT([index]) from DetailContentPackGroupInOrder where DetailContentPackGroupInOrder.FK_Id_ContentPack = ContentPack.Id_ContentPack)')
         ->union(
           DB::table('Order')
             ->join('ContentPack', 'Order.Id_Order', '=', 'ContentPack.FK_Id_Order')
+            ->join('ProcessContentPack', 'ProcessContentPack.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
             ->join('Customer', 'Customer.Id_Customer', '=', 'Order.FK_Id_Customer')
-            ->join('RegisterContentPackAtWareHouse', 'FK_Id_ContentPack', '=', 'Id_ContentPack')
-            ->where('Customer.FK_Id_CustomerType', 0)
-            ->where('SimpleOrPack', 1)
-            ->select('ContentPack.Id_ContentPack', 'Order.Id_Order', 'Customer.Name_Customer', 'ContentPack.Count_Pack', 'ContentPack.Price_Pack')
-            ->selectRaw("CASE WHEN SimpleOrPack = 0 THEN 'Thùng hàng' ELSE 'Gói hàng' END AS Status")
+            ->join('RegisterContentPackAtWareHouse as rcsaw', 'rcsaw.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
+            ->leftJoin('DetailStateCellOfPackWareHouse', 'DetailStateCellOfPackWareHouse.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
+            ->where('Customer.FK_Id_CustomerType', 1)
+            ->where('Order.SimpleOrPack', 1)
+            ->where('ProcessContentPack.FK_Id_State', 2)
+            ->where('ProcessContentPack.FK_Id_Station', 409)
+            ->select('ContentPack.Id_ContentPack', 'Order.Id_Order', 'Customer.Name_Customer', 'ContentPack.Count_Pack', DB::raw('SUM(rcsaw.Count) AS TotalTaken'), 'ContentPack.Price_Pack')
+            ->selectRaw("CASE WHEN SimpleOrPack = 0 THEN 'Thùng hàng' ELSE 'Gói hàng' END AS Status")->groupBy(
+              'ContentPack.Id_ContentPack',
+              'Order.Id_Order',
+              'Customer.Name_Customer',
+              'ContentPack.Count_Pack',
+              'ContentPack.Price_Pack',
+              'SimpleOrPack',
+            )
+            ->havingRaw('ContentPack.Count_Pack <> (SELECT COUNT([index]) from DetailContentPackGroupInOrder where DetailContentPackGroupInOrder.FK_Id_ContentPack = ContentPack.Id_ContentPack)')
         )
         ->get();
     }
     return response()->json($data);
   }
-
+  public function showOrderExpedition(Request $request)
+  {
+    if ($request->ajax()) {
+      $station = $request->input('value');
+      if ($station == 406) {
+        $data = OrderLocal::where('MakeOrPackOrExpedition', 2)->where('SimpleOrPack', 0)->get();
+        return response()->json($data);
+      } else if ($station == 409) {
+        $data = OrderLocal::where('MakeOrPackOrExpedition', 2)->where('SimpleOrPack', 1)->get();
+        return response()->json($data);
+      }
+    }
+  }
   public function storeExpedition(Request $request)
   {
-    $station = $request->input('station');
-    $ids = $request->input('id');
-    $date = $request->input('date');
-    $currentDateTime = Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
+    if ($request->ajax()) {
 
-    $lastId = DB::table('OrderLocal')->max('Id_OrderLocal');
+      $station = $request->input('station');
+      $ids = $request->input('id');
+      $date = $request->input('date');
+      $currentDateTime = Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
 
-    if ($station == 406) {
-      DB::table('OrderLocal')->insert([
-        'Id_OrderLocal' => $lastId + 1,
-        'Count' => 1,
-        'Date_Delivery' => $date,
-        'SimpleOrPack' => 0,
-        'MakeOrPackOrExpedition' => 2,
-        'Date_Start' => $currentDateTime
-      ]);
-      DB::table('DetailStateCellOfSimpleWareHouse')
-        ->whereIn('FK_Id_ContentSimple', $ids)
-        ->update([
-          'FK_Id_StateCell' => 1,
-          'FK_Id_ContentSimple' => NULL
-        ]);
-      foreach ($ids as $id) {
-        DB::table('DetailContentSimpleOrderLocal')->insert([
-          'FK_Id_OrderLocal' => $lastId + 1,
-          'FK_Id_ContentSimple' => $id,
-        ]);
-      }
-    } else if ($station == 409) {
-      DB::table('OrderLocal')->insert([
-        'Id_OrderLocal' => $lastId + 1,
-        'Count' => 1,
-        'Date_Delivery' => $date,
-        'SimpleOrPack' => 1,
-        'MakeOrPackOrExpedition' => 2,
-        'Date_Start' => $currentDateTime
-      ]);
-      DB::table('DetailStateCellOfPackWareHouse')
-        ->whereIn('FK_Id_ContentPack', $ids)
-        ->update([
-          'FK_Id_StateCell' => 1,
-          'FK_Id_ContentPack' => NULL
-        ]);
-      foreach ($ids as $id) {
-        DB::table('DetailContentPackOrderLocal')->insert([
-          'FK_Id_OrderLocal' => $lastId + 1,
-          'FK_Id_ContentPack' => $id,
-        ]);
+      $lastId = DB::table('OrderLocal')->max('Id_OrderLocal');
+      if ($station == 406) {
+        $listContentSimple = array_map(function ($item) {
+          return $item['id'];
+        }, $ids);
+
+        $isExisted = DB::table('OrderLocal')
+          ->join('DetailContentSimpleOrderLocal', 'OrderLocal.Id_OrderLocal', '=', 'DetailContentSimpleOrderLocal.FK_Id_OrderLocal')
+          ->whereIn('DetailContentSimpleOrderLocal.FK_Id_ContentSimple', $listContentSimple)
+          ->where('OrderLocal.MakeOrPackOrExpedition', 2)
+          ->exists();
+        if (!$isExisted) {
+          DB::table('OrderLocal')->insert([
+            'Id_OrderLocal' => $lastId + 1,
+            'Count' => 1,
+            'Date_Delivery' => $date,
+            'SimpleOrPack' => 0,
+            'MakeOrPackOrExpedition' => 2,
+            'Date_Start' => $currentDateTime
+          ]);
+        }
+
+        foreach ($ids as $each) {
+          DB::table('DetailContentSimpleGroupInOrder')->where('FK_Id_ContentSimple', $each['id'])->delete();
+          $data = DB::table('DetailContentSimpleGroup as g')
+            ->where('g.FK_Id_ContentSimple', '=', $each['id'])
+            ->select('g.FK_Id_ContentSimple', 'g.index')
+            ->orderBy('g.index', 'desc')
+            ->limit($each['Count'])
+            ->get();
+          if (!$isExisted) {
+            DB::table('DetailContentSimpleOrderLocal')->insert([
+              'FK_Id_OrderLocal' => $lastId + 1,
+              'FK_Id_ContentSimple' => $each['id'],
+            ]);
+            foreach ($data as $record) {
+              DB::table('DetailContentSimpleGroupInOrder')->insert([
+                'FK_Id_ContentSimple' => $each['id'],
+                'FK_Id_OrderLocal' => $lastId + 1,
+                'Index' => $record->index
+              ]);
+            }
+          } else {
+            foreach ($data as $record) {
+              DB::table('DetailContentSimpleGroupInOrder')->insert([
+                'FK_Id_ContentSimple' => $each['id'],
+                'FK_Id_OrderLocal' => $lastId,
+                'Index' => $record->index
+              ]);
+            }
+          }
+          $totalCount = DB::table('ContentSimple')->where('Id_ContentSimple', $each['id'])->value('Count_Container');
+          $totalTaken = DB::table('RegisterContentSimpleAtWareHouse')->where('FK_Id_ContentSimple', $each['id'])->sum('Count');
+          if ($totalCount == $totalTaken) {
+            DB::table('DetailStateCellOfSimpleWareHouse')
+              ->where('FK_Id_ContentSimple', $each['id'])
+              ->update([
+                'FK_Id_StateCell' => 1,
+                'FK_Id_ContentSimple' => NULL
+              ]);
+          }
+        }
+      } else if ($station == 409) {
+        $listContentPack = array_map(function ($item) {
+          return $item['id'];
+        }, $ids);
+
+        $isExisted = DB::table('OrderLocal')
+          ->join('DetailContentPackOrderLocal', 'OrderLocal.Id_OrderLocal', '=', 'DetailContentPackOrderLocal.FK_Id_OrderLocal')
+          ->whereIn('DetailContentPackOrderLocal.FK_ID_ContentPack', $listContentPack)
+          ->where('OrderLocal.MakeOrPackOrExpedition', 2)
+          ->exists();
+        if (!$isExisted) {
+          DB::table('OrderLocal')->insert([
+            'Id_OrderLocal' => $lastId + 1,
+            'Count' => 1,
+            'Date_Delivery' => $date,
+            'SimpleOrPack' => 1,
+            'MakeOrPackOrExpedition' => 2,
+            'Date_Start' => $currentDateTime
+          ]);
+        }
+
+        foreach ($ids as $each) {
+          DB::table('DetailContentPackGroupInOrder')->where('FK_Id_ContentPack', $each['id'])->delete();
+          $data = DB::table('DetailContentPackGroup as g')
+            ->where('g.FK_Id_ContentPack', '=', $each['id'])
+            ->select('g.FK_Id_ContentPack', 'g.index')
+            ->orderBy('g.index', 'desc')
+            ->limit($each['Count'])
+            ->get();
+          if (!$isExisted) {
+            DB::table('DetailContentPackOrderLocal')->insert([
+              'FK_Id_OrderLocal' => $lastId + 1,
+              'FK_Id_ContentPack' => $each['id'],
+            ]);
+            foreach ($data as $record) {
+              DB::table('DetailContentPackGroupInOrder')->insert([
+                'FK_Id_ContentPack' => $each['id'],
+                'FK_Id_OrderLocal' => $lastId + 1,
+                'Index' => $record->index
+              ]);
+            }
+          } else {
+            foreach ($data as $record) {
+              DB::table('DetailContentPackGroupInOrder')->insert([
+                'FK_Id_ContentPack' => $each['id'],
+                'FK_Id_OrderLocal' => $lastId,
+                'Index' => $record->index
+              ]);
+            }
+          }
+          $totalCount = DB::table('ContentPack')->where('Id_ContentPack', $each['id'])->value('Count_Pack');
+          $totalTaken = DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_ContentPack', $each['id'])->sum('Count');
+          if ($totalCount == $totalTaken) {
+            DB::table('DetailStateCellOfPackWareHouse')
+              ->where('FK_Id_ContentPack', $each['id'])
+              ->update([
+                'FK_Id_StateCell' => 1,
+                'FK_Id_ContentPack' => NULL
+              ]);
+          }
+        }
       }
     }
   }
@@ -904,11 +1047,28 @@ class OrderLocalController extends Controller
     $id = $request->input('id');
     $exist = DB::table('DetailContentSimpleOrderLocal')->where('Fk_Id_OrderLocal', $id)->exists();
     if ($exist) {
-      $details = DB::table('DetailContentSimpleOrderLocal')
-        ->join('ContentSimple', 'ContentSimple.Id_ContentSimple', '=', 'DetailContentSimpleOrderLocal.FK_Id_ContentSimple')
-        ->join('RawMaterial', 'RawMaterial.Id_RawMaterial', '=', 'ContentSimple.FK_Id_RawMaterial')
-        ->where('FK_Id_OrderLocal', $id)
-        ->select('FK_Id_ContainerType', 'Name_RawMaterial', 'Count_RawMaterial', 'Unit', 'Count_Container', 'Price_Container')
+      $details = DB::table('DetailContentSimpleOrderLocal as dcs')
+        ->join('ContentSimple as cs', 'cs.Id_ContentSimple', '=', 'dcs.FK_Id_ContentSimple')
+        ->join('RawMaterial as rm', 'rm.Id_RawMaterial', '=', 'cs.FK_Id_RawMaterial')
+        ->where('dcs.FK_Id_OrderLocal', $id)
+        ->select(
+          'cs.FK_Id_ContainerType',
+          'rm.Name_RawMaterial',
+          'cs.Count_RawMaterial',
+          'rm.Unit',
+          'cs.Count_Container',
+          'cs.Price_Container',
+          DB::raw('(SELECT COUNT(*) FROM DetailContentSimpleGroupInOrder dcsgo WHERE dcsgo.FK_Id_ContentSimple = cs.Id_ContentSimple) as TotalTaken')
+        )
+        ->groupBy(
+          'cs.FK_Id_ContainerType',
+          'rm.Name_RawMaterial',
+          'cs.Count_RawMaterial',
+          'rm.Unit',
+          'cs.Count_Container',
+          'cs.Price_Container',
+          'cs.Id_ContentSimple'
+        )
         ->get();
     } else {
       $details = DB::table('ContentPack')->join('DetailContentPackOrderLocal', 'DetailContentPackOrderLocal.FK_Id_ContentPack', '=', 'ContentPack.Id_ContentPack')
@@ -917,6 +1077,8 @@ class OrderLocalController extends Controller
         ->join('RawMaterial', 'RawMaterial.Id_RawMaterial', '=', 'ContentSimple.FK_Id_RawMaterial')
         ->where('FK_Id_OrderLocal', $id)
         ->select('FK_Id_ContainerType', 'Name_RawMaterial', 'Count_RawMaterial', 'Unit', 'Count_Container', 'Price_Container')
+        ->selectRaw('(SELECT COUNT(*) FROM DetailContentPackGroupInOrder dcsgo WHERE dcsgo.FK_Id_ContentPack = ContentPack.Id_ContentPack) as TotalTaken')
+        ->groupBy('Id_ContentPack', 'FK_Id_ContainerType', 'Name_RawMaterial', 'Count_RawMaterial', 'Unit', 'Count_Container', 'Price_Container')
         ->get();
     }
     return response()->json($details);
@@ -1007,8 +1169,10 @@ class OrderLocalController extends Controller
   {
     if ($request->ajax()) {
       $ids = $request->input('id');
+
       $exists = DB::table('OrderLocal')
         ->join('DispatcherOrder', 'OrderLocal.Id_OrderLocal', '=', 'DispatcherOrder.FK_Id_OrderLocal')
+        ->where('MakeOrPackOrExpedition', '=', 2)
         ->whereIn('OrderLocal.Id_OrderLocal', $ids)
         ->select('OrderLocal.Id_OrderLocal')
         ->exists();
@@ -1021,9 +1185,11 @@ class OrderLocalController extends Controller
         foreach ($ids as $id) {
           $isSimple = DB::table('DetailContentSimpleOrderLocal')->where('Fk_Id_OrderLocal', $id)->exists();
           if ($isSimple) {
+            DB::table('DetailContentSimpleGroupInOrder')->where('FK_Id_OrderLocal', $id)->delete();
             DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();
           } else {
             DB::table('DetailContentPackOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();
+            DB::table('DetailContentPackGroupInOrder')->where('FK_Id_OrderLocal', $id)->delete();
           }
           DB::table('OrderLocal')->where('Id_OrderLocal', $id)->delete();
         }
@@ -1046,6 +1212,7 @@ class OrderLocalController extends Controller
     } else {
       $isSimple = DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_OrderLocal', $id)->exists();
       if ($isSimple) {
+        DB::table('DetailContentSimpleGroupInOrder')->where('FK_Id_OrderLocal', $id)->delete();
         DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();
       } else {
         DB::table('DetailContentPackOrderLocal')->where('FK_Id_OrderLocal', $id)->delete();

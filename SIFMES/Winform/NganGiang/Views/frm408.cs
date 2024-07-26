@@ -31,7 +31,7 @@ namespace NganGiang.Views
         {
             processController.Show(dgv408);
             // Vòng lặp qua các cột trong DataGridView và tắt sắp xếp
-
+    
             if (!dgv408.Columns.Contains("XemChiTietColumn"))
             {
                 DataGridViewImageColumn btnColumn = new DataGridViewImageColumn();
@@ -39,18 +39,15 @@ namespace NganGiang.Views
                 btnColumn.Name = "XemChiTietColumn";
                 dgv408.Columns.Add(btnColumn);
             }
-
             foreach (DataGridViewColumn column in dgv408.Columns)
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
         }
-
         private void frm408_Load(object sender, EventArgs e)
         {
             loadData();
         }
-
         private void dgv408_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (dgv408.Columns[e.ColumnIndex].Name.Equals("XemChiTietColumn"))
@@ -63,7 +60,6 @@ namespace NganGiang.Views
                 }
             }
         }
-
         private void dgv408_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && e.ColumnIndex == dgv408.Columns["XemChiTietColumn"].Index)
@@ -75,9 +71,9 @@ namespace NganGiang.Views
                 detailForm.Show();
             }
         }
-
         private void btnProcess_Click(object sender, EventArgs e)
         {
+            listContentPack.Clear();
             if (!isPLCReady)
             {
                 MessageBox.Show("PLC chưa sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -90,7 +86,6 @@ namespace NganGiang.Views
                     ContentPack item = new ContentPack();
                     item.Id_ContentPack = Convert.ToInt32(rows.Cells["Mã gói hàng"].Value.ToString());
                     item.Count_Pack = Convert.ToInt32(rows.Cells["Số lượng"].Value.ToString());
-
                     listContentPack.Add(item);
                 }
             }
@@ -102,17 +97,14 @@ namespace NganGiang.Views
                     foreach (var item in listContentPack)
                     {
                         plcService.sendTo408(item.Id_ContentPack, item.Count_Pack);
-
                         if (processController.UpdateStatePack(Convert.ToInt32(item.Id_ContentPack), 1, 408))
                         {
                             DataGridViewRow row = dgv408.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["Mã gói hàng"].Value) == item.Id_ContentPack);
-
                             if (row != null)
                             {
                                 row.Cells["Trạng thái"].Value = "Đang xử lý";
                             }
                         }
-
                         while (true)
                         {
                             bool isAcknowledged = plcService.CheckAcknowledgment();
@@ -133,7 +125,6 @@ namespace NganGiang.Views
                 MessageBox.Show("Bạn chưa chọn nội dung sản xuất!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
-
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (plcService.getSignal() && !isPLCReady)

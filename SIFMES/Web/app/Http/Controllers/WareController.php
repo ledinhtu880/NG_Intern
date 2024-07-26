@@ -179,34 +179,6 @@ class WareController extends Controller
       ]);
     }
   }
-  public function freeContentSimple(Request $request)
-  {
-    if ($request->ajax()) {
-      $dataArr = $request->input('dataArr');
-
-      foreach ($dataArr as $each) {
-        $result = DB::table('ContentSimple')
-          ->selectRaw('(ContentSimple.Count_Container - COALESCE(SUM(RegisterContentSimpleAtWareHouse.Count), 0)) as SoLuong')
-          ->join('DetailStateCellOfSimpleWareHouse', 'DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
-          ->leftJoin('RegisterContentSimpleAtWareHouse', 'ContentSimple.Id_ContentSimple', '=', 'RegisterContentSimpleAtWareHouse.FK_Id_ContentSimple')
-          ->where('ContentSimple.Id_ContentSimple', '=', $each['id'])
-          ->groupBy('Count_RawMaterial', 'Count_Container', 'Price_Container')
-          ->first();
-
-        if ($each['Count'] == $result->SoLuong) {
-          DB::table('DetailStateCellOfSimpleWareHouse')
-            ->where('FK_Id_ContentSimple', '=', $each['id'])
-            ->update([
-              'FK_Id_ContentSimple' => null,
-              'FK_Id_StateCell' => 1,
-            ]);
-        }
-      }
-      return response()->json([
-        'status' => 'success',
-      ]);
-    }
-  }
   public function checkAmountContentSimple(Request $request)
   {
     if ($request->ajax()) {
@@ -262,33 +234,6 @@ class WareController extends Controller
         $flag = 0;
         return response()->json($flag);
       }
-    }
-  }
-  public function freeContentPack(Request $request)
-  {
-    if ($request->ajax()) {
-      $dataArr = $request->input('dataArr');
-
-      foreach ($dataArr as $each) {
-        $result = DB::table('ContentPack')
-          ->selectRaw('(Count_Pack - COALESCE(SUM(RegisterContentPackAtWareHouse.Count), 0)) as SoLuong')
-          ->leftJoin('RegisterContentPackAtWareHouse', 'Id_ContentPack', '=', 'FK_Id_ContentPack')
-          ->where('Id_ContentPack', '=', $each['id'])
-          ->groupBy('Id_ContentPack', 'Count_Pack', 'Price_Pack')
-          ->first();
-
-        if ($each['Count'] == $result->SoLuong) {
-          DB::table('DetailStateCellOfPackWareHouse')
-            ->where('FK_Id_ContentPack', '=', $each['id'])
-            ->update([
-              'FK_Id_ContentPack' => null,
-              'FK_Id_StateCell' => 1,
-            ]);
-        }
-      }
-      return response()->json([
-        'status' => 'success',
-      ]);
     }
   }
   public function checkAmountContentPack(Request $request)

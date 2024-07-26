@@ -18,7 +18,6 @@ namespace NganGiang.Views
         Station401_Controller processController { get; set; }
         PLCService plcService { get; set; }
         bool isPLCReady = false;
-
         public frm401()
         {
             InitializeComponent();
@@ -42,23 +41,19 @@ namespace NganGiang.Views
                 MessageBox.Show("PLC chưa sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
             listContentSimple.Clear();
             foreach (DataGridViewRow row in dgv401.Rows)
             {
                 if (Convert.ToBoolean(row.Cells[0].Value) == true)
                 {
                     byte[] rfidBytes = processController.GenerateRandomBytes(16);
-
                     string rfidBase64 = Convert.ToBase64String(rfidBytes);
-
                     ContentSimple contentSimple = new ContentSimple();
                     contentSimple.Id_ContentSimple = Convert.ToInt32(row.Cells["id_simple"].Value);
                     contentSimple.Count_Container = Convert.ToInt32(row.Cells["quantity_order"].Value);
                     contentSimple.FK_Id_RawMaterial = Convert.ToInt32(row.Cells["FK_Id_RawMaterial"].Value);
                     contentSimple.FK_Id_ContainerType = Convert.ToInt32(row.Cells["FK_Id_ContainerType"].Value);
                     contentSimple.RFID = rfidBase64;
-
                     listContentSimple.Add(contentSimple);
                 }
             }
@@ -70,7 +65,6 @@ namespace NganGiang.Views
                     foreach (var item in listContentSimple)
                     {
                         int id_content_simple = Convert.ToInt32(item.Id_ContentSimple);
-
                         if (!processController.checkQuantityContainer(id_content_simple))
                         {
                             MessageBox.Show($"Số lượng nguyên liệu thùng chứa cấp cho thùng hàng {id_content_simple} không đủ! Vui lòng thử lại sau.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -81,36 +75,28 @@ namespace NganGiang.Views
                             MessageBox.Show($"Số lượng nguyên liệu đế cấp cho thùng hàng {id_content_simple} không đủ! Vui lòng thử lại sau.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
-
                         plcService.sendTo401(item.FK_Id_RawMaterial, item.FK_Id_ContainerType, item.Count_Container, item.RFID);
-
                         if (processController.UpdateStateSimple(Convert.ToInt32(item.Id_ContentSimple), 1, 401))
                         {
                             DataGridViewRow row = dgv401.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["id_simple"].Value) == item.Id_ContentSimple);
-
                             if (row != null)
                             {
                                 row.Cells["status"].Value = "Đang xử lý";
                             }
                         }
-
                         while (true)
                         {
                             bool isAcknowledged = plcService.CheckAcknowledgment();
-
                             if (isAcknowledged)
                             {
                                 byte[] rfidBytes = Convert.FromBase64String(plcService.getRFIDFromPLC());
                                 processController.UpdateQuantity(item.Count_Container);
                                 processController.UpdateProcessAndSimple(id_content_simple, rfidBytes);
-
                                 break;
                             }
                         }
-
                         plcService.updateStatus();
                     }
-
                     MessageBox.Show("Cấp thùng chứa và đế dán mã RFID thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
                 }
@@ -126,7 +112,6 @@ namespace NganGiang.Views
             {
                 bool cellValue = Convert.ToBoolean(e.Value);
                 string stringValue = cellValue ? "Gói hàng" : "Thùng hàng";
-
                 e.Value = stringValue;
                 e.FormattingApplied = true;
             }
@@ -147,7 +132,6 @@ namespace NganGiang.Views
         {
             LoadData();
         }
-
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (plcService.getSignal() && !isPLCReady)

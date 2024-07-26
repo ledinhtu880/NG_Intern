@@ -24,7 +24,6 @@ namespace NganGiang.Views
             simpleController = new Station403_Controller();
             plcService = new PLCService();
         }
-
         private void btnProcess_Click(object sender, EventArgs e)
         {
             List<ContentSimple> listContentSimple = new List<ContentSimple>();
@@ -34,14 +33,12 @@ namespace NganGiang.Views
                 if (Convert.ToBoolean(row.Cells[0].Value) == true)
                 {
                     string rfidBase64 = simpleController.getRFID(Convert.ToInt32(row.Cells["Mã thùng hàng"].Value));
-
                     ContentSimple contentSimple = new ContentSimple();
                     contentSimple.Id_ContentSimple = Convert.ToInt32(row.Cells["Mã thùng hàng"].Value);
                     contentSimple.Count_Container = Convert.ToInt32(row.Cells["Số lượng thùng chứa"].Value);
                     contentSimple.FK_Id_RawMaterial = Convert.ToInt32(row.Cells["Loại nguyên liệu"].Value);
                     contentSimple.FK_Id_ContainerType = Convert.ToInt32(row.Cells["Loại thùng chứa"].Value);
                     contentSimple.RFID = rfidBase64;
-
                     listContentSimple.Add(contentSimple);
                 }
             }
@@ -61,7 +58,6 @@ namespace NganGiang.Views
                         if (simpleController.UpdateStateSimple(Convert.ToInt32(item.Id_ContentSimple), 1, 403))
                         {
                             DataGridViewRow row = dgv403.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["Mã thùng hàng"].Value) == item.Id_ContentSimple);
-
                             if (row != null)
                             {
                                 row.Cells["Trạng thái"].Value = "Đang xử lý";
@@ -70,11 +66,9 @@ namespace NganGiang.Views
                         while (true)
                         {
                             bool isAcknowledged = plcService.CheckAcknowledgment();
-
                             if (isAcknowledged)
                             {
                                 simpleController.Update(Id_ContentSimple);
-
                                 break;
                             }
                         }
@@ -89,7 +83,6 @@ namespace NganGiang.Views
                 MessageBox.Show("Bạn chưa chọn nội dung sản xuất!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
-
         private void frm403_Load(object sender, EventArgs e)
         {
             loadData();
@@ -101,12 +94,10 @@ namespace NganGiang.Views
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
                 column.Frozen = false;
-
                 if (column.Name == "Loại nguyên liệu" || column.Name == "Số lượng thùng chứa" || column.Name == "Loại thùng chứa")
                 {
                     column.Visible = false;
                 }
-
                 if (column.Name == "Số lượng nguyên liệu tồn" || column.Name == "Số lượng nguyên liệu cần")
                 {
                     column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -117,7 +108,6 @@ namespace NganGiang.Views
                 }
             }
         }
-
         private void dgv403_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (e.ColumnIndex == 9)
@@ -133,7 +123,6 @@ namespace NganGiang.Views
                 }
             }
         }
-
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (plcService.getSignal() && !isPLCReady)

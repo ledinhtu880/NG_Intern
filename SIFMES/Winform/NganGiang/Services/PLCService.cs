@@ -192,6 +192,20 @@ namespace NganGiang.Services
                 MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        public void sendTo409(decimal Id_ContentPack, int Count_Pack)
+        {
+            try
+            {
+                OpenConnection();
+                APIClient.sendInt(plcClient, plcDB, 0, 409);
+                APIClient.sendInt(plcClient, plcDB, 1, Convert.ToInt32(Id_ContentPack));
+                APIClient.sendInt(plcClient, plcDB, 2, Count_Pack);
+            }
+            catch (PlcException ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }
 

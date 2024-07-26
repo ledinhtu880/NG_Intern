@@ -331,19 +331,6 @@
                     window.location.href = '/orders/simples/createSimple?id=' + FK_Id_Order;
                 } else {
                     $.ajax({
-                        url: "/wares/freeContentSimple",
-                        method: "POST",
-                        dataType: "json",
-                        data: {
-                            dataArr: dataArr,
-                            _token: token,
-                        },
-                        success: function(response) {},
-                        error: function(xhr) {
-                            console.log(xhr.responseText);
-                        },
-                    });
-                    $.ajax({
                         url: "{{ route('orders.simples.getSimple') }}",
                         method: "POST",
                         dataType: "json",

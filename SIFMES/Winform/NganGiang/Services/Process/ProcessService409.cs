@@ -16,7 +16,8 @@ namespace NganGiang.Services.Process
     {
         public DataTable ShowContentPack()
         {
-            string query = @"SELECT DISTINCT FK_Id_OrderLocal AS [Mã đơn hàng], Id_ContentPack AS [Mã gói hàng],
+            string query = @"SELECT DISTINCT FK_Id_OrderLocal AS [Mã đơn hàng], Id_ContentPack AS [Mã gói hàng], 
+            ContentPack.Count_Pack as [Số lượng], 
             CASE SimpleOrPack WHEN 0 THEN N'Thùng hàng' WHEN 1 THEN N'Gói hàng' END AS [Loại hàng], 
             Name_State AS [Trạng thái], CONVERT(DATE, ProcessContentPack.Date_Start) AS [Ngày bắt đầu]
             FROM ProcessContentPack
@@ -26,7 +27,7 @@ namespace NganGiang.Services.Process
                 INNER JOIN State on FK_Id_State = Id_State
                 INNER JOIN OrderLocal ON FK_Id_OrderLocal = Id_OrderLocal
             WHERE ProcessContentPack.FK_Id_Station = 409 AND FK_Id_State = 0              
-            GROUP BY FK_Id_OrderLocal, Id_ContentPack, SimpleOrPack, Name_State, ProcessContentPack.Date_Start";
+            GROUP BY FK_Id_OrderLocal, Id_ContentPack, SimpleOrPack, Name_State, ProcessContentPack.Date_Start, ContentPack.Count_Pack";
             return DataProvider.Instance.ExecuteQuery(query);
         }
         public DataTable getLocationMatrix()

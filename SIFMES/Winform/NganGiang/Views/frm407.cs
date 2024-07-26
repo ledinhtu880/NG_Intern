@@ -29,7 +29,6 @@ namespace NganGiang.Views
         {
             LoadData();
         }
-
         private void LoadData()
         {
             if (dgv407.Rows.Count > 0)
@@ -45,7 +44,6 @@ namespace NganGiang.Views
             {
                 bool cellValue = Convert.ToBoolean(e.Value);
                 string stringValue = cellValue ? "Gói hàng" : "Thùng hàng";
-
                 e.Value = stringValue;
                 e.FormattingApplied = true;
             }
@@ -53,7 +51,6 @@ namespace NganGiang.Views
             {
                 DateTime date_start = Convert.ToDateTime(e.Value);
                 string formattedDate = date_start.ToString("dd-MM-yyyy");
-
                 e.Value = formattedDate;
                 e.FormattingApplied = true;
             }
@@ -70,7 +67,6 @@ namespace NganGiang.Views
                 MessageBox.Show("PLC chưa sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
             foreach (DataGridViewRow row in dgv407.Rows)
             {
                 if (Convert.ToBoolean(row.Cells[0].Value) == true)
@@ -97,7 +93,6 @@ namespace NganGiang.Views
                                 return;
                             }
                         }*/
-
                         plcService.sendTo407(item.RFID);
 
                         if (processController.UpdateStateSimple(Convert.ToInt32(item.Id_ContentSimple), 1, 407))
@@ -109,7 +104,6 @@ namespace NganGiang.Views
                                 row.Cells["Status"].Value = "Đang xử lý";
                             }
                         }
-
                         while (true)
                         {
                             bool isAcknowledged = plcService.CheckAcknowledgment();

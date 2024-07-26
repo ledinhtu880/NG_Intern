@@ -126,12 +126,15 @@ class OrderController extends Controller
   public function showSimples(string $id)
   {
     $order = Order::where('Id_Order', $id)->first();
+
     $data = DB::table('ContentSimple')
       ->select(
         'Id_ContentSimple',
+        'FK_Id_RawMaterial',
         'RawMaterial.Name_RawMaterial',
         'ContentSimple.Count_RawMaterial',
         'RawMaterial.Unit',
+        'FK_Id_ContainerType',
         'ContainerType.Name_ContainerType',
         'ContentSimple.Count_Container',
         'ContentSimple.Price_Container',
@@ -146,11 +149,13 @@ class OrderController extends Controller
         DB::table('ContentSimple')
           ->select(
             'Id_ContentSimple',
+            'FK_Id_RawMaterial',
             'RawMaterial.Name_RawMaterial',
             'ContentSimple.Count_RawMaterial',
             'RawMaterial.Unit',
+            'FK_Id_ContainerType',
             'ContainerType.Name_ContainerType',
-            'ContentSimple.Count_Container',
+            'RegisterContentSimpleAtWareHouse.Count',
             'ContentSimple.Price_Container',
             DB::raw("N'Lấy từ kho' AS Status")
           )
@@ -241,11 +246,8 @@ class OrderController extends Controller
       $id = $request->input('id');
 
       $simples = DB::table('ContentSimple')->where('FK_Id_Order', $id)->pluck('Id_ContentSimple');
-      foreach ($simples as $each) {
-        DB::table('RegisterContentSimpleAtWareHouse')->where('FK_Id_ContentSimple', $each)->delete();
-      }
-
       DB::table('RegisterContentSimpleAtWareHouse')->where('FK_Id_Order', $id)->delete();
+      DB::table('DetailContentSimpleGroup')->whereIn('FK_Id_ContentSimple', $simples)->delete();
       DB::table('ContentSimple')->where('FK_Id_Order', $id)->delete();
       DB::table('Order')->where('Id_Order', $id)->delete();
 
@@ -253,13 +255,6 @@ class OrderController extends Controller
         'status' => 'success',
         'id' => $id
       ]);
-    }
-  }
-
-  public function destroySimplesWhenDirect(Request $request)
-  {
-    if ($request->ajax()) {
-      return response()->json('');
     }
   }
   public function updateSimplesWhenSave(Request $request)
@@ -299,7 +294,15 @@ class OrderController extends Controller
           'CoverHatProvided' => 0,
           'QRCodeProvided' => 0,
         ]);
+
+        for ($i = 0; $i < $row['Count_Container']; $i++) {
+          DB::table('DetailContentSimpleGroup')->insert([
+            'FK_Id_ContentSimple' => $row['Id_ContentSimple'],
+            'Index' => $i
+          ]);
+        }
       }
+
       $res = redirect()->route('orders.simples.index')
         ->with('type', 'success')
         ->with('message', 'Tạo đơn hàng thành công');
@@ -380,7 +383,6 @@ class OrderController extends Controller
         } else if ($row['Status'] == 1) {
           $result = DB::table('ContentSimple')
             ->selectRaw('(ContentSimple.Count_Container - COALESCE(SUM(RegisterContentSimpleAtWareHouse.Count), 0)) as SoLuong')
-            ->join('DetailStateCellOfSimpleWareHouse', 'DetailStateCellOfSimpleWareHouse.FK_Id_ContentSimple', '=', 'ContentSimple.Id_ContentSimple')
             ->leftJoin('RegisterContentSimpleAtWareHouse', 'ContentSimple.Id_ContentSimple', '=', 'RegisterContentSimpleAtWareHouse.FK_Id_ContentSimple')
             ->where('ContentSimple.Id_ContentSimple', '=', $row['Id_ContentSimple'])
             ->groupBy('Count_RawMaterial', 'Count_Container', 'Price_Container')
@@ -416,28 +418,31 @@ class OrderController extends Controller
   public function destroySimples(string $id)
   {
     $arrID = DB::table('ContentSimple')
-      ->where('FK_Id_Order', $id)->pluck('Id_ContentSimple')
+      ->where('FK_Id_Order', $id)
+      ->pluck('Id_ContentSimple')
       ->toArray();
 
-    foreach ($arrID as $each) {
-      $exists = DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_ContentSimple', $each)->exists();
-      if ($exists) {
-        return redirect()->route('orders.simples.index')->with([
-          'message' => 'Không thể xóa do đơn hàng đã được khởi động.',
-          'type' => 'warning',
-        ]);
-      }
+    $exists = DB::table('DetailContentSimpleOrderLocal')
+      ->whereIn('FK_Id_ContentSimple', $arrID)
+      ->exists();
+
+    if ($exists) {
+      return redirect()->route('orders.simples.index')->with([
+        'message' => 'Không thể xóa do đơn hàng đã được khởi động.',
+        'type' => 'warning',
+      ]);
+    } else {
+      DB::table('RegisterContentSimpleAtWareHouse')->where('FK_Id_Order', $id)->delete();
+      DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_Order', $id)->delete();
+      DB::table('DetailContentSimpleGroup')->whereIn('FK_Id_ContentSimple', $arrID)->delete();
+      DB::table('ContentSimple')->where('FK_Id_Order', $id)->delete();
+      DB::table('Order')->where('Id_Order', $id)->delete();
+
+      return redirect()->route('orders.simples.index')->with([
+        'message' => 'Xóa đơn hàng thành công.',
+        'type' => 'success',
+      ]);
     }
-
-    DB::table('ContentSimple')->where('FK_Id_Order', $id)->delete();
-    DB::table('RegisterContentSimpleAtWareHouse')->where('FK_Id_Order', $id)->delete();
-    DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_Order', $id)->delete();
-    DB::table('Order')->where('Id_Order', $id)->delete();
-
-    return redirect()->route('orders.simples.index')->with([
-      'message' => 'Xóa đơn hàng thành công.',
-      'type' => 'success',
-    ]);
   }
   public function addSimple(Request $request)
   {
@@ -461,7 +466,6 @@ class OrderController extends Controller
         ->first();
 
       if ($existingRow) {
-        // Cập nhật số lượng dòng dữ liệu đã tồn tại
         $id_simple = $existingRow->Id_ContentSimple;
         $currentCountRawMaterial = $existingRow->Count_RawMaterial;
         $currentCountContainer = $existingRow->Count_Container;
@@ -489,11 +493,9 @@ class OrderController extends Controller
       } else {
         $data[] = $formDataArray;
 
-        // Thêm dòng dữ liệu mới
         $maxID = DB::table('ContentSimple')->max('Id_ContentSimple');
         $id = ($maxID === null) ? 0 : $maxID + 1;
         $orderID = DB::table('Order')->max('Id_Order');
-
         DB::table('ContentSimple')->insert([
           'Id_ContentSimple' => $id,
           'FK_Id_RawMaterial' => $formDataArray['FK_Id_RawMaterial'],
@@ -509,7 +511,12 @@ class OrderController extends Controller
           'CoverHatProvided' => 0,
           'QRCodeProvided' => 0,
         ]);
-
+        for ($i = 0; $i < $formDataArray['Count_Container']; $i++) {
+          DB::table('DetailContentSimpleGroup')->insert([
+            'FK_Id_ContentSimple' => $id,
+            'Index' => $i
+          ]);
+        }
         return response()->json([
           'status' => 'success',
           'data' => $data,
@@ -528,13 +535,15 @@ class OrderController extends Controller
       $isDispatcher = false;
 
       if ($isTake) {
-        DB::table('RegisterContentSimpleAtWareHouse')->where('FK_Id_ContentSimple', $id)->delete();
+        $Id_Order = $request->input('Id_Order');
+        DB::table('RegisterContentSimpleAtWareHouse')->where('FK_Id_ContentSimple', $id)->where('FK_Id_Order', $Id_Order)->delete();
       } else {
         $exists = DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_ContentSimple', $id)->exists();
         if ($exists) {
           $isDispatcher = true;
           return response()->json($isDispatcher);
         } else {
+          DB::table('DetailContentSimpleGroup')->where('FK_Id_ContentSimple', $id)->delete();
           DB::table('ContentSimple')->where('Id_ContentSimple', $id)->delete();
         }
       }
@@ -608,13 +617,11 @@ class OrderController extends Controller
           ->where('FK_Id_Order', $FK_Id_Order)
           ->first();
         if ($existingRecord) {
-          // Cập nhật dữ liệu nếu đã tồn tại
           DB::table('RegisterContentSimpleAtWareHouse')
             ->where('FK_Id_ContentSimple', $each['id'])
             ->where('FK_Id_Order', $FK_Id_Order)
             ->update(['Count' => (int)$existingRecord->Count + (int)$each['Count']]);
         } else {
-          // Chèn dữ liệu mới nếu chưa tồn tại
           DB::table('RegisterContentSimpleAtWareHouse')->insert(
             [
               'FK_Id_ContentSimple' => $each['id'],
@@ -709,16 +716,18 @@ class OrderController extends Controller
   {
     if ($request->ajax()) {
       $id = $request->input('id');
-      $packs = DB::table('ContentPack')->where('FK_Id_Order', $id)->pluck('Id_ContentPack');
+      $listContentSimple = DB::table('ContentSimple')->where('FK_Id_Order', $id)->pluck('Id_ContentSimple')->toArray();
+      $listContentPack = DB::table('ContentPack')->where('FK_Id_Order', $id)->pluck('Id_ContentPack')->toArray();
 
-      foreach ($packs as $each) {
-        DB::table('DetailContentSimpleOfPack')->where('FK_Id_ContentPack', $each)->delete();
-        DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_ContentPack', $each)->delete();
-      }
-
+      DB::table('DetailContentSimpleOfPack')->whereIn('FK_Id_ContentPack', $listContentPack)->delete();
+      DB::table('DetailContentPackGroup')->whereIn('FK_Id_ContentPack', $listContentPack)->delete();
+      DB::table('DetailContentPackGroupInOrder')->whereIn('FK_Id_ContentPack', $listContentPack)->delete();
+      DB::table('DetailContentSimpleGroup')->whereIn('FK_Id_ContentSimple', $listContentSimple)->delete();
+      DB::table('DetailContentSimpleGroupInOrder')->whereIn('FK_Id_ContentSimple', $listContentSimple)->delete();
       DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_Order', $id)->delete();
       DB::table('ContentPack')->where('FK_Id_Order', $id)->delete();
       DB::table('ContentSimple')->where('FK_Id_Order', $id)->delete();
+      DB::table('Order')->where('Id_Order', $id)->delete();
 
       return response()->json([
         'status' => 'success'
@@ -789,7 +798,6 @@ class OrderController extends Controller
         ->first();
 
       if ($existingRow) {
-        // Cập nhật số lượng dòng dữ liệu đã tồn tại
         $id_simple = $existingRow->Id_ContentSimple;
         $currentCountRawMaterial = $existingRow->Count_RawMaterial;
         $currentCountContainer = $existingRow->Count_Container;
@@ -817,7 +825,6 @@ class OrderController extends Controller
       } else {
         $data[] = $formDataArray;
 
-        // Thêm dòng dữ liệu mới
         $maxID = DB::table('ContentSimple')->max('Id_ContentSimple');
         $id = ($maxID === null) ? 0 : $maxID + 1;
 
@@ -837,6 +844,13 @@ class OrderController extends Controller
           'QRCodeProvided' => 0,
         ]);
 
+        for ($i = 0; $i < $formDataArray['Count_Container']; $i++) {
+          DB::table('DetailContentSimpleGroup')->insert([
+            'FK_Id_ContentSimple' => $id,
+            'Index' => $i
+          ]);
+        }
+
         return response()->json([
           'status' => 'success',
           'data' => $data,
@@ -849,7 +863,6 @@ class OrderController extends Controller
   public function getPacksInWarehouse()
   {
     if (session()->has('data')) {
-      // Lấy nội dung của thông báo và loại thông báo
       $data = session()->get('data');
 
       return view('orders.packs.warehouse', [
@@ -870,13 +883,11 @@ class OrderController extends Controller
           ->first();
 
         if ($existingRecord) {
-          // Cập nhật dữ liệu nếu đã tồn tại
           DB::table('RegisterContentPackAtWareHouse')
             ->where('FK_ID_ContentPack', $each['id'])
             ->where('FK_Id_Order', $FK_Id_Order)
             ->update(['Count' => $existingRecord->Count + $each['Count']]);
         } else {
-          // Chèn dữ liệu mới nếu chưa tồn tại
           DB::table('RegisterContentPackAtWareHouse')->insert(
             [
               'FK_ID_ContentPack' => $each['id'],
@@ -957,7 +968,7 @@ class OrderController extends Controller
       $lastOrderId = DB::table('ContentPack')->max('Id_ContentPack');
 
       if ($lastOrderId === null) {
-        $id = 1; // Gán giá trị mặc định cho biến $id nếu kết quả là NULL
+        $id = 1;
       } else {
         $id = $lastOrderId + 1;
       }
@@ -971,6 +982,13 @@ class OrderController extends Controller
         'HaveNFC' => 0,
       ]);
 
+      for ($i = 0; $i < $data['Count_Pack']; $i++) {
+        DB::table('DetailContentPackGroup')->insert([
+          'FK_Id_ContentPack' => $id,
+          'Index' => $i
+        ]);
+      }
+
       return response()->json([
         'status' => 'success',
         'id' => $id,
@@ -979,24 +997,26 @@ class OrderController extends Controller
   }
   public function destroyPacks(string $Id_Order)
   {
-    // Xóa dữ liệu ở bảng DetailContentSimpleOfPack trước
-    $contentSimple = DB::table('ContentSimple')->where('FK_Id_Order', $Id_Order)->get();
-    foreach ($contentSimple as $each) {
-      $exists = DB::table('DetailContentSimpleOrderLocal')->where('FK_Id_ContentSimple', $each->Id_ContentSimple)->exists();
-      if ($exists) {
-        return redirect()->route('orders.packs.index')->with([
-          'message' => 'Không thể xóa do đơn hàng đã được khởi động.',
-          'type' => 'warning',
-        ]);
-      }
-      DB::table('DetailContentSimpleOfPack')->where('FK_Id_ContentSimple', $each->Id_ContentSimple)->delete();
+    $listContentSimple = DB::table('ContentSimple')->where('FK_Id_Order', $Id_Order)->pluck('Id_ContentSimple')->toArray();
+    $listContentPack = DB::table('ContentPack')->where('FK_Id_Order', $Id_Order)->pluck('Id_ContentPack')->toArray();
+    $exists = DB::table('DetailContentSimpleOrderLocal')->whereIn('FK_Id_ContentSimple', $listContentSimple)->exists();
+    if ($exists) {
+      return redirect()->route('orders.packs.index')->with([
+        'message' => 'Không thể xóa do đơn hàng đã được khởi động.',
+        'type' => 'warning',
+      ]);
+    } else {
+      DB::table('DetailContentSimpleOfPack')->whereIn('FK_Id_ContentPack', $listContentPack)->delete();
+      DB::table('DetailContentPackGroup')->whereIn('FK_Id_ContentPack', $listContentPack)->delete();
+      DB::table('DetailContentPackGroupInOrder')->whereIn('FK_Id_ContentPack', $listContentPack)->delete();
+      DB::table('DetailContentSimpleGroup')->whereIn('FK_Id_ContentSimple', $listContentSimple)->delete();
+      DB::table('DetailContentSimpleGroupInOrder')->whereIn('FK_Id_ContentSimple', $listContentSimple)->delete();
+      DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_Order', $Id_Order)->delete();
+      DB::table('ContentPack')->where('FK_Id_Order', $Id_Order)->delete();
+      DB::table('ContentSimple')->where('FK_Id_Order', $Id_Order)->delete();
+      DB::table('Order')->where('Id_Order', $Id_Order)->delete();
+      return redirect()->route('orders.packs.index')->with('type', 'success')->with('message', 'Xóa đơn gói hàng thành công');
     }
-
-    DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_Order', $Id_Order)->delete();
-    DB::table('ContentPack')->where('FK_Id_Order', $Id_Order)->delete();
-    DB::table('ContentSimple')->where('FK_Id_Order', $Id_Order)->delete();
-    DB::table('Order')->where('Id_Order', $Id_Order)->delete();
-    return redirect()->route('orders.packs.index')->with('type', 'success')->with('message', 'Xóa đơn gói hàng thành công');
   }
   public function storeDetailContentSimpleOfPack(Request $request)
   {
@@ -1021,20 +1041,15 @@ class OrderController extends Controller
   {
     if ($request->ajax()) {
       $id = $request->input('id');
-      $simples = DB::table('DetailContentSimpleOfPack')->where('FK_Id_ContentPack', $id)->get();
+      $simples = DB::table('DetailContentSimpleOfPack')->where('FK_Id_ContentPack', $id)->pluck('FK_Id_ContentSimple')->toArray();
 
       DB::table('DetailContentSimpleOfPack')->where('FK_Id_ContentPack', $id)->delete();
-
-      foreach ($simples as $each) {
-        DB::table('ContentSimple')
-          ->where('Id_ContentSimple', $each->FK_Id_ContentSimple)
-          ->delete();
-      }
+      DB::table('DetailContentSimpleGroup')->whereIn('FK_Id_ContentSimple', $simples)->delete();
+      DB::table('DetailContentPackGroup')->where('FK_Id_ContentPack', $id)->delete();
       DB::table('ContentPack')->where('Id_ContentPack', $id)->delete();
 
       return response()->json([
         'status' => 'success',
-        'simples' => $simples
       ]);
     }
   }
@@ -1118,7 +1133,8 @@ class OrderController extends Controller
       $details = DetailContentSimpleOfPack::where('FK_Id_ContentPack', $Id_ContentPack)->get();
 
       if ($isTake == 1) {
-        DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_ContentPack', $Id_ContentPack)->delete();
+        $Id_Order = $request->input('Id_Order');
+        DB::table('RegisterContentPackAtWareHouse')->where('FK_Id_ContentPack', $Id_ContentPack)->where('FK_Id_Order', $Id_Order)->delete();
       } else {
         // Xóa các bản ghi ở bảng DetailContentSimpleOfPack có liên quan tới ContentPack 
         DetailContentSimpleOfPack::where('FK_Id_ContentPack', $Id_ContentPack)->delete();
@@ -1128,6 +1144,7 @@ class OrderController extends Controller
         }
 
         // Xóa bản ghi có Id_ContentPack trong bảng ContentPack
+        DB::table('DetailContentPackGroup')->where('FK_Id_ContentPack', $Id_ContentPack)->delete();
         ContentPack::find($Id_ContentPack)->delete();
       }
 
@@ -1171,7 +1188,6 @@ class OrderController extends Controller
 
       $listContentPack = $request->input('idContentPacks');
       $Count_Packs = $request->input('countPacks');
-      $data = [];
       for ($i = 0; $i < count($listContentPack); $i++) {
         $check = DB::table('ContentPack')
           ->where('FK_Id_Order', $id)

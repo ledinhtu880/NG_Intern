@@ -40,7 +40,6 @@ $(document).ready(function () {
     let dateOrderControl = $("input[name='Date_Order']");
     let deliveryDateControl = $("input[name='Date_Delivery']");
     let receptionDateControl = $("input[name='Date_Reception']");
-    let isCreate = false;
 
     validateInput("#Note", "Mô tả không được để trống");
     validateInput(
@@ -69,6 +68,7 @@ $(document).ready(function () {
         let token = $('meta[name="csrf-token"]').attr("content");
         let rowElement = $(this).closest('tr[data-id="' + id + '"]');
         let isTake = rowElement.find('td[data-id="Status"]').data("value");
+        let Id_Order = $("input[name='Id_Order']").val();
 
         // Xóa hàng khi modal được ẩn
         $.ajax({
@@ -78,6 +78,7 @@ $(document).ready(function () {
             data: {
                 id: id,
                 isTake: isTake,
+                Id_Order: Id_Order,
                 _token: token,
             },
             success: function (data) {
@@ -353,7 +354,7 @@ $(document).ready(function () {
                         <td class="text-center" data-id="Count_Container" data-value="${value.Count_Container}">
                             ${value.Count_Container}
                         </td>
-                        <td class="text-center">
+                        <td class="text-center" data-id="Status" data-value="0">
                             Sản xuất mới
                         </td>
                         <td class="text-center" data-id="Price_Container" data-value="${value.Price_Container}">
@@ -419,7 +420,6 @@ $(document).ready(function () {
         .click(function (event) {
             if (count > 0) {
                 let id = $("#Id_Order").val();
-                alert(id);
                 $.ajax({
                     url: "/orders/simples/destroySimplesWhenBack",
                     method: "POST",

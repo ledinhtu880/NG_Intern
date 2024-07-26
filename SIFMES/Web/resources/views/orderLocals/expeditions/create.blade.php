@@ -20,7 +20,8 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="h5 fw-bold border-bottom pb-2 mb-3">Danh sách đơn hàng</h5>
+                    <h5 id="card-title" class="h5 fw-bold border-bottom pb-2 mb-3">Danh sách đơn hàng có các thùng hàng kèm
+                        theo</h5>
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="input-group" style="width: 200px;">
                             <label class="input-group-text bg-secondary-subtle" for="Kho">Kho</label>
@@ -35,8 +36,10 @@
                             <th scope="col" class="py-2">Chọn</th>
                             <th scope="col" class="py-2">Mã đơn hàng</th>
                             <th scope="col" class="py-2">Khách hàng</th>
+                            <th scope="col" class="py-2" id="material">Nguyên liệu</th>
                             <th scope="col" class="py-2">Kiểu hàng</th>
-                            <th scope="col" class="py-2">Số lượng thùng chứa</th>
+                            <th scope="col" class="py-2">Số lượng ban đầu</th>
+                            <th scope="col" class="py-2">Số lượng đã lấy</th>
                             <th scope="col" class="py-2">Đơn giá</th>
                         </thead>
                         <tbody id="table-data">
@@ -68,7 +71,7 @@
                     <table class="table table-borderless table-hover m-0">
                         <thead class="table-heading">
                             <tr class="align-middle text-center">
-                                <th scope="col" class="py-2 ">Chọn</th>
+                                <th scope="col" class="py-2">Chọn</th>
                                 <th scope="col" class="py-2">Mã đơn hàng</th>
                                 <th scope="col" class="py-2">Số lượng</th>
                                 <th scope="col" class="py-2">Kiểu thùng</th>
@@ -78,64 +81,6 @@
                             </tr>
                         </thead>
                         <tbody id="table-result">
-                            @foreach ($data as $each)
-                                <tr class="align-middle text-center">
-                                    <td>
-                                        <input type="checkbox" class="input-check form-check-input checkbox2"
-                                            value="{{ $each->Id_OrderLocal }}" data-id="cb{{ $each->Id_OrderLocal }}">
-                                    </td>
-                                    <td>{{ $each->Id_OrderLocal }}</td>
-                                    <td>{{ $each->Count }}</td>
-                                    <td>
-                                        <span class="badge badge-main fw-normal fs-6">{{ $each->type }}</span>
-                                    </td>
-                                    <td>{{ $each->status }}</td>
-                                    <td>{{ $each->deliveryDate }}</td>
-                                    <td>
-                                        <button type="button" class="btnShow btn btn-sm btn-outline" data-bs-toggle="modal"
-                                            data-bs-target="#show-{{ $each->Id_OrderLocal }}"
-                                            data-id="{{ $each->Id_OrderLocal }}">
-                                            <i class="fa-solid fa-eye"></i>
-                                        </button>
-                                        <div class="modal fade" id="show-{{ $each->Id_OrderLocal }}" tabindex="-1"
-                                            aria-labelledby="show-{{ $each->Id_OrderLocal }}Label" aria-hidden="true">
-                                            <div class="modal-dialog modal-xl modal-dialog-centered">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title fw-bold" id="exampleModalLabel">
-                                                            Thông tin chi tiết đơn hàng số
-                                                            {{ $each->Id_OrderLocal }}
-                                                        </h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <table
-                                                            class="table table-hover table-borderless table-details m-0">
-                                                            <thead class="table-heading">
-                                                                <tr class="align-middle">
-                                                                    <th class="text-center" scope="col">Nguyên liệu
-                                                                    </th>
-                                                                    <th class="text-center" scope="col">Số lượng nguyên
-                                                                        liệu</th>
-                                                                    <th class="text-center" scope="col">Đơn vị</th>
-                                                                    <th class="text-center" scope="col">Thùng chứa</th>
-                                                                    <th class="text-center" scope="col">Số lượng thùng
-                                                                        chứa</th>
-                                                                    <th class="text-center" scope="col">Đơn giá</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody class="table-simples" class="p-5"
-                                                                data-value="{{ $each->Id_OrderLocal }}">
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -199,6 +144,13 @@
                 var selectedValue = $(this).val();
                 count1 = 0;
                 count2 = 0;
+                if (selectedValue == 406) {
+                    $("#card-title").text("Danh sách đơn hàng có các thùng hàng kèm theo")
+                    $("#material").show();
+                } else {
+                    $("#card-title").text("Danh sách đơn hàng có các gói hàng kèm theo")
+                    $("#material").hide();
+                }
                 $.ajax({
                     url: '/orderLocals/expeditions/getOrder',
                     method: 'POST',
@@ -224,10 +176,12 @@
                                             <input class="form-check-input checkbox1" type="checkbox" value="${element['Id_ContentSimple']}" 
                                             id="cb${element['Id_ContentSimple']}" data-id="${element['Id_ContentPack']}">
                                         </td>
-                                        <td class="text-center">${element['Id_Order']}</td>
+                                        <td>${element['Id_Order']}</td>
                                         <td>${element['Name_Customer']}</td>
-                                        <td class="text-center">${type_container}</td>
-                                        <td class="text-center">${element['Count_Container']}</td>
+                                        <td>${element['Name_RawMaterial']}</td>
+                                        <td>${type_container}</td>
+                                        <td>${element['Count_Container']}</td>
+                                        <td id="count">${element['TotalTaken'] == null ? 0 : element['TotalTaken']}</td>
                                         <td>${numberFormat(element['Price_Container'])} VNĐ</td>
                                     </tr>`;
                                 $('.table-expedition tbody').append(html);
@@ -240,11 +194,95 @@
                                                 <td>${element['Name_Customer']}</td>
                                                 <td>${element['Status']}</td>
                                                 <td>${element['Count_Pack']}</td>
+                                                <td id="count">${element['TotalTaken'] == null ? 0 : element['TotalTaken']}</td>
                                                 <td>${numberFormat(element['Price_Pack'])} VNĐ</td>
                                             </tr>`;
                                 $('.table-expedition tbody').append(html);
                             }
                         }
+                    },
+                    error: function(xhr) {
+                        // Xử lý lỗi khi gửi yêu cầu Ajax
+                        console.log(xhr.responseText);
+                        alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
+                    },
+                });
+                $.ajax({
+                    url: '/orderLocals/expeditions/showOrderExpedition',
+                    method: 'POST',
+                    data: {
+                        _token: token,
+                        value: selectedValue,
+                    },
+                    success: function(response) {
+                        let html = '';
+                        $.each(response, function(key, each) {
+                            if (each.MakeOrPackOrExpedition == 0) {
+                                each.status = "Sản xuất";
+                            } else if (each.MakeOrPackOrExpedition == 1) {
+                                each.status = "Gói hàng";
+                            } else if (each.MakeOrPackOrExpedition == 2) {
+                                each.status = "Giao hàng";
+                            }
+                            each.type = each.SimpleOrPack == 0 ? 'Thùng hàng' :
+                                'Gói hàng'
+                            html += `<tr class="align-middle text-center">
+                                    <td>
+                                        <input type="checkbox" class="input-check form-check-input checkbox2"
+                                            value="${each.Id_OrderLocal}" data-id="cb${each.Id_OrderLocal}">
+                                    </td>
+                                    <td>${each.Id_OrderLocal}</td>
+                                    <td>${each.Count}</td>
+                                    <td>
+                                        <span class="badge badge-main fw-normal fs-6">${each.type}</span>
+                                    </td>
+                                    <td>${each.status}</td>
+                                    <td>${formatDate(each.Date_Delivery)}</td>
+                                    <td>
+                                        <button type="button" class="btnShow btn btn-sm btn-outline" data-bs-toggle="modal"
+                                            data-bs-target="#show-${each.Id_OrderLocal}"
+                                            data-id="${each.Id_OrderLocal}">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                        <div class="modal fade" id="show-${each.Id_OrderLocal}" tabindex="-1"
+                                            aria-labelledby="show-${each.Id_OrderLocal}Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-xl modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title fw-bold" id="exampleModalLabel">
+                                                            Thông tin chi tiết đơn hàng số
+                                                            ${each.Id_OrderLocal}
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <table
+                                                            class="table table-hover table-borderless table-details m-0">
+                                                            <thead class="table-heading">
+                                                                <tr class="align-middle text-center">
+                                                                    <th scope="col">Nguyên liệu</th>
+                                                                    <th scope="col">Số lượng nguyên liệu</th>
+                                                                    <th scope="col">Đơn vị</th>
+                                                                    <th scope="col">Thùng chứa</th>
+                                                                    <th scope="col">Số lượng ban đầu
+                                                                    </th>
+                                                                    <th scope="col">Số lượng đã lấy</th>
+                                                                    <th scope="col">Đơn giá</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="table-simples" class="p-5"
+                                                                data-value="${each.Id_OrderLocal}">
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>`
+                        })
+                        $('#table-result').html(html);
                     },
                     error: function(xhr) {
                         // Xử lý lỗi khi gửi yêu cầu Ajax
@@ -263,16 +301,18 @@
             $(document).on("change", ".checkbox1", function() {
                 let checkedValue = $(this).attr('id').match(/\d+/)[0];
                 if ($(this).is(':checked')) {
-                    id1.push(checkedValue);
+                    let rowData = {};
+                    rowData.id = checkedValue;
+                    rowData.Count = $(this).parent().parent().find('td#count').text();
+                    id1.push(rowData);
                     count1++;
-
                 } else {
                     count1--;
                     id1 = id1.filter(function(element) {
-                        return element !== checkedValue;
+                        return element.id !== checkedValue;
                     });
                 }
-            })
+            });
 
             $(document).on("change", ".checkbox2", function() {
                 let checkedValue = $(this).attr('data-id').match(/\d+/)[0];
@@ -287,7 +327,7 @@
                 }
             })
 
-            $('.btnShow').on('click', function() {
+            $(document).on("click", ".btnShow", function() {
                 let id = $(this).attr('data-id').match(/\d+/)[0];
                 $('.table-details tbody tr').empty();
                 $.ajax({
@@ -311,18 +351,18 @@
                             }
 
                             let html = `<tr class="text-center align-middle">
-                                        <td>${element['Name_RawMaterial']}</td>
-                                        <td>${Number(element['Count_RawMaterial']).toLocaleString()}</td>
-                                        <td>${element['Unit']}</td>
-                                        <td>${type_container}</td>
-                                        <td>${element['Count_Container']}</td>
-                                        <td>${Number(element['Price_Container'])} VNĐ</td>
-                                    </tr>`;
+                                <td>${element['Name_RawMaterial']}</td>
+                                <td>${Number(element['Count_RawMaterial']).toLocaleString()}</td>
+                                <td>${element['Unit']}</td>
+                                <td>${type_container}</td>
+                                <td>${element['Count_Container']}</td>
+                                <td>${element['TotalTaken']}</td>
+                                <td>${Number(element['Price_Container'])} VNĐ</td>
+                            </tr>`;
                             $('.table-details').append(html);
                         }
                     },
                     error: function(xhr) {
-                        // Xử lý lỗi khi gửi yêu cầu Ajax
                         console.log(xhr.responseText);
                         alert("Có lỗi xảy ra. Vui lòng thử lại sau.");
                     },

@@ -32,20 +32,19 @@ namespace NganGiang.Controllers
             col = house.numCol;
             return house.numRow;
         }
-        public bool Update(int id)
+        public void Update(int id)
         {
-            bool isSuccess = true;
             int nextStation = Service.GetNextStation(id);
 
-            if (nextStation != -1)
+            try
             {
-                Service.UpdateDetailStateCellOfPackWareHouse(id);
-                Service.UpdateProcessContentPack(id);
-                Service.UpdateProcessContentSimple(id);
-            }
-            else
-            {
-                try
+                if (nextStation != -1)
+                {
+                    Service.UpdateDetailStateCellOfPackWareHouse(id);
+                    Service.UpdateProcessContentPack(id);
+                    Service.UpdateProcessContentSimple(id);
+                }
+                else
                 {
                     Service.UpdateProcessContentPack(id);
                     Service.UpdateProcessContentSimple(id);
@@ -56,14 +55,15 @@ namespace NganGiang.Controllers
                         Service.UpdateOrder(id);
                     }
                 }
-                catch (SqlException ex)
-                {
-                    MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    isSuccess = false;
-                }
             }
-
-            return isSuccess;
+            catch (SqlException ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        public bool UpdateStatePack(int Id_ContentPack, int state, int station)
+        {
+            return Helper.UpdateStatePack(Id_ContentPack, state, station);
         }
     }
 }

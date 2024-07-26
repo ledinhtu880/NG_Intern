@@ -135,6 +135,7 @@ Route::middleware('checklogin')->group(function () {
         Route::get('', [OrderLocalController::class, 'indexExpedition'])->name('index');
         Route::get('create', [OrderLocalController::class, 'createExpedition'])->name('create');
         Route::post('getOrder', [OrderLocalController::class, 'showOrderByStation']);
+        Route::post('showOrderExpedition', [OrderLocalController::class, 'showOrderExpedition']);
         Route::post('store', [OrderLocalController::class, 'storeExpedition']);
         Route::get('edit/{id}', [OrderLocalController::class, 'editOrderExpedition'])->name('edit');
         Route::put('update/{id}', [OrderLocalController::class, 'updateOrderExpedition'])->name('update');
@@ -156,10 +157,8 @@ Route::middleware('checklogin')->group(function () {
     Route::post('showSimple', [WareController::class, 'showSimple'])->name('showSimple');
     Route::post('showPack', [WareController::class, 'showPack'])->name('showPack');
     Route::post('showSimpleInPack', [WareController::class, 'showSimpleInPack'])->name('showSimpleInPack');
-    Route::post('freeContentSimple', [WareController::class, 'freeContentSimple'])->name('freeContentSimple');
     Route::post('checkAmountContentSimple', [WareController::class, 'checkAmountContentSimple'])->name('checkAmountContentSimple');
     Route::post('disabledContentSimple', [WareController::class, 'disabledContentSimple'])->name('disabledContentSimple');
-    Route::post('freeContentPack', [WareController::class, 'freeContentPack'])->name('freeContentPack');
     Route::post('checkAmountContentPack', [WareController::class, 'checkAmountContentPack'])->name('checkAmountContentPack');
     Route::post('disabledContentPack', [WareController::class, 'disabledContentPack'])->name('disabledContentPack');
   });

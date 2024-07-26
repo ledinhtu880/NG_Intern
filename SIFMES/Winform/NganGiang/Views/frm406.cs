@@ -30,7 +30,6 @@ namespace NganGiang.Views
         {
             updateDGV();
         }
-
         private void updateDGV()
         {
             dgv406.DataSource = controller.getProcessAt406();
@@ -38,7 +37,6 @@ namespace NganGiang.Views
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
                 column.Frozen = false;
-
                 if (column.Name == "Count_Need" || column.Name == "Count")
                 {
                     column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -50,23 +48,19 @@ namespace NganGiang.Views
             }
             updateDGVWareHouse();
         }
-
         private void updateDGVWareHouse()
         {
             dgv_ware.Rows.Clear();
             dgv_ware.Columns.Clear();
             int row = controller.getRowAndCol(out int col);
-
             if (row == 0 || col == 0)
             {
                 MessageBox.Show("Kho chưa được thiết lập", "Chú ý", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
             DataTable dt = controller.getLocationMatrix();
             points = new Point[dt.Rows.Count];
             List<DetailStateCellOfSimpleWareHouse> matrixCurr = new List<DetailStateCellOfSimpleWareHouse>();
-
             if (dt.Rows.Count > 0)
             {
                 for (int i = 0; i < dt.Rows.Count; i++)
@@ -81,7 +75,6 @@ namespace NganGiang.Views
             }
             dgv_ware.RowTemplate.Height = 150;
             matrixCurr.Sort();
-
             for (int i = 0; i <= col; i++)
             {
                 DataGridViewColumn column = new DataGridViewTextBoxColumn();
@@ -98,7 +91,6 @@ namespace NganGiang.Views
                 column.HeaderText = i.ToString();
                 dgv_ware.Columns.Add(column);
             }
-
             for (int i = 0; i < row; i++)
             {
                 dgv_ware.Rows.Add();
@@ -143,14 +135,12 @@ namespace NganGiang.Views
                 MessageBox.Show("PLC chưa sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
             int rowWare = controller.getRowAndCol(out int colWare);
             if (rowWare == 0 || colWare == 0)
             {
                 MessageBox.Show("Kho chưa được thiết lập", "Chú ý", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
             List<ContentSimple> listContentSimple = new List<ContentSimple>();
             foreach (DataGridViewRow row in dgv406.Rows)
             {
@@ -166,7 +156,6 @@ namespace NganGiang.Views
                     }
                 }
             }
-
             if (listContentSimple.Count > 0)
             {
                 if (MessageBox.Show("Bạn chắc chắn muốn lưu các thùng hàng trên vào kho ?", "Xác nhận hành động", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -176,19 +165,15 @@ namespace NganGiang.Views
                         if (controller.UpdateStateSimple(Convert.ToInt32(item.Id_ContentSimple), 1, 406))
                         {
                             DataGridViewRow row = dgv406.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["Id_ContentSimple"].Value) == item.Id_ContentSimple);
-
                             if (row != null)
                             {
                                 row.Cells["Name_State"].Value = "Đang xử lý";
                             }
                         }
-
                         plcService.sendTo406(item.RFID);
-
                         while (true)
                         {
                             bool isAcknowledged = plcService.CheckAcknowledgment();
-
                             if (isAcknowledged)
                             {
                                 byte[] rfidBytes = Convert.FromBase64String(plcService.getRFIDFromPLC());
@@ -211,12 +196,10 @@ namespace NganGiang.Views
                 return;
             }
         }
-
         private void dgv406_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
         {
             e.Column.SortMode = DataGridViewColumnSortMode.NotSortable;
         }
-
         private void dgv_ware_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             DataTable dt = controller.getLocationMatrix();

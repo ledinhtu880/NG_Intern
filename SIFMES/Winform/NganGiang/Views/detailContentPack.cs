@@ -28,7 +28,7 @@ namespace NganGiang.Views
             string query = $"select dcsop.FK_Id_ContentPack as [Mã gói hàng], Id_ContentSimple as [Mã thùng hàng], " +
                 $"Name_RawMaterial as [Tên nguyên liệu thô], Count_RawMaterial as [Số lượng nguyên liệu], " +
                 $"Name_ContainerType as [Loại thùng chứa], " +
-                $"(Count_Container - COALESCE(SUM(rcsawh.Count), 0)) as [Số lượng thùng chứa] from ContentSimple " +
+                $"Count_Container as [Số lượng thùng chứa] from ContentSimple " +
                 $"inner join DetailContentSimpleOfPack dcsop on Id_ContentSimple = dcsop.FK_Id_ContentSimple " +
                 $"inner join RawMaterial on Id_RawMaterial = FK_Id_RawMaterial " +
                 $"inner join ContainerType on Id_ContainerType = FK_Id_ContainerType " +

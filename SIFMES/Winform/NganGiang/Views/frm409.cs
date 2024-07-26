@@ -1,6 +1,7 @@
 ﻿using FontAwesome.Sharp;
 using NganGiang.Controllers;
 using NganGiang.Models;
+using NganGiang.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,12 +17,15 @@ namespace NganGiang.Views
     public partial class frm409 : Form
     {
         Station409_Controller packController { get; set; }
-        List<int> listContentPack = new List<int>();
+        List<ContentPack> listContentPack = new List<ContentPack>();
         Point[] points;
+        PLCService plcService { get; set; }
+        bool isPLCReady = false;
         public frm409()
         {
             InitializeComponent();
             packController = new Station409_Controller();
+            plcService = new PLCService();
         }
         public void loadData()
         {
@@ -130,11 +134,20 @@ namespace NganGiang.Views
         private void btnProcess_Click(object sender, EventArgs e)
         {
             listContentPack.Clear();
+            if (!isPLCReady)
+            {
+                MessageBox.Show("PLC chưa sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             foreach (DataGridViewRow rows in dgv409.Rows)
             {
                 if (Convert.ToBoolean(rows.Cells[0].Value) == true)
                 {
-                    listContentPack.Add(Convert.ToInt32(rows.Cells[2].Value));
+                    ContentPack item = new ContentPack();
+                    item.Id_ContentPack = Convert.ToInt32(rows.Cells["Mã gói hàng"].Value.ToString());
+                    item.Count_Pack = Convert.ToInt32(rows.Cells["Số lượng"].Value.ToString());
+
+                    listContentPack.Add(item);
                 }
             }
             if (listContentPack.Count > 0)
@@ -144,18 +157,26 @@ namespace NganGiang.Views
                 {
                     foreach (var item in listContentPack)
                     {
-                        if (packController.Update(item))
+                        int Id_ContentPack = Convert.ToInt32(item.Id_ContentPack);
+                        plcService.sendTo409(item.Id_ContentPack, item.Count_Pack);
+                        if (packController.UpdateStatePack(Id_ContentPack, 1, 409))
                         {
-                            flag = true;
+                            DataGridViewRow row = dgv409.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => Convert.ToDecimal(r.Cells["Mã gói hàng"].Value) == item.Id_ContentPack);
+                            if (row != null)
+                            {
+                                row.Cells["Trạng thái"].Value = "Đang xử lý";
+                            }
                         }
-                        else
+                        while (true)
                         {
-                            flag = false;
+                            bool isAcknowledged = plcService.CheckAcknowledgment();
+                            if (isAcknowledged)
+                            {
+                                packController.Update(Id_ContentPack);
+                                break;
+                            }
                         }
-                    }
-                    if (flag)
-                    {
-                        MessageBox.Show("Xử lý thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        plcService.updateStatus();
                     }
                     loadData();
                 }
@@ -188,7 +209,6 @@ namespace NganGiang.Views
                 }
             }
         }
-
         private void dgvWare_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             DataTable dt = packController.getMatrix();
@@ -209,6 +229,15 @@ namespace NganGiang.Views
                     }
                 }
                 return;
+            }
+        }
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (plcService.getSignal() && !isPLCReady)
+            {
+                isPLCReady = true;
+                timer1.Enabled = false;
+                MessageBox.Show("PLC đã sẵn sàng", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

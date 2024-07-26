@@ -392,20 +392,6 @@
                     window.location.href = '/orders/packs/create?id=' + FK_Id_Order;
                 } else {
                     $.ajax({
-                        url: "/wares/freeContentPack",
-                        method: "POST",
-                        dataType: "json",
-                        data: {
-                            dataArr: dataArr,
-                            _token: token,
-                        },
-                        success: function(response) {},
-                        error: function(xhr) {
-                            console.log(xhr.responseText);
-                        },
-                    });
-
-                    $.ajax({
                         url: "{{ route('orders.packs.getPack') }}",
                         method: "POST",
                         dataType: "json",

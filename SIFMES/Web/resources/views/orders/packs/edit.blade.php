@@ -42,7 +42,7 @@
                                     </div>
                                     <div class="col-md-12 mt-3">
                                         <div class="form-group">
-                                            <label for="Date_Order" class="form-label">Ngày đặt hàng</label>
+                                            <l for="Date_Order" class="form-label">Ngày đặt hàng</l abel>
                                             <input type="date" class="form-control" id="Date_Order" name="Date_Order"
                                                 value="{{ isset($information) ? \Carbon\Carbon::parse($information->Date_Order)->format('Y-m-d') : \Carbon\Carbon::parse($order->Date_Order)->format('Y-m-d') }}"
                                                 tabindex="3">

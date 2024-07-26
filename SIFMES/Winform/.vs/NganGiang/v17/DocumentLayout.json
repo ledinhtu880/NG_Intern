@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\views\\frm408.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\frm408.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\views\\detailcontentpack.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\detailcontentpack.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\views\\frm406.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\frm406.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\views\\frm401.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\frm401.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|d:\\workspace\\ng_intern\\sifmes\\winform\\ngangiang\\views\\frm407.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\frm407.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\ngangiang\\services\\plcservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\services\\plcservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\ngangiang\\views\\frm409.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{905E2624-19EC-4359-BB9F-8C4469E09CA0}|NganGiang\\NganGiang.csproj|solutionrelative:ngangiang\\views\\frm409.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 206,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,42 +42,53 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "frm406.cs",
-              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm406.cs",
-              "RelativeDocumentMoniker": "NganGiang\\Views\\frm406.cs",
-              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm406.cs",
-              "RelativeToolTip": "NganGiang\\Views\\frm406.cs",
-              "ViewState": "AQIAALsAAAAAAAAAAAAmwMsAAAAoAAAA",
+              "DocumentIndex": 0,
+              "Title": "detailContentPack.cs",
+              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\detailContentPack.cs",
+              "RelativeDocumentMoniker": "NganGiang\\Views\\detailContentPack.cs",
+              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\detailContentPack.cs",
+              "RelativeToolTip": "NganGiang\\Views\\detailContentPack.cs",
+              "ViewState": "AQIAABYAAAAAAAAAAAAAwCYAAABYAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-16T06:43:20.162Z",
+              "WhenOpened": "2024-07-24T09:30:11.333Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "frm401.cs",
+              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm401.cs",
+              "RelativeDocumentMoniker": "NganGiang\\Views\\frm401.cs",
+              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm401.cs",
+              "RelativeToolTip": "NganGiang\\Views\\frm401.cs",
+              "ViewState": "AQIAAGQAAAAAAAAAAAAIwGwAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-23T07:42:12.496Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "frm407.cs",
-              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm407.cs",
-              "RelativeDocumentMoniker": "NganGiang\\Views\\frm407.cs",
-              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm407.cs",
-              "RelativeToolTip": "NganGiang\\Views\\frm407.cs",
-              "ViewState": "AQIAAJYAAAAAAAAAAAAQwKIAAABAAAAA",
+              "Title": "PLCService.cs",
+              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Services\\PLCService.cs",
+              "RelativeDocumentMoniker": "NganGiang\\Services\\PLCService.cs",
+              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Services\\PLCService.cs",
+              "RelativeToolTip": "NganGiang\\Services\\PLCService.cs",
+              "ViewState": "AQIAAK4AAAAAAAAAAAA0wMcAAAA6AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-16T06:43:03.029Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-23T07:05:57.33Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "frm408.cs",
-              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm408.cs",
-              "RelativeDocumentMoniker": "NganGiang\\Views\\frm408.cs",
-              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm408.cs",
-              "RelativeToolTip": "NganGiang\\Views\\frm408.cs",
-              "ViewState": "AQIAAHAAAAAAAAAAAAAQwHsAAAAZAAAA",
+              "DocumentIndex": 3,
+              "Title": "frm409.cs",
+              "DocumentMoniker": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm409.cs",
+              "RelativeDocumentMoniker": "NganGiang\\Views\\frm409.cs",
+              "ToolTip": "D:\\Workspace\\NG_Intern\\SIFMES\\Winform\\NganGiang\\Views\\frm409.cs",
+              "RelativeToolTip": "NganGiang\\Views\\frm409.cs",
+              "ViewState": "AQIAAJkAAAAAAAAAAAAywKEAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-12T06:18:39.251Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-19T07:59:45.35Z"
             }
           ]
         },
