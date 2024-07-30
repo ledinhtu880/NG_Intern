@@ -1201,7 +1201,7 @@ class OrderLocalController extends Controller
   {
     $exists = DB::table('OrderLocal')
       ->join('DispatcherOrder', 'OrderLocal.Id_OrderLocal', '=', 'DispatcherOrder.FK_Id_OrderLocal')
-      ->where('OrderLocal.Id_OrderLocal', '=', $id)
+      ->where('OrderLocal.Id_OrderLocal', '=', $id) 
       ->select('OrderLocal.Id_OrderLocal')
       ->exists();
     if ($exists) {
