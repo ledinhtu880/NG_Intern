@@ -72,7 +72,6 @@ namespace NganGiang.Services.Process
                 message = "Lỗi ProcessContentSimple: " + ex.Message;
                 return false;
             }
-
         }
         public bool updateDetailStateCellOfSimpleWareHouse(ProcessContentSimple processContentSimple, out string message)
         {

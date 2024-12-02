@@ -23,10 +23,7 @@ namespace NganGiang
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            string query = "select Id_Station, Name_Station from Station " +
-                            "inner join UserStationRole on Id_Station = FK_Id_Station " +
-                            "inner join[User] on Id_User = FK_Id_User " +
-                            $"where Id_User = '{this.id}'";
+            string query = "select Id_Station, Name_Station from Station ";
             cbStation.DataSource = DataProvider.Instance.ExecuteQuery(query);
             cbStation.DisplayMember = "Name_Station";
             cbStation.ValueMember = "Id_Station";

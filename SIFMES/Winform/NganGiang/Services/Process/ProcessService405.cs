@@ -169,7 +169,7 @@ namespace NganGiang.Services.Process
 
         public int getQuantityContentSimple(int id_content_simple)
         {
-            string query = $"SELECT Count_Container * Count_RawMaterial AS quantity_simple FROM ContentSimple WHERE Id_ContentSimple = {id_content_simple}";
+            string query = $"SELECT Count_Container FROM ContentSimple WHERE Id_ContentSimple = {id_content_simple}";
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             int quantity = 0;
             if (dt.Rows.Count > 0)
@@ -212,7 +212,6 @@ namespace NganGiang.Services.Process
             }
             return station;
         }
-
         public void UpdateCoverHatProvided(int id_content_simple)
         {
             try

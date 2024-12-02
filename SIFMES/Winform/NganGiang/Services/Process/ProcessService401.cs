@@ -174,7 +174,7 @@ namespace NganGiang.Services.Process
         }
         public int getQuantityContentSimple(int id_content_simple)
         {
-            string query = $"select Count_Container * Count_RawMaterial as quantity_simple from ContentSimple where Id_ContentSimple = {id_content_simple}";
+            string query = $"select Count_Container from ContentSimple where Id_ContentSimple = {id_content_simple}";
 
             DataTable dt = DataProvider.Instance.ExecuteQuery(query);
             int quantity = 0;

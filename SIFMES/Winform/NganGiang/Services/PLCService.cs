@@ -18,6 +18,11 @@ namespace NganGiang.Services
         {
             plcClient = new Plc(CpuType.S71500, "192.168.3.129", 0, 1);
             plcDB = 10;
+
+            // Tăng thời gian timeout nếu cần
+            plcClient.ReadTimeout = 5000;
+            plcClient.WriteTimeout = 5000;
+
             OpenConnection();
         }
         private void OpenConnection()
